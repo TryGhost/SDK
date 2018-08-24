@@ -1,4 +1,4 @@
-# Ghost SD Ks
+# Ghost SDKs
 
 ## Installation
 1. Make sure that `gstenv` is green. See [Dev Environment](https://github.com/TryGhost/Team/blob/master/Engineering/Dev%20Environment.md) for docs.
