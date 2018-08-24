@@ -1,0 +1,11 @@
+{
+  "name": "ghost-admin-api",
+  "version": "0.0.1",
+  "description": "A utility for talking to Ghost's Admin API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ghost Foundation",
+  "license": "MIT"
+}
