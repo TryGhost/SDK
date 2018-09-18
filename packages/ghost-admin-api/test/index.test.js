@@ -54,14 +54,14 @@ describe('GhostAdminAPI', () => {
         GhostAdminAPI.create({apiHost, applicationKey});
         const handler = gotCreateSpy.args[0][0].handler;
 
-        handler({headers: {}, baseUrl: apiHost}, function next(options) {
+        handler({headers: {}, path: '/some/resource'}, function next(options) {
             const token = options.headers.authorization.split('Bearer ')[1];
             try {
                 jwt.verify(token, Buffer.from(applicationSecret, 'hex'), {
                     algorithms: ['HS256'],
                     maxAge: '5m',
                     issuer: applicationId,
-                    audience: apiHost
+                    audience: '/some/resource'
                 });
             } catch (err) {
                 assert.fail(err);

@@ -10,7 +10,7 @@ const createGhostAdminAPI = function createGhostAdminAPI({apiHost, applicationKe
         }),
         methods: got.defaults.methods,
         handler: (options, next) => {
-            options.headers.authorization = `Bearer ${getToken(options.baseUrl, applicationKey)}`;
+            options.headers.authorization = `Bearer ${getToken(options.path, applicationKey)}`;
             return next(options);
         }
     });
