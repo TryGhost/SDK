@@ -4,7 +4,11 @@
   "description": "A utility for talking to Ghost's Admin API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint . --ext .js --cache",
+    "test": "npm run lint && mocha -- $(find test -name '*.test.js')",
+    "posttest": "yarn lint",
+    "preship": "yarn test",
+    "ship": "STATUS=$(git status --porcelain); echo $STATUS; if [ -z \"$STATUS\" ]; then yarn publish && git push --follow-tags; fi"
   },
   "author": "Ghost Foundation",
   "license": "MIT",
