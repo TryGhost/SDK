@@ -24,3 +24,17 @@ api.get('/posts', {limit: 2, include: ['tags', 'authors']})
 ```
 
 See the [`got` docs](https://github.com/sindresorhus/got) for more information.
+
+### Installation (cli)
+
+```shell
+npm install -g ghost-admin-api
+```
+
+### Usage (cli)
+
+```shell
+$ ghost-admin-api http://localhost:2638/ghost/api/admin <applicationKey>
+ghost-admin-api > api.get('/posts').then(res => console.log(res.body));
+ghost-admin-api > api.get('/posts'), {limit: 2}).then(res => console.log(res.body));
+```
