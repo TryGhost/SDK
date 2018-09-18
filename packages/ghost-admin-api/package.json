@@ -11,5 +11,11 @@
   "dependencies": {
     "got": "9.2.2",
     "jsonwebtoken": "8.3.0"
+  },
+  "devDependencies": {
+    "eslint": "5.6.0",
+    "eslint-plugin-ghost": "0.0.27",
+    "mocha": "5.2.0",
+    "sinon": "6.3.3"
   }
 }
