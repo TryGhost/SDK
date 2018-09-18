@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A utility for talking to Ghost's Admin API",
   "main": "index.js",
+  "bin": "bin/index.js",
   "scripts": {
     "lint": "eslint . --ext .js --cache",
     "test": "npm run lint && mocha -- $(find test -name '*.test.js')",
