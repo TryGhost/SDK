@@ -18,12 +18,11 @@
     "lint": "eslint . --ext .js --cache",
     "posttest": "yarn lint",
     "preship": "yarn test",
-    "ship": "STATUS=$(git status --porcelain); echo $STATUS; if [ -z \"$STATUS\" ]; then lerna publish; fi"
+    "ship": "lerna publish"
   },
   "devDependencies": {
     "eslint": "5.6.1",
     "eslint-plugin-ghost": "0.0.27",
-    "lerna": "3.4.0",
     "mocha": "5.2.0",
     "should": "13.2.3",
     "sinon": "6.3.5"
