@@ -13,7 +13,7 @@
   },
   "files": [
     "index.js",
-    "lib"
+    "utils"
   ],
   "publishConfig": {
     "access": "public"
