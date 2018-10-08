@@ -17,9 +17,15 @@ module.exports = (data, options) => {
     let to = options.to ? parseInt(options.to, 10) : undefined;
     let visibilityArr = visibility.parse(options.visibility);
     let explicit = options.explict || !!options.visibility;
+    let fallback = options.fallback ? (_.isArray(options.fallback) ? options.fallback : [options.fallback]) : undefined;
 
     if (data.tags && data.tags.length) {
         output = visibility.filter(data.tags, visibilityArr, explicit, options.fn);
+
+        if (_.size(output) === 0 && fallback) {
+            output = visibility.filter(fallback, visibilityArr, explicit, options.fn);
+        }
+
         from -= 1; // From uses 1-indexed, but array uses 0-indexed.
         to = to || limit + from || output.length;
         output = output.slice(from, to).join(separator);
