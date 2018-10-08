@@ -12,7 +12,8 @@
     "posttest": "yarn lint"
   },
   "files": [
-    "index.js",
+    "*.js",
+    "!.eslintrc.js",
     "utils"
   ],
   "publishConfig": {
