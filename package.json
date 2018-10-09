@@ -1,6 +1,6 @@
 {
   "private": true,
-  "repository": "https://github.com/TryGhost/Ghost-SDKs",
+  "repository": "https://github.com/TryGhost/Ghost-SDK",
   "author": "Ghost Foundation",
   "license": "MIT",
   "workspaces": [

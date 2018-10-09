@@ -1,4 +1,4 @@
-# Ghost SDKs
+# Ghost SDK
 
 A collection of tools for interacting with Ghost's APIs.
 
