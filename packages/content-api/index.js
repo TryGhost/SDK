@@ -1,27 +1,16 @@
-const pick = require('lodash/pick');
 const request = require('superagent');
-const resources = require('./api');
 
 const create = ({host, version, key}) => {
-    return Object.keys(resources).reduce((apiObject, resourceType) => {
+    return ['posts', 'users', 'tags', 'pages'].reduce((apiObject, resourceType) => {
         function browse(options = {}) {
-            const resourceOptions = resources[resourceType].browse.options;
-
-            const params = pick(options, resourceOptions);
-            return makeRequest(resourceType, params);
+            return makeRequest(resourceType, options);
         }
         function read(data, options = {}) {
             if (!data || !data.id) {
                 return Promise.reject(new Error('Missing data.id'));
             }
 
-            const resourceOptions = resources[resourceType].read.options;
-            const resourceData = resources[resourceType].read.data;
-
-            const params = Object.assign(
-                pick(options, resourceOptions),
-                pick(data, resourceData)
-            );
+            const params = Object.assign({}, data, options);
 
             return makeRequest(resourceType, params, data.id);
         }

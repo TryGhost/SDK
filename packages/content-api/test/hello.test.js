@@ -143,17 +143,6 @@ describe('GhostContentApi', function () {
                     api.posts.browse({include: 'authors,tags'});
                 });
 
-                it('removes unsupported options', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
-
-                    server.once('url', ({query}) => {
-                        should.equal(query.pigs, null);
-                        done();
-                    });
-
-                    api.posts.browse({pigs: 'can fly'});
-                });
-
                 it('resolves with an array of the posts resources, and includes a meta property on the array', function () {
                     const api = GhostContentApi.create({host, version, key});
 
@@ -201,17 +190,6 @@ describe('GhostContentApi', function () {
                     });
 
                     api.posts.read({id: '1'}, {include: 'authors,tags'});
-                });
-
-                it('removes unsupported options', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
-
-                    server.once('url', ({query}) => {
-                        should.equal(query.pigs, null);
-                        done();
-                    });
-
-                    api.posts.read({id: '1'}, {pigs: 'can fly'});
                 });
 
                 it('resolves with the post resource', function () {
@@ -265,17 +243,6 @@ describe('GhostContentApi', function () {
                     api.users.browse({include: 'authors,tags'});
                 });
 
-                it('removes unsupported options', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
-
-                    server.once('url', ({query}) => {
-                        should.equal(query.pigs, null);
-                        done();
-                    });
-
-                    api.users.browse({pigs: 'can fly'});
-                });
-
                 it('resolves with an array of the users resources, and includes a meta property on the array', function () {
                     const api = GhostContentApi.create({host, version, key});
 
@@ -323,17 +290,6 @@ describe('GhostContentApi', function () {
                     });
 
                     api.users.read({id: '1'}, {include: 'authors,tags'});
-                });
-
-                it('removes unsupported options', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
-
-                    server.once('url', ({query}) => {
-                        should.equal(query.pigs, null);
-                        done();
-                    });
-
-                    api.users.read({id: '1'}, {pigs: 'can fly'});
                 });
 
                 it('resolves with the post resource', function () {
@@ -387,17 +343,6 @@ describe('GhostContentApi', function () {
                     api.tags.browse({include: 'authors,tags'});
                 });
 
-                it('removes unsupported options', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
-
-                    server.once('url', ({query}) => {
-                        should.equal(query.pigs, null);
-                        done();
-                    });
-
-                    api.tags.browse({pigs: 'can fly'});
-                });
-
                 it('resolves with an array of the tags resources, and includes a meta property on the array', function () {
                     const api = GhostContentApi.create({host, version, key});
 
@@ -445,17 +390,6 @@ describe('GhostContentApi', function () {
                     });
 
                     api.tags.read({id: '1'}, {include: 'authors,tags'});
-                });
-
-                it('removes unsupported options', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
-
-                    server.once('url', ({query}) => {
-                        should.equal(query.pigs, null);
-                        done();
-                    });
-
-                    api.tags.read({id: '1'}, {pigs: 'can fly'});
                 });
 
                 it('resolves with the post resource', function () {
@@ -507,17 +441,6 @@ describe('GhostContentApi', function () {
                     });
 
                     api.pages.browse({include: 'authors,tags'});
-                });
-
-                it('removes unsupported options', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
-
-                    server.once('url', ({query}) => {
-                        should.equal(query.pigs, null);
-                        done();
-                    });
-
-                    api.pages.browse({pigs: 'can fly'});
                 });
 
                 it('resolves with an array of the pages resources, and includes a meta property on the array', function () {
