@@ -6,13 +6,17 @@ const create = ({host, version, key}) => {
             return makeRequest(resourceType, options);
         }
         function read(data, options = {}) {
-            if (!data || !data.id) {
-                return Promise.reject(new Error('Missing data.id'));
+            if (!data) {
+                return Promise.reject(new Error('Missing data'));
+            }
+
+            if (!data.id && !data.slug) {
+                return Promise.reject(new Error('Must include either data.id or data.slug'));
             }
 
             const params = Object.assign({}, data, options);
 
-            return makeRequest(resourceType, params, data.id);
+            return makeRequest(resourceType, params, data.id || `slug/${data.slug}`);
         }
 
         return Object.assign(apiObject, {

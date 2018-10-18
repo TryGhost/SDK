@@ -29,19 +29,24 @@ describe('GhostContentApi', function () {
 
             let data;
 
-            const readMatch = parsedUrl.pathname.match(/\/([a-z]+)\/([0-9a-f]+)\/$/);
-            if (readMatch) {
-                data = {
-                    [readMatch[1]]: [{
-                        id: readMatch[2]
-                    }]
-                };
-            }
             const browseMatch = parsedUrl.pathname.match(/\/([a-z]+)\/$/);
             if (browseMatch) {
                 data = {
                     [browseMatch[1]]: [{}, {}, {}],
                     meta: {}
+                };
+            }
+
+            const readByIdMatch = parsedUrl.pathname.match(/\/([a-z]+)\/([0-9a-f]+)\/$/);
+            const readBySlugMatch = parsedUrl.pathname.match(/\/([a-z]+)\/slug\/([\w]+)\/$/);
+
+            const readMatch = readByIdMatch || readBySlugMatch;
+            if (readMatch) {
+                const type = readByIdMatch ? 'id' : 'slug';
+                data = {
+                    [readMatch[1]]: [{
+                        [type]: readMatch[2]
+                    }]
                 };
             }
 
@@ -170,6 +175,17 @@ describe('GhostContentApi', function () {
                     api.posts.read({id: '1'});
                 });
 
+                it('makes a request to the post resource, using correct version and slug', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, '/api/v2/content/posts/slug/booyar/');
+                        done();
+                    });
+
+                    api.posts.read({slug: 'booyar'});
+                });
+
                 it('supports the include option as an array', function (done) {
                     const api = GhostContentApi.create({host, version, key});
 
@@ -270,6 +286,17 @@ describe('GhostContentApi', function () {
                     api.users.read({id: '1'});
                 });
 
+                it('makes a request to the user resource, using correct version and slug', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, '/api/v2/content/users/slug/booyar/');
+                        done();
+                    });
+
+                    api.users.read({slug: 'booyar'});
+                });
+
                 it('supports the include option as an array', function (done) {
                     const api = GhostContentApi.create({host, version, key});
 
@@ -368,6 +395,17 @@ describe('GhostContentApi', function () {
                     });
 
                     api.tags.read({id: '1'});
+                });
+
+                it('makes a request to the tag resource, using correct version and slug', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, '/api/v2/content/tags/slug/booyar/');
+                        done();
+                    });
+
+                    api.tags.read({slug: 'booyar'});
                 });
 
                 it('supports the include option as an array', function (done) {
