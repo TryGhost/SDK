@@ -52,6 +52,9 @@ api.tags.read({slug: 'something'}, {include: 'count.posts'});
 // The resolved array will have a meta property
 api.pages.browse({limit: 2});
 api.pages.browse();
+
+// Reading pages returns Promise(Page);
+api.pages.read({slug: 'something'});
 ```
 
 
