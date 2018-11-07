@@ -30,14 +30,14 @@ api.posts.browse();
 api.posts.read({slug: 'something'});
 api.posts.read({slug: 'something'}, {formats: ['html', 'plaintext']});
 
-// Browsing users returns Promise([User...])
+// Browsing authors returns Promise([Author...])
 // The resolved array will have a meta property
-api.users.browse({limit: 2});
-api.users.browse();
+api.authors.browse({limit: 2});
+api.authors.browse();
 
-// Reading users returns Promise(User);
-api.users.read({slug: 'something'});
-api.users.read({slug: 'something'}, {include: 'count.posts'}); // include can be array for any of these
+// Reading authors returns Promise(Author);
+api.authors.read({slug: 'something'});
+api.authors.read({slug: 'something'}, {include: 'count.posts'}); // include can be array for any of these
 
 // Browsing tags returns Promise([Tag...])
 // The resolved array will have a meta property

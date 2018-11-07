@@ -96,7 +96,7 @@ describe('GhostContentApi', function () {
             GhostContentApi.create({host, version, key});
         });
 
-        it('Returns an "api" object with posts,tags,users&pages properties', function () {
+        it('Returns an "api" object with posts,tags,authors&pages properties', function () {
             const host = 'https://whatever.com';
             const version = 'v2';
             const key = '53c737';
@@ -104,7 +104,7 @@ describe('GhostContentApi', function () {
 
             should.exist(api.posts);
             should.exist(api.tags);
-            should.exist(api.users);
+            should.exist(api.authors);
             should.exist(api.pages);
         });
 
@@ -219,22 +219,22 @@ describe('GhostContentApi', function () {
             });
         });
 
-        describe('api.users', function () {
+        describe('api.authors', function () {
             it('has a browse method', function () {
                 const api = GhostContentApi.create({host, version, key});
-                should.equal(typeof api.users.browse, 'function');
+                should.equal(typeof api.authors.browse, 'function');
             });
 
-            describe('api.users.browse', function () {
-                it('makes a request to the users resource, using correct version', function (done) {
+            describe('api.authors.browse', function () {
+                it('makes a request to the authors resource, using correct version', function (done) {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/users/');
+                        should.equal(pathname, '/api/v2/content/authors/');
                         done();
                     });
 
-                    api.users.browse();
+                    api.authors.browse();
                 });
 
                 it('supports the include option as an array', function (done) {
@@ -245,7 +245,7 @@ describe('GhostContentApi', function () {
                         done();
                     });
 
-                    api.users.browse({include: ['authors', 'tags']});
+                    api.authors.browse({include: ['authors', 'tags']});
                 });
 
                 it('supports the include option as a string', function (done) {
@@ -256,13 +256,13 @@ describe('GhostContentApi', function () {
                         done();
                     });
 
-                    api.users.browse({include: 'authors,tags'});
+                    api.authors.browse({include: 'authors,tags'});
                 });
 
-                it('resolves with an array of the users resources, and includes a meta property on the array', function () {
+                it('resolves with an array of the authors resources, and includes a meta property on the array', function () {
                     const api = GhostContentApi.create({host, version, key});
 
-                    return api.users.browse().then((data) => {
+                    return api.authors.browse().then((data) => {
                         should.equal(Array.isArray(data), true);
                         should.exist(data.meta);
                     });
@@ -271,30 +271,30 @@ describe('GhostContentApi', function () {
 
             it('has a read method', function () {
                 const api = GhostContentApi.create({host, version, key});
-                should.equal(typeof api.users.read, 'function');
+                should.equal(typeof api.authors.read, 'function');
             });
 
-            describe('api.users.read', function () {
+            describe('api.authors.read', function () {
                 it('makes a request to the post resource, using correct version and id', function (done) {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/users/1/');
+                        should.equal(pathname, '/api/v2/content/authors/1/');
                         done();
                     });
 
-                    api.users.read({id: '1'});
+                    api.authors.read({id: '1'});
                 });
 
                 it('makes a request to the user resource, using correct version and slug', function (done) {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/users/slug/booyar/');
+                        should.equal(pathname, '/api/v2/content/authors/slug/booyar/');
                         done();
                     });
 
-                    api.users.read({slug: 'booyar'});
+                    api.authors.read({slug: 'booyar'});
                 });
 
                 it('supports the include option as an array', function (done) {
@@ -305,7 +305,7 @@ describe('GhostContentApi', function () {
                         done();
                     });
 
-                    api.users.read({id: '1'}, {include: ['authors', 'tags']});
+                    api.authors.read({id: '1'}, {include: ['authors', 'tags']});
                 });
 
                 it('supports the include option as a string', function (done) {
@@ -316,13 +316,13 @@ describe('GhostContentApi', function () {
                         done();
                     });
 
-                    api.users.read({id: '1'}, {include: 'authors,tags'});
+                    api.authors.read({id: '1'}, {include: 'authors,tags'});
                 });
 
                 it('resolves with the post resource', function () {
                     const api = GhostContentApi.create({host, version, key});
 
-                    return api.users.read({id: '1'}).then((data) => {
+                    return api.authors.read({id: '1'}).then((data) => {
                         should.equal(Array.isArray(data), false);
                         should.deepEqual(data, {id: '1'});
                     });
