@@ -1,7 +1,7 @@
 const request = require('superagent');
 
 const create = ({host, version, key}) => {
-    return ['posts', 'users', 'tags', 'pages'].reduce((apiObject, resourceType) => {
+    return ['posts', 'authors', 'tags', 'pages'].reduce((apiObject, resourceType) => {
         function browse(options = {}) {
             return makeRequest(resourceType, options);
         }
