@@ -23,6 +23,7 @@ describe('GhostContentApi', function () {
         server.on('request', (req, res) => {
             const parsedUrl = url.parse(req.url, true);
             server.emit('url', parsedUrl);
+            server.emit('headers', req.headers);
             res.writeHead(200, {
                 'Content-Type': 'application/json'
             });
@@ -167,6 +168,17 @@ describe('GhostContentApi', function () {
 
                     api.posts.browse();
                 });
+
+                it('correctly adds the members token to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('headers', (headers) => {
+                        should.equal(headers.authorization, 'GhostMember token');
+                        done();
+                    });
+
+                    api.posts.browse({}, 'token');
+                });
             });
 
             it('has a read method', function () {
@@ -238,6 +250,17 @@ describe('GhostContentApi', function () {
 
                     api.posts.read({id: 1});
                 });
+
+                it('correctly adds the members token to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('headers', (headers) => {
+                        should.equal(headers.authorization, 'GhostMember token');
+                        done();
+                    });
+
+                    api.posts.read({id: 1}, {}, 'token');
+                });
             });
         });
 
@@ -299,6 +322,17 @@ describe('GhostContentApi', function () {
                     });
 
                     api.authors.browse();
+                });
+
+                it('correctly adds the members token to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('headers', (headers) => {
+                        should.equal(headers.authorization, 'GhostMember token');
+                        done();
+                    });
+
+                    api.authors.browse({id: 1}, 'token');
                 });
             });
 
@@ -371,6 +405,17 @@ describe('GhostContentApi', function () {
 
                     api.authors.read({id: 1});
                 });
+
+                it('correctly adds the members token to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('headers', (headers) => {
+                        should.equal(headers.authorization, 'GhostMember token');
+                        done();
+                    });
+
+                    api.authors.read({id: 1}, {}, 'token');
+                });
             });
         });
 
@@ -432,6 +477,17 @@ describe('GhostContentApi', function () {
                     });
 
                     api.tags.browse();
+                });
+
+                it('correctly adds the members token to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('headers', (headers) => {
+                        should.equal(headers.authorization, 'GhostMember token');
+                        done();
+                    });
+
+                    api.tags.browse({id: 1}, 'token');
                 });
             });
 
@@ -504,6 +560,17 @@ describe('GhostContentApi', function () {
 
                     api.tags.read({id: 1});
                 });
+
+                it('correctly adds the members token to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('headers', (headers) => {
+                        should.equal(headers.authorization, 'GhostMember token');
+                        done();
+                    });
+
+                    api.tags.read({id: 1}, {}, 'token');
+                });
             });
         });
 
@@ -565,6 +632,17 @@ describe('GhostContentApi', function () {
                     });
 
                     api.pages.browse();
+                });
+
+                it('correctly adds the members token to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('headers', (headers) => {
+                        should.equal(headers.authorization, 'GhostMember token');
+                        done();
+                    });
+
+                    api.posts.browse({id: 1}, 'token');
                 });
             });
         });

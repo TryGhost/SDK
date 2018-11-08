@@ -2,10 +2,10 @@ const request = require('superagent');
 
 const create = ({host, version, key}) => {
     return ['posts', 'authors', 'tags', 'pages'].reduce((apiObject, resourceType) => {
-        function browse(options = {}) {
-            return makeRequest(resourceType, options);
+        function browse(options = {}, memberToken) {
+            return makeRequest(resourceType, options, null, memberToken);
         }
-        function read(data, options = {}) {
+        function read(data, options = {}, memberToken) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
@@ -16,7 +16,7 @@ const create = ({host, version, key}) => {
 
             const params = Object.assign({}, data, options);
 
-            return makeRequest(resourceType, params, data.id || `slug/${data.slug}`);
+            return makeRequest(resourceType, params, data.id || `slug/${data.slug}`, memberToken);
         }
 
         return Object.assign(apiObject, {
@@ -27,16 +27,23 @@ const create = ({host, version, key}) => {
         });
     }, {});
 
-    function makeRequest(resourceType, params, id) {
+    function makeRequest(resourceType, params, id, membersToken = null) {
         delete params.id;
-        return request.get(`${host}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`)
-            .query(Object.assign({key}, params))
-            .then((res) => {
-                if (res.body[resourceType].length === 1 && !res.body.meta) {
-                    return res.body[resourceType][0];
-                }
-                return Object.assign(res.body[resourceType], {meta: res.body.meta});
-            });
+        const parseResponse = (res) => {
+            if (res.body[resourceType].length === 1 && !res.body.meta) {
+                return res.body[resourceType][0];
+            }
+            return Object.assign(res.body[resourceType], {meta: res.body.meta});
+        };
+
+        const req = request.get(`${host}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`)
+            .query(Object.assign({key}, params));
+
+        if (membersToken) {
+            return req.set('Authorization', `GhostMember ${membersToken}`)
+                .then(parseResponse);
+        }
+        return req.then(parseResponse);
     }
 };
 
