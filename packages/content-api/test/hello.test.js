@@ -156,6 +156,17 @@ describe('GhostContentApi', function () {
                         should.exist(data.meta);
                     });
                 });
+
+                it('correctly adds the api key to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.key, key);
+                        done();
+                    });
+
+                    api.posts.browse();
+                });
             });
 
             it('has a read method', function () {
@@ -216,6 +227,17 @@ describe('GhostContentApi', function () {
                         should.deepEqual(data, {id: '1'});
                     });
                 });
+
+                it('correctly adds the api key to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.key, key);
+                        done();
+                    });
+
+                    api.posts.read({id: 1});
+                });
             });
         });
 
@@ -266,6 +288,17 @@ describe('GhostContentApi', function () {
                         should.equal(Array.isArray(data), true);
                         should.exist(data.meta);
                     });
+                });
+
+                it('correctly adds the api key to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.key, key);
+                        done();
+                    });
+
+                    api.authors.browse();
                 });
             });
 
@@ -327,6 +360,17 @@ describe('GhostContentApi', function () {
                         should.deepEqual(data, {id: '1'});
                     });
                 });
+
+                it('correctly adds the api key to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.key, key);
+                        done();
+                    });
+
+                    api.authors.read({id: 1});
+                });
             });
         });
 
@@ -377,6 +421,17 @@ describe('GhostContentApi', function () {
                         should.equal(Array.isArray(data), true);
                         should.exist(data.meta);
                     });
+                });
+
+                it('correctly adds the api key to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.key, key);
+                        done();
+                    });
+
+                    api.tags.browse();
                 });
             });
 
@@ -430,13 +485,24 @@ describe('GhostContentApi', function () {
                     api.tags.read({id: '1'}, {include: 'authors,tags'});
                 });
 
-                it('resolves with the post resource', function () {
+                it('resolves with the tags resource', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     return api.tags.read({id: '1'}).then((data) => {
                         should.equal(Array.isArray(data), false);
                         should.deepEqual(data, {id: '1'});
                     });
+                });
+
+                it('correctly adds the api key to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.key, key);
+                        done();
+                    });
+
+                    api.tags.read({id: 1});
                 });
             });
         });
@@ -488,6 +554,17 @@ describe('GhostContentApi', function () {
                         should.equal(Array.isArray(data), true);
                         should.exist(data.meta);
                     });
+                });
+
+                it('correctly adds the api key to the query', function (done) {
+                    const api = GhostContentApi.create({host, version, key});
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.key, key);
+                        done();
+                    });
+
+                    api.pages.browse();
                 });
             });
         });
