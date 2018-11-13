@@ -173,7 +173,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('headers', (headers) => {
-                        should.equal(headers.authorization, 'GhostMember token');
+                        should.equal(headers.authorization, 'GhostMembers token');
                         done();
                     });
 
@@ -255,7 +255,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('headers', (headers) => {
-                        should.equal(headers.authorization, 'GhostMember token');
+                        should.equal(headers.authorization, 'GhostMembers token');
                         done();
                     });
 
@@ -328,7 +328,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('headers', (headers) => {
-                        should.equal(headers.authorization, 'GhostMember token');
+                        should.equal(headers.authorization, 'GhostMembers token');
                         done();
                     });
 
@@ -410,7 +410,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('headers', (headers) => {
-                        should.equal(headers.authorization, 'GhostMember token');
+                        should.equal(headers.authorization, 'GhostMembers token');
                         done();
                     });
 
@@ -483,7 +483,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('headers', (headers) => {
-                        should.equal(headers.authorization, 'GhostMember token');
+                        should.equal(headers.authorization, 'GhostMembers token');
                         done();
                     });
 
@@ -565,7 +565,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('headers', (headers) => {
-                        should.equal(headers.authorization, 'GhostMember token');
+                        should.equal(headers.authorization, 'GhostMembers token');
                         done();
                     });
 
@@ -638,7 +638,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('headers', (headers) => {
-                        should.equal(headers.authorization, 'GhostMember token');
+                        should.equal(headers.authorization, 'GhostMembers token');
                         done();
                     });
 
