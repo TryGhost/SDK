@@ -40,7 +40,7 @@ const create = ({host, version, key}) => {
             .query(Object.assign({key}, params));
 
         if (membersToken) {
-            return req.set('Authorization', `GhostMember ${membersToken}`)
+            return req.set('Authorization', `GhostMembers ${membersToken}`)
                 .then(parseResponse);
         }
         return req.then(parseResponse);
