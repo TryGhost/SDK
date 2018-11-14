@@ -41,7 +41,7 @@ module.exports = {
         }
 
         signin.addEventListener('click', onSigninEvent);
-        signinCta.addEventListener('click', onSigninEvent);
+        signinCta && signinCta.addEventListener('click', onSigninEvent);
 
         signout.addEventListener('click', function (event) {
             event.preventDefault();
