@@ -1,0 +1,38 @@
+{
+  "name": "@tryghost/members-theme-dropin",
+  "version": "0.0.0",
+  "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/members/theme-dropin",
+  "author": "Ghost Foundation",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "es",
+    "lib",
+    "umd"
+  ],
+  "scripts": {
+    "build": "nwb build-web-module",
+    "clean": "nwb clean-module",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . --ext .js --cache"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "ghost-ignition": "^2.9.6",
+    "domready": "^1.0.8",
+    "jsonwebtoken": "^8.3.0",
+    "superagent": "^4.0.0-beta.5",
+    "@tryghost/members-layer1": "file:../layer1",
+    "@tryghost/members-layer2": "file:../layer2",
+    "@tryghost/content-api": "file:../../content-api"
+  },
+  "devDependencies": {
+    "mocha": "5.2.0",
+    "should": "13.2.3",
+    "sinon": "7.0.0",
+    "nwb": "0.23.x"
+  }
+}
