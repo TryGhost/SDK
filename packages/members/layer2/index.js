@@ -1,26 +1,33 @@
-const Members = require('@tryghost/members-layer1');
+var Members = require('@tryghost/members-layer1');
 
-const members = Members.create();
+var members = Members.create();
 
-const show = el => el.style.display = 'block';
-const hide = el => el.style.display = 'none';
-const reload = () => location.reload();
+function show (el) {
+    el.style.display = 'block';
+}
+function hide (el) {
+    el.style.display = 'none';
+}
 
-const setCookie = (token) => {
+function reload() {
+    location.reload();
+}
+
+function setCookie(token) {
     if (!token) {
         document.cookie = 'member=null;path=/;samesite;max-age=0';
     } else {
-        document.cookie = `member=${token};path=/;samesite;`;
+        document.cookie = ['member=', token, ';path=/;samesite;'].join('');
     }
     return token;
-};
+}
 
 module.exports = {
-    init() {
-        const signin = document.querySelector('[data-members-signin]');
-        const signout = document.querySelector('[data-members-signout]');
+    init: function init() {
+        var signin = document.querySelector('[data-members-signin]');
+        var signout = document.querySelector('[data-members-signout]');
 
-        const render = (token) => {
+        function render (token) {
             if (token) {
                 show(signout);
                 hide(signin);
@@ -29,9 +36,9 @@ module.exports = {
                 hide(signout);
             }
             return token;
-        };
+        }
 
-        signin.addEventListener('click', (event) => {
+        signin.addEventListener('click', function (event) {
             event.preventDefault();
             members.login()
                 .then(members.getToken)
@@ -39,7 +46,7 @@ module.exports = {
                 .then(reload);
         });
 
-        signout.addEventListener('click', (event) => {
+        signout.addEventListener('click', function (event) {
             event.preventDefault();
             members.logout()
                 .then(members.getToken)
