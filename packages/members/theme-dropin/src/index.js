@@ -3,7 +3,7 @@ const GhostContentApi = require('@tryghost/content-api');
 const GhostMembersLayer2 = require('@tryghost/members-layer2');
 
 const fetchAndLoadContent = (hostUrl, postId, token) => {
-    const postContentDiv = document.querySelector('[data-members-drop-in-resource');
+    const postContentDiv = document.querySelector("[data-members-resource-type='post']");
     if (!postContentDiv) {
         return;
     }
@@ -34,9 +34,9 @@ const init = (blogUrl, postId) => {
 }
 
 DomReady(function () {
-    let dataObject = document.querySelector('[data-members-drop-in-resource');
-    let blogUrl = dataObject && dataObject.getAttribute('data-members-blog-url');
-    let postId = dataObject && dataObject.getAttribute('data-members-resource-id');
+    let postDataObject = document.querySelector("[data-members-resource-type='post']");
+    let blogUrl = postDataObject && postDataObject.getAttribute('data-members-blog-url');
+    let postId = postDataObject && postDataObject.getAttribute('data-members-resource-id');
     if (blogUrl && postId) {
         init(blogUrl, postId);
     } else {
