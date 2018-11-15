@@ -46,6 +46,6 @@ DomReady(function () {
 
 console.info("Initialized members script...");
 
-export default {
+module.exports = {
     init: init
-}
+};
