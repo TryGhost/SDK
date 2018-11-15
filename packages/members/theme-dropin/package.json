@@ -6,14 +6,12 @@
   "license": "MIT",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "files": [
-    "es",
-    "lib",
-    "umd"
+  "browserlists": [
+    "> 0.25%, not dead"
   ],
   "scripts": {
-    "build": "nwb build-web-module",
-    "clean": "nwb clean-module",
+    "prebuild": "rm -rf build && mkdir build",
+    "build": "browserify -g [ babelify --presets [ @babel/preset-env ] ] src/index.js > build/dropin.js",
     "prepublishOnly": "npm run build",
     "lint": "eslint . --ext .js --cache"
   },
@@ -30,9 +28,12 @@
     "@tryghost/content-api": "file:../../content-api"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
     "mocha": "5.2.0",
     "should": "13.2.3",
-    "sinon": "7.0.0",
-    "nwb": "0.23.x"
+    "sinon": "7.0.0"
   }
 }
