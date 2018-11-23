@@ -20,6 +20,7 @@
     "sinon": "7.0.0"
   },
   "dependencies": {
+    "@tryghost/members-layer0": "file:../layer0",
     "ghost-ignition": "^2.9.6",
     "jsonwebtoken": "^8.3.0"
   }
