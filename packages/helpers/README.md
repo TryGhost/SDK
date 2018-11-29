@@ -13,6 +13,7 @@ or
 
 ## Usage
 
+See the docs: https://docs.ghost.org/api/
 
 ## Develop
 
