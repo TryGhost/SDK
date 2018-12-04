@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Link from 'gatsby-link'
 import tagsHelper from '@tryghost/helpers/tags'
 
 /*
@@ -43,7 +44,11 @@ const Tags = (props) => {
 
 
     opts.fn = function process(tag) {
-        return <span className={props.classes} key={tag.slug}>{tag.name}</span>
+        return props.autolink ?
+            <span className={props.classes} key={props.slug}>
+                <Link to={props.permalink.replace(/:slug/, tag.slug)} className={props.linkClasses}>{tag.name}</Link>
+            </span> :
+            <span className={props.classes} key={tag.slug}>{tag.name}</span>
     }
 
     return (
@@ -57,7 +62,10 @@ Tags.defaultProps = {
     classes: ``,
     separatorClasses: ``,
     prefixClasses: ``,
-    suffixClasses: ``
+    suffixClasses: ``,
+    linkClasses: ``,
+    permalink: `/:slug/`,
+    autolink: true,
 }
 
 // @TODO: improve validation and figure out if we can pass in react elements as
@@ -73,6 +81,9 @@ Tags.propTypes = {
     separatorClasses: PropTypes.string,
     prefixClasses: PropTypes.string,
     suffixClasses: PropTypes.string,
+    linkClasses: PropTypes.string,
+    permalink: PropTypes.string,
+    autolink: PropTypes.boolean
 }
 
 export default Tags
