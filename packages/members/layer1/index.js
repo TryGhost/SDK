@@ -36,10 +36,10 @@ function create(options) {
     });
 
     return {
-        getToken: function getToken() {
+        getToken: function getToken(audience = blogUrl) {
             return loadGateway.then(function (gateway) {
                 return new Promise(function (resolve, reject) {
-                    gateway.call('getToken', {}, function (err, token) {
+                    gateway.call('token', {}, function (err, token) {
                         if (err) {
                             reject(err);
                         }
