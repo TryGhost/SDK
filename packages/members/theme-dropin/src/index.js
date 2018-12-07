@@ -23,7 +23,8 @@ DomReady(function () {
     if (hashMatch && hash === 'reset-password') {
         const [tokenMatch, token] = query.match(/token=([a-zA-z-_]+.[a-zA-Z-_]+.[a-zA-Z-_]+)/) || [];
         if (tokenMatch) {
-            return members.resetPassword({token});
+            return members.resetPassword({token})
+                .then(reload);
         }
     }
 
