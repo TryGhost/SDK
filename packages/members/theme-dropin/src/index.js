@@ -16,9 +16,18 @@ function hide (el) {
 const version = 'v2';
 
 DomReady(function () {
-    const membersContentElements = Array.from(document.querySelectorAll("[data-members]")) // TODO use data-members-content;
-
     const members = layer2({membersUrl: window.membersUrl});
+
+    const [hashMatch, hash, query] = window.location.hash.match(/^#([^?]+)\??(.*)$/) || [];
+
+    if (hashMatch && hash === 'reset-password') {
+        const [tokenMatch, token] = query.match(/token=([a-zA-z-_]+.[a-zA-Z-_]+.[a-zA-Z-_]+)/) || [];
+        if (tokenMatch) {
+            return members.resetPassword({token});
+        }
+    }
+
+    const membersContentElements = Array.from(document.querySelectorAll("[data-members]")) // TODO use data-members-content;
 
     var signinBtn = document.querySelector('[data-members-signin]');
     var signinCta = document.querySelector('[data-members-signin-cta]');
