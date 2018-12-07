@@ -35,7 +35,7 @@ module.exports = function layer2(options) {
 
     function resetPassword({token}) {
         const query = `token=${token}`;
-        return openAuth('signup', query).then(function () {
+        return openAuth('reset-password', query).then(function () {
             return new Promise(function (resolve) {
                 members.bus.on('signedin', function self() {
                     members.bus.off('signedin', self);
@@ -47,11 +47,8 @@ module.exports = function layer2(options) {
 
     function signin() {
         return openAuth('signin').then(function () {
-            console.log('opened');
             return new Promise(function (resolve) {
-                console.log('adding listener');
                 members.bus.on('signedin', function self() {
-                    console.log('signed in');
                     members.bus.off('signedin', self);
                     resolve(true);
                 });
