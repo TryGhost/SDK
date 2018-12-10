@@ -3,12 +3,14 @@ var layer1 = require('@tryghost/members-layer1');
 module.exports = function layer2(options) {
     var authUrl = `${options.membersUrl}/auth`;
     var gatewayUrl = `${options.membersUrl}/gateway`;
+    var container = options.container;
 
     var members = layer1({
-        gatewayUrl
+        gatewayUrl,
+        container
     });
 
-    var loadAuth = loadFrame(authUrl).then(function (frame) {
+    var loadAuth = loadFrame(authUrl, container).then(function (frame) {
         frame.style.position = 'fixed';
         frame.style.width = '100%';
         frame.style.height = '100%';
