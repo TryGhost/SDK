@@ -18,12 +18,13 @@ module.exports = (data, options = {}) => {
     let visibilityArr = visibility.parse(options.visibility);
     let explicit = options.explict || !!options.visibility;
     let fallback = options.fallback ? (_.isArray(options.fallback) ? options.fallback : [options.fallback]) : undefined;
+    let displayFn = options.fn ? options.fn : tag => tag.name;
 
     if (data.tags && data.tags.length) {
-        output = visibility.filter(data.tags, visibilityArr, explicit, options.fn);
+        output = visibility.filter(data.tags, visibilityArr, explicit, displayFn);
 
         if (_.size(output) === 0 && fallback) {
-            output = visibility.filter(fallback, visibilityArr, explicit, options.fn);
+            output = visibility.filter(fallback, visibilityArr, explicit, displayFn);
         }
 
         from -= 1; // From uses 1-indexed, but array uses 0-indexed.
