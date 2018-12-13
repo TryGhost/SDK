@@ -9,7 +9,8 @@
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+    "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
   },
   "files": [
     "*.js",
@@ -20,6 +21,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "istanbul": "0.4.5",
     "mocha": "5.2.0",
     "should": "13.2.3",
     "sinon": "7.1.1"
