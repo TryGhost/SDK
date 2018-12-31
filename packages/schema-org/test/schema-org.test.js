@@ -209,7 +209,7 @@ describe('Schema Org', function () {
             schema['@type'].should.eql('Series');
         });
 
-        it('Can render a valid schema with publisher & main entity', function () {
+        it('Can render a valid schema with main entity & no publisher for Series', function () {
             const schemaGenerator = new SchemaGenerator();
             const data = {
                 site: {
@@ -221,14 +221,11 @@ describe('Schema Org', function () {
 
             const schema = schemaGenerator.createSchema('tag', data);
 
-            Object.keys(schema).should.eql(['@context', '@type', 'publisher', 'mainEntityOfPage']);
+            Object.keys(schema).should.eql(['@context', '@type', 'mainEntityOfPage']);
             schema['@context'].should.eql('https://schema.org');
             schema['@type'].should.eql('Series');
 
-            Object.keys(schema.publisher).should.eql(['@type', 'name', 'logo']);
-            schema.publisher['@type'].should.eql('Organization');
-            schema.publisher.name.should.eql('Hello World');
-            schema.publisher.logo.should.eql('https://example.com/content/images/logo.png');
+            should.not.exist(schema.publisher);
 
             Object.keys(schema.mainEntityOfPage).should.eql(['@type', '@id']);
             schema.mainEntityOfPage['@type'].should.eql('WebPage');
@@ -253,14 +250,11 @@ describe('Schema Org', function () {
 
             const schema = schemaGenerator.createSchema('tag', data);
 
-            Object.keys(schema).should.eql(['@context', '@type', 'publisher', 'mainEntityOfPage', 'name', 'url', 'image', 'description']);
+            Object.keys(schema).should.eql(['@context', '@type', 'mainEntityOfPage', 'name', 'url', 'image', 'description']);
             schema['@context'].should.eql('https://schema.org');
             schema['@type'].should.eql('Series');
 
-            Object.keys(schema.publisher).should.eql(['@type', 'name', 'logo']);
-            schema.publisher['@type'].should.eql('Organization');
-            schema.publisher.name.should.eql('Hello World');
-            schema.publisher.logo.should.eql('https://example.com/content/images/logo.png');
+            should.not.exist(schema.publisher);
 
             Object.keys(schema.mainEntityOfPage).should.eql(['@type', '@id']);
             schema.mainEntityOfPage['@type'].should.eql('WebPage');
@@ -299,7 +293,7 @@ describe('Schema Org', function () {
             schema['@context'].should.eql('https://schema.org');
             schema['@type'].should.eql('Person');
 
-            should.not.exists(schema.publisher);
+            should.not.exist(schema.publisher);
 
             Object.keys(schema.mainEntityOfPage).should.eql(['@type', '@id']);
             schema.mainEntityOfPage['@type'].should.eql('WebPage');
