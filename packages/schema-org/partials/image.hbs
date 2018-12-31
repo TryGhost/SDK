@@ -1,0 +1,12 @@
+{{#if image.dimensions}}
+{
+    "@type": "ImageObject",
+    "url": "{{image.url}}",
+    "width": {{image.dimensions.width}},
+    "height": {{image.dimensions.height}}
+}
+{{else if image.url ~}}
+"{{image.url}}"
+{{else~}}
+"{{image}}"
+{{~/if}}
