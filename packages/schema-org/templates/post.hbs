@@ -8,7 +8,7 @@
         "@type": "Person",
         "name": "{{author.name}}",
         "url": "{{author.url}}",
-        "sameAs": "{{author.sameAs}}",
+        "sameAs": {{array author.sameAs}},
         "image": {{> "image" image=author.image}},
         "description": "{{author.description}}"
     },
@@ -18,6 +18,6 @@
     "datePublished": "{{meta.datePublished}}",
     "dateModified": "{{meta.dateModified}}",
     "image": {{> "image" image=meta.image}},
-    "keywords": "{{meta.keywords}}",
+    "keywords": "{{join meta.keywords}}",
     "description": "{{meta.description}}"
 }

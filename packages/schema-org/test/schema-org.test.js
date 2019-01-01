@@ -331,7 +331,7 @@ describe('Schema Org', function () {
 
             schema.name.should.eql('Joanne Bloggs');
             schema.url.should.eql('https://test.example.com/about/me');
-            schema.sameAs.should.eql('https://twitter.com/test,https://facebook.com/test');
+            schema.sameAs.should.eql(['https://twitter.com/test', 'https://facebook.com/test']);
             schema.image.should.eql('https://example.com/content/images/cover.jpg');
             schema.description.should.eql('A person who writes things in places');
         });
@@ -410,7 +410,7 @@ describe('Schema Org', function () {
             Object.keys(schema.author).should.eql(['@type', 'name', 'url', 'sameAs', 'image', 'description']);
             schema.author.name.should.eql('Joanne Bloggs');
             schema.author.url.should.eql('https://test.example.com/about/me');
-            schema.author.sameAs.should.eql('https://twitter.com/test,https://facebook.com/test');
+            schema.author.sameAs.should.eql(['https://twitter.com/test', 'https://facebook.com/test']);
             schema.author.image.should.eql('https://example.com/content/images/cover.jpg');
             schema.author.description.should.eql('A person who writes things in places');
         });
@@ -455,7 +455,7 @@ describe('Schema Org', function () {
             schema.headline.should.eql('An interesting article');
             schema.datePublished.should.eql('2018-12-20T22:13:05.412');
             schema.dateModified.should.eql('2018-12-03T09:45:12.123Z');
-            schema.keywords.should.eql('Foo,Bar,Baz');
+            schema.keywords.should.eql('Foo, Bar, Baz');
             schema.description.should.eql('You&#x27;ll never guess what happened next...');
             schema.image.should.eql('https://example.com/content/images/article.gif');
         });
@@ -507,14 +507,14 @@ describe('Schema Org', function () {
             schema.headline.should.eql('An interesting article');
             schema.datePublished.should.eql('2018-12-20T22:13:05.412');
             schema.dateModified.should.eql('2018-12-03T09:45:12.123Z');
-            schema.keywords.should.eql('Foo,Bar,Baz');
+            schema.keywords.should.eql('Foo, Bar, Baz');
             schema.description.should.eql('You&#x27;ll never guess what happened next...');
             schema.image.should.eql('https://example.com/content/images/article.gif');
 
             Object.keys(schema.author).should.eql(['@type', 'name', 'url', 'sameAs', 'image', 'description']);
             schema.author.name.should.eql('Joanne Bloggs');
             schema.author.url.should.eql('https://test.example.com/about/me');
-            schema.author.sameAs.should.eql('https://twitter.com/test,https://facebook.com/test');
+            schema.author.sameAs.should.eql(['https://twitter.com/test', 'https://facebook.com/test']);
             schema.author.image.should.eql('https://example.com/content/images/cover.jpg');
             schema.author.description.should.eql('A person who writes things in places');
         });

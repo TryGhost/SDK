@@ -23,8 +23,24 @@ class SchemaGenerator {
     constructor(options) {
         this.options = options || {};
 
-        this.loadTemplates();
+        this.loadHelpers();
         this.loadPartials();
+        this.loadTemplates();
+    }
+
+    loadHelpers() {
+        handlebars.registerHelper('join', function (data) {
+            let output = '';
+            if (data && data.length > 0) {
+                output = data.join(', ');
+            }
+            return new handlebars.SafeString(output);
+        });
+
+        handlebars.registerHelper('array', function (data = '') {
+            let json = JSON.stringify(data);
+            return new handlebars.SafeString(json);
+        });
     }
 
     loadTemplates() {
@@ -46,7 +62,7 @@ class SchemaGenerator {
         });
     }
 
-    finalize(jsonString) {
+    finalize(jsonString = '') {
         let json = JSON.parse(jsonString);
 
         return trim(json);
