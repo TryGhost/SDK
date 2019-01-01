@@ -13,7 +13,7 @@
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
   },
   "files": [
-    "index.js",
+    "*.js",
     "lib"
   ],
   "publishConfig": {
