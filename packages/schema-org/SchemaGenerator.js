@@ -6,15 +6,17 @@ const handlebars = require('handlebars');
 const nameRegExp = /\/(.*)\.hbs/;
 
 const trim = (schema) => {
-    var schemaObject = {};
-
     _.each(schema, function (value, key) {
-        if (!_.isNil(value) && !_.isEmpty(value)) {
-            schemaObject[key] = value;
+        if (_.isNil(value) || (_.isString(value) && _.isEmpty(value))) {
+            delete schema[key];
+        }
+
+        if (_.isObject(value)) {
+            value = trim(value);
         }
     });
 
-    return schemaObject;
+    return schema;
 };
 
 class SchemaGenerator {

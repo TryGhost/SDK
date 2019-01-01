@@ -28,10 +28,9 @@ describe('Schema Org', function () {
             schema['@context'].should.eql('https://schema.org');
             schema['@type'].should.eql('WebSite');
 
-            Object.keys(schema.publisher).should.eql(['@type', 'name', 'logo']);
+            Object.keys(schema.publisher).should.eql(['@type', 'name']);
             schema.publisher['@type'].should.eql('Organization');
             schema.publisher.name.should.eql('Hello World');
-            schema.publisher.logo.should.eql('');
         });
 
         describe('Image Partial Combos', function () {
@@ -133,10 +132,9 @@ describe('Schema Org', function () {
             schema['@context'].should.eql('https://schema.org');
             schema['@type'].should.eql('WebSite');
 
-            Object.keys(schema.publisher).should.eql(['@type', 'name', 'logo']);
+            Object.keys(schema.publisher).should.eql(['@type', 'name']);
             schema.publisher['@type'].should.eql('Organization');
             schema.publisher.name.should.eql('Hello World');
-            schema.publisher.logo.should.eql('');
 
             Object.keys(schema.mainEntityOfPage).should.eql(['@type', '@id']);
             schema.mainEntityOfPage['@type'].should.eql('WebPage');
