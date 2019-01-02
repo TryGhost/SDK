@@ -12,7 +12,7 @@
     "posttest": "yarn lint",
     "clean": "rimraf lib",
     "build": "yarn clean && babel src --out-dir lib --presets=@babel/preset-env,@babel/preset-react",
-    "prepublish": "yarn build"
+    "prepack": "yarn build"
   },
   "files": [
     "/lib"
