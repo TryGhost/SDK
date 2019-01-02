@@ -4,22 +4,29 @@
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/helpers-gatsby",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
-    "posttest": "yarn lint"
+    "posttest": "yarn lint",
+    "clean": "rimraf lib",
+    "build": "yarn clean && babel src --out-dir lib --presets=@babel/preset-env,@babel/preset-react",
+    "prepublish": "yarn build"
   },
   "files": [
-    "index.js",
-    "lib"
+    "/lib"
   ],
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
     "mocha": "5.2.0",
+    "rimraf": "^2.6.2",
     "should": "13.2.3",
     "sinon": "7.2.2"
   },
