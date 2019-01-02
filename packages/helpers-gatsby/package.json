@@ -17,6 +17,9 @@
   "files": [
     "/lib"
   ],
+  "eslintIgnore": [
+    "lib/**"
+  ],
   "publishConfig": {
     "access": "public"
   },
