@@ -4117,7 +4117,7 @@ var zip = baseRest(unzip);
 
 function tags (data, options = {}) {
     let output = '';
-    let separator = options.separator ? options.separator : ', ';
+    let separator = options.separator ? options.separator : '';
     let prefix = options.prefix ? options.prefix : '';
     let suffix = options.suffix ? options.suffix : '';
     let limit = options.limit ? parseInt(options.limit, 10) : undefined;
@@ -4144,6 +4144,7 @@ function tags (data, options = {}) {
         // Check to see if options.fn returned a string, or something else
         if (isString(output[0])) {
             // If we're working with a string, do a simple join and string-concat
+            separator = separator || ', ';
             output = prefix + output.join(separator) + suffix;
         } else {
             // Else, operate on the array, and return an array
