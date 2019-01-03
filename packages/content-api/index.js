@@ -1,4 +1,4 @@
-const request = require('superagent');
+const axios = require('axios');
 
 const create = ({host, version, key}) => {
     return ['posts', 'authors', 'tags', 'pages'].reduce((apiObject, resourceType) => {
@@ -29,21 +29,20 @@ const create = ({host, version, key}) => {
 
     function makeRequest(resourceType, params, id, membersToken = null) {
         delete params.id;
-        const parseResponse = (res) => {
-            if (res.body[resourceType].length === 1 && !res.body.meta) {
-                return res.body[resourceType][0];
+
+        const headers = membersToken ? {
+            Authorization: `GhostMembers ${membersToken}`
+        } : undefined;
+
+        return axios.get(`${host}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
+            params: Object.assign({key}, params),
+            headers
+        }).then((res) => {
+            if (res.data[resourceType].length === 1 && !res.data.meta) {
+                return res.data[resourceType][0];
             }
-            return Object.assign(res.body[resourceType], {meta: res.body.meta});
-        };
-
-        const req = request.get(`${host}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`)
-            .query(Object.assign({key}, params));
-
-        if (membersToken) {
-            return req.set('Authorization', `GhostMembers ${membersToken}`)
-                .then(parseResponse);
-        }
-        return req.then(parseResponse);
+            return Object.assign(res.data[resourceType], {meta: res.data.meta});
+        });
     }
 };
 
