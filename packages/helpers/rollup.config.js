@@ -3,23 +3,18 @@ import babel from 'rollup-plugin-babel';
 import {terser} from 'rollup-plugin-terser';
 import pkg from './package.json';
 
-const dependencies = Object.keys(pkg.dependencies);
-
 export default [
     // Node build.
-    // No transpilation or bundling other than converstion from es modules to cjs
+    // No transpilation but dependencies are bundled because we import ES modules.
     {
         input: pkg.source,
         output: {
             file: pkg.main,
             format: 'cjs',
-            interop: false
         },
-        external: function(_id) {
-            // don't warn about unresolved dependencies for module/* imports
-            let id = _id.split('/')[0];
-            return dependencies.includes(id);
-        }
+        plugins: [
+            resolve()
+        ]
     },
 
     // Standalone UMD browser build (minified).
