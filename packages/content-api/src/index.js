@@ -1,6 +1,6 @@
-const axios = require('axios');
+import axios from 'axios';
 
-const create = ({host, version, key}) => {
+export const create = ({host, version, key}) => {
     const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeRequest(resourceType, options, null, memberToken);
@@ -59,5 +59,3 @@ const create = ({host, version, key}) => {
         });
     }
 };
-
-module.exports.create = create;
