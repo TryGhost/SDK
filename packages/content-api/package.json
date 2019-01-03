@@ -4,13 +4,15 @@
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/content-api",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist/content-api.js",
+  "umd:main": "dist/content-api.umd.js",
+  "module": "src/index.js",
+  "source": "src/index.js",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
-    "prebuild": "rm -rf build && mkdir build",
-    "build": "browserify -t varify -g es6ify -s ContentApi index.js > build/content-api.lib.js",
-    "lint": "eslint . --ext .js --cache",
+    "build": "rollup -c",
+    "lint": "eslint ./src --ext .js --cache",
     "posttest": "yarn lint"
   },
   "publishConfig": {
