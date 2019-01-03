@@ -27,12 +27,19 @@ const create = ({host, version, key}) => {
         });
     }, {});
 
-    function makeRequest(resourceType, params, id, membersToken = null) {
-        delete params.id;
+    function makeRequest(resourceType, userParams, id, membersToken = null) {
+        delete userParams.id;
 
         const headers = membersToken ? {
             Authorization: `GhostMembers ${membersToken}`
         } : undefined;
+
+        const params = Object.keys(userParams).reduce((params, key) => {
+            const val = [].concat(userParams[key]).join(',');
+            return Object.assign(params, {
+                [key]: val
+            })
+        }, {});
 
         return axios.get(`${host}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
             params: Object.assign({key}, params),
