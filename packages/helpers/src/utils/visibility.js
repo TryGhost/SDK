@@ -1,4 +1,9 @@
-const _ = require('lodash');
+import includes from 'lodash-es/includes';
+import isArray from 'lodash-es/isArray';
+import isFunction from 'lodash-es/isFunction';
+import map from 'lodash-es/map';
+import reduce from 'lodash-es/reduce';
+import trim from 'lodash-es/trim';
 
 /**
  * Returns an Array of visibility values.
@@ -6,12 +11,12 @@ const _ = require('lodash');
  * @param visibility
  * @returns {*}
  */
-const parse = (visibility) => {
+export const parse = (visibility) => {
     if (!visibility) {
         return ['public'];
     }
 
-    return _.map(visibility.split(','), _.trim);
+    return map(visibility.split(','), trim);
 };
 
 /**
@@ -25,25 +30,25 @@ const parse = (visibility) => {
 * @param {Function} [fn] - function to apply to each item before returning
 * @returns {Array|Object} filtered items
 */
-const filter = (items, visibility, fn) => {
-    if (_.isFunction(visibility)) {
+export const filter = (items, visibility, fn) => {
+    if (isFunction(visibility)) {
         fn = visibility;
         visibility = null;
     }
 
-    const memo = _.isArray(items) ? [] : {};
-    const visArray = _.isArray(visibility) ? visibility : parse(visibility);
+    const memo = isArray(items) ? [] : {};
+    const visArray = isArray(visibility) ? visibility : parse(visibility);
 
     // Fallback behaviour for items that don't have visibility set on them
     const defaultVisibility = 'public';
-    const returnByDefault = _.includes(visArray, defaultVisibility);
+    const returnByDefault = includes(visArray, defaultVisibility);
 
     // We don't want to change the structure of what is returned
-    return _.reduce(items, function (items, item, key) {
+    return reduce(items, function (items, item, key) {
         // If the item has visibility, check to see if it matches, else if there's no visibility check for a match with the default visibility
-        if (_.includes(visArray, 'all') || item.visibility && _.includes(visArray, item.visibility) || !item.visibility && returnByDefault) {
+        if (includes(visArray, 'all') || item.visibility && includes(visArray, item.visibility) || !item.visibility && returnByDefault) {
             const newItem = fn ? fn(item) : item;
-            if (_.isArray(items)) {
+            if (isArray(items)) {
                 memo.push(newItem);
             } else {
                 memo[key] = newItem;
@@ -51,9 +56,4 @@ const filter = (items, visibility, fn) => {
         }
         return memo;
     }, memo);
-};
-
-module.exports = {
-    parse,
-    filter
 };
