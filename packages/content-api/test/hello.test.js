@@ -131,7 +131,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({query}) => {
-                        should.deepEqual(query.include, ['authors', 'tags']);
+                        should.deepEqual(query.include, 'authors,tags');
                         done();
                     });
 
@@ -213,7 +213,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({query}) => {
-                        should.deepEqual(query.include, ['authors', 'tags']);
+                        should.deepEqual(query.include, 'authors,tags');
                         done();
                     });
 
@@ -286,7 +286,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({query}) => {
-                        should.deepEqual(query.include, ['authors', 'tags']);
+                        should.deepEqual(query.include, 'authors,tags');
                         done();
                     });
 
@@ -368,7 +368,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({query}) => {
-                        should.deepEqual(query.include, ['authors', 'tags']);
+                        should.deepEqual(query.include, 'authors,tags');
                         done();
                     });
 
@@ -441,7 +441,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({query}) => {
-                        should.deepEqual(query.include, ['authors', 'tags']);
+                        should.deepEqual(query.include, 'authors,tags');
                         done();
                     });
 
@@ -523,7 +523,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({query}) => {
-                        should.deepEqual(query.include, ['authors', 'tags']);
+                        should.deepEqual(query.include, 'authors,tags');
                         done();
                     });
 
@@ -596,7 +596,7 @@ describe('GhostContentApi', function () {
                     const api = GhostContentApi.create({host, version, key});
 
                     server.once('url', ({query}) => {
-                        should.deepEqual(query.include, ['authors', 'tags']);
+                        should.deepEqual(query.include, 'authors,tags');
                         done();
                     });
 
