@@ -14,7 +14,9 @@
   },
   "files": [
     "*.js",
-    "lib"
+    "lib",
+    "templates",
+    "partials"
   ],
   "publishConfig": {
     "access": "public"
