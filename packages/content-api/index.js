@@ -38,7 +38,7 @@ const create = ({host, version, key}) => {
             const val = [].concat(userParams[key]).join(',');
             return Object.assign(params, {
                 [key]: val
-            })
+            });
         }, {});
 
         return axios.get(`${host}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
