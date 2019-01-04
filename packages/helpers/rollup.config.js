@@ -10,7 +10,7 @@ export default [
         input: pkg.source,
         output: {
             file: pkg.main,
-            format: 'cjs',
+            format: 'cjs'
         },
         plugins: [
             resolve()
