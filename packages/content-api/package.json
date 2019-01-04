@@ -10,9 +10,11 @@
   "source": "src/index.js",
   "scripts": {
     "dev": "echo \"Implement me!\"",
+    "pretest": "yarn build",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
     "build": "rollup -c",
     "lint": "eslint ./src --ext .js --cache",
+    "prepublish": "yarn build",
     "posttest": "yarn lint"
   },
   "publishConfig": {
