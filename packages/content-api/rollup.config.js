@@ -45,7 +45,7 @@ export default [
                 exclude: 'mode_modules/**'
             }),
             replace({
-                'process.env.NODE_ENV': process.env.NODE_ENV
+                'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`
             }),
             terser()
         ]
