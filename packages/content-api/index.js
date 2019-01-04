@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const create = ({host, version, key}) => {
-    return ['posts', 'authors', 'tags', 'pages'].reduce((apiObject, resourceType) => {
+    const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeRequest(resourceType, options, null, memberToken);
         }
@@ -27,6 +27,10 @@ const create = ({host, version, key}) => {
         });
     }, {});
 
+    delete api.settings.read;
+
+    return api;
+
     function makeRequest(resourceType, userParams, id, membersToken = null) {
         delete userParams.id;
 
@@ -45,6 +49,9 @@ const create = ({host, version, key}) => {
             params: Object.assign({key}, params),
             headers
         }).then((res) => {
+            if (!Array.isArray(res.data[resourceType])) {
+                return res.data[resourceType];
+            }
             if (res.data[resourceType].length === 1 && !res.data.meta) {
                 return res.data[resourceType][0];
             }
