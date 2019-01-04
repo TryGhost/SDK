@@ -6,14 +6,14 @@
   "license": "MIT",
   "main": "dist/helpers.js",
   "umd:main": "dist/helpers.umd.js",
-  "module": "src/index.js",
-  "source": "src/index.js",
+  "module": "lib/index.js",
+  "source": "lib/index.js",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "build": "rollup -c",
     "pretest": "yarn build",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
-    "lint": "eslint ./src --ext .js --cache",
+    "lint": "eslint ./lib --ext .js --cache",
     "posttest": "yarn lint",
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'",
     "prepack": "yarn build"
