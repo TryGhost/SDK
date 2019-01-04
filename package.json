@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "eslint": "5.6.1",
-    "eslint-plugin-ghost": "0.0.27",
+    "eslint-plugin-ghost": "0.1.0",
     "eslint-plugin-react": "7.11.1",
     "mocha": "5.2.0",
     "should": "13.2.3",

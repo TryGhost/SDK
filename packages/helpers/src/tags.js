@@ -63,4 +63,4 @@ export default function (data, options = {}) {
     }
 
     return output;
-};
+}
