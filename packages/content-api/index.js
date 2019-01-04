@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const create = ({host, version, key}) => {
-    const api = ['posts', 'authors', 'tags', 'pages'].reduce((apiObject, resourceType) => {
+    const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeRequest(resourceType, options, null, memberToken);
         }
@@ -26,6 +26,8 @@ const create = ({host, version, key}) => {
             }
         });
     }, {});
+
+    delete api.settings.read;
 
     return api;
 
