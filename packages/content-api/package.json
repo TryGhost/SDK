@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/content-api",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/content-api",
   "author": "Ghost Foundation",
   "license": "MIT",
