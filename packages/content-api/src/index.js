@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-export const create = ({host, version, key}) => {
+export default function GhostContentAPI({host, version, key}) {
+    if (this instanceof GhostContentAPI) {
+        return GhostContentAPI({host, version, key});
+    }
     const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeRequest(resourceType, options, null, memberToken);

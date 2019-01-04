@@ -31,7 +31,7 @@ export default [
         output: {
             file: pkg['umd:main'],
             format: 'umd',
-            name: 'ContentApi'
+            name: 'GhostContentAPI'
         },
         plugins: [
             resolve({
