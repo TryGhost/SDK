@@ -49,6 +49,9 @@ const create = ({host, version, key}) => {
             params: Object.assign({key}, params),
             headers
         }).then((res) => {
+            if (!Array.isArray(res.data[resourceType])) {
+                return res.data[resourceType];
+            }
             if (res.data[resourceType].length === 1 && !res.data.meta) {
                 return res.data[resourceType][0];
             }
