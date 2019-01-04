@@ -24,7 +24,7 @@ export default [
         output: {
             file: pkg['umd:main'],
             format: 'umd',
-            name: '@tryghost/helpers'
+            name: 'GhostHelpers'
         },
         plugins: [
             resolve({
