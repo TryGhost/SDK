@@ -3,7 +3,7 @@
 require('./utils');
 
 const _ = require('lodash');
-const tagsHelper = require('../tags');
+const tagsHelper = require('../dist/helpers').tags;
 
 const createTag = (overrides) => {
     var newObj = _.cloneDeep(overrides);

@@ -3456,6 +3456,11 @@ const filter = (items, visibility, fn) => {
     }, memo);
 };
 
+var visibility = /*#__PURE__*/Object.freeze({
+  parse: parse,
+  filter: filter
+});
+
 /**
  * Creates an array with all falsey values removed. The values `false`, `null`,
  * `0`, `""`, `undefined`, and `NaN` are falsey.
@@ -4165,4 +4170,9 @@ function tags (data, options = {}) {
     return output;
 }
 
+const utils = {
+    visibility
+};
+
+exports.utils = utils;
 exports.tags = tags;
