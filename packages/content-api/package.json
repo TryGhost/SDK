@@ -9,6 +9,13 @@
   "unpkg": "umd/content-api.min.js",
   "module": "lib/index.js",
   "source": "lib/index.js",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "cjs/",
+    "lib/",
+    "umd/"
+  ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "pretest": "yarn build",

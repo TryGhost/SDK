@@ -20,9 +20,11 @@
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
   },
   "files": [
-    "*.js",
-    "!.eslintrc.js",
-    "utils"
+    "LICENSE",
+    "README.md",
+    "cjs/",
+    "lib/",
+    "umd/"
   ],
   "publishConfig": {
     "access": "public"
