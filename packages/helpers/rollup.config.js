@@ -32,7 +32,7 @@ export default [
                 preferBuiltins: false
             }),
             babel({
-                exclude: 'node_modules/**'
+                exclude: ['node_modules/**', '../../node_modules/**']
             }),
             terser()
         ]
