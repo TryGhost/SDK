@@ -1,6 +1,9 @@
-const axios = require('axios');
+import axios from 'axios';
 
-const create = ({host, version, key}) => {
+export default function GhostContentAPI({host, version, key}) {
+    if (this instanceof GhostContentAPI) {
+        return GhostContentAPI({host, version, key});
+    }
     const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeRequest(resourceType, options, null, memberToken);
@@ -58,6 +61,4 @@ const create = ({host, version, key}) => {
             return Object.assign(res.data[resourceType], {meta: res.data.meta});
         });
     }
-};
-
-module.exports.create = create;
+}
