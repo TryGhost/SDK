@@ -1,8 +1,31 @@
 import axios from 'axios';
 
-export default function GhostContentAPI({host, version, key}) {
+const supportedVersions = ['v2'];
+
+export default function GhostContentAPI({host, ghostPath = 'ghost', version, key}) {
     if (this instanceof GhostContentAPI) {
         return GhostContentAPI({host, version, key});
+    }
+    if (!version) {
+        throw new Error('GhostContentAPI Config Missing: @tryghost/content-api requires a "version" like "v2"');
+    }
+    if (!supportedVersions.includes(version)) {
+        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api does not support the supplied version');
+    }
+    if (!host) {
+        throw new Error('GhostContentAPI Config Missing: @tryghost/content-api requires a "host" like "https://site.com"');
+    }
+    if (!/https?:\/\//.test(host)) {
+        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "host" with a protocol like "https://site.com"');
+    }
+    if (host.endsWith('/')) {
+        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "host" without a trailing slash like "https://site.com"');
+    }
+    if (ghostPath.endsWith('/') || ghostPath.startsWith('/')) {
+        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
+    }
+    if (key && !/[0-9a-f]{26}/.test(key)) {
+        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "key" with 26 hex characters');
     }
     const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
@@ -35,6 +58,11 @@ export default function GhostContentAPI({host, version, key}) {
     return api;
 
     function makeRequest(resourceType, userParams, id, membersToken = null) {
+        if (!membersToken && !key) {
+            return Promise.reject(
+                new Error('GhostContentAPI Config Missing: @tryghost/content-api was instantiated without a content key')
+            );
+        }
         delete userParams.id;
 
         const headers = membersToken ? {
@@ -48,7 +76,7 @@ export default function GhostContentAPI({host, version, key}) {
             });
         }, {});
 
-        return axios.get(`${host}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
+        return axios.get(`${host}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
             params: Object.assign({key}, params),
             headers
         }).then((res) => {

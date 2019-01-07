@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/helpers",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/helpers",
   "author": "Ghost Foundation",
   "license": "MIT",
@@ -20,9 +20,11 @@
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
   },
   "files": [
-    "*.js",
-    "!.eslintrc.js",
-    "utils"
+    "LICENSE",
+    "README.md",
+    "cjs/",
+    "lib/",
+    "umd/"
   ],
   "publishConfig": {
     "access": "public"
