@@ -13,7 +13,7 @@
     "pretest": "yarn build",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
     "build": "rollup -c",
-    "lint": "eslint ./lib --ext .js --cache",
+    "lint": "eslint . --ext .js --cache",
     "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
   },
