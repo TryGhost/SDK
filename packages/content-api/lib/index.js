@@ -61,4 +61,4 @@ export default function GhostContentAPI({host, version, key}) {
             return Object.assign(res.data[resourceType], {meta: res.data.meta});
         });
     }
-};
+}
