@@ -60,48 +60,44 @@ describe('GhostContentApi', function () {
         server.close();
     });
 
-    it('Exports a create method', function () {
-        should.equal(typeof GhostContentApi.create, 'function');
-    });
-
-    describe('GhostContentApi#create', function () {
+    describe('new GhostContentApi', function () {
         it('Requires a config object with host, version and key', function () {
             try {
-                GhostContentApi.create();
+                new GhostContentApi();
                 return should.fail();
             } catch (err) {
                 //
             }
 
             try {
-                GhostContentApi.create({host, version});
+                new GhostContentApi({host, version});
                 return should.fail();
             } catch (err) {
                 //
             }
 
             try {
-                GhostContentApi.create({version, key});
+                new GhostContentApi({version, key});
                 return should.fail();
             } catch (err) {
                 //
             }
 
             try {
-                GhostContentApi.create({host, key});
+                new GhostContentApi({host, key});
                 return should.fail();
             } catch (err) {
                 //
             }
 
-            GhostContentApi.create({host, version, key});
+            new GhostContentApi({host, version, key});
         });
 
         it('Returns an "api" object with posts,tags,authors&pages properties', function () {
             const host = 'https://whatever.com';
             const version = 'v2';
             const key = '53c737';
-            const api = GhostContentApi.create({host, version, key});
+            const api = new GhostContentApi({host, version, key});
 
             should.exist(api.posts);
             should.exist(api.tags);
@@ -111,13 +107,13 @@ describe('GhostContentApi', function () {
 
         describe('api.posts', function () {
             it('has a browse method', function () {
-                const api = GhostContentApi.create({host, version, key});
+                const api = new GhostContentApi({host, version, key});
                 should.equal(typeof api.posts.browse, 'function');
             });
 
             describe('api.posts.browse', function () {
                 it('makes a request to the posts resource, using correct version', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/posts/');
@@ -128,7 +124,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as an array', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.deepEqual(query.include, 'authors,tags');
@@ -139,7 +135,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as a string', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.include, 'authors,tags');
@@ -150,7 +146,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('resolves with an array of the posts resources, and includes a meta property on the array', function () {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     return api.posts.browse().then((data) => {
                         should.equal(Array.isArray(data), true);
@@ -159,7 +155,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the api key to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.key, key);
@@ -170,7 +166,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the members token to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('headers', (headers) => {
                         should.equal(headers.authorization, 'GhostMembers token');
@@ -182,13 +178,13 @@ describe('GhostContentApi', function () {
             });
 
             it('has a read method', function () {
-                const api = GhostContentApi.create({host, version, key});
+                const api = new GhostContentApi({host, version, key});
                 should.equal(typeof api.posts.read, 'function');
             });
 
             describe('api.posts.read', function () {
                 it('makes a request to the post resource, using correct version and id', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/posts/1/');
@@ -199,7 +195,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('makes a request to the post resource, using correct version and slug', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/posts/slug/booyar/');
@@ -210,7 +206,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as an array', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.deepEqual(query.include, 'authors,tags');
@@ -221,7 +217,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as a string', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.include, 'authors,tags');
@@ -232,7 +228,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('resolves with the post resource', function () {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     return api.posts.read({id: '1'}).then((data) => {
                         should.equal(Array.isArray(data), false);
@@ -241,7 +237,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the api key to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.key, key);
@@ -252,7 +248,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the members token to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('headers', (headers) => {
                         should.equal(headers.authorization, 'GhostMembers token');
@@ -266,13 +262,13 @@ describe('GhostContentApi', function () {
 
         describe('api.authors', function () {
             it('has a browse method', function () {
-                const api = GhostContentApi.create({host, version, key});
+                const api = new GhostContentApi({host, version, key});
                 should.equal(typeof api.authors.browse, 'function');
             });
 
             describe('api.authors.browse', function () {
                 it('makes a request to the authors resource, using correct version', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/authors/');
@@ -283,7 +279,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as an array', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.deepEqual(query.include, 'authors,tags');
@@ -294,7 +290,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as a string', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.include, 'authors,tags');
@@ -305,7 +301,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('resolves with an array of the authors resources, and includes a meta property on the array', function () {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     return api.authors.browse().then((data) => {
                         should.equal(Array.isArray(data), true);
@@ -314,7 +310,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the api key to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.key, key);
@@ -325,7 +321,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the members token to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('headers', (headers) => {
                         should.equal(headers.authorization, 'GhostMembers token');
@@ -337,13 +333,13 @@ describe('GhostContentApi', function () {
             });
 
             it('has a read method', function () {
-                const api = GhostContentApi.create({host, version, key});
+                const api = new GhostContentApi({host, version, key});
                 should.equal(typeof api.authors.read, 'function');
             });
 
             describe('api.authors.read', function () {
                 it('makes a request to the post resource, using correct version and id', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/authors/1/');
@@ -354,7 +350,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('makes a request to the user resource, using correct version and slug', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/authors/slug/booyar/');
@@ -365,7 +361,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as an array', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.deepEqual(query.include, 'authors,tags');
@@ -376,7 +372,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as a string', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.include, 'authors,tags');
@@ -387,7 +383,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('resolves with the post resource', function () {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     return api.authors.read({id: '1'}).then((data) => {
                         should.equal(Array.isArray(data), false);
@@ -396,7 +392,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the api key to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.key, key);
@@ -407,7 +403,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the members token to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('headers', (headers) => {
                         should.equal(headers.authorization, 'GhostMembers token');
@@ -421,13 +417,13 @@ describe('GhostContentApi', function () {
 
         describe('api.tags', function () {
             it('has a browse method', function () {
-                const api = GhostContentApi.create({host, version, key});
+                const api = new GhostContentApi({host, version, key});
                 should.equal(typeof api.tags.browse, 'function');
             });
 
             describe('api.tags.browse', function () {
                 it('makes a request to the tags resource, using correct version', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/tags/');
@@ -438,7 +434,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as an array', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.deepEqual(query.include, 'authors,tags');
@@ -449,7 +445,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as a string', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.include, 'authors,tags');
@@ -460,7 +456,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('resolves with an array of the tags resources, and includes a meta property on the array', function () {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     return api.tags.browse().then((data) => {
                         should.equal(Array.isArray(data), true);
@@ -469,7 +465,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the api key to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.key, key);
@@ -480,7 +476,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the members token to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('headers', (headers) => {
                         should.equal(headers.authorization, 'GhostMembers token');
@@ -492,13 +488,13 @@ describe('GhostContentApi', function () {
             });
 
             it('has a read method', function () {
-                const api = GhostContentApi.create({host, version, key});
+                const api = new GhostContentApi({host, version, key});
                 should.equal(typeof api.tags.read, 'function');
             });
 
             describe('api.tags.read', function () {
                 it('makes a request to the post resource, using correct version and id', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/tags/1/');
@@ -509,7 +505,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('makes a request to the tag resource, using correct version and slug', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/tags/slug/booyar/');
@@ -520,7 +516,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as an array', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.deepEqual(query.include, 'authors,tags');
@@ -531,7 +527,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as a string', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.include, 'authors,tags');
@@ -542,7 +538,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('resolves with the tags resource', function () {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     return api.tags.read({id: '1'}).then((data) => {
                         should.equal(Array.isArray(data), false);
@@ -551,7 +547,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the api key to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.key, key);
@@ -562,7 +558,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the members token to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('headers', (headers) => {
                         should.equal(headers.authorization, 'GhostMembers token');
@@ -576,13 +572,13 @@ describe('GhostContentApi', function () {
 
         describe('api.pages', function () {
             it('has a browse method', function () {
-                const api = GhostContentApi.create({host, version, key});
+                const api = new GhostContentApi({host, version, key});
                 should.equal(typeof api.pages.browse, 'function');
             });
 
             describe('api.pages.browse', function () {
                 it('makes a request to the pages resource, using correct version', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
                         should.equal(pathname, '/api/v2/content/pages/');
@@ -593,7 +589,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as an array', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.deepEqual(query.include, 'authors,tags');
@@ -604,7 +600,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('supports the include option as a string', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.include, 'authors,tags');
@@ -615,7 +611,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('resolves with an array of the pages resources, and includes a meta property on the array', function () {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     return api.pages.browse().then((data) => {
                         should.equal(Array.isArray(data), true);
@@ -624,7 +620,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the api key to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({query}) => {
                         should.equal(query.key, key);
@@ -635,7 +631,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('correctly adds the members token to the query', function (done) {
-                    const api = GhostContentApi.create({host, version, key});
+                    const api = new GhostContentApi({host, version, key});
 
                     server.once('headers', (headers) => {
                         should.equal(headers.authorization, 'GhostMembers token');

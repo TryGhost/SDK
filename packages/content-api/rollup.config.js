@@ -1,3 +1,4 @@
+/* eslint-env node */
 import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
@@ -21,7 +22,8 @@ export default [
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
             })
-        ]
+        ],
+        external: dependencies
     },
 
     // Standalone UMD browser build (minified).
@@ -42,7 +44,7 @@ export default [
                 include: ['node_modules/**', '../../node_modules/**']
             }),
             babel({
-                exclude: 'node_modules/**'
+                exclude: ['node_modules/**', '../../node_modules/**']
             }),
             replace({
                 'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`

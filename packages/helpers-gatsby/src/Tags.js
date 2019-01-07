@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Link from 'gatsby-link'
-import {tags as tagsHelper} from '@tryghost/helpers'
+import { tags as tagsHelper } from '@tryghost/helpers'
 
 // TODO: this needs to be updated parallel to https://github.com/TryGhost/docs/pull/51 as it's still WIP
 
