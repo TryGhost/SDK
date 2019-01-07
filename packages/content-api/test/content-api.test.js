@@ -11,7 +11,7 @@ describe('GhostContentApi', function () {
     let server;
     let host;
     const version = 'v2';
-    const key = '53c737';
+    const key = '0123456789abcdef0123456789';
 
     before(function (done) {
         server = http.createServer();
@@ -96,7 +96,7 @@ describe('GhostContentApi', function () {
         it('Returns an "api" object with posts,tags,authors&pages properties', function () {
             const host = 'https://whatever.com';
             const version = 'v2';
-            const key = '53c737';
+            const key = '01234567890abcdef0123456789';
             const api = new GhostContentApi({host, version, key});
 
             should.exist(api.posts);
