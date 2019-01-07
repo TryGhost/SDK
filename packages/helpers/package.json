@@ -4,8 +4,8 @@
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/helpers",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "dist/helpers.js",
-  "umd:main": "dist/helpers.umd.js",
+  "main": "cjs/helpers.js",
+  "umd:main": "umd/helpers.min.js",
   "module": "lib/index.js",
   "source": "lib/index.js",
   "scripts": {

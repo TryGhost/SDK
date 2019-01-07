@@ -4,8 +4,8 @@
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/content-api",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "dist/content-api.js",
-  "umd:main": "dist/content-api.umd.js",
+  "main": "cjs/content-api.js",
+  "umd:main": "umd/content-api.min.js",
   "module": "lib/index.js",
   "source": "lib/index.js",
   "scripts": {
