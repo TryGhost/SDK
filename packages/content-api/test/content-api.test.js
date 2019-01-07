@@ -116,7 +116,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/posts/');
+                        should.equal(pathname, '/ghost/api/v2/content/posts/');
                         done();
                     });
 
@@ -187,7 +187,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/posts/1/');
+                        should.equal(pathname, '/ghost/api/v2/content/posts/1/');
                         done();
                     });
 
@@ -198,7 +198,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/posts/slug/booyar/');
+                        should.equal(pathname, '/ghost/api/v2/content/posts/slug/booyar/');
                         done();
                     });
 
@@ -271,7 +271,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/authors/');
+                        should.equal(pathname, '/ghost/api/v2/content/authors/');
                         done();
                     });
 
@@ -342,7 +342,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/authors/1/');
+                        should.equal(pathname, '/ghost/api/v2/content/authors/1/');
                         done();
                     });
 
@@ -353,7 +353,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/authors/slug/booyar/');
+                        should.equal(pathname, '/ghost/api/v2/content/authors/slug/booyar/');
                         done();
                     });
 
@@ -426,7 +426,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/tags/');
+                        should.equal(pathname, '/ghost/api/v2/content/tags/');
                         done();
                     });
 
@@ -497,7 +497,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/tags/1/');
+                        should.equal(pathname, '/ghost/api/v2/content/tags/1/');
                         done();
                     });
 
@@ -508,7 +508,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/tags/slug/booyar/');
+                        should.equal(pathname, '/ghost/api/v2/content/tags/slug/booyar/');
                         done();
                     });
 
@@ -581,7 +581,7 @@ describe('GhostContentApi', function () {
                     const api = new GhostContentApi({host, version, key});
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/api/v2/content/pages/');
+                        should.equal(pathname, '/ghost/api/v2/content/pages/');
                         done();
                     });
 
