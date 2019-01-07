@@ -1,7 +1,7 @@
 require('./utils');
 
 const _ = require('lodash');
-const visibility = require('../utils/visibility');
+const visibility = require('../dist/helpers').utils.visibility;
 
 describe('Visibility', function () {
     const dummyDataArr = [{
