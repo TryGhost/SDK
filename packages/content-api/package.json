@@ -14,7 +14,7 @@
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
     "build": "rollup -c",
     "lint": "eslint ./lib --ext .js --cache",
-    "prepublish": "NODE_ENV=production yarn build",
+    "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
   },
   "publishConfig": {
