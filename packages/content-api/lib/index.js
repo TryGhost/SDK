@@ -24,6 +24,9 @@ export default function GhostContentAPI({host, ghostPath = 'ghost', version, key
     if (ghostPath.endsWith('/') || ghostPath.startsWith('/')) {
         throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
     }
+    if (key && !/[0-9a-f]{26}/.test(key)) {
+        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "key" with 26 hex characters');
+    }
     const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeRequest(resourceType, options, null, memberToken);
