@@ -11,12 +11,12 @@
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "build": "rollup -c",
+    "prepare": "yarn build",
     "pretest": "yarn build",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
     "posttest": "yarn lint",
-    "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'",
-    "prepack": "yarn build"
+    "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
   },
   "files": [
     "*.js",
