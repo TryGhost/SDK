@@ -3,26 +3,30 @@ import PropTypes from 'prop-types'
 import Link from 'gatsby-link'
 import { tags as tagsHelper } from '@tryghost/helpers'
 
-// TODO: this needs to be updated parallel to https://github.com/TryGhost/docs/pull/51 as it's still WIP
-
-/*
-* Tags helper
-* Returns tags for a post
-* Props:
-*   - post [required, the post object]
-*   - limit [optional, default undefined, limits the number of tags to be returned]
-*   - separator [optional, default ", ", sets the separator to concat the tags]
-*   - prefix [optional, default "", sets a prefix to appear before the tags]
-*   - suffix [optional, default "", sets a suffix to appear after the tags]
-*   - classes [optional, default """, classNames used for the html tags]
-*   - separatorClasses [optional, default "", classNames used for the html separator tags]
-*   - prefixClasses [optional, default "", classNames used for the html prefix tags]
-*   - suffixClasses [optional, default "", classNames used for the html suffix tags]
-*   - linkClasses [optional, default "", classNames used for the html link tags]
-*   - autolink [optional, default true, whether to convert tags to links]
-*   - permalink [optional, default "/:slug.", the pattern used for links]
-*   - visibility [optional, default "all", the pattern used to control the if internal tags should be included]
-*/
+/**
+ * Tags helper
+ *
+ * Filters and outputs tags for a post
+ *
+ * @param {{tags: [*]}} data - the data we are filtering
+ * @param {object} options - filter options
+ * @param {int} [options.limit] - limits the number of tags to be returned
+ * @param {int} [options.from=1] - index of the tag to start iterating from
+ * @param {int} [options.to] - index of the last tag to iterate over
+ * @param {string} [options.separator=","] - string used between each tag
+ * @param {string} [options.prefix] - string to output before each tag
+ * @param {string} [options.suffix] - string to output after each tag
+ * @param {string} [options.visibility="public"] - change to "all" to include internal tags
+ * @param {boolean} [options.autolink=true] - whether to convert tags to links
+ * @param {string} [options.permalink="/:slug"] - the pattern used for links
+ * @param {object} [options.fallback] - a fallback tag to output if there are none
+ * @param {function} [options.fn] - function to call on each tag, default outputs tag.name in a span
+ * @param {string} [options.classes] - classNames applied to each tag
+ * @param {string} [options.separatorClasses] - classNames applied to the separator span
+ * @param {string} [options.prefixClasses] - classNames applied to the prefix span
+ * @param {string} [options.suffixClasses] - classNames applied to the suffix span
+ * @param {string} [options.linkClasses] - classNames applied to each link
+ */
 const Tags = (props) => {
     let opts = {
         limit: props.limit,

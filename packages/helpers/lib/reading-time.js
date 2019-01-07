@@ -19,8 +19,10 @@ export function estimatedReadingTimeInMinutes({wordCount, imageCount}) {
 /**
  * Reading Time Helper
  *
- * @param {object} post - the post with content that we want to generate a reading time for
+ * @param {{html: String, feature_image: [String|null]}} post - post with HTML that we want to calculate reading time for
  * @param {object} options - output options
+ * @param {string} [options.minute="1 min read"] - format for reading times <= 1 minute
+ * @param {string} [options.minutes="% min read"] - format for reading times > 1 minute
  * @returns {string} estimated reading in minutes
  */
 

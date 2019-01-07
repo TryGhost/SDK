@@ -11,10 +11,19 @@ import zip from 'lodash-es/zip';
 /**
  * Tags Helper
  *
- * @param {object} data - the data we are filtering
+ * @param {{tags: [*]}} data - the data we are filtering
  * @param {object} options - filter options
+ * @param {int} [options.limit] - limits the number of tags to be returned
+ * @param {int} [options.from=1] - index of the tag to start iterating from
+ * @param {int} [options.to] - index of the last tag to iterate over
+ * @param {string} [options.separator=","] - string used between each tag
+ * @param {string} [options.prefix] - string to output before each tag
+ * @param {string} [options.suffix] - string to output after each tag
+ * @param {string} [options.visibility="public"] - change to "all" to include internal tags
+ * @param {object} [options.fallback] - a fallback tag to output if there are none
+ * @param {function} [options.fn] - function to call on each tag, default returns tag.name
+ * @returns {String|*} processed tags, comma separated names by default
  */
-
 export default function (data, options = {}) {
     let output = '';
     let separator = options.separator ? options.separator : '';
