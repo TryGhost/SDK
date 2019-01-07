@@ -22,7 +22,8 @@ export default [
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
             })
-        ]
+        ],
+        external: dependencies
     },
 
     // Standalone UMD browser build (minified).
