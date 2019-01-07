@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "cjs/helpers.js",
   "umd:main": "umd/helpers.min.js",
+  "unpkg": "umd/helpers.min.js",
   "module": "lib/index.js",
   "source": "lib/index.js",
   "scripts": {

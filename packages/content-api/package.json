@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "cjs/content-api.js",
   "umd:main": "umd/content-api.min.js",
+  "unpkg": "umd/content-api.min.js",
   "module": "lib/index.js",
   "source": "lib/index.js",
   "scripts": {
