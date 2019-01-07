@@ -42,7 +42,7 @@ export default [
                 include: ['node_modules/**', '../../node_modules/**']
             }),
             babel({
-                exclude: 'node_modules/**'
+                exclude: ['node_modules/**', '../../node_modules/**']
             }),
             replace({
                 'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`
