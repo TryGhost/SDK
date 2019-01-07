@@ -19,7 +19,7 @@ export default [
         },
         plugins: [
             commonjs({
-                include: 'node_modules/**'
+                include: ['node_modules/**', '../../node_modules/**']
             })
         ]
     },
@@ -39,7 +39,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs({
-                include: 'node_modules/**'
+                include: ['node_modules/**', '../../node_modules/**']
             }),
             babel({
                 exclude: 'node_modules/**'
