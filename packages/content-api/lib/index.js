@@ -57,27 +57,26 @@ export default function GhostContentAPI({host, ghostPath = 'ghost', version, key
 
     return api;
 
-    function makeRequest(resourceType, userParams, id, membersToken = null) {
+    function makeRequest(resourceType, params, id, membersToken = null) {
         if (!membersToken && !key) {
             return Promise.reject(
                 new Error('GhostContentAPI Config Missing: @tryghost/content-api was instantiated without a content key')
             );
         }
-        delete userParams.id;
+        delete params.id;
 
         const headers = membersToken ? {
             Authorization: `GhostMembers ${membersToken}`
         } : undefined;
 
-        const params = Object.keys(userParams).reduce((params, key) => {
-            const val = [].concat(userParams[key]).join(',');
-            return Object.assign(params, {
-                [key]: val
-            });
-        }, {});
-
         return axios.get(`${host}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
             params: Object.assign({key}, params),
+            paramsSerializer: (params) => {
+                return Object.keys(params).reduce((parts, key) => {
+                    const val = encodeURIComponent([].concat(params[key]).join(','));
+                    return parts.concat(`${key}=${val}`);
+                }, []).join('&');
+            },
             headers
         }).then((res) => {
             if (!Array.isArray(res.data[resourceType])) {
