@@ -1,4 +1,6 @@
-# Helpers Gatsby
+# Ghost Gatsby Helpers
+
+Gatsby Helpers for working with the Ghost [Content API](http://localhost:8003/api/content/)
 
 ## Install
 
@@ -11,6 +13,7 @@ or
 
 ## Usage
 
+https://docs.ghost.org/api/gatsby/
 
 ## Develop
 
