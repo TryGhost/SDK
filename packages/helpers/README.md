@@ -1,6 +1,6 @@
-# Helpers
+# JavaScript Helpers
 
-Helpers for interacting with the Ghost API
+Javascript Helpers for working with the Ghost [Content API](https://docs.ghost.org/api/content/)
 
 ## Install
 
@@ -13,7 +13,7 @@ or
 
 ## Usage
 
-See the docs: https://docs.ghost.org/api/
+See https://docs.ghost.org/api/helpers/
 
 ## Develop
 
