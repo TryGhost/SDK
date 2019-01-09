@@ -10,7 +10,7 @@ or
 
 ## Usage
 
-See https://docs.ghost.org/api/
+See https://docs.ghost.org/api/javascript/
 
 ## Develop
 
