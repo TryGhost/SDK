@@ -1,4 +1,4 @@
-# JavaScript Helpers
+# Ghost JavaScript Helpers
 
 Javascript Helpers for working with the Ghost [Content API](https://docs.ghost.org/api/content/)
 
