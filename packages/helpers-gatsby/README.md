@@ -13,7 +13,7 @@ or
 
 ## Usage
 
-https://docs.ghost.org/api/gatsby/
+See https://docs.ghost.org/api/gatsby/
 
 ## Develop
 
@@ -33,8 +33,6 @@ Follow the instructions for the top-level repo.
 
 - `yarn lint` run just eslint
 - `yarn test` run lint and tests
-
-
 
 
 # Copyright & License
