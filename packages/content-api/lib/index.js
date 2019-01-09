@@ -71,6 +71,12 @@ export default function GhostContentAPI({host, ghostPath = 'ghost', version, key
 
         return axios.get(`${host}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
             params: Object.assign({key}, params),
+            paramsSerializer: (params) => {
+                return Object.keys(params).reduce((parts, key) => {
+                    const val = encodeURIComponent([].concat(params[key]).join(','));
+                    return parts.concat(`${key}=${val}`);
+                }, []).join('&');
+            },
             headers
         }).then((res) => {
             if (!Array.isArray(res.data[resourceType])) {
