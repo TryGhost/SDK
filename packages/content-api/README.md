@@ -1,4 +1,6 @@
-# Content Api
+# Ghost Content API
+
+JavaScript Client Library for the Ghost [Content API](http://localhost:8003/api/content/)
 
 ## Install
 
