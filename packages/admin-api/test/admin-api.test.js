@@ -40,15 +40,15 @@ describe('GhostAdminAPI', function () {
                 };
             }
 
-            const readByIdMatch = parsedUrl.pathname.match(/\/([a-z]+)\/([0-9a-f]+)\/$/);
-            const readBySlugMatch = parsedUrl.pathname.match(/\/([a-z]+)\/slug\/([\w]+)\/$/);
+            const idMatch = parsedUrl.pathname.match(/\/([a-z]+)\/([0-9a-f]+)\/$/);
+            const slugMatch = parsedUrl.pathname.match(/\/([a-z]+)\/slug\/([\w]+)\/$/);
 
-            const readMatch = readByIdMatch || readBySlugMatch;
-            if (readMatch) {
-                const type = readByIdMatch ? 'id' : 'slug';
+            const identifierMatch = idMatch || slugMatch;
+            if (identifierMatch) {
+                const type = idMatch ? 'id' : 'slug';
                 data = {
-                    [readMatch[1]]: [{
-                        [type]: readMatch[2]
+                    [identifierMatch[1]]: [{
+                        [type]: identifierMatch[2]
                     }]
                 };
             }
@@ -62,8 +62,10 @@ describe('GhostAdminAPI', function () {
             }
 
             if (req.method === 'PUT') {
+                const type = idMatch ? 'id' : 'slug';
                 data = {
-                    [browseMatch[1]]: [{
+                    [identifierMatch[1]]: [{
+                        [type]: identifierMatch[2],
                         slug: 'edited-resource'
                     }]
                 };
@@ -349,6 +351,112 @@ describe('GhostAdminAPI', function () {
                 }).then((data) => {
                     should.equal(Array.isArray(data), false);
                     data.slug.should.equal('new-resource');
+                });
+            });
+        });
+
+        it('has a edit method', function () {
+            const api = new GhostAdminAPI({host, version, key});
+            should.equal(typeof api.posts.add, 'function');
+        });
+
+        describe('api.posts.edit', function () {
+            describe('expected data format', function () {
+                it('expects data to be passed in', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.posts.edit().catch((err) => {
+                        should.exist(err);
+                        done();
+                    });
+                });
+
+                it('expects data with id to be passed in', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.posts.edit({
+                        slug: 'hey'
+                    })
+                        .then(() => done())
+                        .catch(done);
+                });
+
+                it('should pass with id present', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.posts.edit({
+                        id: 1
+                    })
+                        .then(() => done())
+                        .catch(done);
+                });
+            });
+
+            it('makes a request to the post resource, using correct version', function (done) {
+                const api = new GhostAdminAPI({host, version, key});
+
+                server.once('url', ({pathname}) => {
+                    should.equal(pathname, '/ghost/api/v2/admin/posts/1/');
+                    done();
+                });
+
+                api.posts.edit({
+                    id: 1,
+                    slug: 'edited-resource'
+                });
+            });
+
+            it('makes POST request to the post resource', function (done) {
+                const api = new GhostAdminAPI({host, version, key});
+
+                server.once('method', (method) => {
+                    should.equal(method, 'PUT');
+                    done();
+                });
+
+                api.posts.edit({
+                    id: 1,
+                    slug: 'edited-resource'
+                });
+            });
+
+            it('supports the include option as an array', function (done) {
+                const api = new GhostAdminAPI({host, version, key});
+
+                server.once('url', ({query}) => {
+                    should.deepEqual(query.include, 'authors,tags');
+                    done();
+                });
+
+                api.posts.edit({
+                    id: 1,
+                    slug: 'edited-resource'
+                }, {include: ['authors', 'tags']});
+            });
+
+            it('supports the include option as a string', function (done) {
+                const api = new GhostAdminAPI({host, version, key});
+
+                server.once('url', ({query}) => {
+                    should.equal(query.include, 'authors,tags');
+                    done();
+                });
+
+                api.posts.edit({
+                    id: 1,
+                    slug: 'edited-resource'
+                }, {include: 'authors,tags'});
+            });
+
+            it('resolves with edited post resource', function () {
+                const api = new GhostAdminAPI({host, version, key});
+
+                return api.posts.edit({
+                    id: '5c546f8e5b7ad04a47c05756',
+                    slug: 'edited-resource'
+                }).then((data) => {
+                    should.equal(Array.isArray(data), false);
+                    data.slug.should.equal('edited-resource');
                 });
             });
         });

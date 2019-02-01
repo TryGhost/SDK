@@ -58,10 +58,31 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
             const wrapped = {};
             wrapped[resourceType] = [data];
 
-            return makeRequest(resourceType, options, wrapped, 'post');
+            return makeRequest(resourceType, options, wrapped, 'POST');
         }
-        function edit() {
-            throw 'not implemented';
+        function edit(data, options = {}) {
+            if (!data) {
+                return Promise.reject(new Error('Missing data'));
+            }
+
+            if (!data.id && !data.slug) {
+                return Promise.reject(new Error('Must include either data.id or data.slug'));
+            }
+
+            const wrapped = {};
+
+            if (data.id) {
+                wrapped.id = data.id;
+                delete data.id;
+            }
+
+            if (data.slug) {
+                wrapped.slug = data.slug;
+            }
+
+            wrapped[resourceType] = [data];
+
+            return makeRequest(resourceType, options, wrapped, 'PUT');
         }
         function browse(options = {}) {
             return makeRequest(resourceType, options);
@@ -92,11 +113,11 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
 
     return api;
 
-    function makeRequest(resourceType, params, data = {}, method = 'get') {
+    function makeRequest(resourceType, params, data = {}, method = 'GET') {
         delete params.id;
         let id;
 
-        if ((method === 'get') && (data.id || data.slug)) {
+        if ((['GET', 'PUT'].includes(method)) && (data.id || data.slug)) {
             id = data.id || `slug/${data.slug}`;
         }
 
