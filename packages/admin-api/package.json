@@ -1,0 +1,46 @@
+{
+  "name": "@tryghost/admin-api",
+  "version": "0.0.1",
+  "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/admin-api",
+  "author": "Ghost Foundation",
+  "license": "MIT",
+  "main": "cjs/admin-api.js",
+  "umd:main": "umd/admin-api.min.js",
+  "unpkg": "umd/admin-api.min.js",
+  "module": "lib/index.js",
+  "source": "lib/index.js",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "cjs/",
+    "lib/",
+    "umd/"
+  ],
+  "scripts": {
+    "dev": "echo \"Implement me!\"",
+    "pretest": "yarn build",
+    "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
+    "build": "rollup -c",
+    "lint": "eslint . --ext .js --cache",
+    "posttest": "yarn lint"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "mocha": "5.2.0",
+    "rollup": "^1.0.1",
+    "rollup-plugin-babel": "^4.2.0",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-replace": "^2.1.0",
+    "rollup-plugin-terser": "^4.0.1",
+    "should": "13.2.3",
+    "sinon": "7.2.3"
+  },
+  "dependencies": {
+    "axios": "0.18.0",
+    "jsonwebtoken": "^8.4.0"
+  }
+}
