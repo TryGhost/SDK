@@ -29,14 +29,42 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" in following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters');
     }
     const api = ['posts'].reduce((apiObject, resourceType) => {
-        function add() {
-            throw 'not implemented';
+        function add(data, options = {}) {
+            if (!data) {
+                return Promise.reject(new Error('Missing data'));
+            }
+
+            // TODO: these data manipulations and validations are resource specific
+            // should extract them into separate data mappings methods per resource type
+            if (!data.author && !data.authors) {
+                return Promise.reject(new Error('Missing author data. Expected `author` id or `authors` ids array'));
+            }
+
+            let authors = [];
+            if (data.author) {
+                authors.push({id: data.author});
+                delete data.author;
+            } else {
+                authors = data.authors.map(id => ({id}));
+                delete data.authors;
+            }
+
+            data.authors = authors;
+
+            // resource data should not contain id or slug information
+            delete data.id;
+            delete data.slug;
+
+            const wrapped = {};
+            wrapped[resourceType] = [data];
+
+            return makeRequest(resourceType, options, wrapped, 'post');
         }
         function edit() {
             throw 'not implemented';
         }
         function browse(options = {}) {
-            return makeRequest(resourceType, options, null);
+            return makeRequest(resourceType, options);
         }
         function read(data, options = {}) {
             if (!data) {
@@ -49,7 +77,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
 
             const params = Object.assign({}, data, options);
 
-            return makeRequest(resourceType, params, data.id || `slug/${data.slug}`);
+            return makeRequest(resourceType, params, data);
         }
 
         return Object.assign(apiObject, {
@@ -64,17 +92,26 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
 
     return api;
 
-    function makeRequest(resourceType, params, id) {
-        // delete params.id;
-        const endpoint = `/${ghostPath}/api/${version}/admin/${resourceType}/${id ? id + '/' : ''}`;
+    function makeRequest(resourceType, params, data = {}, method = 'get') {
+        delete params.id;
+        let id;
+
+        if ((method === 'get') && (data.id || data.slug)) {
+            id = data.id || `slug/${data.slug}`;
+        }
+
+        const endpoint = `/${ghostPath}/api/${version}/admin/${resourceType}/${id ? (id + '/') : ''}`;
         const url = `${host}${endpoint}`;
 
         const headers = {
             Authorization: `Ghost ${token(endpoint, key)}`
         };
 
-        return axios.get(url, {
+        return axios({
+            url: url,
+            method: method,
             params: params,
+            data: data,
             paramsSerializer: (params) => {
                 return Object.keys(params).reduce((parts, key) => {
                     const val = encodeURIComponent([].concat(params[key]).join(','));
