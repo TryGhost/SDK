@@ -71,6 +71,10 @@ describe('GhostAdminAPI', function () {
                 };
             }
 
+            if (req.method === 'DELETE') {
+                data = null;
+            }
+
             res.end(JSON.stringify(data));
         });
         server.listen(0, '127.0.0.1');
@@ -357,7 +361,7 @@ describe('GhostAdminAPI', function () {
 
         it('has a edit method', function () {
             const api = new GhostAdminAPI({host, version, key});
-            should.equal(typeof api.posts.add, 'function');
+            should.equal(typeof api.posts.edit, 'function');
         });
 
         describe('api.posts.edit', function () {
@@ -406,7 +410,7 @@ describe('GhostAdminAPI', function () {
                 });
             });
 
-            it('makes POST request to the post resource', function (done) {
+            it('makes PUT request to the post resource', function (done) {
                 const api = new GhostAdminAPI({host, version, key});
 
                 server.once('method', (method) => {
@@ -457,6 +461,81 @@ describe('GhostAdminAPI', function () {
                 }).then((data) => {
                     should.equal(Array.isArray(data), false);
                     data.slug.should.equal('edited-resource');
+                });
+            });
+        });
+
+        it('has a destroy method', function () {
+            const api = new GhostAdminAPI({host, version, key});
+            should.equal(typeof api.posts.destroy, 'function');
+        });
+
+        describe('api.posts.destroy', function () {
+            describe('expected data format', function () {
+                it('expects data to be passed in', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.posts.destroy().catch((err) => {
+                        should.exist(err);
+                        done();
+                    });
+                });
+
+                it('expects data with id to be passed in', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.posts.destroy({
+                        slug: 'hey'
+                    }).catch((err) => {
+                        should.exist(err);
+                        done();
+                    });
+                });
+
+                it('should pass with id present', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.posts.destroy({
+                        id: 1
+                    })
+                        .then(() => done())
+                        .catch(done);
+                });
+            });
+
+            it('makes a request to the post resource, using correct version', function (done) {
+                const api = new GhostAdminAPI({host, version, key});
+
+                server.once('url', ({pathname}) => {
+                    should.equal(pathname, '/ghost/api/v2/admin/posts/1/');
+                    done();
+                });
+
+                api.posts.destroy({
+                    id: 1
+                });
+            });
+
+            it('makes DELETE request to the post resource', function (done) {
+                const api = new GhostAdminAPI({host, version, key});
+
+                server.once('method', (method) => {
+                    should.equal(method, 'DELETE');
+                    done();
+                });
+
+                api.posts.destroy({
+                    id: 1,
+                });
+            });
+
+            it('resolves with empty post resource', function () {
+                const api = new GhostAdminAPI({host, version, key});
+
+                return api.posts.destroy({
+                    id: 1,
+                }).then((data) => {
+                    should.equal(data, null);
                 });
             });
         });
