@@ -84,7 +84,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
 
             return makeRequest(resourceType, options, wrapped, 'PUT');
         }
-        function destroy(data, options ={}) {
+        function destroy(data, options = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
@@ -93,7 +93,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
                 return Promise.reject(new Error('Must include either data.id'));
             }
 
-            return makeRequest(resourceType, options, data, 'DELETE')
+            return makeRequest(resourceType, options, data, 'DELETE');
         }
         function browse(options = {}) {
             return makeRequest(resourceType, options);
@@ -153,7 +153,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
             },
             headers
         }).then((res) => {
-            if(method === 'DELETE') {
+            if (method === 'DELETE') {
                 return res.data;
             }
 

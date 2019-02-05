@@ -525,7 +525,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 api.posts.destroy({
-                    id: 1,
+                    id: 1
                 });
             });
 
@@ -533,7 +533,7 @@ describe('GhostAdminAPI', function () {
                 const api = new GhostAdminAPI({host, version, key});
 
                 return api.posts.destroy({
-                    id: 1,
+                    id: 1
                 }).then((data) => {
                     should.equal(data, null);
                 });
