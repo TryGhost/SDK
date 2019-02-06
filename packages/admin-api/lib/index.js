@@ -1,4 +1,6 @@
 import axios from 'axios';
+import FormData from 'form-data';
+import fs from 'fs';
 import token from './token';
 
 const supportedVersions = ['v2'];
@@ -34,31 +36,34 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
                 return Promise.reject(new Error('Missing data'));
             }
 
-            // TODO: these data manipulations and validations are resource specific
-            // should extract them into separate data mappings methods per resource type
-            if (!data.author && !data.authors) {
-                return Promise.reject(new Error('Missing author data. Expected `author` id or `authors` ids array'));
+            const mapped = {};
+
+            if (resourceType === 'posts') {
+                // TODO: these data manipulations and validations are resource specific
+                // should extract them into separate data mappings methods per resource type
+                if (!data.author && !data.authors) {
+                    return Promise.reject(new Error('Missing author data. Expected `author` id or `authors` ids array'));
+                }
+
+                let authors = [];
+                if (data.author) {
+                    authors.push({id: data.author});
+                    delete data.author;
+                } else {
+                    authors = data.authors.map(id => ({id}));
+                    delete data.authors;
+                }
+
+                data.authors = authors;
+
+                // resource data should not contain id or slug information
+                delete data.id;
+                delete data.slug;
+
+                mapped[resourceType] = [data];
             }
 
-            let authors = [];
-            if (data.author) {
-                authors.push({id: data.author});
-                delete data.author;
-            } else {
-                authors = data.authors.map(id => ({id}));
-                delete data.authors;
-            }
-
-            data.authors = authors;
-
-            // resource data should not contain id or slug information
-            delete data.id;
-            delete data.slug;
-
-            const wrapped = {};
-            wrapped[resourceType] = [data];
-
-            return makeRequest(resourceType, options, wrapped, 'POST');
+            return makeResourceRequest(resourceType, options, mapped, 'POST');
         }
         function edit(data, options = {}) {
             if (!data) {
@@ -69,20 +74,20 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
                 return Promise.reject(new Error('Must include either data.id or data.slug'));
             }
 
-            const wrapped = {};
+            const mapped = {};
 
             if (data.id) {
-                wrapped.id = data.id;
+                mapped.id = data.id;
                 delete data.id;
             }
 
             if (data.slug) {
-                wrapped.slug = data.slug;
+                mapped.slug = data.slug;
             }
 
-            wrapped[resourceType] = [data];
+            mapped[resourceType] = [data];
 
-            return makeRequest(resourceType, options, wrapped, 'PUT');
+            return makeResourceRequest(resourceType, options, mapped, 'PUT');
         }
         function destroy(data, options = {}) {
             if (!data) {
@@ -93,10 +98,10 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
                 return Promise.reject(new Error('Must include either data.id'));
             }
 
-            return makeRequest(resourceType, options, data, 'DELETE');
+            return makeResourceRequest(resourceType, options, data, 'DELETE');
         }
         function browse(options = {}) {
-            return makeRequest(resourceType, options);
+            return makeResourceRequest(resourceType, options);
         }
         function read(data, options = {}) {
             if (!data) {
@@ -109,7 +114,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
 
             const params = Object.assign({}, data, options);
 
-            return makeRequest(resourceType, params, data);
+            return makeResourceRequest(resourceType, params, data);
         }
 
         return Object.assign(apiObject, {
@@ -123,9 +128,48 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
         });
     }, {});
 
+    api.images = {
+        add(data) {
+            if (!data) {
+                return Promise.reject(new Error('Missing data'));
+            }
+
+            if (typeof data !== FormData && !data.path) {
+                return Promise.reject(new Error('Must be of FormData or include path'));
+            }
+
+            let formData;
+            if (data.path) {
+                formData = new FormData();
+                formData.append('uploadimage', fs.createReadStream(data.path));
+            }
+
+            return makeImageRequest(formData || data);
+        }
+    };
+
     return api;
 
-    function makeRequest(resourceType, params, data = {}, method = 'GET') {
+    function makeImageRequest(data) {
+        const endpoint = `/${ghostPath}/api/${version}/admin/images/`;
+        const url = `${host}${endpoint}`;
+
+        const headers = {
+            Authorization: `Ghost ${token(endpoint, key)}`,
+            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+        };
+
+        return axios({
+            url: url,
+            method: 'POST',
+            data: data,
+            headers: headers
+        }).then((res) => {
+            return res.data;
+        });
+    }
+
+    function makeResourceRequest(resourceType, params, data = {}, method = 'GET') {
         delete params.id;
         let id;
 

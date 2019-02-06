@@ -5,6 +5,7 @@ const should = require('should');
 
 const http = require('http');
 const url = require('url');
+const path = require('path');
 
 const GhostAdminAPI = require('../');
 
@@ -53,15 +54,15 @@ describe('GhostAdminAPI', function () {
                 };
             }
 
-            if (req.method === 'POST') {
+            if (req.headers['content-type'].match(/multipart/)) {
+                data = `${host}/image/url`;
+            } else if (req.method === 'POST') {
                 data = {
                     [browseMatch[1]]: [{
                         slug: 'new-resource'
                     }]
                 };
-            }
-
-            if (req.method === 'PUT') {
+            } else if (req.method === 'PUT') {
                 const type = idMatch ? 'id' : 'slug';
                 data = {
                     [identifierMatch[1]]: [{
@@ -69,9 +70,7 @@ describe('GhostAdminAPI', function () {
                         slug: 'edited-resource'
                     }]
                 };
-            }
-
-            if (req.method === 'DELETE') {
+            } else if (req.method === 'DELETE') {
                 data = null;
             }
 
@@ -536,6 +535,84 @@ describe('GhostAdminAPI', function () {
                     id: 1
                 }).then((data) => {
                     should.equal(data, null);
+                });
+            });
+        });
+    });
+
+    describe('api.images', function () {
+        it('has a add method', function () {
+            const api = new GhostAdminAPI({host, version, key});
+            should.equal(typeof api.images.add, 'function');
+        });
+
+        describe('api.images.add', function () {
+            const imagePath = path.join(__dirname, './fixtures/ghost-logo.png');
+
+            describe('expected data format', function () {
+                it('expects data to be passed in', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.images.add().catch((err) => {
+                        should.exist(err);
+                        done();
+                    });
+                });
+
+                it('expects data.path to be passed in', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.images.add({}).catch((err) => {
+                        should.exist(err);
+                        done();
+                    });
+                });
+
+                it('should pass with path present', function (done) {
+                    const api = new GhostAdminAPI({host, version, key});
+
+                    api.images.add({
+                        path: imagePath
+                    })
+                        .then(() => done())
+                        .catch(done);
+                });
+            });
+
+            it('makes a request to the /images endpoint, using correct version', function (done) {
+                const api = new GhostAdminAPI({host, version, key});
+
+                server.once('url', ({pathname}) => {
+                    should.equal(pathname, '/ghost/api/v2/admin/images/');
+                    done();
+                });
+
+                api.images.add({
+                    path: imagePath
+                });
+            });
+
+            it('makes POST request to the /images endpoint', function (done) {
+                const api = new GhostAdminAPI({host, version, key});
+
+                server.once('method', (method) => {
+                    should.equal(method, 'POST');
+                    done();
+                });
+
+                api.images.add({
+                    path: imagePath
+                });
+            });
+
+            it('resolves with the url resource', function () {
+                const api = new GhostAdminAPI({host, version, key});
+
+                return api.images.add({
+                    path: imagePath
+                }).then((data) => {
+                    should.equal(Array.isArray(data), false);
+                    data.should.equal(`${host}/image/url`);
                 });
             });
         });
