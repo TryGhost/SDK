@@ -20,13 +20,6 @@ module.exports = function layer2(options) {
         return frame;
     });
 
-    function closeAuth() {
-        return loadAuth.then(function (frame) {
-            frame.style.display = 'none';
-            return frame;
-        });
-    }
-
     function openAuth(hash, query = '') {
         return loadAuth.then(function (frame) {
             return new Promise(function (resolve) {
