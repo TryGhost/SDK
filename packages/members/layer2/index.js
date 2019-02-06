@@ -1,3 +1,4 @@
+/* global window */
 var layer1 = require('@tryghost/members-layer1');
 
 module.exports = function layer2(options) {
