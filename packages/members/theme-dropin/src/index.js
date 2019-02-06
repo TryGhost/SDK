@@ -73,7 +73,7 @@ DomReady(function () {
         const resourceId = element.getAttribute('data-members-resource-id');
         const host = element.getAttribute('data-members-content-host');
 
-        const api = GhostContentApi.create({
+        const api = GhostContentApi({
             host,
             version
         });
