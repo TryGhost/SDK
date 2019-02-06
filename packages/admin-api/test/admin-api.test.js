@@ -54,6 +54,13 @@ describe('GhostAdminAPI', function () {
                 };
             }
 
+            const configMatch = parsedUrl.pathname.match(/\/configuration(?:\/about)?\/$/);
+            if (configMatch) {
+                data = {
+                    configuration: [{version: '2.13.2'}]
+                };
+            }
+
             if (req.headers['content-type'].match(/multipart/)) {
                 data = `${host}/image/url`;
             } else if (req.method === 'POST') {
@@ -614,6 +621,50 @@ describe('GhostAdminAPI', function () {
                     should.equal(Array.isArray(data), false);
                     data.should.equal(`${host}/image/url`);
                 });
+            });
+        });
+    });
+
+    describe('api.configuration.read', function () {
+        it('makes a GET request to the configuration endpoint', function (done) {
+            const api = new GhostAdminAPI({host, version, key});
+
+            server.once('url', ({pathname}) => {
+                should.equal(pathname, '/ghost/api/v2/admin/configuration/');
+                done();
+            });
+
+            api.configuration.read();
+        });
+
+        it('resolves with the configuration resource', function () {
+            const api = new GhostAdminAPI({host, version, key});
+
+            return api.configuration.read().then((data) => {
+                should.equal(Array.isArray(data), false);
+                should.deepEqual(data, {version: '2.13.2'});
+            });
+        });
+    });
+
+    describe('api.configuration.about.read', function () {
+        it('makes a GET request to the configuration/about endpoint', function (done) {
+            const api = new GhostAdminAPI({host, version, key});
+
+            server.once('url', ({pathname}) => {
+                should.equal(pathname, '/ghost/api/v2/admin/configuration/about/');
+                done();
+            });
+
+            api.configuration.about.read();
+        });
+
+        it('resolves with the configuration resource', function () {
+            const api = new GhostAdminAPI({host, version, key});
+
+            return api.configuration.about.read().then((data) => {
+                should.equal(Array.isArray(data), false);
+                should.deepEqual(data, {version: '2.13.2'});
             });
         });
     });

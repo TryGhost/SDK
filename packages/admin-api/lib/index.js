@@ -9,6 +9,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
     if (this instanceof GhostAdminAPI) {
         return GhostAdminAPI({host, version, key});
     }
+
     if (!version) {
         throw new Error('GhostAdminAPI Config Missing: @tryghost/admin-api requires a "version" like "v2"');
     }
@@ -30,6 +31,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
     if (key && !/[0-9a-f]{24}:[0-9a-f]{64}/.test(key)) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" in following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters');
     }
+
     const api = ['posts'].reduce((apiObject, resourceType) => {
         function add(data, options = {}) {
             if (!data) {
@@ -148,6 +150,18 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
         }
     };
 
+    api.configuration = {
+        read() {
+            return makeResourceRequest('configuration', {}, {});
+        },
+
+        about: {
+            read() {
+                return makeResourceRequest('configuration/about', {}, {});
+            }
+        }
+    };
+
     return api;
 
     function makeImageRequest(data) {
@@ -199,6 +213,12 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
         }).then((res) => {
             if (method === 'DELETE') {
                 return res.data;
+            }
+
+            // HACK: the configuration/about endpoint doesn't match the typical
+            // resource url structure and return value so we need to special-case it
+            if (resourceType === 'configuration/about') {
+                resourceType = 'configuration';
             }
 
             if (!Array.isArray(res.data[resourceType])) {
