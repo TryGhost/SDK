@@ -29,17 +29,12 @@ module.exports = function layer2(options) {
                     if (event.source !== frame.contentWindow) {
                         return;
                     }
-                    if (event.data !== 'pls-close-auth-popup') {
+                    if (!event.data || event.data.msg !== 'pls-close-auth-popup') {
                         return;
                     }
                     window.removeEventListener('message', messageListener);
                     frame.style.display = 'none';
-                    resolve(false);
-                })
-                members.bus.on('signedin', function signedinListener() {
-                    members.bus.off('signedin', signedinListener);
-                    frame.style.display = 'none';
-                    resolve(true);
+                    resolve(!!event.data.success);
                 });
             });
         });
