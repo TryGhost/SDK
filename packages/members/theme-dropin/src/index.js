@@ -1,3 +1,4 @@
+/* global window document */
 const DomReady = require('domready');
 const GhostContentApi = require('@tryghost/content-api');
 const layer2 = require('@tryghost/members-layer2');
