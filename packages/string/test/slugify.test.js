@@ -84,14 +84,14 @@ describe('Slugify', function () {
 
     it('should not lose or convert dashes if options are passed with truthy importing flag', function () {
         var result,
-            options = {importing: true};
+            options = {requiredChangesOnly: true};
         result = slugify('-slug-with-starting-ending-and---multiple-dashes-', options);
         result.should.equal('-slug-with-starting-ending-and---multiple-dashes-');
     });
 
     it('should still remove/convert invalid characters when passed options with truthy importing flag', function () {
         var result,
-            options = {importing: true};
+            options = {requiredChangesOnly: true};
         result = slugify('-slug-&with-✓-invalid-characters-に\'', options);
         result.should.equal('-slug--with--invalid-characters-ni');
     });

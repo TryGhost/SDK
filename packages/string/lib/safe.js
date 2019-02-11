@@ -4,6 +4,14 @@ const removeInvisibleUnicode = (str) => {
     return str.replace(invisibleLetters, '');
 };
 
+/**
+ * Safe
+ *
+ * Ensures a string contains no generally unsafe chars e.g. backspace control char
+ *
+ * @param {String} string - the string we want to prepare
+ * @returns {String} safe string
+ */
 module.exports = function (string) {
     // Ensure we have a string
     string = string || '';

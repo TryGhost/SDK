@@ -1,6 +1,16 @@
 const unidecode = require('unidecode');
 const safe = require('./safe');
 
+/**
+ * Slugify
+ *
+ * Prepares a string for use in a url.
+ *
+ * @param {String} string - the string we want to slugify
+ * @param {object} options - filter options
+ * @param {bool} [options.requiredChangesOnly] - limits the number of tags to be returned
+ * @returns {String} slugified string
+ */
 module.exports = function (string, options = {}) {
     string = safe(string);
 
@@ -17,8 +27,8 @@ module.exports = function (string, options = {}) {
         // Make the whole thing lowercase
         .toLowerCase();
 
-    // We do not need to make the following changes when importing data
-    if (!options.hasOwnProperty('importing') || !options.importing) {
+    // These changes are optional changes, we can enable/disable these
+    if (!options.requiredChangesOnly) {
         // Convert 2 or more dashes into a single dash
         string = string.replace(/-+/g, '-')
         // Remove trailing dash
