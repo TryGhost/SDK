@@ -42,6 +42,11 @@ describe('Slugify', function () {
         result.should.equal('aaaaaaaeceeeeiiiidnoooooxouuuuuthssaaaaaaaeceeeeiiiidnooooo-ouuuuythy');
     });
 
+    it('should remove control characters', function () {
+        var result = slugify('control:\x07notcontrol:\xB5');
+        result.should.equal('control-notcontrol-u');
+    });
+
     it('should remove special characters at the beginning of a string', function () {
         var result = slugify('.Not special', options);
         result.should.equal('not-special');
