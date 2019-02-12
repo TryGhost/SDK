@@ -1,2 +1,2 @@
-module.exports.safe = require('./safe');
+module.exports.stripInvisibleChars = require('./stripInvisibleChars');
 module.exports.slugify = require('./slugify');

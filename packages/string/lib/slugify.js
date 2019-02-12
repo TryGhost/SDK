@@ -1,5 +1,5 @@
 const unidecode = require('unidecode');
-const safe = require('./safe');
+const stripInvisibleChars = require('./stripInvisibleChars');
 
 /**
  * Slugify
@@ -12,7 +12,11 @@ const safe = require('./safe');
  * @returns {String} slugified string
  */
 module.exports = function (string, options = {}) {
-    string = safe(string);
+    // Ensure we have a string
+    string = string || '';
+
+    // Strip all characters that cannot be printed
+    string = stripInvisibleChars(string);
 
     // Handle the £ symbol separately, since it needs to be removed before the unicode conversion.
     string = string.replace(/£/g, '-');
