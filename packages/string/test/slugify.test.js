@@ -52,6 +52,11 @@ describe('Slugify', function () {
         result.should.equal('not-special');
     });
 
+    it('should remove emoji and symbols', function () {
+        var result = slugify('test 😬🖤❤︎');
+        result.should.equal('test');
+    });
+
     it('should remove apostrophes ', function () {
         var result = slugify('how we shouldn\'t be', options);
         result.should.equal('how-we-shouldnt-be');
