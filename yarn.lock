@@ -633,9 +633,9 @@
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@sinonjs/samsam/-/samsam-2.1.3.tgz#62cf2a9b624edc795134135fe37fc2ae8ea36be3"
 
-"@tryghost/mobiledoc-kit@0.11.1-ghost.5":
-  version "0.11.1-ghost.5"
-  resolved "https://registry.yarnpkg.com/@tryghost/mobiledoc-kit/-/mobiledoc-kit-0.11.1-ghost.5.tgz#c439736b4b6a0a7c959deb5462317bad070133b5"
+"@tryghost/mobiledoc-kit@0.11.1-ghost.6":
+  version "0.11.1-ghost.6"
+  resolved "https://registry.yarnpkg.com/@tryghost/mobiledoc-kit/-/mobiledoc-kit-0.11.1-ghost.6.tgz#539bad1d26f8885a066d24295d1e28f03408d3ec"
   dependencies:
     mobiledoc-dom-renderer "0.6.5"
     mobiledoc-text-renderer "0.3.2"
