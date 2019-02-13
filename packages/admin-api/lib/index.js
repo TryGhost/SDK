@@ -5,30 +5,53 @@ import token from './token';
 
 const supportedVersions = ['v2'];
 
-export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key}) {
+export default function GhostAdminAPI(options) {
     if (this instanceof GhostAdminAPI) {
-        return GhostAdminAPI({host, version, key});
+        return GhostAdminAPI(options);
     }
 
-    if (!version) {
+    const defaultConfig = {
+        ghostPath: 'ghost',
+        makeRequest({url, method, data, params = {}, headers = {}}) {
+            return axios({
+                url,
+                method,
+                params,
+                data,
+                headers,
+                paramsSerializer(params) {
+                    return Object.keys(params).reduce((parts, key) => {
+                        const val = encodeURIComponent([].concat(params[key]).join(','));
+                        return parts.concat(`${key}=${val}`);
+                    }, []).join('&');
+                }
+            }).then((res) => {
+                return res.data;
+            });
+        }
+    };
+
+    const config = Object.assign({}, defaultConfig, options);
+
+    if (!config.version) {
         throw new Error('GhostAdminAPI Config Missing: @tryghost/admin-api requires a "version" like "v2"');
     }
-    if (!supportedVersions.includes(version)) {
+    if (!supportedVersions.includes(config.version)) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api does not support the supplied version');
     }
-    if (!host) {
+    if (!config.host) {
         throw new Error('GhostAdminAPI Config Missing: @tryghost/admin-api requires a "host" like "https://site.com"');
     }
-    if (!/https?:\/\//.test(host)) {
+    if (!/https?:\/\//.test(config.host)) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "host" with a protocol like "https://site.com"');
     }
-    if (host.endsWith('/')) {
+    if (config.host.endsWith('/')) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "host" without a trailing slash like "https://site.com"');
     }
-    if (ghostPath.endsWith('/') || ghostPath.startsWith('/')) {
+    if (config.ghostPath.endsWith('/') || config.ghostPath.startsWith('/')) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
     }
-    if (key && !/[0-9a-f]{24}:[0-9a-f]{64}/.test(key)) {
+    if (config.key && !/[0-9a-f]{24}:[0-9a-f]{64}/.test(config.key)) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" in following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters');
     }
 
@@ -207,6 +230,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
     }
 
     function endpointFor(resource, {id, slug} = {}) {
+        const {ghostPath, version} = config;
         let endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
 
         if (id) {
@@ -219,6 +243,7 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
     }
 
     function makeApiRequest({endpoint, method, data, params = {}, headers = {}}) {
+        const {host, key, makeRequest} = config;
         const url = `${host}${endpoint}`;
 
         headers = Object.assign({}, headers, {
@@ -231,24 +256,6 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
             data,
             params,
             headers
-        });
-    }
-
-    function makeRequest({url, method, data, params = {}, headers = {}}) {
-        return axios({
-            url,
-            method,
-            params,
-            data,
-            headers,
-            paramsSerializer(params) {
-                return Object.keys(params).reduce((parts, key) => {
-                    const val = encodeURIComponent([].concat(params[key]).join(','));
-                    return parts.concat(`${key}=${val}`);
-                }, []).join('&');
-            }
-        }).then((res) => {
-            return res.data;
         });
     }
 }

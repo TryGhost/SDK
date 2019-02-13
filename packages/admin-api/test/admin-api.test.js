@@ -668,4 +668,19 @@ describe('GhostAdminAPI', function () {
             });
         });
     });
+
+    it('allows makeRequest override', function () {
+        const makeRequest = () => {
+            return Promise.resolve({
+                configuration: {
+                    test: true
+                }
+            });
+        };
+        const api = new GhostAdminAPI({host, version, key, makeRequest});
+
+        return api.configuration.read().then((data) => {
+            should.deepEqual(data, {test: true});
+        });
+    });
 });
