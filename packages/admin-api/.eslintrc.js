@@ -3,4 +3,4 @@ module.exports = {
     extends: [
         'plugin:ghost/es',
     ]
-};
+}
