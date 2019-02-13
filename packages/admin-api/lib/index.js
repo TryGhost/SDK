@@ -165,54 +165,29 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
     return api;
 
     function makeImageRequest(data) {
-        const endpoint = `/${ghostPath}/api/${version}/admin/images/`;
-        const url = `${host}${endpoint}`;
-
         const headers = {
-            Authorization: `Ghost ${token(endpoint, key)}`,
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`
         };
 
-        return axios({
-            url: url,
+        return makeApiRequest({
+            endpoint: endpointFor('images'),
             method: 'POST',
-            data: data,
-            headers: headers
-        }).then((res) => {
-            return res.data;
+            data,
+            headers
         });
     }
 
     function makeResourceRequest(resourceType, params, data = {}, method = 'GET') {
         delete params.id;
-        let id;
 
-        if ((['GET', 'PUT', 'DELETE'].includes(method)) && (data.id || data.slug)) {
-            id = data.id || `slug/${data.slug}`;
-        }
-
-        const endpoint = `/${ghostPath}/api/${version}/admin/${resourceType}/${id ? (id + '/') : ''}`;
-        const url = `${host}${endpoint}`;
-
-        const headers = {
-            Authorization: `Ghost ${token(endpoint, key)}`
-        };
-
-        return axios({
-            url: url,
-            method: method,
-            params: params,
-            data: data,
-            paramsSerializer: (params) => {
-                return Object.keys(params).reduce((parts, key) => {
-                    const val = encodeURIComponent([].concat(params[key]).join(','));
-                    return parts.concat(`${key}=${val}`);
-                }, []).join('&');
-            },
-            headers
-        }).then((res) => {
+        return makeApiRequest({
+            endpoint: endpointFor(resourceType, data),
+            method,
+            params,
+            data
+        }).then((data) => {
             if (method === 'DELETE') {
-                return res.data;
+                return data;
             }
 
             // HACK: the configuration/about endpoint doesn't match the typical
@@ -221,13 +196,59 @@ export default function GhostAdminAPI({host, ghostPath = 'ghost', version, key})
                 resourceType = 'configuration';
             }
 
-            if (!Array.isArray(res.data[resourceType])) {
-                return res.data[resourceType];
+            if (!Array.isArray(data[resourceType])) {
+                return data[resourceType];
             }
-            if (res.data[resourceType].length === 1 && !res.data.meta) {
-                return res.data[resourceType][0];
+            if (data[resourceType].length === 1 && !data.meta) {
+                return data[resourceType][0];
             }
-            return Object.assign(res.data[resourceType], {meta: res.data.meta});
+            return Object.assign(data[resourceType], {meta: data.meta});
+        });
+    }
+
+    function endpointFor(resource, {id, slug} = {}) {
+        let endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
+
+        if (id) {
+            endpoint = `${endpoint}${id}/`;
+        } else if (slug) {
+            endpoint = `${endpoint}slug/${slug}/`;
+        }
+
+        return endpoint;
+    }
+
+    function makeApiRequest({endpoint, method, data, params = {}, headers = {}}) {
+        const url = `${host}${endpoint}`;
+
+        headers = Object.assign({}, headers, {
+            Authorization: `Ghost ${token(endpoint, key)}`
+        });
+
+        return makeRequest({
+            url,
+            method,
+            data,
+            params,
+            headers
+        });
+    }
+
+    function makeRequest({url, method, data, params = {}, headers = {}}) {
+        return axios({
+            url,
+            method,
+            params,
+            data,
+            headers,
+            paramsSerializer(params) {
+                return Object.keys(params).reduce((parts, key) => {
+                    const val = encodeURIComponent([].concat(params[key]).join(','));
+                    return parts.concat(`${key}=${val}`);
+                }, []).join('&');
+            }
+        }).then((res) => {
+            return res.data;
         });
     }
 }
