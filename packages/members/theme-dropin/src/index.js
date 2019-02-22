@@ -35,19 +35,24 @@ DomReady(function () {
         }
     }
 
-    const membersContentElements = Array.from(document.querySelectorAll('[data-members]')); // TODO use data-members-content;
+    const membersContentElements = Array.from(document.querySelectorAll('[data-members-content]'));
 
-    var signinBtn = document.querySelector('[data-members-signin]');
-    var signinCta = document.querySelector('[data-members-signin-cta]');
-    var signoutBtn = document.querySelector('[data-members-signout]');
+    const signinBtn = document.querySelector('[data-members-signin]');
+    const signinCta = document.querySelector('[data-members-signin-cta]');
+    const upgradeCta = document.querySelector('[data-members-upgrade-cta]');
+    const signoutBtn = document.querySelector('[data-members-signout]');
 
     members.on('signedin', function () {
         show(signoutBtn);
+        show(upgradeCta);
+        hide(signinCta);
         hide(signinBtn);
     });
 
     members.on('signedout', function () {
         show(signinBtn);
+        show(signinCta);
+        hide(upgradeCta);
         hide(signoutBtn);
     });
 
@@ -63,9 +68,16 @@ DomReady(function () {
             .then(reload);
     }
 
+    function upgrade(event) {
+        event.preventDefault();
+        members.upgrade()
+            .then(reload);
+    }
+
     signoutBtn.addEventListener('click', signout);
     signinBtn.addEventListener('click', signin);
     signinCta.addEventListener('click', signin);
+    upgradeCta.addEventListener('click', upgrade);
 
     membersContentElements.forEach(function (element) {
         const resourceType = element.getAttribute('data-members-resource-type');
@@ -84,7 +96,9 @@ DomReady(function () {
             }
 
             api[resourceType].read({id: resourceId}, {}, token).then(({html}) => {
-                element.innerHTML = html;
+                if (html) {
+                    element.innerHTML = html;
+                }
             }).catch((err) => {
                 element.innerHTML = err.message;
             });
