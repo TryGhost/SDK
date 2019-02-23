@@ -55,7 +55,7 @@ export default function GhostAdminAPI(options) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" in following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters');
     }
 
-    const api = ['posts'].reduce((apiObject, resourceType) => {
+    const api = ['posts', 'webhooks', 'subscribers'].reduce((apiObject, resourceType) => {
         function add(data, options = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
@@ -80,13 +80,13 @@ export default function GhostAdminAPI(options) {
                 }
 
                 data.authors = authors;
-
-                // resource data should not contain id or slug information
-                delete data.id;
-                delete data.slug;
-
-                mapped[resourceType] = [data];
             }
+
+            // resource data should not contain id or slug information
+            delete data.id;
+            delete data.slug;
+
+            mapped[resourceType] = [data];
 
             return makeResourceRequest(resourceType, options, mapped, 'POST');
         }
