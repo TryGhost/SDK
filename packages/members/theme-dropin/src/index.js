@@ -42,6 +42,12 @@ DomReady(function () {
     const upgradeCta = document.querySelector('[data-members-upgrade-cta]');
     const signoutBtn = document.querySelector('[data-members-signout]');
 
+    const showForbidden = document.querySelector('[data-members-show-forbidden]');
+    const showUnauthorized = document.querySelector('[data-members-show-unauthorized]');
+
+    hide(showForbidden);
+    hide(showUnauthorized);
+
     members.on('signedin', function () {
         show(signoutBtn);
         show(upgradeCta);
@@ -92,12 +98,15 @@ DomReady(function () {
         const audience = new URL(host).origin;
         members.getToken({audience}).then((token) => {
             if (!token) {
+                show(showUnauthorized);
                 return;
             }
 
             api[resourceType].read({id: resourceId}, {}, token).then(({html}) => {
                 if (html) {
                     element.innerHTML = html;
+                } else {
+                    show(showForbidden);
                 }
             }).catch((err) => {
                 element.innerHTML = err.message;
