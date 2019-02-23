@@ -243,11 +243,11 @@ export default function GhostAdminAPI(options) {
     }
 
     function makeApiRequest({endpoint, method, data, params = {}, headers = {}}) {
-        const {host, key, makeRequest} = config;
+        const {host, key, version, makeRequest} = config;
         const url = `${host}${endpoint}`;
 
         headers = Object.assign({}, headers, {
-            Authorization: `Ghost ${token(endpoint, key)}`
+            Authorization: `Ghost ${token(version, key)}`
         });
 
         return makeRequest({
