@@ -229,12 +229,6 @@ export default function GhostAdminAPI(options) {
                 return data;
             }
 
-            // HACK: the configuration/about endpoint doesn't match the typical
-            // resource url structure and return value so we need to special-case it
-            if (resourceType === 'configuration/about') {
-                resourceType = 'configuration';
-            }
-
             if (!Array.isArray(data[resourceType])) {
                 return data[resourceType];
             }
