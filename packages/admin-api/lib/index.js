@@ -265,6 +265,29 @@ export default function GhostAdminAPI(options) {
             data,
             params,
             headers
+        }).catch((err) => {
+            /**
+             * @NOTE:
+             *
+             * If you are overriding `makeRequest`, we can't garantee that the returned format is the same, but
+             * we try to detect & return a proper error instance.
+             */
+            if (err.response && err.response.data && err.response.data.errors) {
+                const props = err.response.data.errors[0];
+                const toThrow = new Error(props.message);
+                const keys = Object.keys(props);
+
+                toThrow.name = props.type;
+
+                keys.forEach((key) => {
+                    toThrow[key] = props[key];
+                });
+
+                toThrow.response = err.response;
+                throw toThrow;
+            } else {
+                throw err;
+            }
         });
     }
 }

@@ -16,6 +16,12 @@ describe('GhostAdminAPI', function () {
         key: '5c499ae6fa1ad52b62c52331:472d79f1fd958d187fff7be9e76d259a799ae7f69a62513c5b7dceb6c7f747a9'
     };
 
+    let returnError;
+
+    beforeEach(() => {
+        returnError = false;
+    });
+
     before(function (done) {
         server = http.createServer();
         server.on('listening', () => {
@@ -23,11 +29,33 @@ describe('GhostAdminAPI', function () {
             config.url = `http://${address}:${port}`;
             done();
         });
+
         server.on('request', (req, res) => {
             const parsedUrl = url.parse(req.url, true);
             server.emit('method', req.method);
             server.emit('url', parsedUrl);
             server.emit('headers', req.headers);
+
+            if (returnError) {
+                res.writeHead(422, {
+                    'Content-Type': 'application/json'
+                });
+
+                res.end(JSON.stringify({
+                    errors: [{
+                        message: 'this is an error',
+                        context: 'this is my context',
+                        type: 'ValidationError',
+                        details: {},
+                        help: 'docs link',
+                        code: 'ERROR',
+                        id: 'id'
+                    }]
+                }));
+
+                return;
+            }
+
             res.writeHead(200, {
                 'Content-Type': 'application/json'
             });
@@ -260,6 +288,32 @@ describe('GhostAdminAPI', function () {
         });
 
         describe('api.posts.add', function () {
+            it('request fails', function () {
+                const api = new GhostAdminAPI(config);
+
+                returnError = true;
+
+                return api.posts.add({authors: [{id: 'id'}]})
+                    .then(() => {
+                        throw new Error('expected failure.');
+                    })
+                    .catch((err) => {
+                        should.exist(err);
+
+                        should.equal(true, err instanceof Error);
+                        err.name.should.eql('ValidationError');
+
+                        should.exist(err.response);
+                        should.exist(err.message);
+                        should.exist(err.context);
+                        should.exist(err.help);
+                        should.exist(err.id);
+                        should.exist(err.details);
+                        should.exist(err.code);
+                        should.exist(err.type);
+                    });
+            });
+
             describe('expected data format', function () {
                 it('expects data to be passed in', function (done) {
                     const api = new GhostAdminAPI(config);
