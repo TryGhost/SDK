@@ -11,15 +11,16 @@ const GhostAdminAPI = require('../');
 
 describe('GhostAdminAPI', function () {
     let server;
-    let host;
-    const version = 'v2';
-    const key = '5c499ae6fa1ad52b62c52331:472d79f1fd958d187fff7be9e76d259a799ae7f69a62513c5b7dceb6c7f747a9';
+    const config = {
+        version: 'v2',
+        key: '5c499ae6fa1ad52b62c52331:472d79f1fd958d187fff7be9e76d259a799ae7f69a62513c5b7dceb6c7f747a9'
+    };
 
     before(function (done) {
         server = http.createServer();
         server.on('listening', () => {
             const {address, port} = server.address();
-            host = `http://${address}:${port}`;
+            config.url = `http://${address}:${port}`;
             done();
         });
         server.on('request', (req, res) => {
@@ -62,7 +63,7 @@ describe('GhostAdminAPI', function () {
             }
 
             if (req.headers['content-type'].match(/multipart/)) {
-                data = `${host}/image/url`;
+                data = `${config.url}/image/url`;
             } else if (req.method === 'POST') {
                 data = {
                     [browseMatch[1]]: [{
@@ -99,32 +100,32 @@ describe('GhostAdminAPI', function () {
         }
 
         try {
-            new GhostAdminAPI({host, version});
+            new GhostAdminAPI({url: config.url, version: config.version});
             return should.fail();
         } catch (err) {
             //
         }
 
         try {
-            new GhostAdminAPI({version, key});
+            new GhostAdminAPI({version: config.version, key: config.key});
             return should.fail();
         } catch (err) {
             //
         }
 
         try {
-            new GhostAdminAPI({host, key});
+            new GhostAdminAPI({url: config.url, key: config.key});
             return should.fail();
         } catch (err) {
             //
         }
 
-        new GhostAdminAPI({host, version, key});
+        new GhostAdminAPI(config);
     });
 
     it('Requires correct key format in config object', function (){
         try {
-            new GhostAdminAPI({host, version, key: 'badkey'});
+            new GhostAdminAPI({key: 'badkey', config: config.url, version: config.version});
             return should.fail();
         } catch (err) {
             //
@@ -132,23 +133,25 @@ describe('GhostAdminAPI', function () {
     });
 
     it('Returns an "api" object with posts properties', function () {
-        const host = 'https://whatever.com';
-        const version = 'v2';
-        const key = '5c499ae6fa1ad52b62c52331:472d79f1fd958d187fff7be9e76d259a799ae7f69a62513c5b7dceb6c7f747a9';
-        const api = new GhostAdminAPI({host, version, key});
+        const config = {
+            url: 'https://whatever.com',
+            version: 'v2',
+            key: '5c499ae6fa1ad52b62c52331:472d79f1fd958d187fff7be9e76d259a799ae7f69a62513c5b7dceb6c7f747a9'
+        };
+        const api = new GhostAdminAPI(config);
 
         should.exist(api.posts);
     });
 
     describe('api.posts', function () {
         it('has a browse method', function () {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
             should.equal(typeof api.posts.browse, 'function');
         });
 
         describe('api.posts.browse', function () {
             it('makes a request to the posts resource, using correct version', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
                     should.equal(pathname, '/ghost/api/v2/admin/posts/');
@@ -159,7 +162,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('supports the include option as an array', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({query}) => {
                     should.deepEqual(query.include, 'authors,tags');
@@ -170,7 +173,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('supports the include option as a string', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({query}) => {
                     should.equal(query.include, 'authors,tags');
@@ -181,7 +184,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('resolves with an array of the posts resources, and includes a meta property on the array', function () {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 return api.posts.browse().then((data) => {
                     should.equal(Array.isArray(data), true);
@@ -191,13 +194,13 @@ describe('GhostAdminAPI', function () {
         });
 
         it('has a read method', function () {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
             should.equal(typeof api.posts.read, 'function');
         });
 
         describe('api.posts.read', function () {
             it('makes a request to the post resource, using correct version and id', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
                     should.equal(pathname, '/ghost/api/v2/admin/posts/1/');
@@ -208,7 +211,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes a request to the post resource, using correct version and slug', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
                     should.equal(pathname, '/ghost/api/v2/admin/posts/slug/booyar/');
@@ -219,7 +222,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('supports the include option as an array', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({query}) => {
                     should.deepEqual(query.include, 'authors,tags');
@@ -230,7 +233,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('supports the include option as a string', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({query}) => {
                     should.equal(query.include, 'authors,tags');
@@ -241,7 +244,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('resolves with the post resource', function () {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 return api.posts.read({id: '1'}).then((data) => {
                     should.equal(Array.isArray(data), false);
@@ -251,14 +254,14 @@ describe('GhostAdminAPI', function () {
         });
 
         it('has a add method', function () {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
             should.equal(typeof api.posts.add, 'function');
         });
 
         describe('api.posts.add', function () {
             describe('expected data format', function () {
                 it('expects data to be passed in', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.add().catch((err) => {
                         should.exist(err);
@@ -267,7 +270,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('expects author/authors to be passed in', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.add().catch((err) => {
                         should.exist(err);
@@ -276,7 +279,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('should pass with author present', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.add({
                         author: 1
@@ -286,7 +289,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('should pass with authors present', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.add({
                         authors: [1]
@@ -297,7 +300,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes a request to the post resource, using correct version', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
                     should.equal(pathname, '/ghost/api/v2/admin/posts/');
@@ -311,7 +314,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes POST request to the post resource', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('method', (method) => {
                     should.equal(method, 'POST');
@@ -325,7 +328,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('supports the include option as an array', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({query}) => {
                     should.deepEqual(query.include, 'authors,tags');
@@ -339,7 +342,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('supports the include option as a string', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({query}) => {
                     should.equal(query.include, 'authors,tags');
@@ -353,7 +356,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('resolves with the post resource', function () {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 return api.posts.add({
                     title: 'new resource',
@@ -366,14 +369,14 @@ describe('GhostAdminAPI', function () {
         });
 
         it('has a edit method', function () {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
             should.equal(typeof api.posts.edit, 'function');
         });
 
         describe('api.posts.edit', function () {
             describe('expected data format', function () {
                 it('expects data to be passed in', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.edit().catch((err) => {
                         should.exist(err);
@@ -382,7 +385,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('expects data with id to be passed in', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.edit({
                         slug: 'hey'
@@ -392,7 +395,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('should pass with id present', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.edit({
                         id: 1
@@ -403,7 +406,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes a request to the post resource, using correct version', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
                     should.equal(pathname, '/ghost/api/v2/admin/posts/1/');
@@ -417,7 +420,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes PUT request to the post resource', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('method', (method) => {
                     should.equal(method, 'PUT');
@@ -431,7 +434,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('supports the include option as an array', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({query}) => {
                     should.deepEqual(query.include, 'authors,tags');
@@ -445,7 +448,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('supports the include option as a string', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({query}) => {
                     should.equal(query.include, 'authors,tags');
@@ -459,7 +462,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('resolves with edited post resource', function () {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 return api.posts.edit({
                     id: '5c546f8e5b7ad04a47c05756',
@@ -472,14 +475,14 @@ describe('GhostAdminAPI', function () {
         });
 
         it('has a destroy method', function () {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
             should.equal(typeof api.posts.destroy, 'function');
         });
 
         describe('api.posts.destroy', function () {
             describe('expected data format', function () {
                 it('expects data to be passed in', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.destroy().catch((err) => {
                         should.exist(err);
@@ -488,7 +491,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('expects data with id to be passed in', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.destroy({
                         slug: 'hey'
@@ -499,7 +502,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('should pass with id present', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.posts.destroy({
                         id: 1
@@ -510,7 +513,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes a request to the post resource, using correct version', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
                     should.equal(pathname, '/ghost/api/v2/admin/posts/1/');
@@ -523,7 +526,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes DELETE request to the post resource', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('method', (method) => {
                     should.equal(method, 'DELETE');
@@ -536,7 +539,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('resolves with empty post resource', function () {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 return api.posts.destroy({
                     id: 1
@@ -549,7 +552,7 @@ describe('GhostAdminAPI', function () {
 
     describe('api.images', function () {
         it('has a add method', function () {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
             should.equal(typeof api.images.add, 'function');
         });
 
@@ -558,7 +561,7 @@ describe('GhostAdminAPI', function () {
 
             describe('expected data format', function () {
                 it('expects data to be passed in', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.images.add().catch((err) => {
                         should.exist(err);
@@ -567,7 +570,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('expects data.path to be passed in', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.images.add({}).catch((err) => {
                         should.exist(err);
@@ -576,7 +579,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 it('should pass with path present', function (done) {
-                    const api = new GhostAdminAPI({host, version, key});
+                    const api = new GhostAdminAPI(config);
 
                     api.images.add({
                         path: imagePath
@@ -587,7 +590,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes a request to the /images endpoint, using correct version', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
                     should.equal(pathname, '/ghost/api/v2/admin/images/');
@@ -600,7 +603,7 @@ describe('GhostAdminAPI', function () {
             });
 
             it('makes POST request to the /images endpoint', function (done) {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 server.once('method', (method) => {
                     should.equal(method, 'POST');
@@ -613,13 +616,13 @@ describe('GhostAdminAPI', function () {
             });
 
             it('resolves with the url resource', function () {
-                const api = new GhostAdminAPI({host, version, key});
+                const api = new GhostAdminAPI(config);
 
                 return api.images.add({
                     path: imagePath
                 }).then((data) => {
                     should.equal(Array.isArray(data), false);
-                    data.should.equal(`${host}/image/url`);
+                    data.should.equal(`${config.url}/image/url`);
                 });
             });
         });
@@ -627,7 +630,7 @@ describe('GhostAdminAPI', function () {
 
     describe('api.configuration.read', function () {
         it('makes a GET request to the configuration endpoint', function (done) {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
 
             server.once('url', ({pathname}) => {
                 should.equal(pathname, '/ghost/api/v2/admin/configuration/');
@@ -638,7 +641,7 @@ describe('GhostAdminAPI', function () {
         });
 
         it('resolves with the configuration resource', function () {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
 
             return api.configuration.read().then((data) => {
                 should.equal(Array.isArray(data), false);
@@ -649,7 +652,7 @@ describe('GhostAdminAPI', function () {
 
     describe('api.configuration.about.read', function () {
         it('makes a GET request to the configuration/about endpoint', function (done) {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
 
             server.once('url', ({pathname}) => {
                 should.equal(pathname, '/ghost/api/v2/admin/configuration/about/');
@@ -660,7 +663,7 @@ describe('GhostAdminAPI', function () {
         });
 
         it('resolves with the configuration resource', function () {
-            const api = new GhostAdminAPI({host, version, key});
+            const api = new GhostAdminAPI(config);
 
             return api.configuration.about.read().then((data) => {
                 should.equal(Array.isArray(data), false);
@@ -677,7 +680,7 @@ describe('GhostAdminAPI', function () {
                 }
             });
         };
-        const api = new GhostAdminAPI({host, version, key, makeRequest});
+        const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest}));
 
         return api.configuration.read().then((data) => {
             should.deepEqual(data, {test: true});
