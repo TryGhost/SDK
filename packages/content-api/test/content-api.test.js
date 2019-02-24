@@ -358,7 +358,7 @@ describe('GhostContentApi', function () {
                 });
 
                 it('request fails', function () {
-                    const api = new GhostContentApi({host, version, key});
+                    const api = new GhostContentApi(config);
 
                     returnError = true;
 
