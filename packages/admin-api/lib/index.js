@@ -76,8 +76,8 @@ export default function GhostAdminAPI(options) {
     ];
 
     const api = resources.reduce((apiObject, resourceType) => {
-        function add(data, options = {}) {
-            if (!data) {
+        function add(data, queryParams = {}) {
+            if (!data || !Object.keys(data).length) {
                 return Promise.reject(new Error('Missing data'));
             }
 
