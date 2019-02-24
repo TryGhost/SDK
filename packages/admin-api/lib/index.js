@@ -177,6 +177,12 @@ export default function GhostAdminAPI(options) {
         }
     };
 
+    api.site = {
+        read() {
+            return makeResourceRequest('site', {}, {});
+        }
+    };
+
     api.themes = {
         upload(data) {
             if (!data) {
