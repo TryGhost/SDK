@@ -2,24 +2,34 @@ import axios from 'axios';
 
 const supportedVersions = ['v2'];
 
-export default function GhostContentAPI({host, ghostPath = 'ghost', version, key}) {
-    if (this instanceof GhostContentAPI) {
-        return GhostContentAPI({host, version, key});
+export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key}) {
+    // host parameter is deprecated
+    if (host) {
+        // eslint-disable-next-line
+        console.warn('GhostAdminAPI\'s `host` parameter is deprecated, please use `url` instead');
+        if (!url) {
+            url = host;
+        }
     }
+
+    if (this instanceof GhostContentAPI) {
+        return GhostContentAPI({url, version, key});
+    }
+
     if (!version) {
         throw new Error('GhostContentAPI Config Missing: @tryghost/content-api requires a "version" like "v2"');
     }
     if (!supportedVersions.includes(version)) {
         throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api does not support the supplied version');
     }
-    if (!host) {
-        throw new Error('GhostContentAPI Config Missing: @tryghost/content-api requires a "host" like "https://site.com"');
+    if (!url) {
+        throw new Error('GhostContentAPI Config Missing: @tryghost/content-api requires a "url" like "https://site.com" or "https://site.com/blog"');
     }
-    if (!/https?:\/\//.test(host)) {
-        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "host" with a protocol like "https://site.com"');
+    if (!/https?:\/\//.test(url)) {
+        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "url" with a protocol like "https://site.com" or "https://site.com/blog"');
     }
-    if (host.endsWith('/')) {
-        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "host" without a trailing slash like "https://site.com"');
+    if (url.endsWith('/')) {
+        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "url" without a trailing slash like "https://site.com" or "https://site.com/blog"');
     }
     if (ghostPath.endsWith('/') || ghostPath.startsWith('/')) {
         throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
@@ -69,7 +79,7 @@ export default function GhostContentAPI({host, ghostPath = 'ghost', version, key
             Authorization: `GhostMembers ${membersToken}`
         } : undefined;
 
-        return axios.get(`${host}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
+        return axios.get(`${url}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
             params: Object.assign({key}, params),
             paramsSerializer: (params) => {
                 return Object.keys(params).reduce((parts, key) => {
