@@ -14,6 +14,12 @@ describe('GhostContentApi', function () {
         key: '0123456789abcdef0123456789'
     };
 
+    let returnError;
+
+    beforeEach(() => {
+        returnError = false;
+    });
+
     before(function (done) {
         server = http.createServer();
         server.on('listening', () => {
@@ -25,6 +31,27 @@ describe('GhostContentApi', function () {
             const parsedUrl = url.parse(req.url, true);
             server.emit('url', parsedUrl);
             server.emit('headers', req.headers);
+
+            if (returnError) {
+                res.writeHead(404, {
+                    'Content-Type': 'application/json'
+                });
+
+                res.end(JSON.stringify({
+                    errors: [{
+                        message: 'this is an error',
+                        context: 'this is my context',
+                        type: 'NotFoundError',
+                        details: {},
+                        help: 'docs link',
+                        code: 'ERROR',
+                        id: 'id'
+                    }]
+                }));
+
+                return;
+            }
+
             res.writeHead(200, {
                 'Content-Type': 'application/json'
             });
@@ -328,6 +355,32 @@ describe('GhostContentApi', function () {
                     });
 
                     api.authors.browse({id: 1}, 'token');
+                });
+
+                it('request fails', function () {
+                    const api = new GhostContentApi({host, version, key});
+
+                    returnError = true;
+
+                    return api.authors.browse({id: 1}, 'token')
+                        .then(() => {
+                            throw new Error('expected failure');
+                        })
+                        .catch((err) => {
+                            should.exist(err);
+
+                            should.equal(true, err instanceof Error);
+                            err.name.should.eql('NotFoundError');
+
+                            should.exist(err.response);
+                            should.exist(err.message);
+                            should.exist(err.context);
+                            should.exist(err.help);
+                            should.exist(err.id);
+                            should.exist(err.details);
+                            should.exist(err.code);
+                            should.exist(err.type);
+                        });
                 });
             });
 

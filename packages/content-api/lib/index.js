@@ -96,6 +96,28 @@ export default function GhostContentAPI({url, host, ghostPath = 'ghost', version
                 return res.data[resourceType][0];
             }
             return Object.assign(res.data[resourceType], {meta: res.data.meta});
+        }).catch((err) => {
+            if (err.response && err.response.data && err.response.data.errors) {
+                const props = err.response.data.errors[0];
+                const toThrow = new Error(props.message);
+                const keys = Object.keys(props);
+
+                toThrow.name = props.type;
+
+                keys.forEach((key) => {
+                    toThrow[key] = props[key];
+                });
+
+                toThrow.response = err.response;
+
+                // @TODO: remove in 2.0. We have enhanced the error handling, but we don't want to break existing implementations.
+                toThrow.request = err.request;
+                toThrow.config = err.config;
+
+                throw toThrow;
+            } else {
+                throw err;
+            }
         });
     }
 }
