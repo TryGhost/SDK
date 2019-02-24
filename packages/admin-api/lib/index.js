@@ -33,20 +33,29 @@ export default function GhostAdminAPI(options) {
 
     const config = Object.assign({}, defaultConfig, options);
 
+    // new GhostAdminAPI({host: '...'}) is deprecated
+    if (config.host) {
+        // eslint-disable-next-line
+        console.warn('GhostAdminAPI\'s `host` parameter is deprecated, please use `url` instead');
+        if (!config.url) {
+            config.url = config.host;
+        }
+    }
+
     if (!config.version) {
         throw new Error('GhostAdminAPI Config Missing: @tryghost/admin-api requires a "version" like "v2"');
     }
     if (!supportedVersions.includes(config.version)) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api does not support the supplied version');
     }
-    if (!config.host) {
-        throw new Error('GhostAdminAPI Config Missing: @tryghost/admin-api requires a "host" like "https://site.com"');
+    if (!config.url) {
+        throw new Error('GhostAdminAPI Config Missing: @tryghost/admin-api requires a "url" like "https://site.com" or "https://site.com/blog"');
     }
-    if (!/https?:\/\//.test(config.host)) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "host" with a protocol like "https://site.com"');
+    if (!/https?:\/\//.test(config.url)) {
+        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" with a protocol like "https://site.com" or "https://site.com/blog"');
     }
-    if (config.host.endsWith('/')) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "host" without a trailing slash like "https://site.com"');
+    if (config.url.endsWith('/')) {
+        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" without a trailing slash like "https://site.com" or "https://site.com/blog"');
     }
     if (config.ghostPath.endsWith('/') || config.ghostPath.startsWith('/')) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
@@ -243,8 +252,8 @@ export default function GhostAdminAPI(options) {
     }
 
     function makeApiRequest({endpoint, method, data, params = {}, headers = {}}) {
-        const {host, key, version, makeRequest} = config;
-        const url = `${host}${endpoint}`;
+        const {url: apiUrl, key, version, makeRequest} = config;
+        const url = `${apiUrl}${endpoint}`;
 
         headers = Object.assign({}, headers, {
             Authorization: `Ghost ${token(version, key)}`
