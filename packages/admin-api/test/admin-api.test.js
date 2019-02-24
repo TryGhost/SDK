@@ -148,7 +148,7 @@ describe('GhostAdminAPI', function () {
             //
         }
 
-        new GhostAdminAPI({host: config.url, version: config.version, key: config.key});
+        new GhostAdminAPI({url: config.url, version: config.version, key: config.key});
         new GhostAdminAPI(config);
     });
 
@@ -161,385 +161,294 @@ describe('GhostAdminAPI', function () {
         }
     });
 
-    it('Returns an "api" object with posts properties', function () {
-        const config = {
-            url: 'https://whatever.com',
-            version: 'v2',
-            key: '5c499ae6fa1ad52b62c52331:472d79f1fd958d187fff7be9e76d259a799ae7f69a62513c5b7dceb6c7f747a9'
-        };
-        const api = new GhostAdminAPI(config);
+    ['posts', 'pages', 'tags'].forEach((resource) => {
+        describe(`api.${resource}`, function () {
+            describe(`api.${resource}.browse`, function () {
+                it('using correct api version', function (done) {
+                    const api = new GhostAdminAPI(config);
 
-        should.exist(api.posts);
-    });
-
-    describe('api.posts', function () {
-        it('has a browse method', function () {
-            const api = new GhostAdminAPI(config);
-            should.equal(typeof api.posts.browse, 'function');
-        });
-
-        describe('api.posts.browse', function () {
-            it('makes a request to the posts resource, using correct version', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({pathname}) => {
-                    should.equal(pathname, '/ghost/api/v2/admin/posts/');
-                    done();
-                });
-
-                api.posts.browse();
-            });
-
-            it('supports the include option as an array', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({query}) => {
-                    should.deepEqual(query.include, 'authors,tags');
-                    done();
-                });
-
-                api.posts.browse({include: ['authors', 'tags']});
-            });
-
-            it('supports the include option as a string', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({query}) => {
-                    should.equal(query.include, 'authors,tags');
-                    done();
-                });
-
-                api.posts.browse({include: 'authors,tags'});
-            });
-
-            it('resolves with an array of the posts resources, and includes a meta property on the array', function () {
-                const api = new GhostAdminAPI(config);
-
-                return api.posts.browse().then((data) => {
-                    should.equal(Array.isArray(data), true);
-                    should.exist(data.meta);
-                });
-            });
-        });
-
-        it('has a read method', function () {
-            const api = new GhostAdminAPI(config);
-            should.equal(typeof api.posts.read, 'function');
-        });
-
-        describe('api.posts.read', function () {
-            it('makes a request to the post resource, using correct version and id', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({pathname}) => {
-                    should.equal(pathname, '/ghost/api/v2/admin/posts/1/');
-                    done();
-                });
-
-                api.posts.read({id: '1'});
-            });
-
-            it('makes a request to the post resource, using correct version and slug', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({pathname}) => {
-                    should.equal(pathname, '/ghost/api/v2/admin/posts/slug/booyar/');
-                    done();
-                });
-
-                api.posts.read({slug: 'booyar'});
-            });
-
-            it('supports the include option as an array', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({query}) => {
-                    should.deepEqual(query.include, 'authors,tags');
-                    done();
-                });
-
-                api.posts.read({id: '1'}, {include: ['authors', 'tags']});
-            });
-
-            it('supports the include option as a string', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({query}) => {
-                    should.equal(query.include, 'authors,tags');
-                    done();
-                });
-
-                api.posts.read({id: '1'}, {include: 'authors,tags'});
-            });
-
-            it('resolves with the post resource', function () {
-                const api = new GhostAdminAPI(config);
-
-                return api.posts.read({id: '1'}).then((data) => {
-                    should.equal(Array.isArray(data), false);
-                    should.deepEqual(data, {id: '1'});
-                });
-            });
-        });
-
-        it('has a add method', function () {
-            const api = new GhostAdminAPI(config);
-            should.equal(typeof api.posts.add, 'function');
-        });
-
-        describe('api.posts.add', function () {
-            it('request fails', function () {
-                const api = new GhostAdminAPI(config);
-
-                returnError = true;
-
-                return api.posts.add({authors: [{id: 'id'}]})
-                    .then(() => {
-                        throw new Error('expected failure.');
-                    })
-                    .catch((err) => {
-                        should.exist(err);
-
-                        should.equal(true, err instanceof Error);
-                        err.name.should.eql('ValidationError');
-
-                        should.exist(err.response);
-                        should.exist(err.message);
-                        should.exist(err.context);
-                        should.exist(err.help);
-                        should.exist(err.id);
-                        should.exist(err.details);
-                        should.exist(err.code);
-                        should.exist(err.type);
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/`);
+                        done();
                     });
+
+                    api[resource].browse();
+                });
+
+                it('can include relations as array', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.deepEqual(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api[resource].browse({include: ['authors', 'tags']});
+                });
+
+                it('can include relations as strings', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api[resource].browse({include: 'authors,tags'});
+                });
+
+                it('resolves with data array', function () {
+                    const api = new GhostAdminAPI(config);
+
+                    return api[resource].browse().then((data) => {
+                        should.equal(Array.isArray(data), true);
+                    });
+                });
             });
 
-            describe('expected data format', function () {
+            describe(`api.${resource}.read`, function () {
+                it('uses correct api version', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/1/`);
+                        done();
+                    });
+
+                    api[resource].read({id: '1'});
+                });
+
+                it('by slug', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/slug/booyar/`);
+                        done();
+                    });
+
+                    api[resource].read({slug: 'booyar'});
+                });
+
+                it('can include relations as array', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.deepEqual(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api[resource].read({id: '1'}, {include: ['authors', 'tags']});
+                });
+
+                it('can include relations as arrays', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api[resource].read({id: '1'}, {include: 'authors,tags'});
+                });
+
+                it('resolves with data', function () {
+                    const api = new GhostAdminAPI(config);
+
+                    return api[resource].read({id: '1'}).then((data) => {
+                        should.equal(Array.isArray(data), false);
+                        should.deepEqual(data, {id: '1'});
+                    });
+                });
+            });
+
+            describe(`api.${resource}.add`, function () {
+                it('request fails', function () {
+                    const api = new GhostAdminAPI(config);
+
+                    returnError = true;
+
+                    return api[resource].add({authors: [{id: 'id'}]})
+                        .then(() => {
+                            throw new Error('expected failure.');
+                        })
+                        .catch((err) => {
+                            should.exist(err);
+
+                            should.equal(true, err instanceof Error);
+                            err.name.should.eql('ValidationError');
+
+                            should.exist(err.response);
+                            should.exist(err.message);
+                            should.exist(err.context);
+                            should.exist(err.help);
+                            should.exist(err.id);
+                            should.exist(err.details);
+                            should.exist(err.code);
+                            should.exist(err.type);
+                        });
+                });
+
                 it('expects data to be passed in', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.add().catch((err) => {
+                    api[resource].add().catch((err) => {
                         should.exist(err);
                         done();
                     });
                 });
 
-                it('expects author/authors to be passed in', function (done) {
+                it('uses correct api version', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.add().catch((err) => {
-                        should.exist(err);
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/`);
                         done();
+                    });
+
+                    api[resource].add({
+                        attr: 'value'
                     });
                 });
 
-                it('should pass with author present', function (done) {
+                it('ensure method is correct', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.add({
-                        author: 1
-                    })
-                        .then(() => done())
-                        .catch(done);
+                    server.once('method', (method) => {
+                        should.equal(method, 'POST');
+                        done();
+                    });
+
+                    api[resource].add({
+                        attr: 'value'
+                    });
                 });
 
-                it('should pass with authors present', function (done) {
+                it('can include relations as array', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.add({
-                        authors: [1]
-                    })
-                        .then(() => done())
-                        .catch(done);
+                    server.once('url', ({query}) => {
+                        should.deepEqual(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api[resource].add({
+                        attr: 'value'
+                    }, {include: ['authors', 'tags']});
+                });
+
+                it('can include relations as strings', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api[resource].add({
+                        attr: 'value'
+                    }, {include: 'authors,tags'});
+                });
+
+                it('resolves with data', function () {
+                    const api = new GhostAdminAPI(config);
+
+                    return api[resource].add({
+                        attr: 'value'
+                    }).then((data) => {
+                        should.equal(Array.isArray(data), false);
+                        data.slug.should.equal('new-resource');
+                    });
                 });
             });
 
-            it('makes a request to the post resource, using correct version', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({pathname}) => {
-                    should.equal(pathname, '/ghost/api/v2/admin/posts/');
-                    done();
-                });
-
-                api.posts.add({
-                    title: 'new resource',
-                    author: 1
-                });
-            });
-
-            it('makes POST request to the post resource', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('method', (method) => {
-                    should.equal(method, 'POST');
-                    done();
-                });
-
-                api.posts.add({
-                    title: 'new resource',
-                    author: 1
-                });
-            });
-
-            it('supports the include option as an array', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({query}) => {
-                    should.deepEqual(query.include, 'authors,tags');
-                    done();
-                });
-
-                api.posts.add({
-                    title: 'new resource',
-                    author: 1
-                }, {include: ['authors', 'tags']});
-            });
-
-            it('supports the include option as a string', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({query}) => {
-                    should.equal(query.include, 'authors,tags');
-                    done();
-                });
-
-                api.posts.add({
-                    title: 'new resource',
-                    author: 1
-                }, {include: 'authors,tags'});
-            });
-
-            it('resolves with the post resource', function () {
-                const api = new GhostAdminAPI(config);
-
-                return api.posts.add({
-                    title: 'new resource',
-                    author: 1
-                }).then((data) => {
-                    should.equal(Array.isArray(data), false);
-                    data.slug.should.equal('new-resource');
-                });
-            });
-        });
-
-        it('has a edit method', function () {
-            const api = new GhostAdminAPI(config);
-            should.equal(typeof api.posts.edit, 'function');
-        });
-
-        describe('api.posts.edit', function () {
-            describe('expected data format', function () {
+            describe(`api.${resource}.edit`, function () {
                 it('expects data to be passed in', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.edit().catch((err) => {
+                    api[resource].edit().catch((err) => {
                         should.exist(err);
                         done();
                     });
                 });
 
-                it('expects data with id to be passed in', function (done) {
+                it('with id', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.edit({
-                        slug: 'hey'
-                    })
-                        .then(() => done())
-                        .catch(done);
-                });
-
-                it('should pass with id present', function (done) {
-                    const api = new GhostAdminAPI(config);
-
-                    api.posts.edit({
+                    api[resource].edit({
                         id: 1
-                    })
-                        .then(() => done())
-                        .catch(done);
+                    }).then(() => done()).catch(done);
+                });
+
+                it('uses correct api version', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/1/`);
+                        done();
+                    });
+
+                    api[resource].edit({
+                        id: 1
+                    });
+                });
+
+                it('ensures HTTP method', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('method', (method) => {
+                        should.equal(method, 'PUT');
+                        done();
+                    });
+
+                    api[resource].edit({
+                        id: 1
+                    });
+                });
+
+                it('can include relations as array', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.deepEqual(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api[resource].edit({
+                        id: 1
+                    }, {include: ['authors', 'tags']});
+                });
+
+                it('can include relations as string', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api[resource].edit({
+                        id: 1
+                    }, {include: 'authors,tags'});
+                });
+
+                it('resolves with data', function () {
+                    const api = new GhostAdminAPI(config);
+
+                    return api[resource].edit({
+                        id: '5c546f8e5b7ad04a47c05756',
+                        slug: 'edited-resource'
+                    }).then((data) => {
+                        should.equal(Array.isArray(data), false);
+                        data.slug.should.equal('edited-resource');
+                    });
                 });
             });
 
-            it('makes a request to the post resource, using correct version', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({pathname}) => {
-                    should.equal(pathname, '/ghost/api/v2/admin/posts/1/');
-                    done();
-                });
-
-                api.posts.edit({
-                    id: 1,
-                    slug: 'edited-resource'
-                });
-            });
-
-            it('makes PUT request to the post resource', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('method', (method) => {
-                    should.equal(method, 'PUT');
-                    done();
-                });
-
-                api.posts.edit({
-                    id: 1,
-                    slug: 'edited-resource'
-                });
-            });
-
-            it('supports the include option as an array', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({query}) => {
-                    should.deepEqual(query.include, 'authors,tags');
-                    done();
-                });
-
-                api.posts.edit({
-                    id: 1,
-                    slug: 'edited-resource'
-                }, {include: ['authors', 'tags']});
-            });
-
-            it('supports the include option as a string', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({query}) => {
-                    should.equal(query.include, 'authors,tags');
-                    done();
-                });
-
-                api.posts.edit({
-                    id: 1,
-                    slug: 'edited-resource'
-                }, {include: 'authors,tags'});
-            });
-
-            it('resolves with edited post resource', function () {
-                const api = new GhostAdminAPI(config);
-
-                return api.posts.edit({
-                    id: '5c546f8e5b7ad04a47c05756',
-                    slug: 'edited-resource'
-                }).then((data) => {
-                    should.equal(Array.isArray(data), false);
-                    data.slug.should.equal('edited-resource');
-                });
-            });
-        });
-
-        it('has a destroy method', function () {
-            const api = new GhostAdminAPI(config);
-            should.equal(typeof api.posts.destroy, 'function');
-        });
-
-        describe('api.posts.destroy', function () {
-            describe('expected data format', function () {
+            describe(`api.${resource}.destroy`, function () {
                 it('expects data to be passed in', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.destroy().catch((err) => {
+                    api[resource].destroy().catch((err) => {
                         should.exist(err);
                         done();
                     });
@@ -548,7 +457,7 @@ describe('GhostAdminAPI', function () {
                 it('expects data with id to be passed in', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.destroy({
+                    api[resource].destroy({
                         slug: 'hey'
                     }).catch((err) => {
                         should.exist(err);
@@ -559,47 +468,45 @@ describe('GhostAdminAPI', function () {
                 it('should pass with id present', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.posts.destroy({
+                    api[resource].destroy({
                         id: 1
-                    })
-                        .then(() => done())
-                        .catch(done);
-                });
-            });
-
-            it('makes a request to the post resource, using correct version', function (done) {
-                const api = new GhostAdminAPI(config);
-
-                server.once('url', ({pathname}) => {
-                    should.equal(pathname, '/ghost/api/v2/admin/posts/1/');
-                    done();
+                    }).then(() => done()).catch(done);
                 });
 
-                api.posts.destroy({
-                    id: 1
+                it('uses correct api version', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/1/`);
+                        done();
+                    });
+
+                    api[resource].destroy({
+                        id: 1
+                    });
                 });
-            });
 
-            it('makes DELETE request to the post resource', function (done) {
-                const api = new GhostAdminAPI(config);
+                it('uses correct HTTP method', function (done) {
+                    const api = new GhostAdminAPI(config);
 
-                server.once('method', (method) => {
-                    should.equal(method, 'DELETE');
-                    done();
+                    server.once('method', (method) => {
+                        should.equal(method, 'DELETE');
+                        done();
+                    });
+
+                    api[resource].destroy({
+                        id: 1
+                    });
                 });
 
-                api.posts.destroy({
-                    id: 1
-                });
-            });
+                it('resolves with empty data', function () {
+                    const api = new GhostAdminAPI(config);
 
-            it('resolves with empty post resource', function () {
-                const api = new GhostAdminAPI(config);
-
-                return api.posts.destroy({
-                    id: 1
-                }).then((data) => {
-                    should.equal(data, null);
+                    return api[resource].destroy({
+                        id: 1
+                    }).then((data) => {
+                        should.equal(data, null);
+                    });
                 });
             });
         });
@@ -683,61 +590,30 @@ describe('GhostAdminAPI', function () {
         });
     });
 
-    describe('api.configuration.read', function () {
-        it('makes a GET request to the configuration endpoint', function (done) {
+    describe('api.config.read', function () {
+        it('makes a GET request to the config endpoint', function (done) {
             const api = new GhostAdminAPI(config);
 
             server.once('url', ({pathname}) => {
-                should.equal(pathname, '/ghost/api/v2/admin/configuration/');
+                should.equal(pathname, '/ghost/api/v2/admin/config/');
                 done();
             });
 
-            api.configuration.read();
-        });
-
-        it('resolves with the configuration resource', function () {
-            const api = new GhostAdminAPI(config);
-
-            return api.configuration.read().then((data) => {
-                should.equal(Array.isArray(data), false);
-                should.deepEqual(data, {version: '2.13.2'});
-            });
-        });
-    });
-
-    describe('api.configuration.about.read', function () {
-        it('makes a GET request to the configuration/about endpoint', function (done) {
-            const api = new GhostAdminAPI(config);
-
-            server.once('url', ({pathname}) => {
-                should.equal(pathname, '/ghost/api/v2/admin/configuration/about/');
-                done();
-            });
-
-            api.configuration.about.read();
-        });
-
-        it('resolves with the configuration resource', function () {
-            const api = new GhostAdminAPI(config);
-
-            return api.configuration.about.read().then((data) => {
-                should.equal(Array.isArray(data), false);
-                should.deepEqual(data, {version: '2.13.2'});
-            });
+            api.config.read();
         });
     });
 
     it('allows makeRequest override', function () {
         const makeRequest = () => {
             return Promise.resolve({
-                configuration: {
+                config: {
                     test: true
                 }
             });
         };
         const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest}));
 
-        return api.configuration.read().then((data) => {
+        return api.config.read().then((data) => {
             should.deepEqual(data, {test: true});
         });
     });
