@@ -64,48 +64,36 @@ export default function GhostAdminAPI(options) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" in following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters');
     }
 
-    const api = ['posts', 'webhooks', 'subscribers'].reduce((apiObject, resourceType) => {
+    const resources = [
+        // @NOTE: stable
+        'posts',
+        'pages',
+        'tags',
+        // @NOTE: experimental
+        'users',
+        'webhooks',
+        'subscribers'
+    ];
+
+    const api = resources.reduce((apiObject, resourceType) => {
         function add(data, options = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
 
             const mapped = {};
-
-            if (resourceType === 'posts') {
-                // TODO: these data manipulations and validations are resource specific
-                // should extract them into separate data mappings methods per resource type
-                if (!data.author && !data.authors) {
-                    return Promise.reject(new Error('Missing author data. Expected `author` id or `authors` ids array'));
-                }
-
-                let authors = [];
-                if (data.author) {
-                    authors.push({id: data.author});
-                    delete data.author;
-                } else {
-                    authors = data.authors.map(id => ({id}));
-                    delete data.authors;
-                }
-
-                data.authors = authors;
-            }
-
-            // resource data should not contain id or slug information
-            delete data.id;
-            delete data.slug;
-
             mapped[resourceType] = [data];
 
             return makeResourceRequest(resourceType, options, mapped, 'POST');
         }
+
         function edit(data, options = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (!data.id && !data.slug) {
-                return Promise.reject(new Error('Must include either data.id or data.slug'));
+            if (!data.id) {
+                return Promise.reject(new Error('Must include data.id'));
             }
 
             const mapped = {};
@@ -115,14 +103,11 @@ export default function GhostAdminAPI(options) {
                 delete data.id;
             }
 
-            if (data.slug) {
-                mapped.slug = data.slug;
-            }
-
             mapped[resourceType] = [data];
 
             return makeResourceRequest(resourceType, options, mapped, 'PUT');
         }
+
         function destroy(data, options = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
@@ -134,16 +119,18 @@ export default function GhostAdminAPI(options) {
 
             return makeResourceRequest(resourceType, options, data, 'DELETE');
         }
+
         function browse(options = {}) {
             return makeResourceRequest(resourceType, options);
         }
+
         function read(data, options = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (!data.id && !data.slug) {
-                return Promise.reject(new Error('Must include either data.id or data.slug'));
+            if (!data.id && !data.slug && !data.email) {
+                return Promise.reject(new Error('Must include either data.id or data.slug or data.email'));
             }
 
             const params = Object.assign({}, data, options);
@@ -178,31 +165,45 @@ export default function GhostAdminAPI(options) {
                 formData.append('uploadimage', fs.createReadStream(data.path));
             }
 
-            return makeImageRequest(formData || data);
+            return makeUploadRequest(formData || data, endpointFor('images'));
         }
     };
 
-    api.configuration = {
+    api.config = {
         read() {
-            return makeResourceRequest('configuration', {}, {});
-        },
+            return makeResourceRequest('config', {}, {});
+        }
+    };
 
-        about: {
-            read() {
-                return makeResourceRequest('configuration/about', {}, {});
+    api.themes = {
+        upload(data) {
+            if (!data) {
+                return Promise.reject(new Error('Missing data'));
             }
+
+            if (typeof data !== FormData && !data.path) {
+                return Promise.reject(new Error('Must be of FormData or include path'));
+            }
+
+            let formData;
+            if (data.path) {
+                formData = new FormData();
+                formData.append('theme', fs.createReadStream(data.path));
+            }
+
+            return makeUploadRequest(formData || data, endpointFor('themes/upload'));
         }
     };
 
     return api;
 
-    function makeImageRequest(data) {
+    function makeUploadRequest(data, endpointFor) {
         const headers = {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`
         };
 
         return makeApiRequest({
-            endpoint: endpointFor('images'),
+            endpoint: endpointFor,
             method: 'POST',
             data,
             headers
