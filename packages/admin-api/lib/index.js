@@ -84,10 +84,10 @@ export default function GhostAdminAPI(options) {
             const mapped = {};
             mapped[resourceType] = [data];
 
-            return makeResourceRequest(resourceType, options, mapped, 'POST');
+            return makeResourceRequest(resourceType, queryParams, mapped, 'POST');
         }
 
-        function edit(data, options = {}) {
+        function edit(data, queryParams = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
@@ -96,19 +96,20 @@ export default function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Must include data.id'));
             }
 
-            const mapped = {};
+            const body = {};
+            const urlParams = {};
 
             if (data.id) {
-                mapped.id = data.id;
+                urlParams.id = data.id;
                 delete data.id;
             }
 
-            mapped[resourceType] = [data];
+            body[resourceType] = [data];
 
-            return makeResourceRequest(resourceType, options, mapped, 'PUT');
+            return makeResourceRequest(resourceType, queryParams, body, 'PUT', urlParams);
         }
 
-        function destroy(data, options = {}) {
+        function destroy(data, queryParams = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
@@ -117,14 +118,16 @@ export default function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Must include either data.id'));
             }
 
-            return makeResourceRequest(resourceType, options, data, 'DELETE');
+            const urlParams = data;
+
+            return makeResourceRequest(resourceType, queryParams, data, 'DELETE', urlParams);
         }
 
         function browse(options = {}) {
             return makeResourceRequest(resourceType, options);
         }
 
-        function read(data, options = {}) {
+        function read(data, queryParams) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
@@ -133,9 +136,8 @@ export default function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Must include either data.id or data.slug or data.email'));
             }
 
-            const params = Object.assign({}, data, options);
-
-            return makeResourceRequest(resourceType, params, data);
+            const urlParams = data;
+            return makeResourceRequest(resourceType, queryParams, {}, 'GET', urlParams);
         }
 
         return Object.assign(apiObject, {
@@ -205,19 +207,17 @@ export default function GhostAdminAPI(options) {
         return makeApiRequest({
             endpoint: endpointFor,
             method: 'POST',
-            data,
+            body: data,
             headers
         });
     }
 
-    function makeResourceRequest(resourceType, params, data = {}, method = 'GET') {
-        delete params.id;
-
+    function makeResourceRequest(resourceType, queryParams = {}, body = {}, method = 'GET', urlParams = {}) {
         return makeApiRequest({
-            endpoint: endpointFor(resourceType, data),
+            endpoint: endpointFor(resourceType, urlParams),
             method,
-            params,
-            data
+            queryParams,
+            body
         }).then((data) => {
             if (method === 'DELETE') {
                 return data;
@@ -252,7 +252,7 @@ export default function GhostAdminAPI(options) {
         return endpoint;
     }
 
-    function makeApiRequest({endpoint, method, data, params = {}, headers = {}}) {
+    function makeApiRequest({endpoint, method, body, queryParams = {}, headers = {}}) {
         const {url: apiUrl, key, version, makeRequest} = config;
         const url = `${apiUrl}${endpoint}`;
 
@@ -263,8 +263,8 @@ export default function GhostAdminAPI(options) {
         return makeRequest({
             url,
             method,
-            data,
-            params,
+            data: body,
+            params: queryParams,
             headers
         }).catch((err) => {
             /**
