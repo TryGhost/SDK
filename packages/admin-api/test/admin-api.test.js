@@ -120,6 +120,7 @@ describe('GhostAdminAPI', function () {
             //
         }
 
+        new GhostAdminAPI({host: config.url, version: config.version, key: config.key});
         new GhostAdminAPI(config);
     });
 
