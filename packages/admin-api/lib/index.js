@@ -184,7 +184,7 @@ export default function GhostAdminAPI(options) {
     };
 
     api.themes = {
-        upload(data) {
+        add(data) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
