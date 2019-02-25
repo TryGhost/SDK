@@ -40,7 +40,7 @@ function setupMembersListeners() {
         const [hasCurrentToken, currentToken] = currentCookies.match(/member=([a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]*)/) || [null]; // eslint-disable-line no-unused-vars
 
         if (currentToken && isTokenExpired(currentToken)) {
-            return members.logout();
+            return members.signout();
         }
 
         members.getToken({
