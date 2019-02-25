@@ -60,6 +60,7 @@ function setupMembersListeners() {
         members.signout()
             .then(() => {
                 document.cookie = 'member=null';
+                return true;
             })
             .then(reload);
     }
@@ -68,10 +69,11 @@ function setupMembersListeners() {
         event.preventDefault();
         members.signin()
             .then(() => {
-                members.getToken({
+                return members.getToken({
                     audience: tokenAudience
                 }).then(function (token) {
                     document.cookie = 'member=' + token;
+                    return true;
                 });
             })
             .then(reload);
