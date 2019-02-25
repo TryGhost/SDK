@@ -530,7 +530,7 @@ describe('GhostAdminAPI', function () {
                 it('expects data to be passed in', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.images.add().catch((err) => {
+                    api.images.upload().catch((err) => {
                         should.exist(err);
                         done();
                     });
@@ -539,7 +539,7 @@ describe('GhostAdminAPI', function () {
                 it('expects data.path to be passed in', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.images.add({}).catch((err) => {
+                    api.images.upload({}).catch((err) => {
                         should.exist(err);
                         done();
                     });
@@ -548,7 +548,7 @@ describe('GhostAdminAPI', function () {
                 it('should pass with path present', function (done) {
                     const api = new GhostAdminAPI(config);
 
-                    api.images.add({
+                    api.images.upload({
                         path: imagePath
                     })
                         .then(() => done())
