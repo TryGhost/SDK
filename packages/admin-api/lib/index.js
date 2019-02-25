@@ -152,7 +152,7 @@ module.exports = function GhostAdminAPI(options) {
     }, {});
 
     api.images = {
-        add(data) {
+        upload(data) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
@@ -165,10 +165,10 @@ module.exports = function GhostAdminAPI(options) {
             if (data.path) {
                 formData = new FormData();
                 formData.append('file', fs.createReadStream(data.path));
-                formData.append('purpose', fs.createReadStream(data.purpose || 'image'));
+                formData.append('purpose', data.purpose || 'image');
 
                 if (data.ref) {
-                    formData.append('ref', fs.createReadStream(data.ref));
+                    formData.append('ref', data.ref);
                 }
             }
 
@@ -189,7 +189,7 @@ module.exports = function GhostAdminAPI(options) {
     };
 
     api.themes = {
-        add(data) {
+        upload(data) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }

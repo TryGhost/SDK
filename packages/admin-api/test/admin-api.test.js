@@ -520,10 +520,10 @@ describe('GhostAdminAPI', function () {
     describe('api.images', function () {
         it('has a add method', function () {
             const api = new GhostAdminAPI(config);
-            should.equal(typeof api.images.add, 'function');
+            should.equal(typeof api.images.upload, 'function');
         });
 
-        describe('api.images.add', function () {
+        describe('api.images.upload', function () {
             const imagePath = path.join(__dirname, './fixtures/ghost-logo.png');
 
             describe('expected data format', function () {
@@ -556,7 +556,7 @@ describe('GhostAdminAPI', function () {
                 });
             });
 
-            it('makes a request to the /images endpoint, using correct version', function (done) {
+            it('makes a request to the /images/upload endpoint, using correct version', function (done) {
                 const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
@@ -564,7 +564,7 @@ describe('GhostAdminAPI', function () {
                     done();
                 });
 
-                api.images.add({
+                api.images.upload({
                     path: imagePath
                 });
             });
@@ -577,7 +577,7 @@ describe('GhostAdminAPI', function () {
                     done();
                 });
 
-                api.images.add({
+                api.images.upload({
                     path: imagePath
                 });
             });
@@ -585,7 +585,7 @@ describe('GhostAdminAPI', function () {
             it('resolves with the url resource', function () {
                 const api = new GhostAdminAPI(config);
 
-                return api.images.add({
+                return api.images.upload({
                     path: imagePath
                 }).then((data) => {
                     should.equal(Array.isArray(data), false);
