@@ -157,14 +157,14 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (typeof data !== FormData && !data.path) {
+            if (typeof data !== FormData && !data.file) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
             let formData;
-            if (data.path) {
+            if (data.file) {
                 formData = new FormData();
-                formData.append('file', fs.createReadStream(data.path));
+                formData.append('file', fs.createReadStream(data.file));
                 formData.append('purpose', data.purpose || 'image');
 
                 if (data.ref) {
@@ -194,14 +194,14 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (typeof data !== FormData && !data.path) {
+            if (typeof data !== FormData && !data.file) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
             let formData;
-            if (data.path) {
+            if (data.file) {
                 formData = new FormData();
-                formData.append('file', fs.createReadStream(data.path));
+                formData.append('file', fs.createReadStream(data.file));
             }
 
             return makeUploadRequest('themes', formData || data, endpointFor('themes/upload'));

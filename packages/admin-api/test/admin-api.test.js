@@ -549,7 +549,7 @@ describe('GhostAdminAPI', function () {
                     const api = new GhostAdminAPI(config);
 
                     api.images.upload({
-                        path: imagePath
+                        file: imagePath
                     })
                         .then(() => done())
                         .catch(done);
@@ -565,7 +565,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 api.images.upload({
-                    path: imagePath
+                    file: imagePath
                 });
             });
 
@@ -578,7 +578,7 @@ describe('GhostAdminAPI', function () {
                 });
 
                 api.images.upload({
-                    path: imagePath
+                    file: imagePath
                 });
             });
 
@@ -586,7 +586,7 @@ describe('GhostAdminAPI', function () {
                 const api = new GhostAdminAPI(config);
 
                 return api.images.upload({
-                    path: imagePath
+                    file: imagePath
                 }).then((data) => {
                     should.equal(Array.isArray(data), false);
                     data.url.should.equal(`${config.url}/image/url`);
