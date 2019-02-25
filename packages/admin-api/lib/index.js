@@ -301,6 +301,9 @@ module.exports = function GhostAdminAPI(options) {
                 // toThrow.response = err.response;
                 throw toThrow;
             } else {
+                delete err.request;
+                delete err.config;
+                delete err.response;
                 throw err;
             }
         });
