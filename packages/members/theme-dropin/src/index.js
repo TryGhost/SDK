@@ -10,8 +10,6 @@ function reload(success) {
     }
 }
 
-const log = x => window['con' + 'sole']['l' + 'og'](x);
-
 function setupMembersListeners() {
     const members = layer2({membersUrl: window.membersUrl});
     const tokenAudience = new URL(window.location.href).origin;
@@ -34,8 +32,17 @@ function setupMembersListeners() {
     const upgradeEls = document.querySelectorAll('[data-members-upgrade]');
     const signoutEls = document.querySelectorAll('[data-members-signout]');
 
+    function setCookie(token) {
+        const claims = getClaims(token);
+        const expiry = new Date(claims.exp * 1000);
+        document.cookie = 'member=' + token + ';Path=/;expires=' + expiry.toUTCString();
+    }
+
+    function removeCookie() {
+        document.cookie = 'member=null;Path=/;max-age=0';
+    }
+
     members.on('signedin', function () {
-        log('signedin event');
         const currentCookies = document.cookie;
         const [hasCurrentToken, currentToken] = currentCookies.match(/member=([a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]*)/) || [null]; // eslint-disable-line no-unused-vars
 
@@ -46,20 +53,19 @@ function setupMembersListeners() {
         members.getToken({
             audience: tokenAudience
         }).then(function (token) {
-            log('Setting the cookie from signedin event');
-            document.cookie = 'member=' + token;
+            setCookie(token);
         });
     });
 
     members.on('signedout', function () {
-        document.cookie = 'member=null';
+        removeCookie();
     });
 
     function signout(event) {
         event.preventDefault();
         members.signout()
             .then(() => {
-                document.cookie = 'member=null';
+                removeCookie();
                 return true;
             })
             .then(reload);
@@ -72,7 +78,7 @@ function setupMembersListeners() {
                 return members.getToken({
                     audience: tokenAudience
                 }).then(function (token) {
-                    document.cookie = 'member=' + token;
+                    setCookie(token);
                     return true;
                 });
             })
