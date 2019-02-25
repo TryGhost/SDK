@@ -282,7 +282,6 @@ describe('GhostAdminAPI', function () {
                             should.equal(true, err instanceof Error);
                             err.name.should.eql('ValidationError');
 
-                            should.exist(err.response);
                             should.exist(err.message);
                             should.exist(err.context);
                             should.exist(err.help);

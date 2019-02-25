@@ -296,7 +296,9 @@ module.exports = function GhostAdminAPI(options) {
                     toThrow[key] = props[key];
                 });
 
-                toThrow.response = err.response;
+                // @TODO: bring back with a better design idea. if you log the error, the stdout is hard to read
+                //        if we return the full response object, which includes also the request etc.
+                // toThrow.response = err.response;
                 throw toThrow;
             } else {
                 throw err;
