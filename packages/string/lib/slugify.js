@@ -8,7 +8,7 @@ const stripInvisibleChars = require('./stripInvisibleChars');
  *
  * @param {String} string - the string we want to slugify
  * @param {object} options - filter options
- * @param {bool} [options.requiredChangesOnly] - limits the number of tags to be returned
+ * @param {bool} [options.requiredChangesOnly] - don't perform optional cleanup, e.g. removing extra dashes
  * @returns {String} slugified string
  */
 module.exports = function (string, options = {}) {
