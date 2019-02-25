@@ -164,10 +164,15 @@ module.exports = function GhostAdminAPI(options) {
             let formData;
             if (data.path) {
                 formData = new FormData();
-                formData.append('uploadimage', fs.createReadStream(data.path));
+                formData.append('file', fs.createReadStream(data.path));
+                formData.append('purpose', fs.createReadStream(data.purpose || 'image'));
+
+                if (data.ref) {
+                    formData.append('ref', fs.createReadStream(data.ref));
+                }
             }
 
-            return makeUploadRequest(formData || data, endpointFor('images'));
+            return makeUploadRequest('images', formData || data, endpointFor('images/upload'));
         }
     };
 
@@ -199,22 +204,29 @@ module.exports = function GhostAdminAPI(options) {
                 formData.append('theme', fs.createReadStream(data.path));
             }
 
-            return makeUploadRequest(formData || data, endpointFor('themes/upload'));
+            return makeUploadRequest('themes', formData || data, endpointFor('themes/upload'));
         }
     };
 
     return api;
 
-    function makeUploadRequest(data, endpointFor) {
+    function makeUploadRequest(resourceType, data, endpoint) {
         const headers = {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`
         };
 
         return makeApiRequest({
-            endpoint: endpointFor,
+            endpoint: endpoint,
             method: 'POST',
             body: data,
             headers
+        }).then((data) => {
+            if (!Array.isArray(data[resourceType])) {
+                return data[resourceType];
+            }
+            if (data[resourceType].length === 1 && !data.meta) {
+                return data[resourceType][0];
+            }
         });
     }
 

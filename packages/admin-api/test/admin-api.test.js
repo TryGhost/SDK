@@ -91,7 +91,12 @@ describe('GhostAdminAPI', function () {
             }
 
             if (req.headers['content-type'].match(/multipart/)) {
-                data = `${config.url}/image/url`;
+                data = {
+                    images: [{
+                        url: `${config.url}/image/url`,
+                        ref: null
+                    }]
+                };
             } else if (req.method === 'POST') {
                 data = {
                     [browseMatch[1]]: [{
@@ -555,7 +560,7 @@ describe('GhostAdminAPI', function () {
                 const api = new GhostAdminAPI(config);
 
                 server.once('url', ({pathname}) => {
-                    should.equal(pathname, '/ghost/api/v2/admin/images/');
+                    should.equal(pathname, '/ghost/api/v2/admin/images/upload/');
                     done();
                 });
 
@@ -584,7 +589,7 @@ describe('GhostAdminAPI', function () {
                     path: imagePath
                 }).then((data) => {
                     should.equal(Array.isArray(data), false);
-                    data.should.equal(`${config.url}/image/url`);
+                    data.url.should.equal(`${config.url}/image/url`);
                 });
             });
         });
