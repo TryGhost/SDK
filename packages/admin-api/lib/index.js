@@ -157,7 +157,7 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (typeof data !== FormData && !data.file) {
+            if (!(data instanceof FormData) && !data.file) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
@@ -194,7 +194,7 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (typeof data !== FormData && !data.file) {
+            if (!(data instanceof FormData) && !data.file) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
