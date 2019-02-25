@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-const token = (version, key) => {
+module.exports = function token(version, key) {
     const [id, secret] = key.split(':');
 
     return jwt.sign({
@@ -11,5 +11,3 @@ const token = (version, key) => {
         audience: `/${version}/admin/`
     });
 };
-
-export default token;

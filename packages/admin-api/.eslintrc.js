@@ -1,6 +1,6 @@
 module.exports = {
     plugins: ['ghost'],
     extends: [
-        'plugin:ghost/es',
+        'plugin:ghost/node',
     ]
 }

@@ -1,11 +1,11 @@
-import axios from 'axios';
-import FormData from 'form-data';
-import fs from 'fs';
-import token from './token';
+const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
+const token = require('./token');
 
 const supportedVersions = ['v2'];
 
-export default function GhostAdminAPI(options) {
+module.exports = function GhostAdminAPI(options) {
     if (this instanceof GhostAdminAPI) {
         return GhostAdminAPI(options);
     }
@@ -291,4 +291,4 @@ export default function GhostAdminAPI(options) {
             }
         });
     }
-}
+};

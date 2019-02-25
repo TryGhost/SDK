@@ -4,9 +4,7 @@
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/admin-api",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "cjs/admin-api.js",
-  "module": "lib/index.js",
-  "source": "lib/index.js",
+  "main": "lib/index.js",
   "files": [
     "LICENSE",
     "README.md",
@@ -15,9 +13,7 @@
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "pretest": "yarn build",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
-    "build": "rollup -c",
     "lint": "eslint . --ext .js --cache",
     "posttest": "yarn lint"
   },
@@ -26,8 +22,6 @@
   },
   "devDependencies": {
     "mocha": "5.2.0",
-    "rollup": "^1.0.1",
-    "rollup-plugin-commonjs": "^9.2.0",
     "should": "13.2.3",
     "sinon": "7.2.3"
   },
