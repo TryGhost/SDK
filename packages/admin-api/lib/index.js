@@ -201,7 +201,7 @@ module.exports = function GhostAdminAPI(options) {
             let formData;
             if (data.path) {
                 formData = new FormData();
-                formData.append('theme', fs.createReadStream(data.path));
+                formData.append('file', fs.createReadStream(data.path));
             }
 
             return makeUploadRequest('themes', formData || data, endpointFor('themes/upload'));
