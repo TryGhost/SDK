@@ -6,8 +6,6 @@ import {terser} from 'rollup-plugin-terser';
 import replace from 'rollup-plugin-replace';
 import pkg from './package.json';
 
-const dependencies = Object.keys(pkg.dependencies);
-
 export default [
     // Node build.
     // No transpilation or bundling other than converstion from es modules to cjs
@@ -22,8 +20,7 @@ export default [
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
             })
-        ],
-        external: dependencies
+        ]
     },
 
     // Standalone UMD browser build (minified).
