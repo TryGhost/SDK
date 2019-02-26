@@ -109,7 +109,7 @@ module.exports = function GhostAdminAPI(options) {
             return makeResourceRequest(resourceType, queryParams, body, 'PUT', urlParams);
         }
 
-        function destroy(data, queryParams = {}) {
+        function del(data, queryParams = {}) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
@@ -146,7 +146,7 @@ module.exports = function GhostAdminAPI(options) {
                 browse,
                 add,
                 edit,
-                destroy
+                delete: del
             }
         });
     }, {});
