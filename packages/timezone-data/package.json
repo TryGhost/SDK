@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/timezone-data",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/timezone-data",
   "author": "Ghost Foundation",
   "license": "MIT",
@@ -40,6 +40,5 @@
     "rollup-plugin-terser": "^4.0.1",
     "should": "13.2.3",
     "sinon": "7.2.4"
-  },
-  "dependencies": {}
+  }
 }
