@@ -4,7 +4,13 @@ node_js:
       - 10
       - 8
       - 6
-  
+
 cache:
   directories:
     - node_modules
+
+# We need to use yarn to use lerna #yakshaving
+install:
+  yarn global add lerna
+script:
+  yarn test
