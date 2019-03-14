@@ -7,14 +7,15 @@
   "main": "cjs/timezone-data.js",
   "umd:main": "umd/timezone-data.min.js",
   "unpkg": "umd/timezone-data.min.js",
-  "module": "lib/index.js",
+  "module": "es/timezone-data.js",
   "source": "lib/index.js",
   "files": [
     "LICENSE",
     "README.md",
     "cjs/",
     "lib/",
-    "umd/"
+    "umd/",
+    "es/"
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
@@ -36,7 +37,6 @@
     "rollup-plugin-babel": "^4.2.0",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-replace": "^2.1.0",
     "rollup-plugin-terser": "^4.0.1",
     "should": "13.2.3",
     "sinon": "7.2.4"

@@ -7,7 +7,7 @@
   "main": "cjs/helpers.js",
   "umd:main": "umd/helpers.min.js",
   "unpkg": "umd/helpers.min.js",
-  "module": "lib/index.js",
+  "module": "es/helpers.js",
   "source": "lib/index.js",
   "scripts": {
     "dev": "echo \"Implement me!\"",
@@ -24,17 +24,20 @@
     "README.md",
     "cjs/",
     "lib/",
-    "umd/"
+    "umd/",
+    "es/"
   ],
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
+    "@babel/polyfill": "^7.2.5",
     "istanbul": "0.4.5",
     "mocha": "5.2.0",
     "rollup": "^1.0.1",
     "rollup-plugin-babel": "^4.2.0",
+    "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-terser": "^4.0.1",
     "should": "13.2.3",

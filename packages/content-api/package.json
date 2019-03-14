@@ -7,14 +7,15 @@
   "main": "cjs/content-api.js",
   "umd:main": "umd/content-api.min.js",
   "unpkg": "umd/content-api.min.js",
-  "module": "lib/index.js",
+  "module": "es/content-api.js",
   "source": "lib/index.js",
   "files": [
     "LICENSE",
     "README.md",
     "cjs/",
     "lib/",
-    "umd/"
+    "umd/",
+    "es/"
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
+    "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.2.3",
     "eslint-plugin-ghost": "0.1.0",
     "mocha": "5.2.0",
