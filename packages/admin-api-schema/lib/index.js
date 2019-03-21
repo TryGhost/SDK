@@ -40,4 +40,6 @@ const validate = (schema, definitions, data) => {
     }
 };
 
-module.exports.validate = validate;
+module.exports.utils = {
+    validate: validate
+};

@@ -7,7 +7,7 @@ const adminApiSchema = require('../lib');
 describe('Admin API Schema', function () {
     describe('usage basic usage', function () {
         it('does nothing when no parameters ara passed', function () {
-            const validation = adminApiSchema.validate();
+            const validation = adminApiSchema.utils.validate();
 
             should(validation).equal(undefined);
         });
@@ -15,7 +15,7 @@ describe('Admin API Schema', function () {
         it('does nothing when no schema is passed', function () {
             const data = {};
 
-            const validation = adminApiSchema.validate(null, null, data);
+            const validation = adminApiSchema.utils.validate(null, null, data);
 
             should(validation).equal(undefined);
         });
@@ -24,7 +24,7 @@ describe('Admin API Schema', function () {
             const schema = require('./fixtures/basic-schema');
             const data = {};
 
-            const validation = adminApiSchema.validate(schema, null, data);
+            const validation = adminApiSchema.utils.validate(schema, null, data);
 
             should(validation).not.be.undefined();
             should(validation.property).not.be.undefined();
@@ -41,7 +41,7 @@ describe('Admin API Schema', function () {
                 age: 18
             };
 
-            const validation = adminApiSchema.validate(schema, null, data);
+            const validation = adminApiSchema.utils.validate(schema, null, data);
 
             should(validation).equal(undefined);
         });
@@ -53,7 +53,7 @@ describe('Admin API Schema', function () {
                 age: 'young'
             };
 
-            const validation = adminApiSchema.validate(schema, null, data);
+            const validation = adminApiSchema.utils.validate(schema, null, data);
 
             validation.property.should.equal('first_name');
             validation.errorDetails.should.be.an.Array().and.have.lengthOf(3);
@@ -77,7 +77,7 @@ describe('Admin API Schema', function () {
                 }]
             };
 
-            const validation = adminApiSchema.validate(schema, definitions, data);
+            const validation = adminApiSchema.utils.validate(schema, definitions, data);
 
             should(validation).equal(undefined);
         });
@@ -87,7 +87,7 @@ describe('Admin API Schema', function () {
             const definitions = require('../lib/schemas/posts');
             const data = {};
 
-            const validation = adminApiSchema.validate(schema, definitions, data);
+            const validation = adminApiSchema.utils.validate(schema, definitions, data);
 
             validation.property.should.equal('posts');
             validation.errorDetails.should.be.an.Array().and.have.lengthOf(1);
@@ -105,7 +105,7 @@ describe('Admin API Schema', function () {
                 age: 20
             };
 
-            const validation = adminApiSchema.validate(schema, null, data);
+            const validation = adminApiSchema.utils.validate(schema, null, data);
 
             should(validation).equal(undefined);
             should(data.age).equal(20);
