@@ -43,3 +43,9 @@ const validate = (schema, definitions, data) => {
 module.exports.utils = {
     validate: validate
 };
+
+module.exports.schema = {
+    v2: function (name) {
+        return require(`./schema/v2/${name}.json`);
+    }
+};

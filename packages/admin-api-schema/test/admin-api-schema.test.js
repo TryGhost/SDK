@@ -32,6 +32,16 @@ describe('Admin API Schema', function () {
         });
     });
 
+    describe('schema access', function () {
+        it('can access predefined schema', function () {
+            const schema = adminApiSchema.schema.v2('posts-edit');
+            const definitions = adminApiSchema.schema.v2('posts');
+
+            should(schema).not.be.undefined();
+            should(definitions).not.be.undefined();
+        });
+    });
+
     describe('basic schema', function () {
         it('passes validation', function () {
             const schema = require('./fixtures/basic-schema');
@@ -68,8 +78,8 @@ describe('Admin API Schema', function () {
 
     describe('predefined schema', function () {
         it('passes validation', function () {
-            const schema = require(`../lib/schemas/posts-add`);
-            const definitions = require('../lib/schemas/posts');
+            const schema = adminApiSchema.schema.v2('posts-add');
+            const definitions = adminApiSchema.schema.v2('posts');
 
             const data = {
                 posts: [{
@@ -83,8 +93,8 @@ describe('Admin API Schema', function () {
         });
 
         it('fails validation', function () {
-            const schema = require(`../lib/schemas/posts-add`);
-            const definitions = require('../lib/schemas/posts');
+            const schema = adminApiSchema.schema.v2('posts-add');
+            const definitions = adminApiSchema.schema.v2('posts');
             const data = {};
 
             const validation = adminApiSchema.utils.validate(schema, definitions, data);
