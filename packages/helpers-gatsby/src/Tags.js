@@ -36,37 +36,56 @@ const Tags = (props) => {
         visibility: props.visibility,
     }
 
-    if (props.separator) {
-        opts.separator = React.isValidElement(props.separator) ? props.separator :
-            <><span className={props.separatorClasses}>{props.separator}</span></>
+    let keyIndex = 0
+    const generateKey = (pre) => {
+        keyIndex = keyIndex + 1
+        return `${pre}_${keyIndex}`
     }
+
+    Object.defineProperty(opts, 'separator', {
+        get() {
+            if (props.separator && React.isValidElement(props.separator)) {
+                return (
+                    <React.Fragment key={generateKey('separator')}>
+                        {props.separator}
+                    </React.Fragment>
+                )
+            } else {
+                return (
+                    <span className={props.separatorClasses} key={generateKey('separator')}>
+                        {props.separator}
+                    </span>
+                )
+            }
+        },
+    })
 
     if (props.prefix) {
         opts.prefix = React.isValidElement(props.prefix) ? props.prefix :
-            <><span className={props.prefixClasses}>{props.prefix}</span></>
+            <span className={props.prefixClasses} key="prefix">{props.prefix}</span>
     }
 
     if (props.suffix) {
         opts.suffix = React.isValidElement(props.suffix) ? props.suffix :
-            <><span className={props.suffixClasses}>{props.suffix}</span></>
+            <span className={props.suffixClasses} key="suffix">{props.suffix}</span>
     }
 
     opts.fn = function process(tag) {
         let tagLink = props.permalink
         tagLink = tagLink.replace(/:slug/, tag.slug) || `/${tag.slug}/`
 
-        return props.autolink ?
-            <>
-                <span className={props.classes} key={tag.slug}>
-                    <Link to={tagLink} className={props.linkClasses}>{tag.name}</Link>
-                </span>
-            </> :
-            <><span className={props.classes} key={tag.slug}>{tag.name}</span></>
+        return props.autolink ? (
+            <span className={props.classes} key={tag.slug}>
+                <Link to={tagLink} className={props.linkClasses}>
+                    {tag.name}
+                </Link>
+            </span>
+        ) : (
+            <span className={props.classes} key={tag.slug}>{tag.name}</span>
+        )
     }
 
-    return (
-        tagsHelper(props.post, opts)
-    )
+    return tagsHelper(props.post, opts)
 }
 
 Tags.defaultProps = {
