@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "config:base",
+     "group:jsTestMonMajor",
+     "group:linters",
+     ":maintainLockFilesWeekly",
+     ":prHourlyLimitNone",
+     ":automergeMinor"
+  ],
+  "travis": { "enabled": true },
+  "node": {
+    "supportPolicy": ["lts-active"]
+   },
+  "ignorePaths": ["packages/members"],
+  "packageRules": [
+    {
+      "groupName": "rollup + plugins",
+      "packagePatterns": ["^rollup"]
+    }
+   ]
+}
