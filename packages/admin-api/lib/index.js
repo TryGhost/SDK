@@ -251,7 +251,7 @@ module.exports = function GhostAdminAPI(options) {
         });
     }
 
-    function endpointFor(resource, {id, slug} = {}) {
+    function endpointFor(resource, {id, slug, email} = {}) {
         const {ghostPath, version} = config;
         let endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
 
@@ -259,6 +259,8 @@ module.exports = function GhostAdminAPI(options) {
             endpoint = `${endpoint}${id}/`;
         } else if (slug) {
             endpoint = `${endpoint}slug/${slug}/`;
+        } else if (email) {
+            endpoint = `${endpoint}email/${email}/`;
         }
 
         return endpoint;

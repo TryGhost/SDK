@@ -235,6 +235,17 @@ describe('GhostAdminAPI', function () {
                     api[resource].read({slug: 'booyar'});
                 });
 
+                it('by email', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({pathname}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/email/test@example.com/`);
+                        done();
+                    });
+
+                    api[resource].read({email: 'test@example.com'});
+                });
+
                 it('can include relations as array', function (done) {
                     const api = new GhostAdminAPI(config);
 
