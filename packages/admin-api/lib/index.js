@@ -114,8 +114,8 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (!data.id) {
-                return Promise.reject(new Error('Must include either data.id'));
+            if (!data.id && !data.email) {
+                return Promise.reject(new Error('Must include either data.id or data.email'));
             }
 
             const urlParams = data;

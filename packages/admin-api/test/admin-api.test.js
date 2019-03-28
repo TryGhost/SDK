@@ -489,6 +489,14 @@ describe('GhostAdminAPI', function () {
                     }).then(() => done()).catch(done);
                 });
 
+                it('should pass with email present', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    api[resource].delete({
+                        email: 'test@example.com'
+                    }).then(() => done()).catch(done);
+                });
+
                 it('uses correct api version', function (done) {
                     const api = new GhostAdminAPI(config);
 
