@@ -15,7 +15,7 @@
   "packageRules": [
     {
       "groupName": "rollup + plugins",
-      "packageNames": ["^rollup"]
+      "packagePatterns": ["^rollup"]
     }
    ]
 }
