@@ -9,7 +9,7 @@
   ],
   "travis": { "enabled": true },
   "node": {
-    "supportPolicy": ["lts"]
+    "supportPolicy": ["lts-active"]
    },
   "ignorePaths": ["packages/members"]
 }
