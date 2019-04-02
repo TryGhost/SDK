@@ -10,5 +10,6 @@
   "travis": { "enabled": true },
   "node": {
     "supportPolicy": ["lts"]
-   }
+   },
+  "ignorePaths": ["packages/members"]
 }
