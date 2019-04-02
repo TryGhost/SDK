@@ -46,6 +46,6 @@
   },
   "dependencies": {
     "axios": "0.18.0",
-    "ghost-ignition": "^2.9.6"
+    "ghost-ignition": "^3.0.0"
   }
 }
