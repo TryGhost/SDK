@@ -11,5 +11,11 @@
   "node": {
     "supportPolicy": ["lts-active"]
    },
-  "ignorePaths": ["packages/members"]
+  "ignorePaths": ["packages/members"],
+  "packageRules": [
+    {
+      "groupName": "rollup + plugins",
+      "packageNames": ["^rollup"]
+    }
+   ]
 }
