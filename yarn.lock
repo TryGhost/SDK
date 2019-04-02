@@ -2111,24 +2111,7 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-ghost-ignition@^2.9.6:
-  version "2.9.6"
-  resolved "https://registry.yarnpkg.com/ghost-ignition/-/ghost-ignition-2.9.6.tgz#cc8358f0a356bae490e5abeca3c3bda8383352fe"
-  dependencies:
-    bunyan "1.8.12"
-    bunyan-loggly "^1.3.1"
-    caller "1.0.1"
-    debug "^2.6.9"
-    find-root "1.1.0"
-    fs-extra "^3.0.1"
-    json-stringify-safe "^5.0.1"
-    lodash "^4.16.4"
-    moment "^2.15.2"
-    nconf "^0.10.0"
-    prettyjson "^1.1.3"
-    uuid "^3.0.0"
-
-ghost-ignition@^3.0.4:
+ghost-ignition@^3.0.0, ghost-ignition@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/ghost-ignition/-/ghost-ignition-3.0.4.tgz#b951140d2734cd8ff48006f3c1de640499b1028c"
   integrity sha512-oSA9ri7kUohnk2l1SE0p4nXiO6va1GgE5zRyD4nwt8ni924L2+ccCUQMrFqc/Mne2oXO6TJ/wG8qeL0pACW2Bg==
