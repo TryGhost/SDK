@@ -4,6 +4,7 @@
      "group:jsTestMonMajor",
      "group:linters",
      ":maintainLockFilesWeekly",
+     ":prHourlyLimitNone",
      ":automergeMinor"
   ],
   "travis": { "enabled": true },
