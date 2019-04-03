@@ -35,7 +35,7 @@
     "mocha": "6.0.2",
     "rollup": "1.8.0",
     "rollup-plugin-babel": "4.3.2",
-    "rollup-plugin-commonjs": "9.2.3",
+    "rollup-plugin-commonjs": "9.3.0",
     "rollup-plugin-node-resolve": "4.0.1",
     "rollup-plugin-terser": "4.0.4",
     "should": "13.2.3",
