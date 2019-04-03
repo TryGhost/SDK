@@ -4,12 +4,12 @@
      "group:jsTestMonMajor",
      "group:linters",
      ":maintainLockFilesWeekly",
-     ":prHourlyLimitNone",
+     "schedule:earlyMondays",
      ":automergeMinor"
   ],
   "travis": { "enabled": true },
   "node": {
-    "supportPolicy": ["lts-active"]
+    "supportPolicy": ["lts_active"]
    },
   "ignorePaths": ["packages/members"],
   "packageRules": [
