@@ -6,7 +6,12 @@
  * This code is taken from https://github.com/sparksuite/simplemde-markdown-editor/blob/6abda7ab68cc20f4aca870eb243747951b90ab04/src/js/simplemde.js#L1054-L1067
  * with extra diacritics character matching.
  **/
-export default function countWords(text) {
+export default function countWords(text = '') {
+    // protect against Handlebars.SafeString
+    if (text.hasOwnProperty('string')) {
+        text = text.string;
+    }
+
     text = text.replace(/<(.|\n)*?>/g, ' '); // strip any HTML tags
 
     const pattern = /[a-zA-ZÀ-ÿ0-9_\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
