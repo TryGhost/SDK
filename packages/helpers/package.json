@@ -31,8 +31,8 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/core": "7.4.3",
-    "@babel/polyfill": "7.4.3",
+    "@babel/core": "7.4.4",
+    "@babel/polyfill": "7.4.4",
     "istanbul": "0.4.5",
     "mocha": "6.1.4",
     "rollup": "1.10.1",
