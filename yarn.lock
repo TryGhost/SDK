@@ -822,15 +822,22 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@tryghost/kg-parser-plugins@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-parser-plugins/-/kg-parser-plugins-0.2.2.tgz#ae5415025f6fe68c756f5d26da002adceb587bd0"
-  integrity sha512-l+JHOLkpyjsrbEbXmthMKX4v/ZWqtg2LqRwxLFhZl4nbJ78IepLb6fSlG4uxJoKIKjvWOQzuGMfw+ffQ7M2aBw==
+"@tryghost/kg-clean-basic-html@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@tryghost/kg-clean-basic-html/-/kg-clean-basic-html-0.1.1.tgz#a065a5771c29af47d7e681fc6ac2db445b839daf"
+  integrity sha512-pHszGBQMo6r9YTg9VTDJsn0+i+rRNTs09dAMI8ZbD11AP0ten5XJxIqLQuDJJwIrchZ91J2rl+LMgnQo1yIyNw==
 
-"@tryghost/mobiledoc-kit@0.11.1-ghost.7":
-  version "0.11.1-ghost.7"
-  resolved "https://registry.yarnpkg.com/@tryghost/mobiledoc-kit/-/mobiledoc-kit-0.11.1-ghost.7.tgz#79b9ef018dc8c8829864e30602079ea7f4ef3cb6"
-  integrity sha512-kz2HDZ1V+GUYz+x08gVPFtcc1+96vwEGf7rfoR0wA+XYaCU31gdNgSi5zldk6Cs9a3uUJolHYdME+BUNwlVjVQ==
+"@tryghost/kg-parser-plugins@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@tryghost/kg-parser-plugins/-/kg-parser-plugins-0.4.1.tgz#d504976e2ec9eb5fdfdca19fecf3a03a94aebf08"
+  integrity sha512-J1Gn91hIG2pxgwWymPnKcsWsF4BB08tR+Qdg9uqyE5JGwIGGQdNTxgbXSRaMOcHorlmNKqb0bZlnk2l2d/AAYA==
+  dependencies:
+    "@tryghost/kg-clean-basic-html" "^0.1.1"
+
+"@tryghost/mobiledoc-kit@^0.11.2-ghost.1":
+  version "0.11.2-ghost.1"
+  resolved "https://registry.yarnpkg.com/@tryghost/mobiledoc-kit/-/mobiledoc-kit-0.11.2-ghost.1.tgz#7088eb9eef06b4ccdd6c221613f20d01b106f939"
+  integrity sha512-oc5zAQiEzq0oSUb3NpAXHvfcQ+FOjzQ+1sRNv2QwSJ+JftanpdFvgmc9BwX8dZAlHA/NOnrIeTW1Q2Ip9Nm2Ag==
   dependencies:
     mobiledoc-dom-renderer "0.6.5"
     mobiledoc-text-renderer "0.3.2"
