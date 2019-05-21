@@ -253,6 +253,17 @@ describe('GhostContentApi', function () {
                     api.posts.read({id: '1'}, {include: 'authors,tags'});
                 });
 
+                it('supports the include option in first parameter', function (done) {
+                    const api = new GhostContentApi(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api.posts.read({id: '1', include: 'authors,tags'});
+                });
+
                 it('resolves with the post resource', function () {
                     const api = new GhostContentApi(config);
 
@@ -434,7 +445,18 @@ describe('GhostContentApi', function () {
                     api.authors.read({id: '1'}, {include: 'authors,tags'});
                 });
 
-                it('resolves with the post resource', function () {
+                it('supports the include option in first parameter', function (done) {
+                    const api = new GhostContentApi(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api.authors.read({id: '1', include: 'authors,tags'});
+                });
+
+                it('resolves with the author resource', function () {
                     const api = new GhostContentApi(config);
 
                     return api.authors.read({id: '1'}).then((data) => {
@@ -587,6 +609,17 @@ describe('GhostContentApi', function () {
                     });
 
                     api.tags.read({id: '1'}, {include: 'authors,tags'});
+                });
+
+                it('supports the include option in first parameter', function (done) {
+                    const api = new GhostContentApi(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.include, 'authors,tags');
+                        done();
+                    });
+
+                    api.tags.read({id: '1', include: 'authors,tags'});
                 });
 
                 it('resolves with the tags resource', function () {
