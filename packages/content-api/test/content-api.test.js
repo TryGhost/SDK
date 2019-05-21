@@ -723,7 +723,7 @@ describe('GhostContentApi', function () {
                         done();
                     });
 
-                    api.posts.browse({id: 1}, 'token');
+                    api.pages.browse({id: 1}, 'token');
                 });
             });
         });
