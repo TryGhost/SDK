@@ -334,6 +334,20 @@ describe('GhostAdminAPI', function () {
                     api[resource].read({id: 1}, {fields: ['id', 'slug']});
                 });
 
+                it('can combine multiple properties in first parameter', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({pathname, query}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/slug/kevin/`);
+
+                        should.deepEqual(query.fields, 'id,slug');
+                        should.deepEqual(query.include, 'author,tag');
+                        done();
+                    });
+
+                    api[resource].read({slug: 'kevin', fields: ['id', 'slug'], include: 'author,tag'});
+                });
+
                 it('resolves with data', function () {
                     const api = new GhostAdminAPI(config);
 
