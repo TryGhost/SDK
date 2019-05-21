@@ -136,7 +136,18 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Must include either data.id or data.slug or data.email'));
             }
 
-            const urlParams = data;
+            const urlParams = {
+                id: data.id,
+                slug: data.slug,
+                email: data.email
+            };
+
+            delete data.id;
+            delete data.slug;
+            delete data.email;
+
+            queryParams = Object.assign({}, queryParams, data);
+
             return makeResourceRequest(resourceType, queryParams, {}, 'GET', urlParams);
         }
 

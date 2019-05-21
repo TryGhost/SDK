@@ -192,6 +192,28 @@ describe('GhostAdminAPI', function () {
                     api[resource].browse({include: ['authors', 'tags']});
                 });
 
+                it('can include fields as strings', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.fields, 'id,slug');
+                        done();
+                    });
+
+                    api[resource].browse({fields: 'id,slug'});
+                });
+
+                it('can include fields as array', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.deepEqual(query.fields, 'id,slug');
+                        done();
+                    });
+
+                    api[resource].browse({fields: ['id', 'slug']});
+                });
+
                 it('can include relations as strings', function (done) {
                     const api = new GhostAdminAPI(config);
 
@@ -266,6 +288,64 @@ describe('GhostAdminAPI', function () {
                     });
 
                     api[resource].read({id: '1'}, {include: 'authors,tags'});
+                });
+
+                it('can include fields as strings', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.fields, 'id,slug');
+                        done();
+                    });
+
+                    api[resource].read({id: 1, fields: 'id,slug'});
+                });
+
+                it('can include fields as array', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.deepEqual(query.fields, 'id,slug');
+                        done();
+                    });
+
+                    api[resource].read({id: 1, fields: ['id', 'slug']});
+                });
+
+                it('can include fields as strings in second parameter', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.fields, 'id,slug');
+                        done();
+                    });
+
+                    api[resource].read({id: 1}, {fields: 'id,slug'});
+                });
+
+                it('can include fields as array in second parameter', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.deepEqual(query.fields, 'id,slug');
+                        done();
+                    });
+
+                    api[resource].read({id: 1}, {fields: ['id', 'slug']});
+                });
+
+                it('can combine multiple properties in first parameter', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({pathname, query}) => {
+                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/slug/kevin/`);
+
+                        should.deepEqual(query.fields, 'id,slug');
+                        should.deepEqual(query.include, 'author,tag');
+                        done();
+                    });
+
+                    api[resource].read({slug: 'kevin', fields: ['id', 'slug'], include: 'author,tag'});
                 });
 
                 it('resolves with data', function () {
