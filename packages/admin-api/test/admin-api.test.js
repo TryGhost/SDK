@@ -192,6 +192,28 @@ describe('GhostAdminAPI', function () {
                     api[resource].browse({include: ['authors', 'tags']});
                 });
 
+                it('can include fields as strings', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.equal(query.fields, 'id,slug');
+                        done();
+                    });
+
+                    api[resource].browse({fields: 'id,slug'});
+                });
+
+                it('can include fields as array', function (done) {
+                    const api = new GhostAdminAPI(config);
+
+                    server.once('url', ({query}) => {
+                        should.deepEqual(query.fields, 'id,slug');
+                        done();
+                    });
+
+                    api[resource].browse({fields: ['id', 'slug']});
+                });
+
                 it('can include relations as strings', function (done) {
                     const api = new GhostAdminAPI(config);
 
