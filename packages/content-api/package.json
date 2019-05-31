@@ -45,7 +45,7 @@
     "sinon": "7.3.2"
   },
   "dependencies": {
-    "axios": "0.18.0",
+    "axios": "0.19.0",
     "ghost-ignition": "^3.0.0"
   }
 }
