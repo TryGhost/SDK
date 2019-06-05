@@ -4,10 +4,30 @@ const moment = require('moment-timezone'),
     _ = require('lodash'),
     url = require('url'),
     cheerio = require('cheerio'),
-    config = require('../../config'),
     settingsCache = require('../settings/cache'),
     BASE_API_PATH = '/ghost/api',
     STATIC_IMAGE_URL_PREFIX = 'content/images';
+
+let config = {};
+
+/**
+ * Initialization method to pass in URL configurations
+ * @param {Object} options
+ * @param {String} options.url Ghost instance blog url
+ * @param {String} options.url Ghost instance admin url
+ * @param {Object} options.apiVersions configuration object which has defined `all` property which is an array of keys for other available properties
+ * @param {Object} options.slugs object with 2 properties reserved and protected containing arrays of special case slugs
+ * @param {Number} options.redirectCacheMaxAge
+ */
+const init = (options) => {
+    config = {
+        url: options.url,
+        adminUrl: options.adminUrl,
+        apiVersions: options.apiVersions,
+        slugs: options.slugs,
+        redirectCacheMaxAge: options.redirectCacheMaxAge // get('caching:301:maxAge')
+    };
+};
 
 /**
  * Returns API path combining base path and path for specific version asked or deprecated by default
@@ -27,12 +47,11 @@ function getApiPath(options) {
  * @return {string} API version path
  */
 function getVersionPath(options) {
-    const apiVersions = config.get('api:versions');
     let requestedVersion = options.version || 'v0.1';
     let requestedVersionType = options.type || 'content';
-    let versionData = apiVersions[requestedVersion];
+    let versionData = config.apiVersions[requestedVersion];
     if (typeof versionData === 'string') {
-        versionData = apiVersions[versionData];
+        versionData = config.apiVersions[versionData];
     }
     let versionPath = versionData[requestedVersionType];
     return `/${versionPath}/`;
@@ -52,9 +71,9 @@ function getBlogUrl(secure) {
     var blogUrl;
 
     if (secure) {
-        blogUrl = config.get('url').replace('http://', 'https://');
+        blogUrl = config.url.replace('http://', 'https://');
     } else {
-        blogUrl = config.get('url');
+        blogUrl = config.url;
     }
 
     if (!blogUrl.match(/\/$/)) {
@@ -70,7 +89,7 @@ function getBlogUrl(secure) {
  */
 function getSubdir() {
     // Parse local path location
-    var localPath = url.parse(config.get('url')).path,
+    var localPath = url.parse(config.url).path,
         subdir;
 
     // Remove trailing slash
@@ -102,9 +121,9 @@ function getProtectedSlugs() {
     var subDir = getSubdir();
 
     if (!_.isEmpty(subDir)) {
-        return config.get('slugs').protected.concat([subDir.split('/').pop()]);
+        return config.slugs.protected.concat([subDir.split('/').pop()]);
     } else {
-        return config.get('slugs').protected;
+        return config.slugs.protected;
     }
 }
 
@@ -147,7 +166,7 @@ function urlJoin() {
  * admin:url is optional
  */
 function getAdminUrl() {
-    var adminUrl = config.get('admin:url'),
+    var adminUrl = config.adminUrl,
         subDir = getSubdir();
 
     if (!adminUrl) {
@@ -369,7 +388,7 @@ function isSSL(urlToParse) {
 }
 
 function redirect301(res, redirectUrl) {
-    res.set({'Cache-Control': 'public, max-age=' + config.get('caching:301:maxAge')});
+    res.set({'Cache-Control': 'public, max-age=' + config.redirectCacheMaxAge});
     return res.redirect(301, redirectUrl);
 }
 
@@ -473,6 +492,7 @@ function deduplicateDoubleSlashes(url) {
     return url.replace(/\/\//g, '/');
 }
 
+module.exports.init = init;
 module.exports.absoluteToRelative = absoluteToRelative;
 module.exports.relativeToAbsolute = relativeToAbsolute;
 module.exports.makeAbsoluteUrls = makeAbsoluteUrls;
