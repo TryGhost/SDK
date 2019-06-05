@@ -68,11 +68,24 @@ describe('Url', function () {
 
     describe('getProtectedSlugs', function () {
         it('defaults', function () {
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com/',
+                slugs: {
+                    protected: ['ghost', 'rss', 'amp']
+                }
+            });
+
             urlUtils.getProtectedSlugs().should.eql(['ghost', 'rss', 'amp']);
         });
 
         it('url has subdir', function () {
-            configUtils.set({url: 'http://my-ghost-blog.com/blog'});
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com/blog',
+                slugs: {
+                    protected: ['ghost', 'rss', 'amp']
+                }
+            });
+
             urlUtils.getProtectedSlugs().should.eql(['ghost', 'rss', 'amp', 'blog']);
         });
     });
