@@ -24,7 +24,7 @@ const init = (options) => {
         adminUrl: options.adminUrl,
         apiVersions: options.apiVersions,
         slugs: options.slugs,
-        redirectCacheMaxAge: options.redirectCacheMaxAge // get('caching:301:maxAge')
+        redirectCacheMaxAge: options.redirectCacheMaxAge
     };
 };
 
