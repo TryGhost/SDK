@@ -861,6 +861,10 @@ describe('Url', function () {
     describe('redirects', function () {
         it('performs 301 redirect correctly', function (done) {
             var res = {};
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com',
+                redirectCacheMaxAge: constants.ONE_YEAR_S
+            });
 
             res.set = sinon.spy();
 
@@ -877,6 +881,10 @@ describe('Url', function () {
 
         it('performs an admin 301 redirect correctly', function (done) {
             var res = {};
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com',
+                redirectCacheMaxAge: constants.ONE_YEAR_S
+            });
 
             res.set = sinon.spy();
 
