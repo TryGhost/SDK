@@ -3,18 +3,12 @@
 require('./utils');
 
 const sinon = require('sinon');
-const _ = require('lodash');
 const moment = require('moment-timezone');
-const urlService = require('../../../../server/services/url');
-const constants = require('../../../../server/lib/constants');
-const settingsCache = require('../../../../server/services/settings/cache');
-const configUtils = require('../../../utils/configUtils');
-const testUtils = require('../../../utils');
+const urlUtils = require('../lib/index');
 
-describe('Url', function () {
-    before(function () {
-        configUtils.restore();
-    });
+const constants = {
+    ONE_YEAR_S: 31536000
+};
 
     afterEach(function () {
         configUtils.restore();
