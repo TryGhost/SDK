@@ -957,7 +957,7 @@ describe('Url', function () {
             let result = urlUtils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
 
             result.should.match(/<img src="http:\/\/my-ghost-blog.com\/content\/images\/1.jpg">/);
-            result.should.match(/<a href="\/about\" title="Relative URL">/);
+            result.should.match(/<a href="\/about" title="Relative URL">/);
 
             html = '<a href="/content/images/09/01/image.jpg">';
             result = urlUtils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
