@@ -13,7 +13,7 @@ let config = {};
  * Initialization method to pass in URL configurations
  * @param {Object} options
  * @param {String} options.url Ghost instance blog url
- * @param {String} options.url Ghost instance admin url
+ * @param {String} options.adminUrl Ghost instance admin url
  * @param {Object} options.apiVersions configuration object which has defined `all` property which is an array of keys for other available properties
  * @param {Object} options.slugs object with 2 properties reserved and protected containing arrays of special case slugs
  * @param {Number} options.redirectCacheMaxAge
