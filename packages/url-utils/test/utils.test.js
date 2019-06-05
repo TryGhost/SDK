@@ -1,4 +1,5 @@
 // Switch these lines once there are useful utils
+
 // const testUtils = require('./utils');
 require('./utils');
 
@@ -923,10 +924,6 @@ describe('Url', function () {
             urlUtils.init({
                 url: 'http://my-ghost-blog.com'
             });
-        });
-
-        afterEach(function () {
-            configUtils.restore();
         });
 
         it('[success] does not convert absolute URLs', function () {
