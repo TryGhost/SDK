@@ -92,28 +92,43 @@ describe('Url', function () {
 
     describe('getSubdir', function () {
         it('url has no subdir', function () {
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com/'
+            });
             urlUtils.getSubdir().should.eql('');
         });
 
         it('url has subdir', function () {
-            configUtils.set({url: 'http://my-ghost-blog.com/blog'});
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com/blog'
+            });
             urlUtils.getSubdir().should.eql('/blog');
 
-            configUtils.set({url: 'http://my-ghost-blog.com/blog/'});
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com/blog/'
+            });
             urlUtils.getSubdir().should.eql('/blog');
 
-            configUtils.set({url: 'http://my-ghost-blog.com/my/blog'});
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com/my/blog'
+            });
             urlUtils.getSubdir().should.eql('/my/blog');
 
-            configUtils.set({url: 'http://my-ghost-blog.com/my/blog/'});
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com/my/blog/'
+            });
             urlUtils.getSubdir().should.eql('/my/blog');
         });
 
         it('should not return a slash for subdir', function () {
-            configUtils.set({url: 'http://my-ghost-blog.com'});
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com'
+            });
             urlUtils.getSubdir().should.eql('');
 
-            configUtils.set({url: 'http://my-ghost-blog.com/'});
+            urlUtils.init({
+                url: 'http://my-ghost-blog.com/'
+            });
             urlUtils.getSubdir().should.eql('');
         });
     });
