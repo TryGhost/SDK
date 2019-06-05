@@ -639,95 +639,112 @@ const constants = {
             });
         });
 
+    describe.only('replacePermalink', function () {
         it('permalink is /:slug/, timezone is default', function () {
-            var testData = testUtils.DataGenerator.Content.posts[2],
-                postLink = '/short-and-sweet/';
+            const testData = {
+                slug: 'short-and-sweet'
+            };
+            const postLink = '/short-and-sweet/';
 
-            urlService.utils.replacePermalink('/:slug/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:slug/', testData).should.equal(postLink);
         });
 
         it('permalink is /:year/:month/:day/:slug/, blog timezone is Los Angeles', function () {
-            localSettingsCache.active_timezone = 'America/Los_Angeles';
+            const testData = {
+                slug: 'short-and-sweet',
+                published_at: new Date('2016-05-18T06:30:00.000Z')
+            };
+            const timezone = 'America/Los_Angeles';
+            const postLink = '/2016/05/17/short-and-sweet/';
 
-            var testData = testUtils.DataGenerator.Content.posts[2],
-                postLink = '/2016/05/17/short-and-sweet/';
-
-            testData.published_at = new Date('2016-05-18T06:30:00.000Z');
-            urlService.utils.replacePermalink('/:year/:month/:day/:slug/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal(postLink);
         });
 
         it('permalink is /:year/:month/:day/:slug/, blog timezone is Asia Tokyo', function () {
-            localSettingsCache.active_timezone = 'Asia/Tokyo';
+            const testData = {
+                slug: 'short-and-sweet',
+                published_at: new Date('2016-05-18T06:30:00.000Z')
+            };
+            const timezone = 'Asia/Tokyo';
+            const postLink = '/2016/05/18/short-and-sweet/';
 
-            var testData = testUtils.DataGenerator.Content.posts[2],
-                postLink = '/2016/05/18/short-and-sweet/';
-
-            testData.published_at = new Date('2016-05-18T06:30:00.000Z');
-            urlService.utils.replacePermalink('/:year/:month/:day/:slug/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal(postLink);
         });
 
         it('permalink is /:year/:id/:author/, TZ is LA', function () {
-            localSettingsCache.active_timezone = 'America/Los_Angeles';
+            const testData = {
+                id: 3,
+                primary_author: {slug: 'joe-blog'},
+                slug: 'short-and-sweet',
+                published_at: new Date('2016-01-01T00:00:00.000Z')
+            };
+            const timezone = 'America/Los_Angeles';
+            const postLink = '/2015/3/joe-blog/';
 
-            var testData = _.merge({}, testUtils.DataGenerator.Content.posts[2], {id: 3}, {primary_author: {slug: 'joe-blog'}}),
-                postLink = '/2015/3/joe-blog/';
-
-            testData.published_at = new Date('2016-01-01T00:00:00.000Z');
-            urlService.utils.replacePermalink('/:year/:id/:author/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:year/:id/:author/', testData, timezone).should.equal(postLink);
         });
 
         it('permalink is /:year/:id:/:author/, TZ is Berlin', function () {
-            localSettingsCache.active_timezone = 'Europe/Berlin';
+            const testData = {
+                id: 3,
+                primary_author: {slug: 'joe-blog'},
+                slug: 'short-and-sweet',
+                published_at: new Date('2016-01-01T00:00:00.000Z')
+            };
+            const timezone = 'Europe/Berlin';
+            const postLink = '/2016/3/joe-blog/';
 
-            var testData = _.merge({}, testUtils.DataGenerator.Content.posts[2], {id: 3}, {primary_author: {slug: 'joe-blog'}}),
-                postLink = '/2016/3/joe-blog/';
-
-            testData.published_at = new Date('2016-01-01T00:00:00.000Z');
-            urlService.utils.replacePermalink('/:year/:id/:author/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:year/:id/:author/', testData, timezone).should.equal(postLink);
         });
 
         it('permalink is /:primary_tag/:slug/ and there is a primary_tag', function () {
-            localSettingsCache.active_timezone = 'Europe/Berlin';
+            const testData = {
+                slug: 'short-and-sweet',
+                primary_tag: {slug: 'bitcoin'}
+            };
+            const timezone = 'Europe/Berlin';
+            const postLink = '/bitcoin/short-and-sweet/';
 
-            var testData = _.merge({}, testUtils.DataGenerator.Content.posts[2], {primary_tag: {slug: 'bitcoin'}}),
-                postLink = '/bitcoin/short-and-sweet/';
-
-            testData.published_at = new Date('2016-01-01T00:00:00.000Z');
-            urlService.utils.replacePermalink('/:primary_tag/:slug/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:primary_tag/:slug/', testData, timezone).should.equal(postLink);
         });
 
         it('permalink is /:primary_tag/:slug/ and there is NO primary_tag', function () {
-            localSettingsCache.active_timezone = 'Europe/Berlin';
+            const testData = {
+                slug: 'short-and-sweet'
+            };
+            const timezone = 'Europe/Berlin';
+            const postLink = '/all/short-and-sweet/';
 
-            var testData = testUtils.DataGenerator.Content.posts[2],
-                postLink = '/all/short-and-sweet/';
-
-            testData.published_at = new Date('2016-01-01T00:00:00.000Z');
-            urlService.utils.replacePermalink('/:primary_tag/:slug/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:primary_tag/:slug/', testData, timezone).should.equal(postLink);
         });
 
         it('shows "undefined" for unknown route segments', function () {
-            localSettingsCache.active_timezone = 'Europe/Berlin';
+            const testData = {
+                slug: 'short-and-sweet'
+            };
+            const timezone = 'Europe/Berlin';
+            const postLink = '/undefined/short-and-sweet/';
 
-            var testData = testUtils.DataGenerator.Content.posts[2],
-                postLink = '/undefined/short-and-sweet/';
-
-            testData.published_at = new Date('2016-01-01T00:00:00.000Z');
-            urlService.utils.replacePermalink('/:tag/:slug/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:tag/:slug/', testData, timezone).should.equal(postLink);
         });
 
         it('post is not published yet', function () {
-            localSettingsCache.active_timezone = 'Europe/London';
+            const testData = {
+                id: 3,
+                slug: 'short-and-sweet',
+                published_at: null
+            };
+            const timezone = 'Europe/London';
 
-            var testData = _.merge(testUtils.DataGenerator.Content.posts[2], {id: 3, published_at: null}),
-                nowMoment = moment().tz('Europe/London'),
-                postLink = '/YYYY/MM/DD/short-and-sweet/';
+            const nowMoment = moment().tz('Europe/London');
+
+            let postLink = '/YYYY/MM/DD/short-and-sweet/';
 
             postLink = postLink.replace('YYYY', nowMoment.format('YYYY'));
             postLink = postLink.replace('MM', nowMoment.format('MM'));
             postLink = postLink.replace('DD', nowMoment.format('DD'));
 
-            urlService.utils.replacePermalink('/:year/:month/:day/:slug/', testData).should.equal(postLink);
+            urlUtils.replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal(postLink);
         });
     });
 

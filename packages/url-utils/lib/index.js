@@ -4,7 +4,6 @@ const moment = require('moment-timezone'),
     _ = require('lodash'),
     url = require('url'),
     cheerio = require('cheerio'),
-    settingsCache = require('../settings/cache'),
     BASE_API_PATH = '/ghost/api',
     STATIC_IMAGE_URL_PREFIX = 'content/images';
 
@@ -220,10 +219,10 @@ function createUrl(urlPath, absolute, secure, trailingSlash) {
 /**
  * creates the url path for a post based on blog timezone and permalink pattern
  */
-function replacePermalink(permalink, resource) {
+function replacePermalink(permalink, resource, timezone = 'UTC') {
     let output = permalink,
         primaryTagFallback = 'all',
-        publishedAtMoment = moment.tz(resource.published_at || Date.now(), settingsCache.get('active_timezone')),
+        publishedAtMoment = moment.tz(resource.published_at || Date.now(), timezone),
         permalinkLookUp = {
             year: function () {
                 return publishedAtMoment.format('YYYY');
