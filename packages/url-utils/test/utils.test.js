@@ -11,6 +11,19 @@ const constants = {
 };
 
 describe('Url', function () {
+    const defaultAPIVersions = {
+        all: ['v0.1', 'v2'],
+        v2: {
+            admin: 'v2/admin',
+            content: 'v2/content',
+            members: 'v2/members'
+        },
+        'v0.1': {
+            admin: 'v0.1',
+            content: 'v0.1'
+        }
+    };
+
     describe('absoluteToRelative', function () {
         it('default', function () {
             urlUtils.absoluteToRelative('http://myblog.com/test/').should.eql('/test/');
@@ -186,7 +199,11 @@ describe('Url', function () {
 
     describe('urlFor', function () {
         it('should return the home url with no options', function () {
+            urlUtils.init({
+                url: 'http://ghost-blog.com/'
+            });
             urlUtils.urlFor().should.equal('/');
+
             urlUtils.init({
                 url: 'http://my-ghost-blog.com/blog'
             });
@@ -272,6 +289,9 @@ describe('Url', function () {
         });
 
         it('should handle weird cases by always returning /', function () {
+            urlUtils.init({
+                url: 'http://ghost-blog.com'
+            });
             urlUtils.urlFor('').should.equal('/');
             urlUtils.urlFor('post', {}).should.equal('/');
             urlUtils.urlFor('post', {post: {}}).should.equal('/');
@@ -469,9 +489,7 @@ describe('Url', function () {
         it('admin: custom admin url is set', function () {
             urlUtils.init({
                 url: 'http://my-ghost-blog.com',
-                admin: {
-                    url: 'https://admin.my-ghost-blog.com'
-                }
+                adminUrl: 'https://admin.my-ghost-blog.com'
             });
 
             urlUtils.urlFor('admin', true).should.equal('https://admin.my-ghost-blog.com/ghost/');
@@ -504,9 +522,7 @@ describe('Url', function () {
         it('admin: blog is on subdir', function () {
             urlUtils.init({
                 url: 'http://my-ghost-blog.com/blog',
-                admin: {
-                    url: 'http://something.com'
-                }
+                adminUrl: 'http://something.com'
             });
 
             urlUtils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
@@ -515,9 +531,7 @@ describe('Url', function () {
         it('admin: blog is on subdir', function () {
             urlUtils.init({
                 url: 'http://my-ghost-blog.com/blog',
-                admin: {
-                    url: 'http://something.com/blog'
-                }
+                adminUrl: 'http://something.com/blog'
             });
 
             urlUtils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
@@ -526,9 +540,7 @@ describe('Url', function () {
         it('admin: blog is on subdir', function () {
             urlUtils.init({
                 url: 'http://my-ghost-blog.com/blog',
-                admin: {
-                    url: 'http://something.com/blog/'
-                }
+                adminUrl: 'http://something.com/blog/'
             });
 
             urlUtils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
@@ -537,9 +549,7 @@ describe('Url', function () {
         it('admin: blog is on subdir', function () {
             urlUtils.init({
                 url: 'http://my-ghost-blog.com/blog/',
-                admin: {
-                    url: 'http://something.com/blog'
-                }
+                adminUrl: 'http://something.com/blog'
             });
 
             urlUtils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
@@ -567,9 +577,8 @@ describe('Url', function () {
                 it('api: should return admin url is set', function () {
                     urlUtils.init({
                         url: 'http://my-ghost-blog.com',
-                        admin: {
-                            url: 'https://something.de'
-                        }
+                        adminUrl: 'https://something.de',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -579,7 +588,8 @@ describe('Url', function () {
 
                 it('api: url has subdir', function () {
                     urlUtils.init({
-                        url: 'http://my-ghost-blog.com/blog'
+                        url: 'http://my-ghost-blog.com/blog',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -588,6 +598,11 @@ describe('Url', function () {
                 });
 
                 it('api: relative path is correct', function () {
+                    urlUtils.init({
+                        url: 'http://my-ghost-blog.com/',
+                        apiVersions: defaultAPIVersions
+                    });
+
                     urlUtils
                         .urlFor('api', {version: apiVersion, versionType: 'content'})
                         .should.eql(getApiPath({version: apiVersion, versionType: 'content'}));
@@ -595,7 +610,8 @@ describe('Url', function () {
 
                 it('api: relative path with subdir is correct', function () {
                     urlUtils.init({
-                        url: 'http://my-ghost-blog.com/blog'
+                        url: 'http://my-ghost-blog.com/blog',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -605,7 +621,8 @@ describe('Url', function () {
 
                 it('api: should return http if config.url is http', function () {
                     urlUtils.init({
-                        url: 'http://my-ghost-blog.com'
+                        url: 'http://my-ghost-blog.com',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -615,7 +632,8 @@ describe('Url', function () {
 
                 it('api: should return https if config.url is https', function () {
                     urlUtils.init({
-                        url: 'https://my-ghost-blog.com'
+                        url: 'https://my-ghost-blog.com',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -625,7 +643,8 @@ describe('Url', function () {
 
                 it('api: with cors, blog url is http: should return no protocol', function () {
                     urlUtils.init({
-                        url: 'http://my-ghost-blog.com'
+                        url: 'http://my-ghost-blog.com',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -636,9 +655,8 @@ describe('Url', function () {
                 it('api: with cors, admin url is http: cors should return no protocol', function () {
                     urlUtils.init({
                         url: 'http://my-ghost-blog.com',
-                        admin: {
-                            url: 'http://admin.ghost.example'
-                        }
+                        adminUrl: 'http://admin.ghost.example',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -649,9 +667,8 @@ describe('Url', function () {
                 it('api: with cors, admin url is https: should return with protocol', function () {
                     urlUtils.init({
                         url: 'https://my-ghost-blog.com',
-                        admin: {
-                            url: 'https://admin.ghost.example'
-                        }
+                        adminUrl: 'https://admin.ghost.example',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -661,7 +678,8 @@ describe('Url', function () {
 
                 it('api: with cors, blog url is https: should return with protocol', function () {
                     urlUtils.init({
-                        url: 'https://my-ghost-blog.com'
+                        url: 'https://my-ghost-blog.com',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -671,7 +689,8 @@ describe('Url', function () {
 
                 it('api: with stable version, blog url is https: should return stable content api path', function () {
                     urlUtils.init({
-                        url: 'https://my-ghost-blog.com'
+                        url: 'https://my-ghost-blog.com',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -681,7 +700,8 @@ describe('Url', function () {
 
                 it('api: with stable version and admin true, blog url is https: should return stable admin api path', function () {
                     urlUtils.init({
-                        url: 'https://my-ghost-blog.com'
+                        url: 'https://my-ghost-blog.com',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -691,7 +711,8 @@ describe('Url', function () {
 
                 it('api: with just version and no version type returns correct api path', function () {
                     urlUtils.init({
-                        url: 'https://my-ghost-blog.com'
+                        url: 'https://my-ghost-blog.com',
+                        apiVersions: defaultAPIVersions
                     });
 
                     urlUtils
@@ -703,18 +724,20 @@ describe('Url', function () {
 
         it('api: with active version, blog url is https: should return active content api path', function () {
             urlUtils.init({
-                url: 'https://my-ghost-blog.com'
+                url: 'https://my-ghost-blog.com',
+                apiVersions: defaultAPIVersions
             });
 
-            urlUtils.urlFor('api', {cors: true, version: "v2", versionType: 'content'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/content/');
+            urlUtils.urlFor('api', {cors: true, version: 'v2', versionType: 'content'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/content/');
         });
 
         it('api: with active version and admin true, blog url is https: should return active admin api path', function () {
             urlUtils.init({
-                url: 'https://my-ghost-blog.com'
+                url: 'https://my-ghost-blog.com',
+                apiVersions: defaultAPIVersions
             });
 
-            urlUtils.urlFor('api', {cors: true, version: "v2", versionType: 'admin'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/admin/');
+            urlUtils.urlFor('api', {cors: true, version: 'v2', versionType: 'admin'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/admin/');
         });
     });
 
