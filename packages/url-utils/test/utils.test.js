@@ -1,13 +1,15 @@
-const should = require('should'),
-    sinon = require('sinon'),
-    _ = require('lodash'),
-    moment = require('moment-timezone'),
-    urlService = require('../../../../server/services/url'),
-    constants = require('../../../../server/lib/constants'),
-    settingsCache = require('../../../../server/services/settings/cache'),
-    configUtils = require('../../../utils/configUtils'),
-    testUtils = require('../../../utils'),
-    config = configUtils.config;
+// Switch these lines once there are useful utils
+// const testUtils = require('./utils');
+require('./utils');
+
+const sinon = require('sinon');
+const _ = require('lodash');
+const moment = require('moment-timezone');
+const urlService = require('../../../../server/services/url');
+const constants = require('../../../../server/lib/constants');
+const settingsCache = require('../../../../server/services/settings/cache');
+const configUtils = require('../../../utils/configUtils');
+const testUtils = require('../../../utils');
 
 describe('Url', function () {
     before(function () {
