@@ -1,24 +1,25 @@
 // Contains all path information to be used throughout the codebase.
-// Assumes that config.url is set, and is valid
-const moment = require('moment-timezone'),
-    _ = require('lodash'),
-    url = require('url'),
-    cheerio = require('cheerio'),
-    BASE_API_PATH = '/ghost/api',
-    STATIC_IMAGE_URL_PREFIX = 'content/images';
+const moment = require('moment-timezone');
+const _ = require('lodash');
+const url = require('url');
+const cheerio = require('cheerio');
+const BASE_API_PATH = '/ghost/api';
+const STATIC_IMAGE_URL_PREFIX = 'content/images';
 
 let config = {};
 
 /**
  * Initialization method to pass in URL configurations
  * @param {Object} options
- * @param {String} options.url Ghost instance blog url
- * @param {String} options.adminUrl Ghost instance admin url
+ * @param {String} options.url Ghost instance blog URL
+ * @param {String} options.adminUrl Ghost instance admin URL
  * @param {Object} options.apiVersions configuration object which has defined `all` property which is an array of keys for other available properties
  * @param {Object} options.slugs object with 2 properties reserved and protected containing arrays of special case slugs
  * @param {Number} options.redirectCacheMaxAge
  */
 const init = (options) => {
+    // NOTE: assumes all provided values, like URLs, are valid
+
     config = {
         url: options.url,
         adminUrl: options.adminUrl,
