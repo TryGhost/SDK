@@ -6,9 +6,6 @@ const replacePermalink = require('./replace-permalink');
 const deduplicateDoubleSlashes = require('./deduplicate-slashes');
 const isSSL = require('./is-ssl');
 
-const BASE_API_PATH = '/ghost/api';
-const STATIC_IMAGE_URL_PREFIX = 'content/images';
-
 /**
  * Initialization method to pass in URL configurations
  * @param {Object} options
@@ -17,6 +14,8 @@ const STATIC_IMAGE_URL_PREFIX = 'content/images';
  * @param {Object} options.apiVersions configuration object which has defined `all` property which is an array of keys for other available properties
  * @param {Object} options.slugs object with 2 properties reserved and protected containing arrays of special case slugs
  * @param {Number} options.redirectCacheMaxAge
+ * @param {String} options.baseApiPath static prefix for serving API. Should not te passed in, unless the API is being run under custom URL
+ * @param {String} options.staticImageUrlPrefix static prefix for serving images. Should not be passed in, unless customizing ghost instance image storage
  */
 module.exports = function urlUtils(options = {}) {
     // NOTE: assumes all provided values, like URLs, are valid
@@ -25,7 +24,9 @@ module.exports = function urlUtils(options = {}) {
         adminUrl: options.adminUrl,
         apiVersions: options.apiVersions,
         slugs: options.slugs,
-        redirectCacheMaxAge: options.redirectCacheMaxAge
+        redirectCacheMaxAge: options.redirectCacheMaxAge,
+        baseApiPath: options.baseApiPath || '/ghost/api',
+        staticImageUrlPrefix: options.staticImageUrlPrefix || 'content/images'
     };
 
     if (this instanceof urlUtils) {
@@ -40,7 +41,7 @@ module.exports = function urlUtils(options = {}) {
      */
     function getApiPath(options) {
         const versionPath = getVersionPath(options);
-        return `${BASE_API_PATH}${versionPath}`;
+        return `${config.baseApiPath}${versionPath}`;
     }
 
     /**
@@ -261,7 +262,7 @@ module.exports = function urlUtils(options = {}) {
         } else if (_.isString(context) && _.indexOf(knownObjects, context) !== -1) {
             if (context === 'image' && data.image) {
                 urlPath = data.image;
-                imagePathRe = new RegExp('^' + getSubdir() + '/' + STATIC_IMAGE_URL_PREFIX);
+                imagePathRe = new RegExp('^' + getSubdir() + '/' + config.staticImageUrlPrefix);
                 absolute = imagePathRe.test(data.image) ? absolute : false;
 
                 if (absolute) {
@@ -368,7 +369,7 @@ module.exports = function urlUtils(options = {}) {
     function makeAbsoluteUrls(html, siteUrl, itemUrl, options = {assetsOnly: false}) {
         html = html || '';
         const htmlContent = cheerio.load(html, {decodeEntities: false});
-        const staticImageUrlPrefixRegex = new RegExp(STATIC_IMAGE_URL_PREFIX);
+        const staticImageUrlPrefixRegex = new RegExp(config.staticImageUrlPrefix);
 
         // convert relative resource urls to absolute
         ['href', 'src'].forEach(function forEach(attributeName) {
@@ -471,7 +472,7 @@ module.exports = function urlUtils(options = {}) {
      * But internally the image is located for example in your custom content path:
      * my-content/another-dir/images/2017/01/02/author.png
      */
-    utils.STATIC_IMAGE_URL_PREFIX = STATIC_IMAGE_URL_PREFIX;
+    utils.STATIC_IMAGE_URL_PREFIX = config.staticImageUrlPrefix;
 
     return utils;
 };
