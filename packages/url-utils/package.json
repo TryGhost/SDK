@@ -23,9 +23,7 @@
     "sinon": "7.3.2"
   },
   "dependencies": {
-    "bluebird": "3.5.5",
     "cheerio": "1.0.0-rc.3",
-    "ghost-ignition": "3.1.0",
     "lodash": "4.17.11",
     "moment-timezone": "0.5.25"
   }
