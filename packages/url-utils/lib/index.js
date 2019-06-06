@@ -3,6 +3,7 @@ const _ = require('lodash');
 const url = require('url');
 const cheerio = require('cheerio');
 const replacePermalink = require('./replace-permalink');
+const deduplicateDoubleSlashes = require('./deduplicate-slashes');
 
 const BASE_API_PATH = '/ghost/api';
 const STATIC_IMAGE_URL_PREFIX = 'content/images';
@@ -443,10 +444,6 @@ module.exports = function urlUtils(options = {}) {
         }
 
         return createUrl(url, true);
-    }
-
-    function deduplicateDoubleSlashes(url) {
-        return url.replace(/\/\//g, '/');
     }
 
     const utils = {};
