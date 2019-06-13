@@ -121,9 +121,9 @@ module.exports = function urlUtils(options = {}) {
         var subDir = getSubdir();
 
         if (!_.isEmpty(subDir)) {
-            return config.slugs.protected.concat([subDir.split('/').pop()]);
+            return config.slugs.concat([subDir.split('/').pop()]);
         } else {
-            return config.slugs.protected;
+            return config.slugs;
         }
     }
 

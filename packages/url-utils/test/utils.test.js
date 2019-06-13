@@ -83,9 +83,7 @@ describe('Url', function () {
         it('defaults', function () {
             const utils = urlUtils({
                 url: 'http://my-ghost-blog.com/',
-                slugs: {
-                    protected: ['ghost', 'rss', 'amp']
-                }
+                slugs: ['ghost', 'rss', 'amp']
             });
 
             utils.getProtectedSlugs().should.eql(['ghost', 'rss', 'amp']);
@@ -94,9 +92,7 @@ describe('Url', function () {
         it('url has subdir', function () {
             const utils = urlUtils({
                 url: 'http://my-ghost-blog.com/blog',
-                slugs: {
-                    protected: ['ghost', 'rss', 'amp']
-                }
+                slugs: ['ghost', 'rss', 'amp']
             });
 
             utils.getProtectedSlugs().should.eql(['ghost', 'rss', 'amp', 'blog']);
