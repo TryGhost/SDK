@@ -1,0 +1,30 @@
+{
+  "name": "@tryghost/url-utils",
+  "version": "0.0.0",
+  "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/url-utils",
+  "author": "Ghost Foundation",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "scripts": {
+    "dev": "echo \"Implement me!\"",
+    "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
+    "lint": "eslint . --ext .js --cache",
+    "posttest": "yarn lint"
+  },
+  "files": [
+    "lib/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "mocha": "6.1.4",
+    "should": "13.2.3",
+    "sinon": "7.3.2"
+  },
+  "dependencies": {
+    "cheerio": "0.22.0",
+    "lodash": "4.17.11",
+    "moment-timezone": "0.5.25"
+  }
+}
