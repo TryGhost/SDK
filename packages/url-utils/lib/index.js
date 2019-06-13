@@ -29,10 +29,6 @@ module.exports = function urlUtils(options = {}) {
         staticImageUrlPrefix: options.staticImageUrlPrefix || 'content/images'
     };
 
-    if (this instanceof urlUtils) {
-        return urlUtils(config);
-    }
-
     /**
      * Returns API path combining base path and path for specific version asked or deprecated by default
      * @param {Object} options {version} for which to get the path(stable, actice, deprecated),
