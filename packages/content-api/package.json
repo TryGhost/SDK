@@ -30,9 +30,9 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/core": "7.5.0",
+    "@babel/core": "7.5.4",
     "@babel/polyfill": "7.4.4",
-    "@babel/preset-env": "7.5.0",
+    "@babel/preset-env": "7.5.4",
     "eslint-plugin-ghost": "0.4.0",
     "mocha": "6.1.4",
     "rollup": "1.16.6",
