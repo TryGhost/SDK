@@ -4,7 +4,7 @@ const url = require('url');
 const cheerio = require('cheerio');
 const replacePermalink = require('./replace-permalink');
 const deduplicateDoubleSlashes = require('./deduplicate-slashes');
-const isSSL = require('./is-ssl');
+const utils = require('./utils');
 
 /**
  * Initialization method to pass in URL configurations
@@ -431,33 +431,32 @@ module.exports = function urlUtils(options = {}) {
         return relativePath;
     }
 
-    function relativeToAbsolute(url) {
-        if (!url.startsWith('/') || url.startsWith('//')) {
-            return url;
-        }
-
-        return createUrl(url, true);
+    function relativeToAbsolute(url, options) {
+        return utils.relativeToAbsolute(url, config.url, options);
     }
 
-    const utils = {};
+    const wrapper = {};
 
-    utils.absoluteToRelative = absoluteToRelative;
-    utils.relativeToAbsolute = relativeToAbsolute;
-    utils.makeAbsoluteUrls = makeAbsoluteUrls;
-    utils.getProtectedSlugs = getProtectedSlugs;
-    utils.getSubdir = getSubdir;
-    utils.urlJoin = urlJoin;
-    utils.urlFor = urlFor;
-    utils.isSSL = isSSL;
-    utils.replacePermalink = replacePermalink;
-    utils.redirectToAdmin = redirectToAdmin;
-    utils.redirect301 = redirect301;
-    utils.createUrl = createUrl;
-    utils.deduplicateDoubleSlashes = deduplicateDoubleSlashes;
-    utils.getApiPath = getApiPath;
-    utils.getVersionPath = getVersionPath;
-    utils.getBlogUrl = getBlogUrl;
-    utils.getSiteUrl = getBlogUrl;
+    // expose underlying functions to ease testing
+    wrapper._utils = utils;
+
+    wrapper.absoluteToRelative = absoluteToRelative;
+    wrapper.relativeToAbsolute = relativeToAbsolute;
+    wrapper.makeAbsoluteUrls = makeAbsoluteUrls;
+    wrapper.getProtectedSlugs = getProtectedSlugs;
+    wrapper.getSubdir = getSubdir;
+    wrapper.urlJoin = urlJoin;
+    wrapper.urlFor = urlFor;
+    wrapper.isSSL = utils.isSSL;
+    wrapper.replacePermalink = replacePermalink;
+    wrapper.redirectToAdmin = redirectToAdmin;
+    wrapper.redirect301 = redirect301;
+    wrapper.createUrl = createUrl;
+    wrapper.deduplicateDoubleSlashes = deduplicateDoubleSlashes;
+    wrapper.getApiPath = getApiPath;
+    wrapper.getVersionPath = getVersionPath;
+    wrapper.getBlogUrl = getBlogUrl;
+    wrapper.getSiteUrl = getBlogUrl;
 
     /**
      * If you request **any** image in Ghost, it get's served via
@@ -468,7 +467,7 @@ module.exports = function urlUtils(options = {}) {
      * But internally the image is located for example in your custom content path:
      * my-content/another-dir/images/2017/01/02/author.png
      */
-    utils.STATIC_IMAGE_URL_PREFIX = config.staticImageUrlPrefix;
+    wrapper.STATIC_IMAGE_URL_PREFIX = config.staticImageUrlPrefix;
 
-    return utils;
+    return wrapper;
 };

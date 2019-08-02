@@ -52,30 +52,21 @@ describe('Url', function () {
     });
 
     describe('relativeToAbsolute', function () {
-        it('default', function () {
+        it('calls out to utils.relativeToAbsolute', function () {
             const utils = urlUtils({
-                url: 'http://myblog.com/'
+                url: 'http://my-ghost-blog.com/'
             });
-            utils.relativeToAbsolute('/test/').should.eql('http://myblog.com/test/');
-        });
 
-        it('with subdir', function () {
-            const utils = urlUtils({
-                url: 'http://myblog.com/blog/'
-            });
-            utils.relativeToAbsolute('/test/').should.eql('http://myblog.com/blog/test/');
-        });
+            const spy = sinon.spy();
+            utils._utils.relativeToAbsolute = spy;
 
-        it('should not convert absolute url', function () {
-            urlUtils().relativeToAbsolute('http://anotherblog.com/blog/').should.eql('http://anotherblog.com/blog/');
-        });
+            utils.relativeToAbsolute('/test/', {test: true});
 
-        it('should not convert absolute url', function () {
-            urlUtils().relativeToAbsolute('http://anotherblog.com/blog/').should.eql('http://anotherblog.com/blog/');
-        });
-
-        it('should not convert schemeless url', function () {
-            urlUtils().relativeToAbsolute('//anotherblog.com/blog/').should.eql('//anotherblog.com/blog/');
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('/test/');
+            firstCall.args[1].should.eql('http://my-ghost-blog.com/');
+            firstCall.args[2].should.deepEqual({test: true});
         });
     });
 
