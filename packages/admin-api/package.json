@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/admin-api",
-  "version": "0.5.1",
+  "version": "0.5.3",
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/admin-api",
   "author": "Ghost Foundation",
   "license": "MIT",
@@ -21,9 +21,9 @@
     "access": "public"
   },
   "devDependencies": {
-    "mocha": "6.1.4",
+    "mocha": "6.2.0",
     "should": "13.2.3",
-    "sinon": "7.3.2"
+    "sinon": "7.4.1"
   },
   "dependencies": {
     "axios": "0.19.0",

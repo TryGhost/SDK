@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/schema-org",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/schema-org",
   "author": "Ghost Foundation",
   "license": "MIT",
@@ -23,9 +23,9 @@
   },
   "devDependencies": {
     "istanbul": "0.4.5",
-    "mocha": "6.1.4",
+    "mocha": "6.2.0",
     "should": "13.2.3",
-    "sinon": "7.3.2"
+    "sinon": "7.4.1"
   },
   "dependencies": {
     "glob": "^7.1.3",

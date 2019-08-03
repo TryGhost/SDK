@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/helpers-gatsby",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/helpers-gatsby",
   "author": "Ghost Foundation",
   "license": "MIT",
@@ -24,19 +24,21 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/cli": "7.4.4",
-    "@babel/core": "7.4.5",
-    "@babel/preset-env": "7.4.5",
+    "@babel/cli": "7.5.5",
+    "@babel/core": "7.5.5",
+    "@babel/preset-env": "7.5.5",
     "@babel/preset-react": "7.0.0",
-    "mocha": "6.1.4",
-    "rimraf": "2.6.3",
+    "mocha": "6.2.0",
+    "rimraf": "3.0.0",
     "should": "13.2.3",
-    "sinon": "7.3.2"
+    "sinon": "7.4.1"
   },
   "dependencies": {
-    "@tryghost/helpers": "^1.1.5",
-    "gatsby-link": "^2.0.7",
-    "prop-types": "^15.6.2"
+    "@reach/router": "^1.2.1",
+    "@tryghost/helpers": "^1.1.8",
+    "gatsby-link": "^2.2.9",
+    "prop-types": "^15.6.2",
+    "react": "^16.8.6"
   },
   "peerDependencies": {
     "react": "^16.7.0"

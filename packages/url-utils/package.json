@@ -1,7 +1,7 @@
 {
-  "name": "@tryghost/admin-api-schema",
-  "version": "0.2.5",
-  "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/admin-api-schema",
+  "name": "@tryghost/url-utils",
+  "version": "0.3.0",
+  "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/url-utils",
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "lib/index.js",
@@ -12,7 +12,7 @@
     "posttest": "yarn lint"
   },
   "files": [
-    "v2/*"
+    "lib/"
   ],
   "publishConfig": {
     "access": "public"
@@ -23,8 +23,9 @@
     "sinon": "7.4.1"
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
-    "ghost-ignition": "^3.0.4",
-    "lodash": "^4.17.11"
+    "cheerio": "0.22.0",
+    "lodash": "4.17.11",
+    "moment": "2.24.0",
+    "moment-timezone": "0.5.23"
   }
 }

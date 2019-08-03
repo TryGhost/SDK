@@ -45,7 +45,7 @@ const Tags = (props) => {
     Object.defineProperty(opts, 'separator', {
         get() {
             if (props.separator === '') {
-                return null
+                return ''
             }
             if (props.separator && React.isValidElement(props.separator)) {
                 return (
