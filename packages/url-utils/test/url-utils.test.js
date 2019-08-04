@@ -10,7 +10,7 @@ const constants = {
     ONE_YEAR_S: 31536000
 };
 
-describe('Url', function () {
+describe('urlUtils', function () {
     const defaultAPIVersions = {
         all: ['v0.1', 'v2'],
         v2: {

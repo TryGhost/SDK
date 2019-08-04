@@ -101,22 +101,6 @@ module.exports = function urlUtils(options = {}) {
         return subdir;
     }
 
-    function deduplicateSubDir(url) {
-        var subDir = getSubdir(),
-            subDirRegex;
-
-        if (!subDir) {
-            return url;
-        }
-
-        subDir = subDir.replace(/^\/|\/+$/, '');
-        // we can have subdirs that match TLDs so we need to restrict matches to
-        // duplicates that start with a / or the beginning of the url
-        subDirRegex = new RegExp('(^|/)' + subDir + '/' + subDir + '/');
-
-        return url.replace(subDirRegex, '$1' + subDir + '/');
-    }
-
     function getProtectedSlugs() {
         var subDir = getSubdir();
 
@@ -158,7 +142,7 @@ module.exports = function urlUtils(options = {}) {
             url = url.replace(/^\//, '//');
         }
 
-        url = deduplicateSubDir(url);
+        url = utils.deduplicateSubdirectory(url, config.url);
         return url;
     }
 
@@ -178,7 +162,7 @@ module.exports = function urlUtils(options = {}) {
         }
 
         adminUrl = urlJoin(adminUrl, subDir, '/');
-        adminUrl = deduplicateSubDir(adminUrl);
+        adminUrl = utils.deduplicateSubdirectory(adminUrl, config.url);
         return adminUrl;
     }
 
