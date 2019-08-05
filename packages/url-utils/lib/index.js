@@ -17,17 +17,20 @@ const utils = require('./utils');
  * @param {String} options.baseApiPath static prefix for serving API. Should not te passed in, unless the API is being run under custom URL
  * @param {String} options.staticImageUrlPrefix static prefix for serving images. Should not be passed in, unless customizing ghost instance image storage
  */
-module.exports = function urlUtils(options = {}) {
-    // NOTE: assumes all provided values, like URLs, are valid
-    const config = {
-        url: options.url,
-        adminUrl: options.adminUrl,
-        apiVersions: options.apiVersions,
-        slugs: options.slugs,
-        redirectCacheMaxAge: options.redirectCacheMaxAge,
-        baseApiPath: options.baseApiPath || '/ghost/api',
-        staticImageUrlPrefix: options.staticImageUrlPrefix || 'content/images'
-    };
+module.exports = class UrlUtils {
+    constructor(options) {
+        const defaultOptions = {
+            url: null,
+            adminUrl: null,
+            apiVersions: null,
+            slugs: null,
+            redirectCacheMaxAge: null,
+            baseApiPath: '/ghost/api',
+            staticImageUrlPrefix: 'content/images'
+        };
+
+        this._config = Object.assign({}, defaultOptions, options);
+    }
 
     /**
      * Returns API path combining base path and path for specific version asked or deprecated by default
@@ -35,9 +38,9 @@ module.exports = function urlUtils(options = {}) {
      * {type} admin|content: defaults to {version: deprecated, type: content}
      * @return {string} API Path for version
      */
-    function getApiPath(options) {
-        const versionPath = getVersionPath(options);
-        return `${config.baseApiPath}${versionPath}`;
+    getApiPath(options) {
+        const versionPath = this.getVersionPath(options);
+        return `${this._config.baseApiPath}${versionPath}`;
     }
 
     /**
@@ -46,12 +49,12 @@ module.exports = function urlUtils(options = {}) {
      * {type} admin|content: defaults to {version: deprecated, type: content}
      * @return {string} API version path
      */
-    function getVersionPath(options) {
+    getVersionPath(options) {
         let requestedVersion = options.version || 'v0.1';
         let requestedVersionType = options.type || 'content';
-        let versionData = config.apiVersions[requestedVersion];
+        let versionData = this._config.apiVersions[requestedVersion];
         if (typeof versionData === 'string') {
-            versionData = config.apiVersions[versionData];
+            versionData = this._config.apiVersions[versionData];
         }
         let versionPath = versionData[requestedVersionType];
         return `/${versionPath}/`;
@@ -67,13 +70,13 @@ module.exports = function urlUtils(options = {}) {
      * @param {boolean} secure
      * @return {string} URL returns the url as defined in config, but always with a trailing `/`
      */
-    function getBlogUrl(secure) {
+    getBlogUrl(secure) {
         var blogUrl;
 
         if (secure) {
-            blogUrl = config.url.replace('http://', 'https://');
+            blogUrl = this._config.url.replace('http://', 'https://');
         } else {
-            blogUrl = config.url;
+            blogUrl = this._config.url;
         }
 
         if (!blogUrl.match(/\/$/)) {
@@ -87,9 +90,9 @@ module.exports = function urlUtils(options = {}) {
      * Returns a subdirectory URL, if defined so in the config.
      * @return {string} URL a subdirectory if configured.
      */
-    function getSubdir() {
+    getSubdir() {
         // Parse local path location
-        var localPath = url.parse(config.url).path,
+        var localPath = url.parse(this._config.url).path,
             subdir;
 
         // Remove trailing slash
@@ -101,13 +104,13 @@ module.exports = function urlUtils(options = {}) {
         return subdir;
     }
 
-    function getProtectedSlugs() {
-        var subDir = getSubdir();
+    getProtectedSlugs() {
+        var subDir = this.getSubdir();
 
         if (!_.isEmpty(subDir)) {
-            return config.slugs.concat([subDir.split('/').pop()]);
+            return this._config.slugs.concat([subDir.split('/').pop()]);
         } else {
-            return config.slugs;
+            return this._config.slugs;
         }
     }
 
@@ -116,7 +119,7 @@ module.exports = function urlUtils(options = {}) {
      * @param {string} arguments takes arguments and concats those to a valid path/URL.
      * @return {string} URL concatinated URL/path of arguments.
      */
-    function urlJoin() {
+    urlJoin() {
         var args = Array.prototype.slice.call(arguments),
             prefixDoubleSlash = false,
             url;
@@ -142,16 +145,15 @@ module.exports = function urlUtils(options = {}) {
             url = url.replace(/^\//, '//');
         }
 
-        url = utils.deduplicateSubdirectory(url, config.url);
-        return url;
+        return utils.deduplicateSubdirectory(url, this.getBlogUrl());
     }
 
     /**
      * admin:url is optional
      */
-    function getAdminUrl() {
-        var adminUrl = config.adminUrl,
-            subDir = getSubdir();
+    getAdminUrl() {
+        let adminUrl = this._config.adminUrl;
+        const subDir = this.getSubdir();
 
         if (!adminUrl) {
             return;
@@ -161,8 +163,8 @@ module.exports = function urlUtils(options = {}) {
             adminUrl += '/';
         }
 
-        adminUrl = urlJoin(adminUrl, subDir, '/');
-        adminUrl = utils.deduplicateSubdirectory(adminUrl, config.url);
+        adminUrl = this.urlJoin(adminUrl, subDir, '/');
+        adminUrl = utils.deduplicateSubdirectory(adminUrl, this.getBlogUrl());
         return adminUrl;
     }
 
@@ -180,16 +182,14 @@ module.exports = function urlUtils(options = {}) {
     // - secure (optional, default:false) - boolean whether or not to force SSL
     // Returns:
     //  - a URL which always ends with a slash
-    function createUrl(urlPath, absolute, secure, trailingSlash) {
-        urlPath = urlPath || '/';
-        absolute = absolute || false;
-        var base;
+    createUrl(urlPath = '/', absolute = false, secure, trailingSlash) {
+        let base;
 
         // create base of url, always ends without a slash
         if (absolute) {
-            base = getBlogUrl(secure);
+            base = this.getBlogUrl(secure);
         } else {
-            base = getSubdir();
+            base = this.getSubdir();
         }
 
         if (trailingSlash) {
@@ -198,7 +198,7 @@ module.exports = function urlUtils(options = {}) {
             }
         }
 
-        return urlJoin(base, urlPath);
+        return this.urlJoin(base, urlPath);
     }
 
     // ## urlFor
@@ -216,10 +216,12 @@ module.exports = function urlUtils(options = {}) {
     // - absolute (optional, default:false) - boolean whether or not the url should be absolute
     // This is probably not the right place for this, but it's the best place for now
     // @TODO: rewrite, very hard to read, create private functions!
-    function urlFor(context, data, absolute) {
+    urlFor(context, data, absolute) {
         var urlPath = '/',
-            secure, imagePathRe,
-            knownObjects = ['image', 'nav'], baseUrl,
+            secure,
+            imagePathRe,
+            knownObjects = ['image', 'nav'],
+            baseUrl,
             hostname,
 
             // this will become really big
@@ -242,13 +244,13 @@ module.exports = function urlUtils(options = {}) {
         } else if (_.isString(context) && _.indexOf(knownObjects, context) !== -1) {
             if (context === 'image' && data.image) {
                 urlPath = data.image;
-                imagePathRe = new RegExp('^' + getSubdir() + '/' + config.staticImageUrlPrefix);
+                imagePathRe = new RegExp('^' + this.getSubdir() + '/' + this._config.staticImageUrlPrefix);
                 absolute = imagePathRe.test(data.image) ? absolute : false;
 
                 if (absolute) {
                     // Remove the sub-directory from the URL because ghostConfig will add it back.
-                    urlPath = urlPath.replace(new RegExp('^' + getSubdir()), '');
-                    baseUrl = getBlogUrl(secure).replace(/\/$/, '');
+                    urlPath = urlPath.replace(new RegExp('^' + this.getSubdir()), '');
+                    baseUrl = this.getBlogUrl(secure).replace(/\/$/, '');
                     urlPath = baseUrl + urlPath;
                 }
 
@@ -256,7 +258,7 @@ module.exports = function urlUtils(options = {}) {
             } else if (context === 'nav' && data.nav) {
                 urlPath = data.nav.url;
                 secure = data.nav.secure || secure;
-                baseUrl = getBlogUrl(secure);
+                baseUrl = this.getBlogUrl(secure);
                 hostname = baseUrl.split('//')[1];
 
                 // If the hostname is present in the url
@@ -267,12 +269,12 @@ module.exports = function urlUtils(options = {}) {
                     && urlPath.split(hostname)[1].substring(0, 1) !== ':') {
                     // make link relative to account for possible mismatch in http/https etc, force absolute
                     urlPath = urlPath.split(hostname)[1];
-                    urlPath = urlJoin('/', urlPath);
+                    urlPath = this.urlJoin('/', urlPath);
                     absolute = true;
                 }
             }
         } else if (context === 'home' && absolute) {
-            urlPath = getBlogUrl(secure);
+            urlPath = this.getBlogUrl(secure);
 
             // CASE: there are cases where urlFor('home') needs to be returned without trailing
             // slash e. g. the `{{@site.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
@@ -280,7 +282,7 @@ module.exports = function urlUtils(options = {}) {
                 urlPath = urlPath.replace(/\/$/, '');
             }
         } else if (context === 'admin') {
-            urlPath = getAdminUrl() || getBlogUrl();
+            urlPath = this.getAdminUrl() || this.getBlogUrl();
 
             if (absolute) {
                 urlPath += 'ghost/';
@@ -288,8 +290,8 @@ module.exports = function urlUtils(options = {}) {
                 urlPath = '/ghost/';
             }
         } else if (context === 'api') {
-            urlPath = getAdminUrl() || getBlogUrl();
-            let apiPath = getApiPath({version: 'v0.1', type: 'content'});
+            urlPath = this.getAdminUrl() || this.getBlogUrl();
+            let apiPath = this.getApiPath({version: 'v0.1', type: 'content'});
             // CASE: with or without protocol? If your blog url (or admin url) is configured to http, it's still possible that e.g. nginx allows both https+http.
             // So it depends how you serve your blog. The main focus here is to avoid cors problems.
             // @TODO: rename cors
@@ -300,7 +302,7 @@ module.exports = function urlUtils(options = {}) {
             }
 
             if (data && data.version) {
-                apiPath = getApiPath({version: data.version, type: data.versionType});
+                apiPath = this.getApiPath({version: data.version, type: data.versionType});
             }
 
             if (absolute) {
@@ -319,19 +321,19 @@ module.exports = function urlUtils(options = {}) {
             return urlPath;
         }
 
-        return createUrl(urlPath, absolute, secure);
+        return this.createUrl(urlPath, absolute, secure);
     }
 
-    function redirect301(res, redirectUrl) {
-        res.set({'Cache-Control': 'public, max-age=' + config.redirectCacheMaxAge});
+    redirect301(res, redirectUrl) {
+        res.set({'Cache-Control': 'public, max-age=' + this._config.redirectCacheMaxAge});
         return res.redirect(301, redirectUrl);
     }
 
-    function redirectToAdmin(status, res, adminPath) {
-        var redirectUrl = urlJoin(urlFor('admin'), adminPath, '/');
+    redirectToAdmin(status, res, adminPath) {
+        var redirectUrl = this.urlJoin(this.urlFor('admin'), adminPath, '/');
 
         if (status === 301) {
-            return redirect301(res, redirectUrl);
+            return this.redirect301(res, redirectUrl);
         }
         return res.redirect(redirectUrl);
     }
@@ -346,14 +348,14 @@ module.exports = function urlUtils(options = {}) {
      * absolute urls. Returns an object. The html string can be accessed by calling `html()` on
      * the variable that takes the result of this function
      */
-    function makeAbsoluteUrls(html, siteUrl, itemUrl, options = {assetsOnly: false}) {
+    makeAbsoluteUrls(html, siteUrl, itemUrl, options = {assetsOnly: false}) {
         html = html || '';
         const htmlContent = cheerio.load(html, {decodeEntities: false});
-        const staticImageUrlPrefixRegex = new RegExp(config.staticImageUrlPrefix);
+        const staticImageUrlPrefixRegex = new RegExp(this._config.staticImageUrlPrefix);
 
         // convert relative resource urls to absolute
-        ['href', 'src'].forEach(function forEach(attributeName) {
-            htmlContent('[' + attributeName + ']').each(function each(ix, el) {
+        ['href', 'src'].forEach((attributeName) => {
+            htmlContent('[' + attributeName + ']').each((ix, el) => {
                 el = htmlContent(el);
 
                 let attributeValue = el.attr(attributeName);
@@ -387,7 +389,7 @@ module.exports = function urlUtils(options = {}) {
                 // if the relative URL begins with a '/' use the blog URL (including sub-directory)
                 // as the base URL, otherwise use the post's URL.
                 const baseUrl = attributeValue[0] === '/' ? siteUrl : itemUrl;
-                attributeValue = urlJoin(baseUrl, attributeValue);
+                attributeValue = this.urlJoin(baseUrl, attributeValue);
                 el.attr(attributeName, attributeValue);
             });
         });
@@ -395,36 +397,25 @@ module.exports = function urlUtils(options = {}) {
         return htmlContent;
     }
 
-    function absoluteToRelative(url, options = {}) {
-        return utils.absoluteToRelative(url, config.url, options);
+    absoluteToRelative(url, options = {}) {
+        return utils.absoluteToRelative(url, this.getBlogUrl(), options);
     }
 
-    function relativeToAbsolute(url, options) {
-        return utils.relativeToAbsolute(url, config.url, options);
+    relativeToAbsolute(url, options) {
+        return utils.relativeToAbsolute(url, this.getBlogUrl(), options);
     }
 
-    const wrapper = {};
+    get isSSL() {
+        return utils.isSSL;
+    }
 
-    // expose underlying functions to ease testing
-    wrapper._utils = utils;
+    get replacePermalink() {
+        return replacePermalink;
+    }
 
-    wrapper.absoluteToRelative = absoluteToRelative;
-    wrapper.relativeToAbsolute = relativeToAbsolute;
-    wrapper.makeAbsoluteUrls = makeAbsoluteUrls;
-    wrapper.getProtectedSlugs = getProtectedSlugs;
-    wrapper.getSubdir = getSubdir;
-    wrapper.urlJoin = urlJoin;
-    wrapper.urlFor = urlFor;
-    wrapper.isSSL = wrapper._utils.isSSL;
-    wrapper.replacePermalink = replacePermalink;
-    wrapper.redirectToAdmin = redirectToAdmin;
-    wrapper.redirect301 = redirect301;
-    wrapper.createUrl = createUrl;
-    wrapper.deduplicateDoubleSlashes = deduplicateDoubleSlashes;
-    wrapper.getApiPath = getApiPath;
-    wrapper.getVersionPath = getVersionPath;
-    wrapper.getBlogUrl = getBlogUrl;
-    wrapper.getSiteUrl = getBlogUrl;
+    get deduplicateDoubleSlashes() {
+        return deduplicateDoubleSlashes;
+    }
 
     /**
      * If you request **any** image in Ghost, it get's served via
@@ -435,7 +426,12 @@ module.exports = function urlUtils(options = {}) {
      * But internally the image is located for example in your custom content path:
      * my-content/another-dir/images/2017/01/02/author.png
      */
-    wrapper.STATIC_IMAGE_URL_PREFIX = config.staticImageUrlPrefix;
+    get STATIC_IMAGE_URL_PREFIX() {
+        return this._config.staticImageUrlPrefix;
+    }
 
-    return wrapper;
+    // expose underlying functions to ease testing
+    get _utils() {
+        return utils;
+    }
 };
