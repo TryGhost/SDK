@@ -1,5 +1,6 @@
 // require the whatwg compatible URL library (same behaviour in node and browser)
 const {URL} = require('url');
+const stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
 
 /**
  * Convert an absolute URL to a root-relative path if it matches the supplied root domain.
@@ -7,15 +8,23 @@ const {URL} = require('url');
  * @param {string} url Absolute URL to convert to relative if possible
  * @param {string} rootUrl Absolute URL to which the returned relative URL will match the domain root
  * @param {Object} [options] Options that affect the conversion
- * @param {boolean} [options.ignoreProtocol] Ignore protocol when matching url to root
- * @returns {string} The passed-in url or root-relative path
+ * @param {boolean} [options.ignoreProtocol=true] Ignore protocol when matching url to root
+ * @param {boolean} [options.withoutSubdirectory=false] Strip the root subdirectory from the returned  path
+ * @returns {string} The passed-in url or a relative path
  */
-const absoluteToRelative = function absoluteToRelative(url, rootUrl, options = {ignoreProtocol: true}) {
-    const parsedUrl = new URL(url, 'http://relative');
-    const parsedRoot = new URL(rootUrl);
+const absoluteToRelative = function absoluteToRelative(url, rootUrl, options = {}) {
+    const defaultOptions = {
+        ignoreProtocol: true,
+        withoutSubdirectory: false
+    };
 
-    // return the url as-is if it was relative
-    if (parsedUrl.origin === 'http://relative') {
+    options = Object.assign({}, defaultOptions, options);
+
+    const parsedUrl = new URL(url, 'http://relative');
+    const parsedRoot = parsedUrl.origin === 'null' ? undefined : new URL(rootUrl || parsedUrl.origin);
+
+    // return the url as-is if it was relative or non-http
+    if (parsedUrl.origin === 'null' || parsedUrl.origin === 'http://relative') {
         return url;
     }
 
@@ -24,7 +33,13 @@ const absoluteToRelative = function absoluteToRelative(url, rootUrl, options = {
     const matchesPath = parsedUrl.pathname.indexOf(parsedRoot.pathname) === 0;
 
     if (matchesHost && (options.ignoreProtocol || matchesProtocol) && matchesPath) {
-        return parsedUrl.href.replace(parsedUrl.origin, '');
+        let path = parsedUrl.href.replace(parsedUrl.origin, '');
+
+        if (options.withoutSubdirectory) {
+            path = stripSubdirectoryFromPath(path, rootUrl);
+        }
+
+        return path;
     }
 
     return url;

@@ -25,29 +25,21 @@ describe('urlUtils', function () {
     };
 
     describe('absoluteToRelative', function () {
-        it('default', function () {
-            urlUtils().absoluteToRelative('http://myblog.com/test/').should.eql('/test/');
-        });
-
-        it('with subdir', function () {
-            urlUtils().absoluteToRelative('http://myblog.com/blog/test/').should.eql('/blog/test/');
-        });
-
-        it('with subdir, but request without', function () {
+        it('calls out to utils/absoluteToRelative', function () {
             const utils = urlUtils({
-                url: 'http://myblog.com/blog/'
+                url: 'http://my-ghost-blog.com/'
             });
 
-            utils.absoluteToRelative('http://myblog.com/blog/test/', {withoutSubdirectory: true})
-                .should.eql('/test/');
-        });
+            const spy = sinon.spy();
+            utils._utils.absoluteToRelative = spy;
 
-        it('with subdir, but request without', function () {
-            const utils = urlUtils({
-                url: 'http://myblog.com/blog'
-            });
-            utils.absoluteToRelative('http://myblog.com/blog/test/', {withoutSubdirectory: true})
-                .should.eql('/test/');
+            utils.absoluteToRelative('https://example.com/test/', {test: true});
+
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('https://example.com/test/');
+            firstCall.args[1].should.eql('http://my-ghost-blog.com/');
+            firstCall.args[2].should.deepEqual({test: true});
         });
     });
 

@@ -395,24 +395,8 @@ module.exports = function urlUtils(options = {}) {
         return htmlContent;
     }
 
-    function absoluteToRelative(urlToModify, options) {
-        options = options || {};
-
-        const urlObj = url.parse(urlToModify);
-        const relativePath = urlObj.pathname;
-
-        if (options.withoutSubdirectory) {
-            const subDir = getSubdir();
-
-            if (!subDir) {
-                return relativePath;
-            }
-
-            const subDirRegex = new RegExp('^' + subDir);
-            return relativePath.replace(subDirRegex, '');
-        }
-
-        return relativePath;
+    function absoluteToRelative(url, options = {}) {
+        return utils.absoluteToRelative(url, config.url, options);
     }
 
     function relativeToAbsolute(url, options) {
