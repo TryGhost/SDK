@@ -431,7 +431,7 @@ module.exports = function urlUtils(options = {}) {
     wrapper.getSubdir = getSubdir;
     wrapper.urlJoin = urlJoin;
     wrapper.urlFor = urlFor;
-    wrapper.isSSL = utils.isSSL;
+    wrapper.isSSL = wrapper._utils.isSSL;
     wrapper.replacePermalink = replacePermalink;
     wrapper.redirectToAdmin = redirectToAdmin;
     wrapper.redirect301 = redirect301;

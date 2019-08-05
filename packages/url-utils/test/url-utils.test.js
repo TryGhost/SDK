@@ -52,7 +52,7 @@ describe('urlUtils', function () {
     });
 
     describe('relativeToAbsolute', function () {
-        it('calls out to utils.relativeToAbsolute', function () {
+        it('calls out to utils/relativeToAbsolute', function () {
             const utils = urlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
@@ -840,10 +840,13 @@ describe('urlUtils', function () {
     });
 
     describe('isSSL', function () {
-        it('detects https protocol correctly', function () {
-            urlUtils().isSSL('https://my.blog.com').should.be.true();
-            urlUtils().isSSL('http://my.blog.com').should.be.false();
-            urlUtils().isSSL('http://my.https.com').should.be.false();
+        it('works', function () {
+            const utils = urlUtils({
+                url: 'http://my-ghost-blog.com/'
+            });
+
+            utils.isSSL('https://example.com').should.be.true;
+            utils.isSSL('http://example.com').should.be.false;
         });
     });
 
