@@ -25,6 +25,6 @@
     "eslint-plugin-react": "7.14.3",
     "mocha": "6.2.0",
     "should": "13.2.3",
-    "sinon": "7.3.2"
+    "sinon": "7.4.0"
   }
 }
