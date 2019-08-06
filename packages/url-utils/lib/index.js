@@ -2,7 +2,6 @@
 const _ = require('lodash');
 const url = require('url');
 const cheerio = require('cheerio');
-const replacePermalink = require('./replace-permalink');
 const utils = require('./utils');
 
 /**
@@ -407,7 +406,7 @@ module.exports = class UrlUtils {
     }
 
     get replacePermalink() {
-        return replacePermalink;
+        return utils.replacePermalink;
     }
 
     get deduplicateDoubleSlashes() {
