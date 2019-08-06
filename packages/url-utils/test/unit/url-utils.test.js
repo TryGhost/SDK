@@ -1,16 +1,16 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
-require('./utils');
+require('../utils');
 
 const sinon = require('sinon');
 const moment = require('moment-timezone');
-const UrlUtils = require('../lib/index');
+const UrlUtils = require('../../lib/index');
 
 const constants = {
     ONE_YEAR_S: 31536000
 };
 
-describe('urlUtils', function () {
+describe('UrlUtils', function () {
     const defaultAPIVersions = {
         all: ['v0.1', 'v2'],
         v2: {
@@ -23,6 +23,29 @@ describe('urlUtils', function () {
             content: 'v0.1'
         }
     };
+
+    describe('getSiteUrl', function () {
+        it('returns config url', function () {
+            const utils = new UrlUtils({
+                url: 'http://example.com/'
+            });
+            utils.getSiteUrl().should.eql('http://example.com/');
+        });
+
+        it('adds trailing slash', function () {
+            const utils = new UrlUtils({
+                url: 'http://example.com'
+            });
+            utils.getSiteUrl().should.eql('http://example.com/');
+        });
+
+        it('returns https if secure=true', function () {
+            const utils = new UrlUtils({
+                url: 'http://example.com/'
+            });
+            utils.getSiteUrl(true).should.eql('https://example.com/');
+        });
+    });
 
     describe('absoluteToRelative', function () {
         it('calls out to utils/absoluteToRelative', function () {

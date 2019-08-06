@@ -71,12 +71,10 @@ module.exports = class UrlUtils {
      * @return {string} URL returns the url as defined in config, but always with a trailing `/`
      */
     getSiteUrl(secure) {
-        var siteUrl;
+        let siteUrl = this._config.url;
 
         if (secure) {
             siteUrl = this._config.url.replace('http://', 'https://');
-        } else {
-            siteUrl = this._config.url;
         }
 
         if (!siteUrl.match(/\/$/)) {
