@@ -61,29 +61,29 @@ module.exports = class UrlUtils {
     }
 
     /**
-     * Returns the base URL of the blog as set in the config.
+     * Returns the base URL of the site as set in the config.
      *
      * Secure:
-     * If the request is secure, we want to force returning the blog url as https.
+     * If the request is secure, we want to force returning the site url as https.
      * Imagine Ghost runs with http, but nginx allows SSL connections.
      *
      * @param {boolean} secure
      * @return {string} URL returns the url as defined in config, but always with a trailing `/`
      */
-    getBlogUrl(secure) {
-        var blogUrl;
+    getSiteUrl(secure) {
+        var siteUrl;
 
         if (secure) {
-            blogUrl = this._config.url.replace('http://', 'https://');
+            siteUrl = this._config.url.replace('http://', 'https://');
         } else {
-            blogUrl = this._config.url;
+            siteUrl = this._config.url;
         }
 
-        if (!blogUrl.match(/\/$/)) {
-            blogUrl += '/';
+        if (!siteUrl.match(/\/$/)) {
+            siteUrl += '/';
         }
 
-        return blogUrl;
+        return siteUrl;
     }
 
     /**
@@ -145,7 +145,7 @@ module.exports = class UrlUtils {
             url = url.replace(/^\//, '//');
         }
 
-        return utils.deduplicateSubdirectory(url, this.getBlogUrl());
+        return utils.deduplicateSubdirectory(url, this.getSiteUrl());
     }
 
     /**
@@ -164,7 +164,7 @@ module.exports = class UrlUtils {
         }
 
         adminUrl = this.urlJoin(adminUrl, subDir, '/');
-        adminUrl = utils.deduplicateSubdirectory(adminUrl, this.getBlogUrl());
+        adminUrl = utils.deduplicateSubdirectory(adminUrl, this.getSiteUrl());
         return adminUrl;
     }
 
@@ -187,7 +187,7 @@ module.exports = class UrlUtils {
 
         // create base of url, always ends without a slash
         if (absolute) {
-            base = this.getBlogUrl(secure);
+            base = this.getSiteUrl(secure);
         } else {
             base = this.getSubdir();
         }
@@ -250,7 +250,7 @@ module.exports = class UrlUtils {
                 if (absolute) {
                     // Remove the sub-directory from the URL because ghostConfig will add it back.
                     urlPath = urlPath.replace(new RegExp('^' + this.getSubdir()), '');
-                    baseUrl = this.getBlogUrl(secure).replace(/\/$/, '');
+                    baseUrl = this.getSiteUrl(secure).replace(/\/$/, '');
                     urlPath = baseUrl + urlPath;
                 }
 
@@ -258,7 +258,7 @@ module.exports = class UrlUtils {
             } else if (context === 'nav' && data.nav) {
                 urlPath = data.nav.url;
                 secure = data.nav.secure || secure;
-                baseUrl = this.getBlogUrl(secure);
+                baseUrl = this.getSiteUrl(secure);
                 hostname = baseUrl.split('//')[1];
 
                 // If the hostname is present in the url
@@ -274,7 +274,7 @@ module.exports = class UrlUtils {
                 }
             }
         } else if (context === 'home' && absolute) {
-            urlPath = this.getBlogUrl(secure);
+            urlPath = this.getSiteUrl(secure);
 
             // CASE: there are cases where urlFor('home') needs to be returned without trailing
             // slash e. g. the `{{@site.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
@@ -282,7 +282,7 @@ module.exports = class UrlUtils {
                 urlPath = urlPath.replace(/\/$/, '');
             }
         } else if (context === 'admin') {
-            urlPath = this.getAdminUrl() || this.getBlogUrl();
+            urlPath = this.getAdminUrl() || this.getSiteUrl();
 
             if (absolute) {
                 urlPath += 'ghost/';
@@ -290,7 +290,7 @@ module.exports = class UrlUtils {
                 urlPath = '/ghost/';
             }
         } else if (context === 'api') {
-            urlPath = this.getAdminUrl() || this.getBlogUrl();
+            urlPath = this.getAdminUrl() || this.getSiteUrl();
             let apiPath = this.getApiPath({version: 'v0.1', type: 'content'});
             // CASE: with or without protocol? If your blog url (or admin url) is configured to http, it's still possible that e.g. nginx allows both https+http.
             // So it depends how you serve your blog. The main focus here is to avoid cors problems.
@@ -398,11 +398,11 @@ module.exports = class UrlUtils {
     }
 
     absoluteToRelative(url, options = {}) {
-        return utils.absoluteToRelative(url, this.getBlogUrl(), options);
+        return utils.absoluteToRelative(url, this.getSiteUrl(), options);
     }
 
     relativeToAbsolute(url, options) {
-        return utils.relativeToAbsolute(url, this.getBlogUrl(), options);
+        return utils.relativeToAbsolute(url, this.getSiteUrl(), options);
     }
 
     get isSSL() {
