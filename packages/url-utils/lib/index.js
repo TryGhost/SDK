@@ -3,7 +3,6 @@ const _ = require('lodash');
 const url = require('url');
 const cheerio = require('cheerio');
 const replacePermalink = require('./replace-permalink');
-const deduplicateDoubleSlashes = require('./deduplicate-slashes');
 const utils = require('./utils');
 
 /**
@@ -412,7 +411,7 @@ module.exports = class UrlUtils {
     }
 
     get deduplicateDoubleSlashes() {
-        return deduplicateDoubleSlashes;
+        return utils.deduplicateDoubleSlashes;
     }
 
     /**

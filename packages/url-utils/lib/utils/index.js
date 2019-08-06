@@ -1,7 +1,8 @@
 module.exports = {
     absoluteToRelative: require('./absolute-to-relative'),
-    relativeToAbsolute: require('./relative-to-absolute'),
+    deduplicateDoubleSlashes: require('./deduplicate-double-slashes'),
     deduplicateSubdirectory: require('./deduplicate-subdirectory'),
-    stripSubdirectoryFromPath: require('./strip-subdirectory-from-path'),
-    isSSL: require('./is-ssl')
+    isSSL: require('./is-ssl'),
+    relativeToAbsolute: require('./relative-to-absolute'),
+    stripSubdirectoryFromPath: require('./strip-subdirectory-from-path')
 };
