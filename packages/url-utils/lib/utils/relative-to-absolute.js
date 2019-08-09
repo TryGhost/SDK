@@ -1,6 +1,3 @@
-// require the whatwg compatible URL library (same behaviour in node and browser)
-const {URL} = require('url');
-
 /**
  * Convert a root-relative path to an absolute URL based on the supplied root.
  * Will _only_ convert root-relative urls (/some/path not some/path)

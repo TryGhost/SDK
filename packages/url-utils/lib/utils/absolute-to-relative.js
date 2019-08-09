@@ -1,5 +1,3 @@
-// require the whatwg compatible URL library (same behaviour in node and browser)
-const {URL} = require('url');
 const stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
 
 /**
