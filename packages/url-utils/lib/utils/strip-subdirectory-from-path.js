@@ -1,3 +1,5 @@
+const {URL} = require('url');
+
 /**
  * Removes the directory in the root url from the relative path
  *

@@ -1,3 +1,5 @@
+const {URL} = require('url');
+
 /**
  * Remove duplicated directories from the start of a path or url's path
  *
