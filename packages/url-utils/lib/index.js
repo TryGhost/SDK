@@ -4,6 +4,16 @@ const url = require('url');
 const cheerio = require('cheerio');
 const utils = require('./utils');
 
+// similar to Object.assign but will not override defaults if a source value is undefined
+function assignOptions(target, ...sources) {
+    const options = sources.map((x) => {
+        return Object.entries(x)
+            .filter(([, value]) => value !== undefined)
+            .reduce((obj, [key, value]) => (obj[key] = value, obj), {});
+    });
+    return Object.assign(target, ...options);
+}
+
 /**
  * Initialization method to pass in URL configurations
  * @param {Object} options
@@ -16,7 +26,7 @@ const utils = require('./utils');
  * @param {String} options.staticImageUrlPrefix static prefix for serving images. Should not be passed in, unless customizing ghost instance image storage
  */
 module.exports = class UrlUtils {
-    constructor(options) {
+    constructor(options = {}) {
         const defaultOptions = {
             url: null,
             adminUrl: null,
@@ -24,38 +34,50 @@ module.exports = class UrlUtils {
             slugs: null,
             redirectCacheMaxAge: null,
             baseApiPath: '/ghost/api',
+            defaultApiVersion: 'v0.1',
+            defaultApiType: 'content',
             staticImageUrlPrefix: 'content/images'
         };
 
-        this._config = Object.assign({}, defaultOptions, options);
+        this._config = assignOptions({}, defaultOptions, options);
     }
 
     /**
      * Returns API path combining base path and path for specific version asked or deprecated by default
-     * @param {Object} options {version} for which to get the path(stable, actice, deprecated),
-     * {type} admin|content: defaults to {version: deprecated, type: content}
+     * @param {Object} options
+     * @param {string} [options.version="v0.1"] for which to get the path (v0.1, v2, canary, etc)
+     * @param {string} [options.type="content"] (admin, content, members)
      * @return {string} API Path for version
      */
-    getApiPath(options) {
-        const versionPath = this.getVersionPath(options);
-        return `${this._config.baseApiPath}${versionPath}`;
+    getApiPath(options = {}) {
+        const defaultOptions = {
+            baseApiPath: this._config.baseApiPath,
+            version: this._config.defaultApiVersion,
+            type: this._config.defaultApiType,
+            apiVersions: this._config.apiVersions
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+
+        return utils.getApiPath(_options);
     }
 
     /**
      * Returns path containing only the path for the specific version asked or deprecated by default
-     * @param {Object} options {version} for which to get the path(stable, active, deprecated),
-     * {type} admin|content: defaults to {version: deprecated, type: content}
+     * @param {Object} options
+     * @param {string} [options.version="v0.1"] for which to get the path (v0.1, v2, canary, etc)
+     * @param {string} [options.type="content"] (admin, content)
      * @return {string} API version path
      */
-    getVersionPath(options) {
-        let requestedVersion = options.version || 'v0.1';
-        let requestedVersionType = options.type || 'content';
-        let versionData = this._config.apiVersions[requestedVersion];
-        if (typeof versionData === 'string') {
-            versionData = this._config.apiVersions[versionData];
-        }
-        let versionPath = versionData[requestedVersionType];
-        return `/${versionPath}/`;
+    getVersionPath(options = {}) {
+        const defaultOptions = {
+            baseApiPath: this._config.baseApiPath,
+            version: this._config.defaultApiVersion,
+            type: this._config.defaultApiType,
+            apiVersions: this._config.apiVersions
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+
+        return utils.getVersionPath(_options);
     }
 
     /**
@@ -68,7 +90,7 @@ module.exports = class UrlUtils {
      * @param {boolean} secure
      * @return {string} URL returns the url as defined in config, but always with a trailing `/`
      */
-    getSiteUrl(secure) {
+    getSiteUrl(secure = false) {
         let siteUrl = this._config.url;
 
         if (secure) {
