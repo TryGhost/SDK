@@ -802,14 +802,14 @@ describe('UrlUtils', function () {
         });
     });
 
-    describe('makeAbsoluteUrls ', function () {
+    describe('htmlRelativeToAbsolute ', function () {
         it('calls out to utils/html-relative-to-absolute', function () {
             const utils = new UrlUtils({
                 staticImageUrlPrefix: 'static/images'
             });
             const spy = sandbox.spy(utils._utils, 'htmlRelativeToAbsolute');
 
-            utils.makeAbsoluteUrls(
+            utils.htmlRelativeToAbsolute(
                 'html',
                 'https://example.com/',
                 'my-awesome-post'
