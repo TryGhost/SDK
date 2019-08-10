@@ -10,6 +10,8 @@ const constants = {
 };
 
 describe('UrlUtils', function () {
+    let sandbox;
+
     const defaultAPIVersions = {
         all: ['v0.1', 'v2'],
         v2: {
@@ -22,6 +24,14 @@ describe('UrlUtils', function () {
             content: 'v0.1'
         }
     };
+
+    beforeEach(function () {
+        sandbox = sinon.createSandbox();
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
 
     describe('getSiteUrl', function () {
         it('returns config url', function () {
@@ -51,9 +61,7 @@ describe('UrlUtils', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
-
-            const spy = sinon.spy();
-            utils._utils.absoluteToRelative = spy;
+            const spy = sandbox.spy(utils._utils, 'absoluteToRelative');
 
             utils.absoluteToRelative('https://example.com/test/', {test: true});
 
@@ -70,9 +78,7 @@ describe('UrlUtils', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
-
-            const spy = sinon.spy();
-            utils._utils.relativeToAbsolute = spy;
+            const spy = sandbox.spy(utils._utils, 'relativeToAbsolute');
 
             utils.relativeToAbsolute('/test/', {test: true});
 
@@ -148,54 +154,18 @@ describe('UrlUtils', function () {
     });
 
     describe('urlJoin', function () {
-        it('should deduplicate slashes', function () {
+        it('calls out to utils/url-join', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
-            utils.urlJoin('/', '/my/', '/blog/').should.equal('/my/blog/');
-            utils.urlJoin('/', '//my/', '/blog/').should.equal('/my/blog/');
-            utils.urlJoin('/', '/', '/').should.equal('/');
-        });
+            const spy = sandbox.spy(utils._utils, 'urlJoin');
 
-        it('should not deduplicate slashes in protocol', function () {
-            const utils = new UrlUtils({
-                url: 'http://my-ghost-blog.com/'
-            });
-            utils.urlJoin('http://myurl.com', '/rss').should.equal('http://myurl.com/rss');
-            utils.urlJoin('https://myurl.com/', '/rss').should.equal('https://myurl.com/rss');
-        });
+            utils.urlJoin('one', 'two');
 
-        it('should permit schemeless protocol', function () {
-            const utils = new UrlUtils({
-                url: 'http://my-ghost-blog.com/'
-            });
-            utils.urlJoin('/', '/').should.equal('/');
-            utils.urlJoin('//myurl.com', '/rss').should.equal('//myurl.com/rss');
-            utils.urlJoin('//myurl.com/', '/rss').should.equal('//myurl.com/rss');
-            utils.urlJoin('//myurl.com//', 'rss').should.equal('//myurl.com/rss');
-            utils.urlJoin('', '//myurl.com', 'rss').should.equal('//myurl.com/rss');
-        });
-
-        it('should deduplicate subdir', function () {
-            let utils = new UrlUtils({
-                url: 'http://my-ghost-blog.com/blog'
-            });
-            utils.urlJoin('blog', 'blog/about').should.equal('blog/about');
-            utils.urlJoin('blog/', 'blog/about').should.equal('blog/about');
-
-            utils = new UrlUtils({
-                url: 'http://my-ghost-blog.com/my/blog'
-            });
-            utils.urlJoin('my/blog', 'my/blog/about').should.equal('my/blog/about');
-            utils.urlJoin('my/blog/', 'my/blog/about').should.equal('my/blog/about');
-        });
-
-        it('should handle subdir matching tld', function () {
-            const utils = new UrlUtils({
-                url: 'http://ghost.blog/blog'
-            });
-            utils.urlJoin('ghost.blog/blog', 'ghost/').should.equal('ghost.blog/blog/ghost/');
-            utils.urlJoin('ghost.blog', 'blog', 'ghost/').should.equal('ghost.blog/blog/ghost/');
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.deepEqual(['one', 'two']);
+            firstCall.args[1].should.deepEqual({rootUrl: 'http://my-ghost-blog.com/'});
         });
     });
 
@@ -747,9 +717,7 @@ describe('UrlUtils', function () {
     describe('replacePermalink', function () {
         it('calls outs to utils/replace-permalink', function () {
             const utils = new UrlUtils();
-
-            const spy = sinon.spy();
-            utils._utils.replacePermalink = spy;
+            const spy = sandbox.spy(utils._utils, 'replacePermalink');
 
             utils.replacePermalink('testPermalink', 'testResource', 'testTimezone');
 
@@ -780,7 +748,7 @@ describe('UrlUtils', function () {
                 redirectCacheMaxAge: constants.ONE_YEAR_S
             });
 
-            res.set = sinon.spy();
+            res.set = sandbox.spy();
 
             res.redirect = function (code, path) {
                 code.should.equal(301);
@@ -800,7 +768,7 @@ describe('UrlUtils', function () {
                 redirectCacheMaxAge: constants.ONE_YEAR_S
             });
 
-            res.set = sinon.spy();
+            res.set = sandbox.spy();
 
             res.redirect = function (code, path) {
                 code.should.equal(301);
@@ -821,7 +789,7 @@ describe('UrlUtils', function () {
                 redirectCacheMaxAge: constants.ONE_YEAR_S
             });
 
-            res.set = sinon.spy();
+            res.set = sandbox.spy();
 
             res.redirect = function (path) {
                 path.should.eql('/ghost/#/my/awesome/path/');

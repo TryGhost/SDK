@@ -137,33 +137,8 @@ module.exports = class UrlUtils {
      * @param {string} arguments takes arguments and concats those to a valid path/URL.
      * @return {string} URL concatinated URL/path of arguments.
      */
-    urlJoin() {
-        var args = Array.prototype.slice.call(arguments),
-            prefixDoubleSlash = false,
-            url;
-
-        // Remove empty item at the beginning
-        if (args[0] === '') {
-            args.shift();
-        }
-
-        // Handle schemeless protocols
-        if (args[0].indexOf('//') === 0) {
-            prefixDoubleSlash = true;
-        }
-
-        // join the elements using a slash
-        url = args.join('/');
-
-        // Fix multiple slashes
-        url = url.replace(/(^|[^:])\/\/+/g, '$1/');
-
-        // Put the double slash back at the beginning if this was a schemeless protocol
-        if (prefixDoubleSlash) {
-            url = url.replace(/^\//, '//');
-        }
-
-        return utils.deduplicateSubdirectory(url, this.getSiteUrl());
+    urlJoin(...parts) {
+        return utils.urlJoin(parts, {rootUrl: this.getSiteUrl()});
     }
 
     /**

@@ -7,5 +7,6 @@ module.exports = {
     isSSL: require('./is-ssl'),
     relativeToAbsolute: require('./relative-to-absolute'),
     replacePermalink: require('./replace-permalink'),
-    stripSubdirectoryFromPath: require('./strip-subdirectory-from-path')
+    stripSubdirectoryFromPath: require('./strip-subdirectory-from-path'),
+    urlJoin: require('./url-join')
 };
