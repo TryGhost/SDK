@@ -1,3 +1,4 @@
+const {URL} = require('url');
 const cheerio = require('cheerio');
 const urlJoin = require('./url-join');
 
