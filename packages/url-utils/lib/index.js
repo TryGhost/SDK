@@ -1,7 +1,6 @@
 // Contains all path information to be used throughout the codebase.
 const _ = require('lodash');
 const url = require('url');
-const cheerio = require('cheerio');
 const utils = require('./utils');
 
 // similar to Object.assign but will not override defaults if a source value is undefined
@@ -336,58 +335,19 @@ module.exports = class UrlUtils {
      * @param {string} html
      * @param {string} siteUrl (blog URL)
      * @param {string} itemUrl (URL of current context)
+     * @param {Object} options
      * @returns {object} htmlContent
      * @description Takes html, blog url and item url and converts relative url into
      * absolute urls. Returns an object. The html string can be accessed by calling `html()` on
      * the variable that takes the result of this function
      */
-    makeAbsoluteUrls(html, siteUrl, itemUrl, options = {assetsOnly: false}) {
-        html = html || '';
-        const htmlContent = cheerio.load(html, {decodeEntities: false});
-        const staticImageUrlPrefixRegex = new RegExp(this._config.staticImageUrlPrefix);
-
-        // convert relative resource urls to absolute
-        ['href', 'src'].forEach((attributeName) => {
-            htmlContent('[' + attributeName + ']').each((ix, el) => {
-                el = htmlContent(el);
-
-                let attributeValue = el.attr(attributeName);
-
-                // if URL is absolute move on to the next element
-                try {
-                    const parsed = url.parse(attributeValue);
-
-                    if (parsed.protocol) {
-                        return;
-                    }
-
-                    // Do not convert protocol relative URLs
-                    if (attributeValue.lastIndexOf('//', 0) === 0) {
-                        return;
-                    }
-                } catch (e) {
-                    return;
-                }
-
-                // CASE: don't convert internal links
-                if (attributeValue[0] === '#') {
-                    return;
-                }
-
-                if (options.assetsOnly && !attributeValue.match(staticImageUrlPrefixRegex)) {
-                    return;
-                }
-
-                // compose an absolute URL
-                // if the relative URL begins with a '/' use the blog URL (including sub-directory)
-                // as the base URL, otherwise use the post's URL.
-                const baseUrl = attributeValue[0] === '/' ? siteUrl : itemUrl;
-                attributeValue = this.urlJoin(baseUrl, attributeValue);
-                el.attr(attributeName, attributeValue);
-            });
-        });
-
-        return htmlContent;
+    makeAbsoluteUrls(html, siteUrl, itemUrl, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.htmlRelativeToAbsolute(html, siteUrl, itemUrl, _options);
     }
 
     absoluteToRelative(url, options = {}) {

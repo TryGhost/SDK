@@ -802,71 +802,28 @@ describe('UrlUtils', function () {
         });
     });
 
-    describe('make absolute urls ', function () {
-        const siteUrl = 'http://my-ghost-blog.com';
-        const itemUrl = 'my-awesome-post';
+    describe('makeAbsoluteUrls ', function () {
+        it('calls out to utils/html-relative-to-absolute', function () {
+            const utils = new UrlUtils({
+                staticImageUrlPrefix: 'static/images'
+            });
+            const spy = sandbox.spy(utils._utils, 'htmlRelativeToAbsolute');
 
-        const utils = new UrlUtils({
-            url: 'http://my-ghost-blog.com'
-        });
+            utils.makeAbsoluteUrls(
+                'html',
+                'https://example.com/',
+                'my-awesome-post'
+            );
 
-        it('[success] does not convert absolute URLs', function () {
-            var html = '<a href="http://my-ghost-blog.com/content/images" title="Absolute URL">',
-                result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/content\/images" title="Absolute URL">/);
-        });
-        it('[failure] does not convert protocol relative `//` URLs', function () {
-            var html = '<a href="//my-ghost-blog.com/content/images" title="Absolute URL">',
-                result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl).html();
-
-            result.should.match(/<a href="\/\/my-ghost-blog.com\/content\/images" title="Absolute URL">/);
-        });
-        it('[failure] does not convert internal links starting with "#"', function () {
-            var html = '<a href="#jumptosection" title="Table of Content">',
-                result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl).html();
-
-            result.should.match(/<a href="#jumptosection" title="Table of Content">/);
-        });
-        it('[success] converts a relative URL', function () {
-            var html = '<a href="/about#nowhere" title="Relative URL">',
-                result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/about#nowhere" title="Relative URL">/);
-        });
-        it('[success] converts a relative URL including subdirectories', function () {
-            var html = '<a href="/about#nowhere" title="Relative URL">',
-                result = utils.makeAbsoluteUrls(html, 'http://my-ghost-blog.com/blog', itemUrl).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/blog\/about#nowhere" title="Relative URL">/);
-        });
-
-        it('asset urls only', function () {
-            let html = '<a href="/about" title="Relative URL"><img src="/content/images/1.jpg">';
-            let result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<img src="http:\/\/my-ghost-blog.com\/content\/images\/1.jpg">/);
-            result.should.match(/<a href="\/about" title="Relative URL">/);
-
-            html = '<a href="/content/images/09/01/image.jpg">';
-            result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/content\/images\/09\/01\/image.jpg">/);
-
-            html = '<a href="/blog/content/images/09/01/image.jpg">';
-            result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/blog\/content\/images\/09\/01\/image.jpg">/);
-
-            html = '<img src="http://my-ghost-blog.de/content/images/09/01/image.jpg">';
-            result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<img src="http:\/\/my-ghost-blog.de\/content\/images\/09\/01\/image.jpg">/);
-
-            html = '<img src="http://external.com/image.jpg">';
-            result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<img src="http:\/\/external.com\/image.jpg">/);
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('html');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.eql('my-awesome-post');
+            firstCall.args[3].should.deepEqual({
+                assetsOnly: false,
+                staticImageUrlPrefix: 'static/images'
+            });
         });
     });
 });
