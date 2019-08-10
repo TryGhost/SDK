@@ -39,6 +39,13 @@ module.exports = class UrlUtils {
         };
 
         this._config = assignOptions({}, defaultOptions, options);
+
+        this._defaultApiPathOptions = {
+            baseApiPath: this._config.baseApiPath,
+            version: this._config.defaultApiVersion,
+            type: this._config.defaultApiType,
+            apiVersions: this._config.apiVersions
+        };
     }
 
     /**
@@ -49,14 +56,7 @@ module.exports = class UrlUtils {
      * @return {string} API Path for version
      */
     getApiPath(options = {}) {
-        const defaultOptions = {
-            baseApiPath: this._config.baseApiPath,
-            version: this._config.defaultApiVersion,
-            type: this._config.defaultApiType,
-            apiVersions: this._config.apiVersions
-        };
-        const _options = assignOptions({}, defaultOptions, options);
-
+        const _options = assignOptions({}, this._defaultApiPathOptions, options);
         return utils.getApiPath(_options);
     }
 
@@ -68,14 +68,7 @@ module.exports = class UrlUtils {
      * @return {string} API version path
      */
     getVersionPath(options = {}) {
-        const defaultOptions = {
-            baseApiPath: this._config.baseApiPath,
-            version: this._config.defaultApiVersion,
-            type: this._config.defaultApiType,
-            apiVersions: this._config.apiVersions
-        };
-        const _options = assignOptions({}, defaultOptions, options);
-
+        const _options = assignOptions({}, this._defaultApiPathOptions, options);
         return utils.getVersionPath(_options);
     }
 
