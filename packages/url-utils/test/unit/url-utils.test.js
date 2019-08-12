@@ -1,16 +1,17 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
-require('./utils');
+require('../utils');
 
 const sinon = require('sinon');
-const moment = require('moment-timezone');
-const urlUtils = require('../lib/index');
+const UrlUtils = require('../../lib/index');
 
 const constants = {
     ONE_YEAR_S: 31536000
 };
 
-describe('Url', function () {
+describe('UrlUtils', function () {
+    let sandbox;
+
     const defaultAPIVersions = {
         all: ['v0.1', 'v2'],
         v2: {
@@ -24,64 +25,74 @@ describe('Url', function () {
         }
     };
 
+    beforeEach(function () {
+        sandbox = sinon.createSandbox();
+    });
+
+    afterEach(function () {
+        sandbox.restore();
+    });
+
+    describe('getSiteUrl', function () {
+        it('returns config url', function () {
+            const utils = new UrlUtils({
+                url: 'http://example.com/'
+            });
+            utils.getSiteUrl().should.eql('http://example.com/');
+        });
+
+        it('adds trailing slash', function () {
+            const utils = new UrlUtils({
+                url: 'http://example.com'
+            });
+            utils.getSiteUrl().should.eql('http://example.com/');
+        });
+
+        it('returns https if secure=true', function () {
+            const utils = new UrlUtils({
+                url: 'http://example.com/'
+            });
+            utils.getSiteUrl(true).should.eql('https://example.com/');
+        });
+    });
+
     describe('absoluteToRelative', function () {
-        it('default', function () {
-            urlUtils().absoluteToRelative('http://myblog.com/test/').should.eql('/test/');
-        });
-
-        it('with subdir', function () {
-            urlUtils().absoluteToRelative('http://myblog.com/blog/test/').should.eql('/blog/test/');
-        });
-
-        it('with subdir, but request without', function () {
-            const utils = urlUtils({
-                url: 'http://myblog.com/blog/'
+        it('calls out to utils/absoluteToRelative', function () {
+            const utils = new UrlUtils({
+                url: 'http://my-ghost-blog.com/'
             });
+            const spy = sandbox.spy(utils._utils, 'absoluteToRelative');
 
-            utils.absoluteToRelative('http://myblog.com/blog/test/', {withoutSubdirectory: true})
-                .should.eql('/test/');
-        });
+            utils.absoluteToRelative('https://example.com/test/', {test: true});
 
-        it('with subdir, but request without', function () {
-            const utils = urlUtils({
-                url: 'http://myblog.com/blog'
-            });
-            utils.absoluteToRelative('http://myblog.com/blog/test/', {withoutSubdirectory: true})
-                .should.eql('/test/');
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('https://example.com/test/');
+            firstCall.args[1].should.eql('http://my-ghost-blog.com/');
+            firstCall.args[2].should.deepEqual({test: true});
         });
     });
 
     describe('relativeToAbsolute', function () {
-        it('default', function () {
-            const utils = urlUtils({
-                url: 'http://myblog.com/'
+        it('calls out to utils/relativeToAbsolute', function () {
+            const utils = new UrlUtils({
+                url: 'http://my-ghost-blog.com/'
             });
-            utils.relativeToAbsolute('/test/').should.eql('http://myblog.com/test/');
-        });
+            const spy = sandbox.spy(utils._utils, 'relativeToAbsolute');
 
-        it('with subdir', function () {
-            const utils = urlUtils({
-                url: 'http://myblog.com/blog/'
-            });
-            utils.relativeToAbsolute('/test/').should.eql('http://myblog.com/blog/test/');
-        });
+            utils.relativeToAbsolute('/test/', {test: true});
 
-        it('should not convert absolute url', function () {
-            urlUtils().relativeToAbsolute('http://anotherblog.com/blog/').should.eql('http://anotherblog.com/blog/');
-        });
-
-        it('should not convert absolute url', function () {
-            urlUtils().relativeToAbsolute('http://anotherblog.com/blog/').should.eql('http://anotherblog.com/blog/');
-        });
-
-        it('should not convert schemeless url', function () {
-            urlUtils().relativeToAbsolute('//anotherblog.com/blog/').should.eql('//anotherblog.com/blog/');
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('/test/');
+            firstCall.args[1].should.eql('http://my-ghost-blog.com/');
+            firstCall.args[2].should.deepEqual({test: true});
         });
     });
 
     describe('getProtectedSlugs', function () {
         it('defaults', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/',
                 slugs: ['ghost', 'rss', 'amp']
             });
@@ -90,7 +101,7 @@ describe('Url', function () {
         });
 
         it('url has subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog',
                 slugs: ['ghost', 'rss', 'amp']
             });
@@ -101,41 +112,41 @@ describe('Url', function () {
 
     describe('getSubdir', function () {
         it('url has no subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
             utils.getSubdir().should.eql('');
         });
 
         it('url has subdir', function () {
-            let utils = urlUtils({
+            let utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
             utils.getSubdir().should.eql('/blog');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/'
             });
             utils.getSubdir().should.eql('/blog');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/my/blog'
             });
             utils.getSubdir().should.eql('/my/blog');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/my/blog/'
             });
             utils.getSubdir().should.eql('/my/blog');
         });
 
         it('should not return a slash for subdir', function () {
-            let utils = urlUtils({
+            let utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
             utils.getSubdir().should.eql('');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
             utils.getSubdir().should.eql('');
@@ -143,70 +154,34 @@ describe('Url', function () {
     });
 
     describe('urlJoin', function () {
-        it('should deduplicate slashes', function () {
-            const utils = urlUtils({
+        it('calls out to utils/url-join', function () {
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
-            utils.urlJoin('/', '/my/', '/blog/').should.equal('/my/blog/');
-            utils.urlJoin('/', '//my/', '/blog/').should.equal('/my/blog/');
-            utils.urlJoin('/', '/', '/').should.equal('/');
-        });
+            const spy = sandbox.spy(utils._utils, 'urlJoin');
 
-        it('should not deduplicate slashes in protocol', function () {
-            const utils = urlUtils({
-                url: 'http://my-ghost-blog.com/'
-            });
-            utils.urlJoin('http://myurl.com', '/rss').should.equal('http://myurl.com/rss');
-            utils.urlJoin('https://myurl.com/', '/rss').should.equal('https://myurl.com/rss');
-        });
+            utils.urlJoin('one', 'two');
 
-        it('should permit schemeless protocol', function () {
-            const utils = urlUtils({
-                url: 'http://my-ghost-blog.com/'
-            });
-            utils.urlJoin('/', '/').should.equal('/');
-            utils.urlJoin('//myurl.com', '/rss').should.equal('//myurl.com/rss');
-            utils.urlJoin('//myurl.com/', '/rss').should.equal('//myurl.com/rss');
-            utils.urlJoin('//myurl.com//', 'rss').should.equal('//myurl.com/rss');
-            utils.urlJoin('', '//myurl.com', 'rss').should.equal('//myurl.com/rss');
-        });
-
-        it('should deduplicate subdir', function () {
-            let utils = urlUtils({
-                url: 'http://my-ghost-blog.com/blog'
-            });
-            utils.urlJoin('blog', 'blog/about').should.equal('blog/about');
-            utils.urlJoin('blog/', 'blog/about').should.equal('blog/about');
-
-            utils = urlUtils({
-                url: 'http://my-ghost-blog.com/my/blog'
-            });
-            utils.urlJoin('my/blog', 'my/blog/about').should.equal('my/blog/about');
-            utils.urlJoin('my/blog/', 'my/blog/about').should.equal('my/blog/about');
-        });
-
-        it('should handle subdir matching tld', function () {
-            const utils = urlUtils({
-                url: 'http://ghost.blog/blog'
-            });
-            utils.urlJoin('ghost.blog/blog', 'ghost/').should.equal('ghost.blog/blog/ghost/');
-            utils.urlJoin('ghost.blog', 'blog', 'ghost/').should.equal('ghost.blog/blog/ghost/');
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.deepEqual(['one', 'two']);
+            firstCall.args[1].should.deepEqual({rootUrl: 'http://my-ghost-blog.com/'});
         });
     });
 
     describe('urlFor', function () {
         it('should return the home url with no options', function () {
-            let utils = urlUtils({
+            let utils = new UrlUtils({
                 url: 'http://ghost-blog.com/'
             });
             utils.urlFor().should.equal('/');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
             utils.urlFor().should.equal('/blog/');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/'
             });
             utils.urlFor().should.equal('/blog/');
@@ -215,28 +190,28 @@ describe('Url', function () {
         it('should return home url when asked for', function () {
             var testContext = 'home';
 
-            let utils = urlUtils({
+            let utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
             utils.urlFor(testContext).should.equal('/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/');
             utils.urlFor(testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
             utils.urlFor(testContext).should.equal('/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/');
             utils.urlFor(testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
             utils.urlFor(testContext).should.equal('/blog/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/');
             utils.urlFor(testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/blog/');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/'
             });
             utils.urlFor(testContext).should.equal('/blog/');
@@ -244,7 +219,7 @@ describe('Url', function () {
             utils.urlFor(testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/blog/');
 
             // Output blog url without trailing slash
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
             utils.urlFor(testContext).should.equal('/');
@@ -254,7 +229,7 @@ describe('Url', function () {
                 trailingSlash: false
             }, true).should.equal('https://my-ghost-blog.com');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/'
             });
             utils.urlFor(testContext).should.equal('/');
@@ -264,7 +239,7 @@ describe('Url', function () {
                 trailingSlash: false
             }, true).should.equal('https://my-ghost-blog.com');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
             utils.urlFor(testContext).should.equal('/blog/');
@@ -274,7 +249,7 @@ describe('Url', function () {
                 trailingSlash: false
             }, true).should.equal('https://my-ghost-blog.com/blog');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/'
             });
             utils.urlFor(testContext).should.equal('/blog/');
@@ -286,7 +261,7 @@ describe('Url', function () {
         });
 
         it('should handle weird cases by always returning /', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://ghost-blog.com'
             });
             utils.urlFor('').should.equal('/');
@@ -303,13 +278,13 @@ describe('Url', function () {
         it('should return url for a random path when asked for', function () {
             var testContext = {relativeUrl: '/about/'};
 
-            let utils = urlUtils({
+            let utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
             utils.urlFor(testContext).should.equal('/about/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/about/');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
             utils.urlFor(testContext).should.equal('/blog/about/');
@@ -323,7 +298,7 @@ describe('Url', function () {
 
             testContext.secure = false;
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'https://my-ghost-blog.com'
             });
             utils.urlFor(testContext, true).should.equal('https://my-ghost-blog.com/about/');
@@ -332,19 +307,19 @@ describe('Url', function () {
         it('should deduplicate subdirectories in paths', function () {
             var testContext = {relativeUrl: '/blog/about/'};
 
-            let utils = urlUtils({
+            let utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
             utils.urlFor(testContext).should.equal('/blog/about/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/about/');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
             utils.urlFor(testContext).should.equal('/blog/about/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/about/');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/'
             });
             utils.urlFor(testContext).should.equal('/blog/about/');
@@ -355,7 +330,7 @@ describe('Url', function () {
             var testContext = 'image',
                 testData;
 
-            let utils = urlUtils({
+            let utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
 
@@ -372,7 +347,7 @@ describe('Url', function () {
             // We don't make image urls absolute if they don't look like images relative to the image path
             utils.urlFor(testContext, testData, true).should.equal('/blog/content/images/my-image2.jpg');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/'
             });
 
@@ -387,7 +362,7 @@ describe('Url', function () {
 
             // Test case for blogs with optional https -
             // they may be configured with http url but the actual connection may be over https (#8373)
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
             testData = {image: '/content/images/my-image.jpg', secure: true};
@@ -398,7 +373,7 @@ describe('Url', function () {
             var testContext = 'nav',
                 testData;
 
-            let utils = urlUtils({
+            let utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
 
@@ -438,7 +413,7 @@ describe('Url', function () {
             testData = {nav: {url: 'mailto:marshmallow@my-ghost-blog.com'}};
             utils.urlFor(testContext, testData).should.equal('mailto:marshmallow@my-ghost-blog.com');
 
-            utils = urlUtils({
+            utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
             testData = {nav: {url: 'http://my-ghost-blog.com/blog/'}};
@@ -461,7 +436,7 @@ describe('Url', function () {
         });
 
         it('sitemap: should return other known paths when requested', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
             utils.urlFor('sitemap_xsl').should.equal('/sitemap.xsl');
@@ -469,7 +444,7 @@ describe('Url', function () {
         });
 
         it('admin: relative', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
 
@@ -477,7 +452,7 @@ describe('Url', function () {
         });
 
         it('admin: url is http', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com'
             });
 
@@ -485,7 +460,7 @@ describe('Url', function () {
         });
 
         it('admin: custom admin url is set', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com',
                 adminUrl: 'https://admin.my-ghost-blog.com'
             });
@@ -494,7 +469,7 @@ describe('Url', function () {
         });
 
         it('admin: blog is on subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
 
@@ -502,7 +477,7 @@ describe('Url', function () {
         });
 
         it('admin: blog is on subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/'
             });
 
@@ -510,7 +485,7 @@ describe('Url', function () {
         });
 
         it('admin: blog is on subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
 
@@ -518,7 +493,7 @@ describe('Url', function () {
         });
 
         it('admin: blog is on subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog',
                 adminUrl: 'http://something.com'
             });
@@ -527,7 +502,7 @@ describe('Url', function () {
         });
 
         it('admin: blog is on subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog',
                 adminUrl: 'http://something.com/blog'
             });
@@ -536,7 +511,7 @@ describe('Url', function () {
         });
 
         it('admin: blog is on subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog',
                 adminUrl: 'http://something.com/blog/'
             });
@@ -545,7 +520,7 @@ describe('Url', function () {
         });
 
         it('admin: blog is on subdir', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/',
                 adminUrl: 'http://something.com/blog'
             });
@@ -573,7 +548,7 @@ describe('Url', function () {
 
             describe(`for api version: ${apiVersion}`, function () {
                 it('api: should return admin url is set', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com',
                         adminUrl: 'https://something.de',
                         apiVersions: defaultAPIVersions
@@ -585,7 +560,7 @@ describe('Url', function () {
                 });
 
                 it('api: url has subdir', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com/blog',
                         apiVersions: defaultAPIVersions
                     });
@@ -596,7 +571,7 @@ describe('Url', function () {
                 });
 
                 it('api: relative path is correct', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com/',
                         apiVersions: defaultAPIVersions
                     });
@@ -607,7 +582,7 @@ describe('Url', function () {
                 });
 
                 it('api: relative path with subdir is correct', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com/blog',
                         apiVersions: defaultAPIVersions
                     });
@@ -618,7 +593,7 @@ describe('Url', function () {
                 });
 
                 it('api: should return http if config.url is http', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com',
                         apiVersions: defaultAPIVersions
                     });
@@ -629,7 +604,7 @@ describe('Url', function () {
                 });
 
                 it('api: should return https if config.url is https', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
                         apiVersions: defaultAPIVersions
                     });
@@ -640,7 +615,7 @@ describe('Url', function () {
                 });
 
                 it('api: with cors, blog url is http: should return no protocol', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com',
                         apiVersions: defaultAPIVersions
                     });
@@ -651,7 +626,7 @@ describe('Url', function () {
                 });
 
                 it('api: with cors, admin url is http: cors should return no protocol', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com',
                         adminUrl: 'http://admin.ghost.example',
                         apiVersions: defaultAPIVersions
@@ -663,7 +638,7 @@ describe('Url', function () {
                 });
 
                 it('api: with cors, admin url is https: should return with protocol', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
                         adminUrl: 'https://admin.ghost.example',
                         apiVersions: defaultAPIVersions
@@ -675,7 +650,7 @@ describe('Url', function () {
                 });
 
                 it('api: with cors, blog url is https: should return with protocol', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
                         apiVersions: defaultAPIVersions
                     });
@@ -686,7 +661,7 @@ describe('Url', function () {
                 });
 
                 it('api: with stable version, blog url is https: should return stable content api path', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
                         apiVersions: defaultAPIVersions
                     });
@@ -697,7 +672,7 @@ describe('Url', function () {
                 });
 
                 it('api: with stable version and admin true, blog url is https: should return stable admin api path', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
                         apiVersions: defaultAPIVersions
                     });
@@ -708,7 +683,7 @@ describe('Url', function () {
                 });
 
                 it('api: with just version and no version type returns correct api path', function () {
-                    const utils = urlUtils({
+                    const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
                         apiVersions: defaultAPIVersions
                     });
@@ -721,7 +696,7 @@ describe('Url', function () {
         });
 
         it('api: with active version, blog url is https: should return active content api path', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'https://my-ghost-blog.com',
                 apiVersions: defaultAPIVersions
             });
@@ -730,7 +705,7 @@ describe('Url', function () {
         });
 
         it('api: with active version and admin true, blog url is https: should return active admin api path', function () {
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'https://my-ghost-blog.com',
                 apiVersions: defaultAPIVersions
             });
@@ -740,131 +715,40 @@ describe('Url', function () {
     });
 
     describe('replacePermalink', function () {
-        it('permalink is /:slug/, timezone is default', function () {
-            const testData = {
-                slug: 'short-and-sweet'
-            };
-            const postLink = '/short-and-sweet/';
+        it('calls outs to utils/replace-permalink', function () {
+            const utils = new UrlUtils();
+            const spy = sandbox.spy(utils._utils, 'replacePermalink');
 
-            urlUtils().replacePermalink('/:slug/', testData).should.equal(postLink);
-        });
+            utils.replacePermalink('testPermalink', 'testResource', 'testTimezone');
 
-        it('permalink is /:year/:month/:day/:slug/, blog timezone is Los Angeles', function () {
-            const testData = {
-                slug: 'short-and-sweet',
-                published_at: new Date('2016-05-18T06:30:00.000Z')
-            };
-            const timezone = 'America/Los_Angeles';
-            const postLink = '/2016/05/17/short-and-sweet/';
-
-            urlUtils().replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal(postLink);
-        });
-
-        it('permalink is /:year/:month/:day/:slug/, blog timezone is Asia Tokyo', function () {
-            const testData = {
-                slug: 'short-and-sweet',
-                published_at: new Date('2016-05-18T06:30:00.000Z')
-            };
-            const timezone = 'Asia/Tokyo';
-            const postLink = '/2016/05/18/short-and-sweet/';
-
-            urlUtils().replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal(postLink);
-        });
-
-        it('permalink is /:year/:id/:author/, TZ is LA', function () {
-            const testData = {
-                id: 3,
-                primary_author: {slug: 'joe-blog'},
-                slug: 'short-and-sweet',
-                published_at: new Date('2016-01-01T00:00:00.000Z')
-            };
-            const timezone = 'America/Los_Angeles';
-            const postLink = '/2015/3/joe-blog/';
-
-            urlUtils().replacePermalink('/:year/:id/:author/', testData, timezone).should.equal(postLink);
-        });
-
-        it('permalink is /:year/:id:/:author/, TZ is Berlin', function () {
-            const testData = {
-                id: 3,
-                primary_author: {slug: 'joe-blog'},
-                slug: 'short-and-sweet',
-                published_at: new Date('2016-01-01T00:00:00.000Z')
-            };
-            const timezone = 'Europe/Berlin';
-            const postLink = '/2016/3/joe-blog/';
-
-            urlUtils().replacePermalink('/:year/:id/:author/', testData, timezone).should.equal(postLink);
-        });
-
-        it('permalink is /:primary_tag/:slug/ and there is a primary_tag', function () {
-            const testData = {
-                slug: 'short-and-sweet',
-                primary_tag: {slug: 'bitcoin'}
-            };
-            const timezone = 'Europe/Berlin';
-            const postLink = '/bitcoin/short-and-sweet/';
-
-            urlUtils().replacePermalink('/:primary_tag/:slug/', testData, timezone).should.equal(postLink);
-        });
-
-        it('permalink is /:primary_tag/:slug/ and there is NO primary_tag', function () {
-            const testData = {
-                slug: 'short-and-sweet'
-            };
-            const timezone = 'Europe/Berlin';
-            const postLink = '/all/short-and-sweet/';
-
-            urlUtils().replacePermalink('/:primary_tag/:slug/', testData, timezone).should.equal(postLink);
-        });
-
-        it('shows "undefined" for unknown route segments', function () {
-            const testData = {
-                slug: 'short-and-sweet'
-            };
-            const timezone = 'Europe/Berlin';
-            const postLink = '/undefined/short-and-sweet/';
-
-            urlUtils().replacePermalink('/:tag/:slug/', testData, timezone).should.equal(postLink);
-        });
-
-        it('post is not published yet', function () {
-            const testData = {
-                id: 3,
-                slug: 'short-and-sweet',
-                published_at: null
-            };
-            const timezone = 'Europe/London';
-
-            const nowMoment = moment().tz('Europe/London');
-
-            let postLink = '/YYYY/MM/DD/short-and-sweet/';
-
-            postLink = postLink.replace('YYYY', nowMoment.format('YYYY'));
-            postLink = postLink.replace('MM', nowMoment.format('MM'));
-            postLink = postLink.replace('DD', nowMoment.format('DD'));
-
-            urlUtils().replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal(postLink);
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('testPermalink');
+            firstCall.args[1].should.eql('testResource');
+            firstCall.args[2].should.eql('testTimezone');
         });
     });
 
     describe('isSSL', function () {
-        it('detects https protocol correctly', function () {
-            urlUtils().isSSL('https://my.blog.com').should.be.true();
-            urlUtils().isSSL('http://my.blog.com').should.be.false();
-            urlUtils().isSSL('http://my.https.com').should.be.false();
+        it('works', function () {
+            const utils = new UrlUtils({
+                url: 'http://my-ghost-blog.com/'
+            });
+
+            utils.isSSL('https://example.com').should.be.true;
+            utils.isSSL('http://example.com').should.be.false;
         });
     });
 
     describe('redirects', function () {
         it('performs 301 redirect correctly', function (done) {
             var res = {};
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com',
                 redirectCacheMaxAge: constants.ONE_YEAR_S
             });
 
-            res.set = sinon.spy();
+            res.set = sandbox.spy();
 
             res.redirect = function (code, path) {
                 code.should.equal(301);
@@ -879,12 +763,12 @@ describe('Url', function () {
 
         it('performs an admin 301 redirect correctly', function (done) {
             var res = {};
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com',
                 redirectCacheMaxAge: constants.ONE_YEAR_S
             });
 
-            res.set = sinon.spy();
+            res.set = sandbox.spy();
 
             res.redirect = function (code, path) {
                 code.should.equal(301);
@@ -900,12 +784,12 @@ describe('Url', function () {
         it('performs an admin 302 redirect correctly', function (done) {
             var res = {};
 
-            const utils = urlUtils({
+            const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com',
                 redirectCacheMaxAge: constants.ONE_YEAR_S
             });
 
-            res.set = sinon.spy();
+            res.set = sandbox.spy();
 
             res.redirect = function (path) {
                 path.should.eql('/ghost/#/my/awesome/path/');
@@ -918,71 +802,28 @@ describe('Url', function () {
         });
     });
 
-    describe('make absolute urls ', function () {
-        const siteUrl = 'http://my-ghost-blog.com';
-        const itemUrl = 'my-awesome-post';
+    describe('htmlRelativeToAbsolute ', function () {
+        it('calls out to utils/html-relative-to-absolute', function () {
+            const utils = new UrlUtils({
+                staticImageUrlPrefix: 'static/images'
+            });
+            const spy = sandbox.spy(utils._utils, 'htmlRelativeToAbsolute');
 
-        const utils = urlUtils({
-            url: 'http://my-ghost-blog.com'
-        });
+            utils.htmlRelativeToAbsolute(
+                'html',
+                'https://example.com/',
+                'my-awesome-post'
+            );
 
-        it('[success] does not convert absolute URLs', function () {
-            var html = '<a href="http://my-ghost-blog.com/content/images" title="Absolute URL">',
-                result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/content\/images" title="Absolute URL">/);
-        });
-        it('[failure] does not convert protocol relative `//` URLs', function () {
-            var html = '<a href="//my-ghost-blog.com/content/images" title="Absolute URL">',
-                result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl).html();
-
-            result.should.match(/<a href="\/\/my-ghost-blog.com\/content\/images" title="Absolute URL">/);
-        });
-        it('[failure] does not convert internal links starting with "#"', function () {
-            var html = '<a href="#jumptosection" title="Table of Content">',
-                result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl).html();
-
-            result.should.match(/<a href="#jumptosection" title="Table of Content">/);
-        });
-        it('[success] converts a relative URL', function () {
-            var html = '<a href="/about#nowhere" title="Relative URL">',
-                result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/about#nowhere" title="Relative URL">/);
-        });
-        it('[success] converts a relative URL including subdirectories', function () {
-            var html = '<a href="/about#nowhere" title="Relative URL">',
-                result = utils.makeAbsoluteUrls(html, 'http://my-ghost-blog.com/blog', itemUrl).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/blog\/about#nowhere" title="Relative URL">/);
-        });
-
-        it('asset urls only', function () {
-            let html = '<a href="/about" title="Relative URL"><img src="/content/images/1.jpg">';
-            let result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<img src="http:\/\/my-ghost-blog.com\/content\/images\/1.jpg">/);
-            result.should.match(/<a href="\/about" title="Relative URL">/);
-
-            html = '<a href="/content/images/09/01/image.jpg">';
-            result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/content\/images\/09\/01\/image.jpg">/);
-
-            html = '<a href="/blog/content/images/09/01/image.jpg">';
-            result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<a href="http:\/\/my-ghost-blog.com\/blog\/content\/images\/09\/01\/image.jpg">/);
-
-            html = '<img src="http://my-ghost-blog.de/content/images/09/01/image.jpg">';
-            result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<img src="http:\/\/my-ghost-blog.de\/content\/images\/09\/01\/image.jpg">/);
-
-            html = '<img src="http://external.com/image.jpg">';
-            result = utils.makeAbsoluteUrls(html, siteUrl, itemUrl, {assetsOnly: true}).html();
-
-            result.should.match(/<img src="http:\/\/external.com\/image.jpg">/);
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('html');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.eql('my-awesome-post');
+            firstCall.args[3].should.deepEqual({
+                assetsOnly: false,
+                staticImageUrlPrefix: 'static/images'
+            });
         });
     });
 });
