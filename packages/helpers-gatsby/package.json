@@ -29,7 +29,7 @@
     "@babel/preset-env": "7.5.5",
     "@babel/preset-react": "7.0.0",
     "mocha": "6.2.0",
-    "rimraf": "2.6.3",
+    "rimraf": "2.7.1",
     "should": "13.2.3",
     "sinon": "7.4.1"
   },
