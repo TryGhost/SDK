@@ -2,6 +2,8 @@
 // const testUtils = require('./utils');
 require('./utils');
 
+const React = require('react');
+
 const {Tags} = require('../');
 
 const props = {
@@ -61,6 +63,15 @@ const props = {
                 meta_description: null,
                 meta_title: null,
                 visibility: 'public'
+            },
+            {
+                name: 'xc',
+                slug: 'xc',
+                description: null,
+                feature_image: null,
+                meta_description: null,
+                meta_title: null,
+                visibility: 'public'
             }
         ],
         plaintext: 'Post text.',
@@ -76,8 +87,6 @@ const props = {
     visibility: 'public',
     autolink: true,
     permalink: '/tag/:slug',
-    separator: '',
-    separatorClasses: 'd-none',
     from: 1,
     classes: '',
     prefixClasses: '',
@@ -85,11 +94,72 @@ const props = {
     linkClasses: ''
 };
 
-const result = `[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]`;
-
 describe('Tags', function () {
     describe('Options', function () {
-        it('can specify an alternative separator', function () {
+        beforeEach(function () {
+            props.separator = undefined;
+            props.prefix = undefined;
+            props.suffix = undefined;
+            props.autolink = true;
+            props.permalink = '/tag/:slug';
+        });
+
+        it('should use the default separator if no separator is specified', function () {
+            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            
+            JSON.stringify(Tags(props)).should.eql(result);
+        });
+
+        it('should use the default separator if no separator is specified without autolink', function () {
+            props.autolink = false;
+            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":"bike"},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":"xc"},"_owner":null,"_store":{}}]';
+            
+            JSON.stringify(Tags(props)).should.eql(result);
+        });
+
+        it('should use the default separator if no separator is specified without a permalink', function () {
+            props.permalink = '';
+            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/bike/","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/xc/","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            
+            JSON.stringify(Tags(props)).should.eql(result);
+        });
+
+        it('should use the default separator and a prefix and suffix', function () {
+            props.prefix = 'pre';
+            props.suffix = 'post';
+    
+            const result = '[{"type":"span","key":"prefix","ref":null,"props":{"className":"","children":"pre"},"_owner":null,"_store":{}},{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"suffix","ref":null,"props":{"className":"","children":"post"},"_owner":null,"_store":{}}]';
+
+            JSON.stringify(Tags(props)).should.eql(result);
+        });
+
+        it('should use the default separator and a prefix react element and suffix React element', function () {
+            props.prefix = React.createElement('p', {className: 'paragraph'}, 'Hello from React.');
+            props.suffix = React.createElement('p', {className: 'paragraph'}, 'Hello from React.');
+    
+            const result = '[{"type":"p","key":null,"ref":null,"props":{"className":"paragraph","children":"Hello from React."},"_owner":null,"_store":{}},{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"p","key":null,"ref":null,"props":{"className":"paragraph","children":"Hello from React."},"_owner":null,"_store":{}}]';
+
+            JSON.stringify(Tags(props)).should.eql(result);
+        });
+
+        it('should not generate any separator if an empty string is specified', function () {
+            props.separator = '';
+            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            
+            JSON.stringify(Tags(props)).should.eql(result);
+        });
+
+        it('should use the specified separator', function () {
+            props.separator = '🤘';
+            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{"children":"🤘"},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            
+            JSON.stringify(Tags(props)).should.eql(result);
+        });
+
+        it('should use the specified react element', function () {
+            props.separator = React.createElement('p', {className: 'paragraph'}, 'Hello from React.');
+            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"key":"separator_2","ref":null,"props":{"children":{"type":"p","key":null,"ref":null,"props":{"className":"paragraph","children":"Hello from React."},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+
             JSON.stringify(Tags(props)).should.eql(result);
         });
     });
