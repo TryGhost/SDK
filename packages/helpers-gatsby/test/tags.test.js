@@ -102,10 +102,18 @@ describe('Tags', function () {
             props.suffix = undefined;
             props.autolink = true;
             props.permalink = '/tag/:slug';
+            props.separatorClasses = undefined;
         });
 
         it('should use the default separator if no separator is specified', function () {
             const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            
+            JSON.stringify(Tags(props)).should.eql(result);
+        });
+
+        it('should use the default separator if no separator is specified and separatorClasses are specified', function () {
+            props.separatorClasses = 'd-none';
+            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{"className":"d-none"},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
             
             JSON.stringify(Tags(props)).should.eql(result);
         });

@@ -45,9 +45,8 @@ const Tags = (props) => {
     Object.defineProperty(opts, 'separator', {
         get() {
             if (props.separator === '') {
-                return ''
-            }
-            if (props.separator && React.isValidElement(props.separator)) {
+                return null
+            } else if (React.isValidElement(props.separator)) {
                 return (
                     <React.Fragment key={generateKey('separator')}>
                         {props.separator}

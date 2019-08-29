@@ -57,10 +57,8 @@ var Tags = function Tags(props) {
   Object.defineProperty(opts, 'separator', {
     get: function get() {
       if (props.separator === '') {
-        return '';
-      }
-
-      if (props.separator && _react["default"].isValidElement(props.separator)) {
+        return null;
+      } else if (_react["default"].isValidElement(props.separator)) {
         return _react["default"].createElement(_react["default"].Fragment, {
           key: generateKey('separator')
         }, props.separator);
