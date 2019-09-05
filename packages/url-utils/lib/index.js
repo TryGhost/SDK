@@ -315,7 +315,7 @@ module.exports = class UrlUtils {
     }
 
     redirectToAdmin(status, res, adminPath) {
-        var redirectUrl = this.urlJoin(this.urlFor('admin'), adminPath, '/');
+        var redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
 
         if (status === 301) {
             return this.redirect301(res, redirectUrl);
