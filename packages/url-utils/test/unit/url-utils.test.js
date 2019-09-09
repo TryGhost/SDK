@@ -772,7 +772,7 @@ describe('UrlUtils', function () {
 
             res.redirect = function (code, path) {
                 code.should.equal(301);
-                path.should.eql('/ghost/#/my/awesome/path/');
+                path.should.eql('http://my-ghost-blog.com/ghost/#/my/awesome/path/');
                 res.set.calledWith({'Cache-Control': 'public, max-age=' + constants.ONE_YEAR_S}).should.be.true();
 
                 done();
@@ -792,13 +792,34 @@ describe('UrlUtils', function () {
             res.set = sandbox.spy();
 
             res.redirect = function (path) {
-                path.should.eql('/ghost/#/my/awesome/path/');
+                path.should.eql('http://my-ghost-blog.com/ghost/#/my/awesome/path/');
                 res.set.called.should.be.false();
 
                 done();
             };
 
             utils.redirectToAdmin(302, res, '#/my/awesome/path');
+        });
+
+        it('performs and admin redirect to a custom admin url correctly', function (done) {
+            var res = {};
+            const utils = new UrlUtils({
+                url: 'http://my-ghost-blog.com',
+                adminUrl: 'https://admin.myblog.com',
+                redirectCacheMaxAge: constants.ONE_YEAR_S
+            });
+
+            res.set = sandbox.spy();
+
+            res.redirect = function (code, path) {
+                code.should.equal(301);
+                path.should.eql('https://admin.myblog.com/ghost/#/my/awesome/path/');
+                res.set.calledWith({'Cache-Control': 'public, max-age=' + constants.ONE_YEAR_S}).should.be.true();
+
+                done();
+            };
+
+            utils.redirectToAdmin(301, res, '#/my/awesome/path');
         });
     });
 
