@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const supportedVersions = ['v2'];
+const supportedVersions = ['v2', 'canary', 'v3'];
 
 export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key}) {
     // host parameter is deprecated
