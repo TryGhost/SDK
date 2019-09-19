@@ -1,6 +1,6 @@
 # Ghost Gatsby Helpers
 
-Gatsby Helpers for working with the Ghost [Content API](https://docs.ghost.org/api/content/)
+Gatsby Helpers for working with the Ghost [Content API](https://ghost.org/docs/api/content/)
 
 ## Usage
 
