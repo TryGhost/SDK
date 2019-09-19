@@ -4,7 +4,7 @@ Gatsby Helpers for working with the Ghost [Content API](https://docs.ghost.org/a
 
 ## Usage
 
-See https://docs.ghost.org/api/gatsby/
+See https:/ghost.org/docs/api/gatsby/
 
 ## Develop
 
