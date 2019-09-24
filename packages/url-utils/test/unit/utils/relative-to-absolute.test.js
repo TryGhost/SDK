@@ -141,5 +141,13 @@ describe('utils: relativeToAbsolute()', function () {
             url = '/sub';
             relativeToAbsolute(url, root).should.eql('https://example.com/sub', 'partial subdir match');
         });
+
+        it('forces https with options.secure = true', function () {
+            let url = '/my/file.png';
+            let root = 'http://example.com/';
+
+            relativeToAbsolute(url, root).should.eql('http://example.com/my/file.png');
+            relativeToAbsolute(url, root, {secure: true}).should.eql('https://example.com/my/file.png');
+        });
     });
 });

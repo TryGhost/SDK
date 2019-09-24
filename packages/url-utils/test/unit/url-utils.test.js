@@ -832,7 +832,7 @@ describe('UrlUtils', function () {
             });
             const spy = sandbox.spy(utils._utils, 'htmlRelativeToAbsolute');
 
-            utils.htmlRelativeToAbsolute('html', 'my-awesome-post');
+            utils.htmlRelativeToAbsolute('html', 'my-awesome-post', {secure: true});
 
             const {calledOnce, firstCall} = spy;
             calledOnce.should.be.true('called once');
@@ -841,7 +841,8 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.eql('my-awesome-post');
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images'
+                staticImageUrlPrefix: 'static/images',
+                secure: true
             });
         });
     });

@@ -123,4 +123,15 @@ describe('utils: htmlRelativeToAbsolute()', function () {
 </p>
 `);
     });
+
+    it('forces https urls with options.secure = true', function () {
+        let siteUrl = 'http://my-ghost-blog.com';
+        let html = '<p><a href="/test">Test</a><code><a href="/test">Test</a></code><a href="/test">Test</a></p>';
+
+        htmlRelativeToAbsolute(html, siteUrl, itemUrl)
+            .should.eql('<p><a href="http://my-ghost-blog.com/test">Test</a><code><a href="/test">Test</a></code><a href="http://my-ghost-blog.com/test">Test</a></p>');
+
+        htmlRelativeToAbsolute(html, siteUrl, itemUrl, {secure: true})
+            .should.eql('<p><a href="https://my-ghost-blog.com/test">Test</a><code><a href="/test">Test</a></code><a href="https://my-ghost-blog.com/test">Test</a></p>');
+    });
 });

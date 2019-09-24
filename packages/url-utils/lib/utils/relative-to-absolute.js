@@ -9,7 +9,7 @@ const {URL} = require('url');
  * @param {string} rootUrl
  * @returns {string} The passed in url or an absolute URL using
  */
-const relativeToAbsolute = function relativeToAbsolute(path, rootUrl) {
+const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, options = {}) {
     // return the path as-is if it's a pure hash/query param
     if (path.match(/^[#?]/)) {
         return path;
@@ -31,6 +31,10 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl) {
     }
 
     const parsedUrl = new URL(path, rootUrl);
+
+    if (options.secure) {
+        parsedUrl.protocol = 'https:';
+    }
 
     return parsedUrl.href;
 };

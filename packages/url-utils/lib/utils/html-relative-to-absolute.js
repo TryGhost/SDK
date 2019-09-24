@@ -6,7 +6,10 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, options = {assetsOnly: false}) {
+function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, _options) {
+    const defaultOptions = {assetsOnly: false, secure: false};
+    const options = Object.assign({}, defaultOptions, _options || {});
+
     const htmlContent = cheerio.load(html, {decodeEntities: false});
     const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
 
@@ -78,12 +81,16 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, options = {assetsOn
             // if the relative URL begins with a '/' use the blog URL (including sub-directory)
             // as the base URL, otherwise use the post's URL.
             const baseUrl = attributeValue[0] === '/' ? siteUrl : itemUrl;
-            const absoluteValue = urlJoin([baseUrl, attributeValue], {rootUrl: siteUrl});
+            const absoluteUrl = new URL(urlJoin([baseUrl, attributeValue], {rootUrl: siteUrl}));
+
+            if (options.secure) {
+                absoluteUrl.protocol = 'https:';
+            }
 
             addReplacement({
                 name: attributeName,
                 originalValue: attributeValue,
-                absoluteValue
+                absoluteValue: absoluteUrl.toString()
             });
         });
     });
