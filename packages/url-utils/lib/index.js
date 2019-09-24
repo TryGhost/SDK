@@ -326,7 +326,6 @@ module.exports = class UrlUtils {
     /**
      * Convert relative URLs in html into absolute URLs
      * @param {string} html
-     * @param {string} siteUrl (blog URL)
      * @param {string} itemUrl (URL of current context)
      * @param {Object} options
      * @returns {object} htmlContent
@@ -334,22 +333,22 @@ module.exports = class UrlUtils {
      * absolute urls. Returns an object. The html string can be accessed by calling `html()` on
      * the variable that takes the result of this function
      */
-    htmlRelativeToAbsolute(html, siteUrl, itemUrl, options = {}) {
+    htmlRelativeToAbsolute(html, itemUrl, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
-        return utils.htmlRelativeToAbsolute(html, siteUrl, itemUrl, _options);
+        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemUrl, _options);
     }
 
-    htmlAbsoluteToRelative(html, siteUrl, options = {}) {
+    htmlAbsoluteToRelative(html, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
-        return utils.htmlAbsoluteToRelative(html, siteUrl, _options);
+        return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
     }
 
     absoluteToRelative(url, options = {}) {

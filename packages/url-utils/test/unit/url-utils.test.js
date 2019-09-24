@@ -827,15 +827,12 @@ describe('UrlUtils', function () {
     describe('htmlRelativeToAbsolute ', function () {
         it('calls out to utils/html-relative-to-absolute', function () {
             const utils = new UrlUtils({
+                url: 'https://example.com',
                 staticImageUrlPrefix: 'static/images'
             });
             const spy = sandbox.spy(utils._utils, 'htmlRelativeToAbsolute');
 
-            utils.htmlRelativeToAbsolute(
-                'html',
-                'https://example.com/',
-                'my-awesome-post'
-            );
+            utils.htmlRelativeToAbsolute('html', 'my-awesome-post');
 
             const {calledOnce, firstCall} = spy;
             calledOnce.should.be.true('called once');
@@ -852,14 +849,12 @@ describe('UrlUtils', function () {
     describe('htmlAbsoluteToRelative ', function () {
         it('calls out to utils/html-absolute-to-relative', function () {
             const utils = new UrlUtils({
+                url: 'https://example.com',
                 staticImageUrlPrefix: 'static/images'
             });
             const spy = sandbox.spy(utils._utils, 'htmlAbsoluteToRelative');
 
-            utils.htmlAbsoluteToRelative(
-                'html',
-                'https://example.com/'
-            );
+            utils.htmlAbsoluteToRelative('html');
 
             const {calledOnce, firstCall} = spy;
             calledOnce.should.be.true('called once');
