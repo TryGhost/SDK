@@ -9,7 +9,7 @@ const stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
  * @param {string} rootUrl Absolute URL to which the returned relative URL will match the domain root
  * @param {Object} [options] Options that affect the conversion
  * @param {boolean} [options.ignoreProtocol=true] Ignore protocol when matching url to root
- * @param {boolean} [options.withoutSubdirectory=false] Strip the root subdirectory from the returned  path
+ * @param {boolean} [options.withoutSubdirectory=false] Strip the root subdirectory from the returned path
  * @returns {string} The passed-in url or a relative path
  */
 const absoluteToRelative = function absoluteToRelative(url, rootUrl, options = {}) {

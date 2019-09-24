@@ -7,7 +7,7 @@ const getVersionPath = require('../../../lib/utils/get-version-path');
 describe('utils: getVersionPath()', function () {
     let apiVersions;
 
-    this.beforeEach(function () {
+    beforeEach(function () {
         apiVersions = {
             all: ['v0.1', 'v2', 'canary'],
             canary: {

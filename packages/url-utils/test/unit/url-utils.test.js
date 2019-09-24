@@ -468,7 +468,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin', true).should.equal('https://admin.my-ghost-blog.com/ghost/');
         });
 
-        it('admin: blog is on subdir', function () {
+        it('admin: blog is on subdir (absolute, no trailing slash)', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
@@ -476,7 +476,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin', true).should.equal('http://my-ghost-blog.com/blog/ghost/');
         });
 
-        it('admin: blog is on subdir', function () {
+        it('admin: blog is on subdir (absolute, trailing slash)', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/'
             });
@@ -484,7 +484,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin', true).should.equal('http://my-ghost-blog.com/blog/ghost/');
         });
 
-        it('admin: blog is on subdir', function () {
+        it('admin: blog is on subdir (relative, no trailing slash)', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog'
             });
@@ -492,7 +492,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin').should.equal('/blog/ghost/');
         });
 
-        it('admin: blog is on subdir', function () {
+        it('admin: blog is on subdir (separate admin, absolute, no trailing slash)', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog',
                 adminUrl: 'http://something.com'
@@ -501,7 +501,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
         });
 
-        it('admin: blog is on subdir', function () {
+        it('admin: blog is on subdir (separate admin with subdir, absolute, no trailing slash)', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog',
                 adminUrl: 'http://something.com/blog'
@@ -510,7 +510,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
         });
 
-        it('admin: blog is on subdir', function () {
+        it('admin: blog is on subdir (separate admin with subdir, absolute, trailing slash)', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog',
                 adminUrl: 'http://something.com/blog/'
@@ -519,7 +519,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
         });
 
-        it('admin: blog is on subdir', function () {
+        it('admin: blog is on subdir (separate admin with subdir, absolute, no trailing admin slash)', function () {
             const utils = new UrlUtils({
                 url: 'http://my-ghost-blog.com/blog/',
                 adminUrl: 'http://something.com/blog'
@@ -528,6 +528,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
         });
 
+        // eslint-disable-next-line ghost/mocha/no-setup-in-describe
         ['v0.1', 'v2'].forEach((apiVersion) => {
             function getApiPath(options) {
                 const baseAPIPath = '/ghost/api/';
@@ -842,6 +843,29 @@ describe('UrlUtils', function () {
             firstCall.args[1].should.eql('https://example.com/');
             firstCall.args[2].should.eql('my-awesome-post');
             firstCall.args[3].should.deepEqual({
+                assetsOnly: false,
+                staticImageUrlPrefix: 'static/images'
+            });
+        });
+    });
+
+    describe('htmlAbsoluteToRelative ', function () {
+        it('calls out to utils/html-absolute-to-relative', function () {
+            const utils = new UrlUtils({
+                staticImageUrlPrefix: 'static/images'
+            });
+            const spy = sandbox.spy(utils._utils, 'htmlAbsoluteToRelative');
+
+            utils.htmlAbsoluteToRelative(
+                'html',
+                'https://example.com/'
+            );
+
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('html');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images'
             });

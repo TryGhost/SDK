@@ -5,6 +5,7 @@ module.exports = {
     getApiPath: require('./get-api-path'),
     getVersionPath: require('./get-version-path'),
     htmlRelativeToAbsolute: require('./html-relative-to-absolute'),
+    htmlAbsoluteToRelative: require('./html-absolute-to-relative'),
     isSSL: require('./is-ssl'),
     relativeToAbsolute: require('./relative-to-absolute'),
     replacePermalink: require('./replace-permalink'),

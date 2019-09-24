@@ -343,6 +343,15 @@ module.exports = class UrlUtils {
         return utils.htmlRelativeToAbsolute(html, siteUrl, itemUrl, _options);
     }
 
+    htmlAbsoluteToRelative(html, siteUrl, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.htmlAbsoluteToRelative(html, siteUrl, _options);
+    }
+
     absoluteToRelative(url, options = {}) {
         return utils.absoluteToRelative(url, this.getSiteUrl(), options);
     }

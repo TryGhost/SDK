@@ -1,23 +1,22 @@
-const {URL} = require('url');
 const cheerio = require('cheerio');
-const urlJoin = require('./url-join');
+const absoluteToRelative = require('./absolute-to-relative');
 
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, options = {assetsOnly: false}) {
+function htmlAbsoluteToRelative(html = '', siteUrl, options = {assetsOnly: false}) {
     const htmlContent = cheerio.load(html, {decodeEntities: false});
     const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
 
-    // replacements is keyed with the attr name + original relative value so
+    // replacements is keyed with the attr name + original absolute value so
     // that we can implement skips for untouchable urls
     //
     // replacements = {
-    //     'href="/test"': [
-    //         {name: 'href', originalValue: '/test', absoluteValue: '.../test'},
-    //         {name: 'href', originalValue: '/test', skip: true}, // found inside a <code> element
-    //         {name: 'href', originalValue: '/test', absoluteValue: '.../test'},
+    //     'href="https://mysite.com/test"': [
+    //         {name: 'href', originalValue: 'https://mysite.com/test', relativeValue: '/test'},
+    //         {name: 'href', originalValue: 'https://mysite.com/test', skip: true}, // found inside a <code> element
+    //         {name: 'href', originalValue: 'https://mysite.com/test', relativeValue: '/test'},
     //     ]
     // }
     const replacements = {};
@@ -32,7 +31,7 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, options = {assetsOn
         replacements[key].push(replacement);
     }
 
-    // find all of the relative url attributes that we care about
+    // find all of the absolute url attributes that we care about and populate the replacements object
     ['href', 'src'].forEach((attributeName) => {
         htmlContent('[' + attributeName + ']').each((ix, el) => {
             // ignore html inside of <code> elements
@@ -49,41 +48,17 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, options = {assetsOn
 
             let attributeValue = el.attr(attributeName);
 
-            // if URL is absolute move on to the next element
-            try {
-                const parsed = new URL(attributeValue, 'http://relative');
-
-                if (parsed.origin !== 'http://relative') {
-                    return;
-                }
-
-                // Do not convert protocol relative URLs
-                if (attributeValue.lastIndexOf('//', 0) === 0) {
-                    return;
-                }
-            } catch (e) {
-                return;
-            }
-
-            // CASE: don't convert internal links
-            if (attributeValue.startsWith('#')) {
-                return;
-            }
-
             if (options.assetsOnly && !attributeValue.match(staticImageUrlPrefixRegex)) {
                 return;
             }
 
-            // compose an absolute URL
-            // if the relative URL begins with a '/' use the blog URL (including sub-directory)
-            // as the base URL, otherwise use the post's URL.
-            const baseUrl = attributeValue[0] === '/' ? siteUrl : itemUrl;
-            const absoluteValue = urlJoin([baseUrl, attributeValue], {rootUrl: siteUrl});
+            // remove the site url (excluding sub-directory) from the url
+            const relativeValue = absoluteToRelative(attributeValue, siteUrl, {ignoreProtocol: true});
 
             addReplacement({
                 name: attributeName,
                 originalValue: attributeValue,
-                absoluteValue
+                relativeValue
             });
         });
     });
@@ -104,7 +79,7 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, options = {assetsOn
             html = html.replace(regex, (match) => {
                 let result = match;
                 if (matchCount === skipCount) {
-                    result = match.replace(attr.originalValue, attr.absoluteValue);
+                    result = match.replace(attr.originalValue, attr.relativeValue);
                 }
                 matchCount += 1;
                 return result;
@@ -115,4 +90,4 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, options = {assetsOn
     return html;
 }
 
-module.exports = htmlRelativeToAbsolute;
+module.exports = htmlAbsoluteToRelative;
