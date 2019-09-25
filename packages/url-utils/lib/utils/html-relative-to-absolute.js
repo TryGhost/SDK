@@ -6,12 +6,59 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// TODO: use our relativeToAbsolute util function?
+function relativeToAbsolute(url, siteUrl, itemUrl, options) {
+    const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
+
+    // if URL is absolute move on to the next element
+    try {
+        const parsed = new URL(url, 'http://relative');
+
+        if (parsed.origin !== 'http://relative') {
+            return;
+        }
+
+        // Do not convert protocol relative URLs
+        if (url.lastIndexOf('//', 0) === 0) {
+            return;
+        }
+    } catch (e) {
+        return;
+    }
+
+    // CASE: don't convert internal links
+    if (url.startsWith('#')) {
+        return;
+    }
+
+    if (options.assetsOnly && !url.match(staticImageUrlPrefixRegex)) {
+        return;
+    }
+
+    // compose an absolute URL
+    // if the relative URL begins with a '/' use the blog URL (including sub-directory)
+    // as the base URL, otherwise use the post's URL.
+    const baseUrl = url[0] === '/' ? siteUrl : itemUrl;
+    const absoluteUrl = new URL(urlJoin([baseUrl, url], {rootUrl: siteUrl}));
+
+    if (options.secure) {
+        absoluteUrl.protocol = 'https:';
+    }
+
+    return absoluteUrl.toString();
+}
+
+function extractSrcsetUrls(srcset = '') {
+    return srcset.split(',').map((part) => {
+        return part.trim().split(/\s+/)[0];
+    });
+}
+
 function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, _options) {
     const defaultOptions = {assetsOnly: false, secure: false};
     const options = Object.assign({}, defaultOptions, _options || {});
 
     const htmlContent = cheerio.load(html, {decodeEntities: false});
-    const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
 
     // replacements is keyed with the attr name + original relative value so
     // that we can implement skips for untouchable urls
@@ -36,7 +83,7 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, _options) {
     }
 
     // find all of the relative url attributes that we care about
-    ['href', 'src'].forEach((attributeName) => {
+    ['href', 'src', 'srcset'].forEach((attributeName) => {
         htmlContent('[' + attributeName + ']').each((ix, el) => {
             // ignore html inside of <code> elements
             if (htmlContent(el).closest('code').length) {
@@ -49,49 +96,38 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, _options) {
             }
 
             el = htmlContent(el);
+            const originalValue = el.attr(attributeName);
 
-            let attributeValue = el.attr(attributeName);
+            if (attributeName === 'srcset') {
+                const urls = extractSrcsetUrls(originalValue);
+                const absoluteUrls = urls.map(url => relativeToAbsolute(url, siteUrl, itemUrl, options));
+                let absoluteValue = originalValue;
 
-            // if URL is absolute move on to the next element
-            try {
-                const parsed = new URL(attributeValue, 'http://relative');
+                urls.forEach((url, i) => {
+                    if (absoluteUrls[i]) {
+                        let regex = new RegExp(escapeRegExp(url), 'g');
+                        absoluteValue = absoluteValue.replace(regex, absoluteUrls[i]);
+                    }
+                });
 
-                if (parsed.origin !== 'http://relative') {
-                    return;
+                if (absoluteValue !== originalValue) {
+                    addReplacement({
+                        name: attributeName,
+                        originalValue,
+                        absoluteValue
+                    });
                 }
+            } else {
+                const absoluteValue = relativeToAbsolute(originalValue, siteUrl, itemUrl, options);
 
-                // Do not convert protocol relative URLs
-                if (attributeValue.lastIndexOf('//', 0) === 0) {
-                    return;
+                if (absoluteValue) {
+                    addReplacement({
+                        name: attributeName,
+                        originalValue,
+                        absoluteValue
+                    });
                 }
-            } catch (e) {
-                return;
             }
-
-            // CASE: don't convert internal links
-            if (attributeValue.startsWith('#')) {
-                return;
-            }
-
-            if (options.assetsOnly && !attributeValue.match(staticImageUrlPrefixRegex)) {
-                return;
-            }
-
-            // compose an absolute URL
-            // if the relative URL begins with a '/' use the blog URL (including sub-directory)
-            // as the base URL, otherwise use the post's URL.
-            const baseUrl = attributeValue[0] === '/' ? siteUrl : itemUrl;
-            const absoluteUrl = new URL(urlJoin([baseUrl, attributeValue], {rootUrl: siteUrl}));
-
-            if (options.secure) {
-                absoluteUrl.protocol = 'https:';
-            }
-
-            addReplacement({
-                name: attributeName,
-                originalValue: attributeValue,
-                absoluteValue: absoluteUrl.toString()
-            });
         });
     });
 

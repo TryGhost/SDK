@@ -5,9 +5,25 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function _absoluteToRelative(url, siteUrl, options) {
+    const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
+
+    if (options.assetsOnly && !url.match(staticImageUrlPrefixRegex)) {
+        return;
+    }
+
+    // remove the site url (excluding sub-directory) from the url
+    return absoluteToRelative(url, siteUrl, {ignoreProtocol: true});
+}
+
+function extractSrcsetUrls(srcset = '') {
+    return srcset.split(',').map((part) => {
+        return part.trim().split(/\s+/)[0];
+    });
+}
+
 function htmlAbsoluteToRelative(html = '', siteUrl, options = {assetsOnly: false}) {
     const htmlContent = cheerio.load(html, {decodeEntities: false});
-    const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
 
     // replacements is keyed with the attr name + original absolute value so
     // that we can implement skips for untouchable urls
@@ -32,7 +48,7 @@ function htmlAbsoluteToRelative(html = '', siteUrl, options = {assetsOnly: false
     }
 
     // find all of the absolute url attributes that we care about and populate the replacements object
-    ['href', 'src'].forEach((attributeName) => {
+    ['href', 'src', 'srcset'].forEach((attributeName) => {
         htmlContent('[' + attributeName + ']').each((ix, el) => {
             // ignore html inside of <code> elements
             if (htmlContent(el).closest('code').length) {
@@ -45,21 +61,39 @@ function htmlAbsoluteToRelative(html = '', siteUrl, options = {assetsOnly: false
             }
 
             el = htmlContent(el);
+            const originalValue = el.attr(attributeName);
 
-            let attributeValue = el.attr(attributeName);
+            if (attributeName === 'srcset') {
+                const urls = extractSrcsetUrls(originalValue);
+                const relativeUrls = urls.map(url => _absoluteToRelative(url, siteUrl, options));
+                let relativeValue = originalValue;
 
-            if (options.assetsOnly && !attributeValue.match(staticImageUrlPrefixRegex)) {
-                return;
+                urls.forEach((url, i) => {
+                    if (relativeUrls[i]) {
+                        let regex = new RegExp(escapeRegExp(url), 'g');
+                        relativeValue = relativeValue.replace(regex, relativeUrls[i]);
+                    }
+                });
+
+                if (relativeValue !== originalValue) {
+                    addReplacement({
+                        name: attributeName,
+                        originalValue,
+                        relativeValue
+                    });
+                }
+            } else {
+                // remove the site url (excluding sub-directory) from the url
+                const relativeValue = _absoluteToRelative(originalValue, siteUrl, options);
+
+                if (relativeValue) {
+                    addReplacement({
+                        name: attributeName,
+                        originalValue,
+                        relativeValue
+                    });
+                }
             }
-
-            // remove the site url (excluding sub-directory) from the url
-            const relativeValue = absoluteToRelative(attributeValue, siteUrl, {ignoreProtocol: true});
-
-            addReplacement({
-                name: attributeName,
-                originalValue: attributeValue,
-                relativeValue
-            });
         });
     });
 

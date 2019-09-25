@@ -152,4 +152,58 @@ describe('utils: htmlRelativeToAbsolute()', function () {
         htmlRelativeToAbsolute(html, siteUrl, itemUrl, options)
             .should.eql('<p><a href="http://my-ghost-blog.com/test">/test</a><code><a href="/test">/test</a></code><a href="http://my-ghost-blog.com/test">/test</a></p>');
     });
+
+    describe('srcset support', function () {
+        /* eslint-disable no-irregular-whitespace */
+        it('converts multiple urls', function () {
+            let html = `
+                <img srcset="/content/images/elva-fairy-320w.jpg 320w,
+                             /content/images/elva-fairy-480w.jpg 480w,
+                             /content/images/elva-fairy-800w.jpg 800w"
+                    sizes="(max-width: 320px) 280px,
+                           (max-width: 480px) 440px,
+                           800px"
+                    src="/content/images/elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
+            `;
+
+            let result = htmlRelativeToAbsolute(html, siteUrl, itemUrl, options);
+
+            result.should.eql(`
+                <img srcset="http://my-ghost-blog.com/content/images/elva-fairy-320w.jpg 320w,
+                             http://my-ghost-blog.com/content/images/elva-fairy-480w.jpg 480w,
+                             http://my-ghost-blog.com/content/images/elva-fairy-800w.jpg 800w"
+                    sizes="(max-width: 320px) 280px,
+                           (max-width: 480px) 440px,
+                           800px"
+                    src="http://my-ghost-blog.com/content/images/elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
+            `);
+        });
+
+        it('forces https urls with options.secure = true', function () {
+            let siteUrl = 'http://my-ghost-blog.com';
+
+            let html = `
+                <img srcset="/content/images/elva-fairy-320w.jpg 320w,
+                             /content/images/elva-fairy-480w.jpg 480w,
+                             /content/images/elva-fairy-800w.jpg 800w"
+                    sizes="(max-width: 320px) 280px,
+                           (max-width: 480px) 440px,
+                           800px"
+                    src="/content/images/elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
+            `;
+
+            let result = htmlRelativeToAbsolute(html, siteUrl, itemUrl, {secure: true});
+
+            result.should.eql(`
+                <img srcset="https://my-ghost-blog.com/content/images/elva-fairy-320w.jpg 320w,
+                             https://my-ghost-blog.com/content/images/elva-fairy-480w.jpg 480w,
+                             https://my-ghost-blog.com/content/images/elva-fairy-800w.jpg 800w"
+                    sizes="(max-width: 320px) 280px,
+                           (max-width: 480px) 440px,
+                           800px"
+                    src="https://my-ghost-blog.com/content/images/elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
+            `);
+        });
+        /* eslint-enable no-irregular-whitespace */
+    });
 });
