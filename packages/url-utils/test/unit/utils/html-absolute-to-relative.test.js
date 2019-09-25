@@ -135,4 +135,11 @@ describe('utils: htmlAbsoluteToRelative()', function () {
 </p>
 `);
     });
+
+    it('skips any matching relative URLs outside of attributes', function () {
+        let html = '<p><a href="http://my-ghost-blog.com/test">/test</a><code><a href="/test">/test</a></code><a href="http://my-ghost-blog.com/test">/test</a></p>';
+
+        htmlAbsoluteToRelative(html, siteUrl, options)
+            .should.eql('<p><a href="/test">/test</a><code><a href="/test">/test</a></code><a href="/test">/test</a></p>');
+    });
 });

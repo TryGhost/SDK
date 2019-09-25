@@ -6,7 +6,7 @@ const htmlRelativeToAbsolute = require('../../../lib/utils/html-relative-to-abso
 
 describe('utils: htmlRelativeToAbsolute()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
-    const itemUrl = 'my-awesome-post';
+    const itemUrl = 'http://my-ghost-blog.com/my-awesome-post';
     let options;
 
     beforeEach(function () {
@@ -15,35 +15,46 @@ describe('utils: htmlRelativeToAbsolute()', function () {
         };
     });
 
-    it('[success] does not convert absolute URLs', function () {
+    it('does not convert absolute URLs', function () {
         const html = '<a href="http://my-ghost-blog.com/content/images" title="Absolute URL">';
         const result = htmlRelativeToAbsolute(html, siteUrl, itemUrl, options);
 
         result.should.match(/<a href="http:\/\/my-ghost-blog.com\/content\/images" title="Absolute URL">/);
     });
-    it('[failure] does not convert protocol relative `//` URLs', function () {
+
+    it('does not convert protocol relative `//` URLs', function () {
         const html = '<a href="//my-ghost-blog.com/content/images" title="Absolute URL">';
         const result = htmlRelativeToAbsolute(html, siteUrl, itemUrl, options);
 
         result.should.match(/<a href="\/\/my-ghost-blog.com\/content\/images" title="Absolute URL">/);
     });
-    it('[failure] does not convert internal links starting with "#"', function () {
+
+    it('does not convert internal links starting with "#"', function () {
         const html = '<a href="#jumptosection" title="Table of Content">';
         const result = htmlRelativeToAbsolute(html, siteUrl, itemUrl, options);
 
         result.should.match(/<a href="#jumptosection" title="Table of Content">/);
     });
-    it('[success] converts a relative URL', function () {
+
+    it('converts a relative URL', function () {
         const html = '<a href="/about#nowhere" title="Relative URL">';
         const result = htmlRelativeToAbsolute(html, siteUrl, itemUrl, options);
 
         result.should.match(/<a href="http:\/\/my-ghost-blog.com\/about#nowhere" title="Relative URL">/);
     });
-    it('[success] converts a relative URL including subdirectories', function () {
+
+    it('converts a relative URL including subdirectories', function () {
         const html = '<a href="/about#nowhere" title="Relative URL">';
         const result = htmlRelativeToAbsolute(html, 'http://my-ghost-blog.com/blog', itemUrl, options);
 
         result.should.match(/<a href="http:\/\/my-ghost-blog.com\/blog\/about#nowhere" title="Relative URL">/);
+    });
+
+    it('converts relative URLs (not starting with "/") to absolute links using `itemUrl` param', function () {
+        const html = '<img src="my-image.png">';
+        const result = htmlRelativeToAbsolute(html, siteUrl, itemUrl, options);
+
+        result.should.match(/<img src="http:\/\/my-ghost-blog.com\/my-awesome-post\/my-image.png">/);
     });
 
     it('asset urls only', function () {
@@ -133,5 +144,12 @@ describe('utils: htmlRelativeToAbsolute()', function () {
 
         htmlRelativeToAbsolute(html, siteUrl, itemUrl, {secure: true})
             .should.eql('<p><a href="https://my-ghost-blog.com/test">Test</a><code><a href="/test">Test</a></code><a href="https://my-ghost-blog.com/test">Test</a></p>');
+    });
+
+    it('skips any matching relative URLs outside of attributes', function () {
+        let html = '<p><a href="/test">/test</a><code><a href="/test">/test</a></code><a href="/test">/test</a></p>';
+
+        htmlRelativeToAbsolute(html, siteUrl, itemUrl, options)
+            .should.eql('<p><a href="http://my-ghost-blog.com/test">/test</a><code><a href="/test">/test</a></code><a href="http://my-ghost-blog.com/test">/test</a></p>');
     });
 });
