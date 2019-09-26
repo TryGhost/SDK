@@ -323,6 +323,14 @@ module.exports = class UrlUtils {
         return res.redirect(redirectUrl);
     }
 
+    absoluteToRelative(url, options = {}) {
+        return utils.absoluteToRelative(url, this.getSiteUrl(), options);
+    }
+
+    relativeToAbsolute(url, options) {
+        return utils.relativeToAbsolute(url, this.getSiteUrl(), options);
+    }
+
     /**
      * Convert relative URLs in html into absolute URLs
      * @param {string} html
@@ -351,12 +359,13 @@ module.exports = class UrlUtils {
         return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
     }
 
-    absoluteToRelative(url, options = {}) {
-        return utils.absoluteToRelative(url, this.getSiteUrl(), options);
-    }
-
-    relativeToAbsolute(url, options) {
-        return utils.relativeToAbsolute(url, this.getSiteUrl(), options);
+    markdownRelativeToAbsolute(markdown, itemUrl, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemUrl, _options);
     }
 
     get isSSL() {

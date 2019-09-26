@@ -847,7 +847,7 @@ describe('UrlUtils', function () {
         });
     });
 
-    describe('htmlAbsoluteToRelative ', function () {
+    describe('htmlAbsoluteToRelative', function () {
         it('calls out to utils/html-absolute-to-relative', function () {
             const utils = new UrlUtils({
                 url: 'https://example.com',
@@ -864,6 +864,29 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images'
+            });
+        });
+    });
+
+    describe('markdownRelativeToAbsolute', function () {
+        it('calls out to utils/markdown-relative-to-absolute', function () {
+            const utils = new UrlUtils({
+                url: 'https://example.com',
+                staticImageUrlPrefix: 'static/images'
+            });
+            const spy = sandbox.spy(utils._utils, 'markdownRelativeToAbsolute');
+
+            utils.markdownRelativeToAbsolute('markdown', 'my-awesome-post', {secure: true});
+
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('markdown');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.eql('my-awesome-post');
+            firstCall.args[3].should.deepEqual({
+                assetsOnly: false,
+                staticImageUrlPrefix: 'static/images',
+                secure: true
             });
         });
     });

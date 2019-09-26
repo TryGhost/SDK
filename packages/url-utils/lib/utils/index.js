@@ -7,6 +7,7 @@ module.exports = {
     htmlAbsoluteToRelative: require('./html-absolute-to-relative'),
     htmlRelativeToAbsolute: require('./html-relative-to-absolute'),
     isSSL: require('./is-ssl'),
+    markdownRelativeToAbsolute: require('./markdown-relative-to-absolute'),
     relativeToAbsolute: require('./relative-to-absolute'),
     replacePermalink: require('./replace-permalink'),
     stripSubdirectoryFromPath: require('./strip-subdirectory-from-path'),
