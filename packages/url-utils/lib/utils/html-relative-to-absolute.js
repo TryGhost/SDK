@@ -7,7 +7,7 @@ function escapeRegExp(string) {
 }
 
 // TODO: use our relativeToAbsolute util function?
-function relativeToAbsolute(url, siteUrl, itemUrl, options) {
+function relativeToAbsolute(url, siteUrl, itemPath, options) {
     const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
 
     // if URL is absolute move on to the next element
@@ -38,8 +38,8 @@ function relativeToAbsolute(url, siteUrl, itemUrl, options) {
     // compose an absolute URL
     // if the relative URL begins with a '/' use the blog URL (including sub-directory)
     // as the base URL, otherwise use the post's URL.
-    const baseUrl = url[0] === '/' ? siteUrl : itemUrl;
-    const absoluteUrl = new URL(urlJoin([baseUrl, url], {rootUrl: siteUrl}));
+    const baseUrl = url[0] === '/' ? siteUrl : itemPath;
+    const absoluteUrl = new URL(urlJoin([baseUrl, url], {rootUrl: siteUrl}), siteUrl);
 
     if (options.secure) {
         absoluteUrl.protocol = 'https:';
@@ -54,7 +54,7 @@ function extractSrcsetUrls(srcset = '') {
     });
 }
 
-function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, _options) {
+function htmlRelativeToAbsolute(html = '', siteUrl, itemPath, _options) {
     const defaultOptions = {assetsOnly: false, secure: false};
     const options = Object.assign({}, defaultOptions, _options || {});
 
@@ -100,7 +100,7 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, _options) {
 
             if (attributeName === 'srcset') {
                 const urls = extractSrcsetUrls(originalValue);
-                const absoluteUrls = urls.map(url => relativeToAbsolute(url, siteUrl, itemUrl, options));
+                const absoluteUrls = urls.map(url => relativeToAbsolute(url, siteUrl, itemPath, options));
                 let absoluteValue = originalValue;
 
                 urls.forEach((url, i) => {
@@ -118,7 +118,7 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemUrl, _options) {
                     });
                 }
             } else {
-                const absoluteValue = relativeToAbsolute(originalValue, siteUrl, itemUrl, options);
+                const absoluteValue = relativeToAbsolute(originalValue, siteUrl, itemPath, options);
 
                 if (absoluteValue) {
                     addReplacement({
