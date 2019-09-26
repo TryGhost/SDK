@@ -136,18 +136,23 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemPath, _options) {
     for (const [, attrs] of Object.entries(replacements)) {
         let skipCount = 0;
 
-        attrs.forEach((attr) => {
-            if (attr.skip) {
+        attrs.forEach(({skip, name, originalValue, absoluteValue}) => {
+            if (skip) {
                 skipCount += 1;
                 return;
             }
 
-            const regex = new RegExp(`${attr.name}=['"](${escapeRegExp(attr.originalValue)})['"]`, 'g');
+            // this regex avoids matching unrelated plain text by checking that the attribute/value pair
+            // is surrounded by <> - that should be sufficient because if the plain text had that wrapper
+            // it would be parsed as a tag
+            // eslint-disable-next-line no-useless-escape
+            const regex = new RegExp(`<[a-zA-Z][^>]*?(${name}=['"](${escapeRegExp(originalValue)})['"]).*?>`, 'gs');
+
             let matchCount = 0;
-            html = html.replace(regex, (match) => {
+            html = html.replace(regex, (match, p1) => {
                 let result = match;
                 if (matchCount === skipCount) {
-                    result = match.replace(attr.originalValue, attr.absoluteValue);
+                    result = match.replace(p1, p1.replace(originalValue, absoluteValue));
                 }
                 matchCount += 1;
                 return result;

@@ -143,6 +143,13 @@ describe('utils: htmlAbsoluteToRelative()', function () {
             .should.eql('<p><a href="/test">/test</a><code><a href="/test">/test</a></code><a href="/test">/test</a></p>');
     });
 
+    it('skips any matching attribute/url pairs in plain text', function () {
+        let html = '<p>You can use <code>href="http://my-ghost-blog.com/relative"</code> to make links like <a href="http://my-ghost-blog.com/relative">this</a></p>';
+
+        htmlAbsoluteToRelative(html, siteUrl, options)
+            .should.eql('<p>You can use <code>href="http://my-ghost-blog.com/relative"</code> to make links like <a href="/relative">this</a></p>');
+    });
+
     describe('srcset support', function () {
         /* eslint-disable no-irregular-whitespace */
         it('converts multiple urls', function () {
