@@ -6,7 +6,7 @@ const markdownRelativeToAbsolute = require('../../../lib/utils/markdown-relative
 
 describe('utils: markdownRelativeToAbsolute()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
-    const itemPath = 'http://my-ghost-blog.com/my-awesome-post';
+    const itemPath = '/my-awesome-post';
     let options;
 
     beforeEach(function () {
