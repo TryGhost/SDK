@@ -368,6 +368,15 @@ module.exports = class UrlUtils {
         return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemUrl, _options);
     }
 
+    markdownAbsoluteToRelative(markdown, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
+    }
+
     get isSSL() {
         return utils.isSSL;
     }

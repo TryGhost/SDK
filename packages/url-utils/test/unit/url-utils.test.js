@@ -890,4 +890,25 @@ describe('UrlUtils', function () {
             });
         });
     });
+
+    describe('markdownAbsoluteToRelative', function () {
+        it('calls out to utils/markdown-absolute-to-relative', function () {
+            const utils = new UrlUtils({
+                url: 'https://example.com',
+                staticImageUrlPrefix: 'static/images'
+            });
+            const spy = sandbox.spy(utils._utils, 'markdownAbsoluteToRelative');
+
+            utils.markdownAbsoluteToRelative('markdown', {assetsOnly: true});
+
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('markdown');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.deepEqual({
+                assetsOnly: true,
+                staticImageUrlPrefix: 'static/images'
+            });
+        });
+    });
 });

@@ -56,11 +56,9 @@ function relativeLinksAndImages(options) {
         }
     }
 
-    function transform(tree) {
+    return function transform(tree) {
         visit(tree, ['link', 'image'], visitor);
-    }
-
-    return transform;
+    };
 }
 
 function relativeHtml(options) {
@@ -70,16 +68,14 @@ function relativeHtml(options) {
         }
     }
 
-    function transform(tree) {
+    return function transform(tree) {
         visit(tree, ['html'], visitor);
-    }
-
-    return transform;
+    };
 }
 
-function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options) {
+function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options = {}) {
     const defaultOptions = {assetsOnly: false, secure: false};
-    const options = Object.assign({siteUrl, itemPath}, defaultOptions, _options || {});
+    const options = Object.assign({siteUrl, itemPath}, defaultOptions, _options);
 
     const processor = unified()
         .use(parseMarkdown, {commonmark: true, footnotes: true})

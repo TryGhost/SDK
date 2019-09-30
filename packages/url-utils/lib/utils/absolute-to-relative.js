@@ -12,13 +12,12 @@ const stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
  * @param {boolean} [options.withoutSubdirectory=false] Strip the root subdirectory from the returned path
  * @returns {string} The passed-in url or a relative path
  */
-const absoluteToRelative = function absoluteToRelative(url, rootUrl, options = {}) {
+const absoluteToRelative = function absoluteToRelative(url, rootUrl, _options = {}) {
     const defaultOptions = {
         ignoreProtocol: true,
         withoutSubdirectory: false
     };
-
-    options = Object.assign({}, defaultOptions, options);
+    const options = Object.assign({}, defaultOptions, _options);
 
     const parsedUrl = new URL(url, 'http://relative');
     const parsedRoot = parsedUrl.origin === 'null' ? undefined : new URL(rootUrl || parsedUrl.origin);
