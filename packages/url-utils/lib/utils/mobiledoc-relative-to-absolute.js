@@ -1,3 +1,4 @@
+const {URL} = require('url');
 const urlJoin = require('./url-join');
 
 // TODO: use our relativeToAbsolute util function?
