@@ -334,20 +334,20 @@ module.exports = class UrlUtils {
     /**
      * Convert relative URLs in html into absolute URLs
      * @param {string} html
-     * @param {string} itemUrl (URL of current context)
+     * @param {string} itemPath (path of current context)
      * @param {Object} options
      * @returns {object} htmlContent
-     * @description Takes html, blog url and item url and converts relative url into
+     * @description Takes html, blog url and item path and converts relative url into
      * absolute urls. Returns an object. The html string can be accessed by calling `html()` on
      * the variable that takes the result of this function
      */
-    htmlRelativeToAbsolute(html, itemUrl, options = {}) {
+    htmlRelativeToAbsolute(html, itemPath, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
-        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemUrl, _options);
+        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath, _options);
     }
 
     htmlAbsoluteToRelative(html, options = {}) {
@@ -359,13 +359,13 @@ module.exports = class UrlUtils {
         return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
     }
 
-    markdownRelativeToAbsolute(markdown, itemUrl, options = {}) {
+    markdownRelativeToAbsolute(markdown, itemPath, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
-        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemUrl, _options);
+        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath, _options);
     }
 
     markdownAbsoluteToRelative(markdown, options = {}) {
@@ -375,6 +375,15 @@ module.exports = class UrlUtils {
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
+    }
+
+    mobiledocRelativeToAbsolute(serializedMobiledoc, itemPath, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
     }
 
     get isSSL() {
