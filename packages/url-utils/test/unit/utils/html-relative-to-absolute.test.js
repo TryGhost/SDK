@@ -56,10 +56,14 @@ describe('utils: htmlRelativeToAbsolute()', function () {
 
     it('converts a relative URL including subdirectories', function () {
         const siteUrl = 'http://my-ghost-blog.com/blog';
-        const html = '<a href="/about#nowhere" title="Relative URL">';
-        const result = htmlRelativeToAbsolute(html, siteUrl, itemPath, options);
 
-        result.should.match(/<a href="http:\/\/my-ghost-blog.com\/blog\/about#nowhere" title="Relative URL">/);
+        let html = '<a href="/about#nowhere" title="Relative URL">';
+        htmlRelativeToAbsolute(html, siteUrl, 'blog/my-awesome-post', options)
+            .should.equal('<a href="http://my-ghost-blog.com/about#nowhere" title="Relative URL">');
+
+        html = '<a href="about#nowhere" title="Relative URL">';
+        htmlRelativeToAbsolute(html, siteUrl, 'blog/my-awesome-post', options)
+            .should.equal('<a href="http://my-ghost-blog.com/blog/my-awesome-post/about#nowhere" title="Relative URL">');
     });
 
     it('converts relative URLs (not starting with "/") to absolute links using `itemPath` param', function () {

@@ -1,59 +1,13 @@
-const {URL} = require('url');
 const unified = require('unified');
 const parseMarkdown = require('remark-parse');
 const stringifyMarkdown = require('remark-stringify');
 const visit = require('unist-util-visit');
-const urlJoin = require('./url-join');
 const htmlRelativeToAbsolute = require('./html-relative-to-absolute');
-
-// TODO: use our relativeToAbsolute util function?
-function relativeToAbsolute(url, siteUrl, itemPath, options) {
-    const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
-
-    // if URL is absolute move on to the next element
-    try {
-        const parsed = new URL(url, 'http://relative');
-
-        if (parsed.origin !== 'http://relative') {
-            return;
-        }
-
-        // Do not convert protocol relative URLs
-        if (url.lastIndexOf('//', 0) === 0) {
-            return;
-        }
-    } catch (e) {
-        return;
-    }
-
-    // CASE: don't convert internal links
-    if (url.startsWith('#')) {
-        return;
-    }
-
-    if (options.assetsOnly && !url.match(staticImageUrlPrefixRegex)) {
-        return;
-    }
-
-    // compose an absolute URL
-    // if the relative URL begins with a '/' use the blog URL (including sub-directory)
-    // as the base URL, otherwise use the post's URL.
-    const baseUrl = url[0] === '/' ? siteUrl : itemPath;
-    const absoluteUrl = new URL(urlJoin([baseUrl, url], {rootUrl: siteUrl}), siteUrl);
-
-    if (options.secure) {
-        absoluteUrl.protocol = 'https:';
-    }
-
-    return absoluteUrl.toString();
-}
+const relativeToAbsolute = require('./relative-to-absolute');
 
 function relativeLinksAndImages(options) {
     function visitor(node) {
-        const absoluteUrl = relativeToAbsolute(node.url, options.siteUrl, options.itemPath, options);
-        if (absoluteUrl) {
-            node.url = absoluteUrl;
-        }
+        node.url = relativeToAbsolute(node.url, options.siteUrl, options.itemPath, options);
     }
 
     return function transform(tree) {

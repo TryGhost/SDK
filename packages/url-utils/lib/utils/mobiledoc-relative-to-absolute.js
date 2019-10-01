@@ -1,47 +1,4 @@
-const {URL} = require('url');
-const urlJoin = require('./url-join');
-
-// TODO: use our relativeToAbsolute util function?
-function relativeToAbsolute(url, siteUrl, itemPath, options) {
-    const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
-
-    // if URL is absolute move on to the next element
-    try {
-        const parsed = new URL(url, 'http://relative');
-
-        if (parsed.origin !== 'http://relative') {
-            return;
-        }
-
-        // Do not convert protocol relative URLs
-        if (url.lastIndexOf('//', 0) === 0) {
-            return;
-        }
-    } catch (e) {
-        return;
-    }
-
-    // CASE: don't convert internal links
-    if (url.startsWith('#')) {
-        return;
-    }
-
-    if (options.assetsOnly && !url.match(staticImageUrlPrefixRegex)) {
-        return;
-    }
-
-    // compose an absolute URL
-    // if the relative URL begins with a '/' use the blog URL (including sub-directory)
-    // as the base URL, otherwise use the post's URL.
-    const baseUrl = url[0] === '/' ? siteUrl : itemPath;
-    const absoluteUrl = new URL(urlJoin([baseUrl, url], {rootUrl: siteUrl}), siteUrl);
-
-    if (options.secure) {
-        absoluteUrl.protocol = 'https:';
-    }
-
-    return absoluteUrl.toString();
-}
+const relativeToAbsolute = require('./relative-to-absolute');
 
 function mobiledocRelativeToAbsolute(serializedMobiledoc, siteUrl, itemPath, _options = {}) {
     const defaultOptions = {assetsOnly: false, secure: false, cardTransformers: []};
