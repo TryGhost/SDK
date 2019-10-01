@@ -4,11 +4,10 @@ require('../../utils');
 
 const sinon = require('sinon');
 
-const mobiledocRelativeToAbsolute = require('../../../lib/utils/mobiledoc-relative-to-absolute');
+const mobiledocAbsoluteToRelative = require('../../../lib/utils/mobiledoc-absolute-to-relative');
 
-describe('utils: mobiledocRelativeToAbsolute()', function () {
+describe('utils: mobiledocAbsoluteToRelative()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
-    const itemPath = '/my-awesome-post';
     let options;
 
     beforeEach(function () {
@@ -17,20 +16,20 @@ describe('utils: mobiledocRelativeToAbsolute()', function () {
         };
     });
 
-    it('converts relative URLs in markups', function () {
+    it('converts absolute URLs in markups', function () {
         const mobiledoc = {
             version: '0.3.1',
             atoms: [],
             cards: [],
             markups: [
-                ['a', ['href', '/inline']],
+                ['a', ['href', 'http://my-ghost-blog.com/inline']],
                 ['strong'],
-                ['a', ['href', '/formatted']],
-                ['a', ['href', '/lists']],
-                ['a', ['href', '/section']],
-                ['a', ['href', '/']],
+                ['a', ['href', 'http://my-ghost-blog.com/formatted']],
+                ['a', ['href', 'http://my-ghost-blog.com/lists']],
+                ['a', ['href', 'http://my-ghost-blog.com/section']],
+                ['a', ['href', 'http://my-ghost-blog.com/']],
                 ['a', ['href', 'http://example.com/external/']],
-                ['a', ['href', '/content/images/example.jpg']]
+                ['a', ['href', 'http://my-ghost-blog.com/content/images/example.jpg']]
             ],
             sections: [
                 [1, 'p', [
@@ -59,19 +58,19 @@ describe('utils: mobiledocRelativeToAbsolute()', function () {
         };
         const serializedMobiledoc = JSON.stringify(mobiledoc);
 
-        const serializedResult = mobiledocRelativeToAbsolute(serializedMobiledoc, siteUrl, itemPath, options);
+        const serializedResult = mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, options);
         const result = JSON.parse(serializedResult);
 
-        result.markups[0][1][1].should.equal('http://my-ghost-blog.com/inline');
-        result.markups[2][1][1].should.equal('http://my-ghost-blog.com/formatted');
-        result.markups[3][1][1].should.equal('http://my-ghost-blog.com/lists');
-        result.markups[4][1][1].should.equal('http://my-ghost-blog.com/section');
-        result.markups[5][1][1].should.equal('http://my-ghost-blog.com/');
+        result.markups[0][1][1].should.equal('/inline');
+        result.markups[2][1][1].should.equal('/formatted');
+        result.markups[3][1][1].should.equal('/lists');
+        result.markups[4][1][1].should.equal('/section');
+        result.markups[5][1][1].should.equal('/');
         result.markups[6][1][1].should.equal('http://example.com/external/');
-        result.markups[7][1][1].should.equal('http://my-ghost-blog.com/content/images/example.jpg');
+        result.markups[7][1][1].should.equal('/content/images/example.jpg');
     });
 
-    it('converts relative URLs in card payloads using external processors', function () {
+    it('converts absolute URLs in card payloads using external processors', function () {
         const markdownCardTransformer = {
             name: 'markdown',
             absoluteToRelative: sinon.stub().returns({markdown: 'Testing [markdown links](/markdown-links)'}),
@@ -98,20 +97,20 @@ describe('utils: mobiledocRelativeToAbsolute()', function () {
                 [
                     'image',
                     {
-                        src: '/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg',
-                        caption: 'Captions are HTML with <a href="/caption-link/">links</a>'
+                        src: 'http://my-ghost-blog.com/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg',
+                        caption: 'Captions are HTML with <a href="http://my-ghost-blog.com/caption-link/">links</a>'
                     }
                 ],
                 [
                     'markdown',
                     {
-                        markdown: 'Testing [markdown links](/markdown-links)'
+                        markdown: 'Testing [markdown links](http://my-ghost-blog.com/markdown-links)'
                     }
                 ],
                 [
                     'html',
                     {
-                        html: '<a href="/html/">HTML</a> with no card transformer specified'
+                        html: '<a href="http://my-ghost-blog.com/html/">HTML</a> with no card transformer specified'
                     }
                 ]
             ],
@@ -125,41 +124,39 @@ describe('utils: mobiledocRelativeToAbsolute()', function () {
         };
         const serializedMobiledoc = JSON.stringify(mobiledoc);
 
-        const serializedResult = mobiledocRelativeToAbsolute(serializedMobiledoc, siteUrl, itemPath, {cardTransformers});
+        const serializedResult = mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, {cardTransformers});
         const result = JSON.parse(serializedResult);
 
         // makes conversion
-        result.cards[0][1].src.should.eql('http://my-ghost-blog.com/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg');
-        result.cards[0][1].caption.should.eql('Captions are HTML with <a href="http://my-ghost-blog.com/caption-link/">links</a>');
-        result.cards[1][1].markdown.should.eql('Testing [markdown links](http://my-ghost-blog.com/markdown-links)');
-        result.cards[2][1].html.should.eql('<a href="/html/">HTML</a> with no card transformer specified');
+        result.cards[0][1].src.should.eql('/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg');
+        result.cards[0][1].caption.should.eql('Captions are HTML with <a href="/caption-link/">links</a>');
+        result.cards[1][1].markdown.should.eql('Testing [markdown links](/markdown-links)');
+        result.cards[2][1].html.should.eql('<a href="http://my-ghost-blog.com/html/">HTML</a> with no card transformer specified');
 
         // calls card transformers
-        markdownCardTransformer.relativeToAbsolute.calledOnce.should.be.true();
-        markdownCardTransformer.relativeToAbsolute.firstCall.args[0].should.deepEqual(mobiledoc.cards[1][1]);
-        markdownCardTransformer.relativeToAbsolute.firstCall.args[0].should.not.equal(mobiledoc.cards[1][1]); // it should be a copy
-        markdownCardTransformer.relativeToAbsolute.firstCall.args[1].should.deepEqual({
+        markdownCardTransformer.absoluteToRelative.calledOnce.should.be.true();
+        markdownCardTransformer.absoluteToRelative.firstCall.args[0].should.deepEqual(mobiledoc.cards[1][1]);
+        markdownCardTransformer.absoluteToRelative.firstCall.args[0].should.not.equal(mobiledoc.cards[1][1]); // it should be a copy
+        markdownCardTransformer.absoluteToRelative.firstCall.args[1].should.deepEqual({
             siteUrl: 'http://my-ghost-blog.com',
-            itemPath: '/my-awesome-post',
             assetsOnly: false,
             secure: false
         });
 
-        imageCardTransformer.relativeToAbsolute.calledOnce.should.be.true();
-        imageCardTransformer.relativeToAbsolute.firstCall.args[0].should.deepEqual(mobiledoc.cards[0][1]);
-        imageCardTransformer.relativeToAbsolute.firstCall.args[0].should.not.equal(mobiledoc.cards[0][1]); // it should be a copy
-        imageCardTransformer.relativeToAbsolute.firstCall.args[1].should.deepEqual({
+        imageCardTransformer.absoluteToRelative.calledOnce.should.be.true();
+        imageCardTransformer.absoluteToRelative.firstCall.args[0].should.deepEqual(mobiledoc.cards[0][1]);
+        imageCardTransformer.absoluteToRelative.firstCall.args[0].should.not.equal(mobiledoc.cards[0][1]); // it should be a copy
+        imageCardTransformer.absoluteToRelative.firstCall.args[1].should.deepEqual({
             siteUrl: 'http://my-ghost-blog.com',
-            itemPath: '/my-awesome-post',
             assetsOnly: false,
             secure: false
         });
 
-        markdownCardTransformer.absoluteToRelative.called.should.be.false();
-        imageCardTransformer.absoluteToRelative.called.should.be.false();
+        markdownCardTransformer.relativeToAbsolute.called.should.be.false();
+        imageCardTransformer.relativeToAbsolute.called.should.be.false();
 
         // does not modify original mobiledoc/payloads
-        mobiledoc.cards[0][1].src.should.eql('/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg');
-        mobiledoc.cards[0][1].caption.should.eql('Captions are HTML with <a href="/caption-link/">links</a>');
+        mobiledoc.cards[0][1].src.should.eql('http://my-ghost-blog.com/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg');
+        mobiledoc.cards[0][1].caption.should.eql('Captions are HTML with <a href="http://my-ghost-blog.com/caption-link/">links</a>');
     });
 });

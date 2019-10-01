@@ -386,6 +386,15 @@ module.exports = class UrlUtils {
         return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
     }
 
+    mobiledocAbsoluteToRelative(serializedMobiledoc, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.mobiledocAbsoluteToRelative(serializedMobiledoc, this.getSiteUrl(), _options);
+    }
+
     get isSSL() {
         return utils.isSSL;
     }

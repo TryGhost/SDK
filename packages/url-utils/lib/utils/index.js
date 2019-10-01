@@ -9,6 +9,7 @@ module.exports = {
     isSSL: require('./is-ssl'),
     markdownAbsoluteToRelative: require('./markdown-absolute-to-relative'),
     markdownRelativeToAbsolute: require('./markdown-relative-to-absolute'),
+    mobiledocAbsoluteToRelative: require('./mobiledoc-absolute-to-relative'),
     mobiledocRelativeToAbsolute: require('./mobiledoc-relative-to-absolute'),
     relativeToAbsolute: require('./relative-to-absolute'),
     replacePermalink: require('./replace-permalink'),

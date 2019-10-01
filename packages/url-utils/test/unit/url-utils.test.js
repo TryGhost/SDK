@@ -911,4 +911,51 @@ describe('UrlUtils', function () {
             });
         });
     });
+
+    describe('mobiledocRelativeToAbsolute', function () {
+        it('calls out to utils/mobiledoc-relative-to-absolute', function () {
+            const utils = new UrlUtils({
+                url: 'https://example.com',
+                staticImageUrlPrefix: 'static/images'
+            });
+            const stub = sandbox.stub(utils._utils, 'mobiledocRelativeToAbsolute');
+
+            const cards = [{name: 'test'}];
+            utils.mobiledocRelativeToAbsolute('serializedMobiledoc', 'my-awesome-post', {assetsOnly: true, cards});
+
+            const {calledOnce, firstCall} = stub;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('serializedMobiledoc');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.eql('my-awesome-post');
+            firstCall.args[3].should.deepEqual({
+                assetsOnly: true,
+                staticImageUrlPrefix: 'static/images',
+                cards
+            });
+        });
+    });
+
+    describe('mobiledocAbsoluteToRelative', function () {
+        it('calls out to utils/mobiledoc-absolute-to-relative', function () {
+            const utils = new UrlUtils({
+                url: 'https://example.com',
+                staticImageUrlPrefix: 'static/images'
+            });
+            const stub = sandbox.stub(utils._utils, 'mobiledocAbsoluteToRelative');
+
+            const cards = [{name: 'test'}];
+            utils.mobiledocAbsoluteToRelative('serializedMobiledoc', {assetsOnly: true, cards});
+
+            const {calledOnce, firstCall} = stub;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('serializedMobiledoc');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.deepEqual({
+                assetsOnly: true,
+                staticImageUrlPrefix: 'static/images',
+                cards
+            });
+        });
+    });
 });
