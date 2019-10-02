@@ -37,6 +37,7 @@ describe('utils: urlJoin()', function () {
         let options = {
             rootUrl: 'http://my-ghost-blog.com/blog'
         };
+        urlJoin(['/blog/', '/blog'], options).should.eql('/blog/');
         urlJoin(['blog', 'blog/about'], options).should.eql('blog/about');
         urlJoin(['blog/', 'blog/about'], options).should.eql('blog/about');
 

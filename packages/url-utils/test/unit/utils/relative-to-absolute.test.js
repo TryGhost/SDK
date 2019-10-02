@@ -69,10 +69,10 @@ describe('utils: relativeToAbsolute()', function () {
             relativeToAbsolute(url, root).should.eql('https://example.com/my/file.png', 'with root trailing slash');
 
             root = 'https://example.com/subdir';
-            relativeToAbsolute(url, root).should.eql('https://example.com/my/file.png', 'with root subdir without trailing slash');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/file.png', 'with root subdir without trailing slash');
 
             root = 'https://example.com/subdir/';
-            relativeToAbsolute(url, root).should.eql('https://example.com/my/file.png', 'with root subdir with trailing slash');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/file.png', 'with root subdir with trailing slash');
         });
 
         it('returns absolute directory without trailing slash', function () {
@@ -84,10 +84,10 @@ describe('utils: relativeToAbsolute()', function () {
             relativeToAbsolute(url, root).should.eql('https://example.com/my', 'with root trailing slash');
 
             root = 'https://example.com/subdir';
-            relativeToAbsolute(url, root).should.eql('https://example.com/my', 'with root subdir without trailing slash');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my', 'with root subdir without trailing slash');
 
             root = 'https://example.com/subdir/';
-            relativeToAbsolute(url, root).should.eql('https://example.com/my', 'with root subdir with trailing slash');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my', 'with root subdir with trailing slash');
         });
 
         it('returns absolute directory with trailing slash', function () {
@@ -99,10 +99,10 @@ describe('utils: relativeToAbsolute()', function () {
             relativeToAbsolute(url, root).should.eql('https://example.com/my/', 'with root trailing slash');
 
             root = 'https://example.com/subdir';
-            relativeToAbsolute(url, root).should.eql('https://example.com/my/', 'with root subdir without trailing slash');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/', 'with root subdir without trailing slash');
 
             root = 'https://example.com/subdir/';
-            relativeToAbsolute(url, root).should.eql('https://example.com/my/', 'with root subdir with trailing slash');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/', 'with root subdir with trailing slash');
         });
 
         it('keeps query params', function () {
@@ -112,6 +112,12 @@ describe('utils: relativeToAbsolute()', function () {
 
             root = 'https://example.com/';
             relativeToAbsolute(url, root).should.eql('https://example.com/my/file.png?v=1234', 'with root trailing slash');
+
+            root = 'https://example.com/subdir';
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/file.png?v=1234', 'with root subdir without trailing slash');
+
+            root = 'https://example.com/subdir/';
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/file.png?v=1234', 'with root subdir with trailing slash');
         });
 
         it('keeps hash param', function () {
@@ -121,6 +127,12 @@ describe('utils: relativeToAbsolute()', function () {
 
             root = 'https://example.com/';
             relativeToAbsolute(url, root).should.eql('https://example.com/my/file.png#1234', 'with root trailing slash');
+
+            root = 'https://example.com/subdir';
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/file.png#1234', 'with root subdir without trailing slash');
+
+            root = 'https://example.com/subdir/';
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/file.png#1234', 'with root subdir with trailing slash');
         });
 
         it('handles duplicated subdir', function () {
@@ -132,14 +144,14 @@ describe('utils: relativeToAbsolute()', function () {
             relativeToAbsolute(url, root).should.eql('https://example.com/subdir/', 'top-level url with trailing slash');
 
             url = '/subdir';
-            relativeToAbsolute(url, root).should.eql('https://example.com/subdir', 'top-level url without trailing slash');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/', 'top-level url without trailing slash');
 
             url = '/subdir/my/file.png';
             root = 'https://example.com/subdir/test/';
-            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/my/file.png', 'nested subdir (no match)');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/test/subdir/my/file.png', 'nested subdir (no match)');
 
             url = '/sub';
-            relativeToAbsolute(url, root).should.eql('https://example.com/sub', 'partial subdir match');
+            relativeToAbsolute(url, root).should.eql('https://example.com/subdir/test/sub', 'partial subdir match');
         });
 
         it('forces https with options.secure = true', function () {

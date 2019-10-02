@@ -2,6 +2,15 @@
 const {URL} = require('url');
 const urlJoin = require('./url-join');
 
+// NOTE: Ghost's relative->absolute handling is a little strange when the rootUrl
+// includes a subdirectory. Root-relative paths such as /content/image.jpg are
+// actually treated as subdirectory-relative. This means that it's possible to
+// migrate from a root config to a subdirectory config without migrating data
+// in the database, _however_ that means that the database will now have a mix
+// of path styles (/content/image.png and /subdir/content/image.png). To handle
+// this when all root-relative paths are treated as subdir-relative we have to
+// rely on subdirectory deduplication.
+
 /**
  * Convert a root-relative path to an absolute URL based on the supplied root.
  * Will _only_ convert root-relative urls (/some/path not some/path)
@@ -59,8 +68,10 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
         rootUrl = `${rootUrl}/`;
     }
 
+    const parsedRootUrl = new URL(rootUrl);
     const basePath = path.startsWith('/') ? '' : itemPath;
-    const absoluteUrl = new URL(urlJoin(['/', basePath, path], {rootUrl}), rootUrl);
+    const fullPath = urlJoin([parsedRootUrl.pathname, basePath, path], {rootUrl});
+    const absoluteUrl = new URL(fullPath, rootUrl);
 
     if (options.secure) {
         absoluteUrl.protocol = 'https:';

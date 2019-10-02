@@ -59,7 +59,7 @@ describe('utils: htmlRelativeToAbsolute()', function () {
 
         let html = '<a href="/about#nowhere" title="Relative URL">';
         htmlRelativeToAbsolute(html, siteUrl, 'blog/my-awesome-post', options)
-            .should.equal('<a href="http://my-ghost-blog.com/about#nowhere" title="Relative URL">');
+            .should.equal('<a href="http://my-ghost-blog.com/blog/about#nowhere" title="Relative URL">');
 
         html = '<a href="about#nowhere" title="Relative URL">';
         htmlRelativeToAbsolute(html, siteUrl, 'blog/my-awesome-post', options)
