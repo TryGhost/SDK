@@ -1,48 +1,52 @@
-const unified = require('unified');
-const parseMarkdown = require('remark-parse');
-const stringifyMarkdown = require('remark-stringify');
+const remark = require('remark');
 const visit = require('unist-util-visit');
 const htmlRelativeToAbsolute = require('./html-relative-to-absolute');
 const relativeToAbsolute = require('./relative-to-absolute');
 
-function relativeLinksAndImages(options) {
-    function visitor(node) {
-        node.url = relativeToAbsolute(node.url, options.siteUrl, options.itemPath, options);
-    }
-
-    return function transform(tree) {
-        visit(tree, ['link', 'image'], visitor);
-    };
-}
-
-function relativeHtml(options) {
-    function visitor(node) {
-        if (node.value.match(/src|srcset|href/)) {
-            node.value = htmlRelativeToAbsolute(node.value, options.siteUrl, options.itemUrl, options);
-        }
-    }
-
-    return function transform(tree) {
-        visit(tree, ['html'], visitor);
-    };
-}
-
 function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false};
-    const options = Object.assign({siteUrl, itemPath}, defaultOptions, _options);
+    const defaultOptions = {assetsOnly: false};
+    const urlOptions = Object.assign({}, defaultOptions, _options);
 
-    const processor = unified()
-        .use(parseMarkdown, {commonmark: true, footnotes: true})
-        .use(relativeLinksAndImages, options)
-        .use(relativeHtml, options)
-        .use(stringifyMarkdown, {commonmark: true, footnotes: true});
+    const replacements = [];
 
-    let result = processor.processSync(markdown).toString();
+    const tree = remark()
+        .use({settings: {commonmark: true, footnotes: true}})
+        .parse(markdown);
 
-    // re-add leading/trailing whitespace because remark trims output
-    const [leadingWhitespace] = markdown.match(/^\s+/) || [];
-    const [trailingWhitespace] = markdown.match(/\s+$/) || [];
-    result = `${leadingWhitespace || ''}${result.trim()}${trailingWhitespace || ''}`;
+    visit(tree, ['link', 'image', 'html'], (node) => {
+        if (node.type === 'html' && node.value.match(/src|srcset|href/)) {
+            replacements.push({
+                old: node.value,
+                new: htmlRelativeToAbsolute(node.value, siteUrl, itemPath, urlOptions),
+                start: node.position.start.offset,
+                end: node.position.end.offset
+            });
+        }
+
+        if (node.type === 'link' || node.type === 'image') {
+            replacements.push({
+                old: node.url,
+                new: relativeToAbsolute(node.url, siteUrl, itemPath, urlOptions),
+                start: node.position.start.offset,
+                end: node.position.end.offset
+            });
+        }
+    });
+
+    let result = markdown;
+    let offsetAdjustment = 0;
+
+    replacements.forEach((replacement) => {
+        const original = markdown.slice(replacement.start, replacement.end);
+        const transformed = original.replace(replacement.old, replacement.new);
+
+        let before = result.slice(0, replacement.start + offsetAdjustment);
+        let after = result.slice(replacement.end + offsetAdjustment, markdown.length - 1);
+
+        result = before + transformed + after;
+
+        offsetAdjustment = offsetAdjustment + (transformed.length - original.length);
+    });
 
     return result;
 }

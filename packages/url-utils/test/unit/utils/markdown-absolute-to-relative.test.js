@@ -41,6 +41,12 @@ Testing <a href="/link">Inline</a> with **markdown**
         `);
     });
 
+    it('skips absolute URLS in code blocks', function () {
+        const markdown = '## Testing\n\n    ![](http://my-ghost-blog.com/content/images/image.png)';
+        markdownAbsoluteToRelative(markdown, siteUrl, options)
+            .should.equal(markdown);
+    });
+
     it('converts only asset URLs with assetsOnly=true option', function () {
         const markdown = '![](http://my-ghost-blog.com/content/images/image.png) [](/not-an-asset)';
 
@@ -66,5 +72,11 @@ Testing <a href="/link">Inline</a> with **markdown**
 
     this is a code block
     `);
+    });
+
+    it('retains whitespace layout inside list elements', function () {
+        const markdown = '## testing\n\nmctesters\n\n- test\n- line\n- items"';
+        markdownAbsoluteToRelative(markdown, siteUrl, options)
+            .should.equal(markdown);
     });
 });

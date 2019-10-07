@@ -380,7 +380,8 @@ module.exports = class UrlUtils {
     mobiledocRelativeToAbsolute(serializedMobiledoc, itemPath, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
@@ -389,7 +390,8 @@ module.exports = class UrlUtils {
     mobiledocAbsoluteToRelative(serializedMobiledoc, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.mobiledocAbsoluteToRelative(serializedMobiledoc, this.getSiteUrl(), _options);
