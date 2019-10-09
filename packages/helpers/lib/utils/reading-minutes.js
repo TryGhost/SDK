@@ -16,7 +16,7 @@ export function estimatedReadingTimeInMinutes({wordCount, imageCount}) {
     return readingTimeMinutes;
 }
 
-export default function readingTimeForHtml(html, additionalImages) {
+export default function readingMinutes(html, additionalImages) {
     if (!html) {
         return '';
     }

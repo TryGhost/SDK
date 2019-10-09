@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('./utils');
 
-const readingTimeForHtml = require('../cjs/helpers').utils.readingTimeForHtml;
+const readingMinutes = require('../cjs/helpers').utils.readingMinutes;
 
 const almostOneMinute =
     '<p>Ghost has a number of different user roles for your team</p>' +
@@ -34,9 +34,9 @@ const almostOneAndAHalfMinute = almostOneMinute +
     'and data, not just content. Additionally, administrators have full access to invite</p>' +
     '</div>';
 
-describe('readingTimeForHtml util', function () {
+describe('readingMinutes util', function () {
     it('returns reading time for less than one minute text as one minute', function () {
-        const result = readingTimeForHtml(almostOneMinute);
+        const result = readingMinutes(almostOneMinute);
 
         result.should.equal(1);
     });
@@ -46,19 +46,19 @@ describe('readingTimeForHtml util', function () {
                     'This needed about twenty-five more words before passing the one minute reading time, ' +
                     'since the word count was 250, and the average speed is 275.';
 
-        const result = readingTimeForHtml(html);
+        const result = readingMinutes(html);
 
         result.should.equal(1);
     });
 
     it('returns reading time for just under 1.5 minutes text as one minute', function () {
-        const result = readingTimeForHtml(almostOneAndAHalfMinute);
+        const result = readingMinutes(almostOneAndAHalfMinute);
 
         result.should.equal(1);
     });
 
     it('adds time for additional images', function () {
-        const result = readingTimeForHtml(almostOneAndAHalfMinute, 1);
+        const result = readingMinutes(almostOneAndAHalfMinute, 1);
 
         // The reading time for this HTML snippet would be 89 seconds without the image
         // Adding the 12 additional seconds for the image results in a readng time of over 1.5 minutes, rounded to 2
@@ -67,7 +67,7 @@ describe('readingTimeForHtml util', function () {
 
     it('adds time for inline images', function () {
         const html = almostOneAndAHalfMinute + '<img src="test.png">';
-        const result = readingTimeForHtml(html);
+        const result = readingMinutes(html);
 
         // The reading time for this HTML snippet would be 89 seconds without the image
         // Adding the 12 additional seconds for the image results in a readng time of over 1.5 minutes, rounded to 2

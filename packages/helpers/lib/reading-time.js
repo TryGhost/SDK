@@ -1,4 +1,4 @@
-import readingTimeForHtml from './utils/reading-time-from-html';
+import readingMinutes from './utils/reading-minutes';
 
 /**
  * Reading Time Helper
@@ -25,7 +25,7 @@ export default function (post, options = {}) {
         imageCount += 1;
     }
 
-    const time = readingTimeForHtml(post.html, imageCount);
+    const time = readingMinutes(post.html, imageCount);
     let readingTime = '';
 
     if (time <= 1) {
