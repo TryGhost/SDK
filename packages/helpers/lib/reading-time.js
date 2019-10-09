@@ -16,6 +16,21 @@ export function estimatedReadingTimeInMinutes({wordCount, imageCount}) {
     return readingTimeMinutes;
 }
 
+export function readingTimeInMinutes(html, additionalImages) {
+    if (!html) {
+        return '';
+    }
+
+    let imageCount = countImages(html);
+    let wordCount = countWords(html);
+
+    if (additionalImages) {
+        imageCount += additionalImages;
+    }
+
+    return estimatedReadingTimeInMinutes({wordCount, imageCount});
+}
+
 /**
  * Reading Time Helper
  *
@@ -35,20 +50,19 @@ export default function (post, options = {}) {
         return '';
     }
 
-    let imageCount = countImages(html);
-    let wordCount = countWords(html);
+    let imageCount = 0;
 
     if (post.feature_image) {
         imageCount += 1;
     }
 
-    const readingTimeInMinutes = estimatedReadingTimeInMinutes({wordCount, imageCount});
+    const time = readingTimeInMinutes(post.html, imageCount);
     let readingTime = '';
 
-    if (readingTimeInMinutes <= 1) {
+    if (time <= 1) {
         readingTime = minuteStr;
     } else {
-        readingTime = minutesStr.replace('%', readingTimeInMinutes);
+        readingTime = minutesStr.replace('%', time);
     }
 
     return readingTime;
