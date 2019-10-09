@@ -106,4 +106,14 @@ describe('readingTime helper', function () {
 
         result.should.equal('');
     });
+
+    it('accepts and uses pre-filled reading_time', function () {
+        const post = {
+            html: almostOneAndAHalfMinute + '<img src="test.png">',
+            reading_time: 200
+        };
+        const result = readingTimeHelper(post);
+
+        result.should.equal('200 min read');
+    });
 });

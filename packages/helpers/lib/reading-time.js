@@ -25,7 +25,7 @@ export default function (post, options = {}) {
         imageCount += 1;
     }
 
-    const time = readingMinutes(post.html, imageCount);
+    const time = post.reading_time || readingMinutes(post.html, imageCount);
     let readingTime = '';
 
     if (time <= 1) {
