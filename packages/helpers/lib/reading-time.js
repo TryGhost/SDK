@@ -1,20 +1,4 @@
-import countImages from './utils/count-images';
-import countWords from './utils/count-words';
-
-export function estimatedReadingTimeInMinutes({wordCount, imageCount}) {
-    const wordsPerMinute = 275;
-    const wordsPerSecond = wordsPerMinute / 60;
-    let readingTimeSeconds = wordCount / wordsPerSecond;
-
-    // add 12 seconds for the first image, 11 for the second, etc. limiting at 3
-    for (var i = 12; i > 12 - imageCount; i -= 1) {
-        readingTimeSeconds += Math.max(i, 3);
-    }
-
-    let readingTimeMinutes = Math.round(readingTimeSeconds / 60);
-
-    return readingTimeMinutes;
-}
+import readingMinutes from './utils/reading-minutes';
 
 /**
  * Reading Time Helper
@@ -35,20 +19,19 @@ export default function (post, options = {}) {
         return '';
     }
 
-    let imageCount = countImages(html);
-    let wordCount = countWords(html);
+    let imageCount = 0;
 
     if (post.feature_image) {
         imageCount += 1;
     }
 
-    const readingTimeInMinutes = estimatedReadingTimeInMinutes({wordCount, imageCount});
+    const time = readingMinutes(post.html, imageCount);
     let readingTime = '';
 
-    if (readingTimeInMinutes <= 1) {
+    if (time <= 1) {
         readingTime = minuteStr;
     } else {
-        readingTime = minutesStr.replace('%', readingTimeInMinutes);
+        readingTime = minutesStr.replace('%', time);
     }
 
     return readingTime;
