@@ -341,13 +341,17 @@ module.exports = class UrlUtils {
      * absolute urls. Returns an object. The html string can be accessed by calling `html()` on
      * the variable that takes the result of this function
      */
-    htmlRelativeToAbsolute(html, itemPath, options = {}) {
+    htmlRelativeToAbsolute(html, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath, _options);
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), (itemPath || _options), (itemPath && _options));
     }
 
     htmlAbsoluteToRelative(html, options = {}) {
@@ -359,13 +363,17 @@ module.exports = class UrlUtils {
         return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
     }
 
-    markdownRelativeToAbsolute(markdown, itemPath, options = {}) {
+    markdownRelativeToAbsolute(markdown, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath, _options);
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), (itemPath || _options), (itemPath && _options));
     }
 
     markdownAbsoluteToRelative(markdown, options = {}) {
@@ -377,14 +385,18 @@ module.exports = class UrlUtils {
         return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
     }
 
-    mobiledocRelativeToAbsolute(serializedMobiledoc, itemPath, options = {}) {
+    mobiledocRelativeToAbsolute(serializedMobiledoc, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), (itemPath || _options), (itemPath && _options));
     }
 
     mobiledocAbsoluteToRelative(serializedMobiledoc, options = {}) {

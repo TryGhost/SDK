@@ -845,6 +845,27 @@ describe('UrlUtils', function () {
                 secure: true
             });
         });
+
+        it('correctly passes through options with no itemPath', function () {
+            const utils = new UrlUtils({
+                url: 'https://example.com',
+                staticImageUrlPrefix: 'static/images'
+            });
+            const spy = sandbox.spy(utils._utils, 'htmlRelativeToAbsolute');
+
+            utils.htmlRelativeToAbsolute('html', {secure: true});
+
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('html');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.deepEqual({
+                assetsOnly: false,
+                staticImageUrlPrefix: 'static/images',
+                secure: true
+            });
+            should.not.exist(firstCall.args[3]);
+        });
     });
 
     describe('htmlAbsoluteToRelative', function () {
@@ -888,6 +909,27 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 secure: true
             });
+        });
+
+        it('correctly passes through options with no itemPath', function () {
+            const utils = new UrlUtils({
+                url: 'https://example.com',
+                staticImageUrlPrefix: 'static/images'
+            });
+            const spy = sandbox.spy(utils._utils, 'markdownRelativeToAbsolute');
+
+            utils.markdownRelativeToAbsolute('markdown', {secure: true});
+
+            const {calledOnce, firstCall} = spy;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('markdown');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.deepEqual({
+                assetsOnly: false,
+                staticImageUrlPrefix: 'static/images',
+                secure: true
+            });
+            should.not.exist(firstCall.args[3]);
         });
     });
 
@@ -933,6 +975,29 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 cards
             });
+        });
+
+        it('correctly passes through options with no itemPath', function () {
+            const utils = new UrlUtils({
+                url: 'https://example.com',
+                staticImageUrlPrefix: 'static/images'
+            });
+            const stub = sandbox.stub(utils._utils, 'mobiledocRelativeToAbsolute');
+
+            const cards = [{name: 'test'}];
+            utils.mobiledocRelativeToAbsolute('serializedMobiledoc', {cards, secure: true});
+
+            const {calledOnce, firstCall} = stub;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('serializedMobiledoc');
+            firstCall.args[1].should.eql('https://example.com/');
+            firstCall.args[2].should.deepEqual({
+                assetsOnly: false,
+                staticImageUrlPrefix: 'static/images',
+                secure: true,
+                cards
+            });
+            should.not.exist(firstCall.args[3]);
         });
     });
 
