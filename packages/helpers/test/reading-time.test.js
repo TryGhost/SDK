@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('./utils');
 
-const readingTimeHelper = require('../cjs/helpers').readingTime;
+const readingTimeHelper = require('../').readingTime;
 
 const almostOneMinute =
     '<p>Ghost has a number of different user roles for your team</p>' +
