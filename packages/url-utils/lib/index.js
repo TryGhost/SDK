@@ -351,7 +351,7 @@ module.exports = class UrlUtils {
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), (itemPath || _options), (itemPath && _options));
+        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath, _options);
     }
 
     htmlAbsoluteToRelative(html, options = {}) {
@@ -373,7 +373,7 @@ module.exports = class UrlUtils {
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), (itemPath || _options), (itemPath && _options));
+        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath, _options);
     }
 
     markdownAbsoluteToRelative(markdown, options = {}) {
@@ -396,7 +396,7 @@ module.exports = class UrlUtils {
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), (itemPath || _options), (itemPath && _options));
+        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
     }
 
     mobiledocAbsoluteToRelative(serializedMobiledoc, options = {}) {

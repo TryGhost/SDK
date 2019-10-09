@@ -859,12 +859,12 @@ describe('UrlUtils', function () {
             calledOnce.should.be.true('called once');
             firstCall.args[0].should.eql('html');
             firstCall.args[1].should.eql('https://example.com/');
-            firstCall.args[2].should.deepEqual({
+            should.not.exist(firstCall.args[2]);
+            firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
                 secure: true
             });
-            should.not.exist(firstCall.args[3]);
         });
     });
 
@@ -924,12 +924,12 @@ describe('UrlUtils', function () {
             calledOnce.should.be.true('called once');
             firstCall.args[0].should.eql('markdown');
             firstCall.args[1].should.eql('https://example.com/');
-            firstCall.args[2].should.deepEqual({
+            should.not.exist(firstCall.args[2]);
+            firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
                 secure: true
             });
-            should.not.exist(firstCall.args[3]);
         });
     });
 
@@ -991,13 +991,13 @@ describe('UrlUtils', function () {
             calledOnce.should.be.true('called once');
             firstCall.args[0].should.eql('serializedMobiledoc');
             firstCall.args[1].should.eql('https://example.com/');
-            firstCall.args[2].should.deepEqual({
+            should.not.exist(firstCall.args[2]);
+            firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
                 secure: true,
                 cards
             });
-            should.not.exist(firstCall.args[3]);
         });
     });
 
