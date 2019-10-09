@@ -17,12 +17,24 @@ function mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, _options = {}
     // modifying pass-by-reference objects
     const relativeMobiledoc = JSON.parse(serializedMobiledoc);
 
-    // any mobiledoc links will have an 'a' markup with a 'href' attribute
+    // any mobiledoc links will have an 'a' markup with an 'href' attribute
     (relativeMobiledoc.markups || []).forEach((markup) => {
-        if (markup[0] === 'a' && markup[1][0] === 'href') {
-            const relativeUrl = absoluteToRelative(markup[1][1], siteUrl, options);
-            if (relativeUrl) {
-                markup[1][1] = relativeUrl;
+        if (markup[0] === 'a' && markup[1]) {
+            // mobiledoc markup attrs are in an array like ['key', 'value', 'key2', 'value2']
+            // we only care about the href attr so loop through and find it so we can get the idx of it's value
+            let hrefIndex = -1;
+
+            markup[1].forEach((attr, index) => {
+                if (attr === 'href') {
+                    hrefIndex = index + 1;
+                }
+            });
+
+            if (hrefIndex !== -1) {
+                const relativeUrl = absoluteToRelative(markup[1][hrefIndex], siteUrl, options);
+                if (relativeUrl) {
+                    markup[1][hrefIndex] = relativeUrl;
+                }
             }
         }
     });

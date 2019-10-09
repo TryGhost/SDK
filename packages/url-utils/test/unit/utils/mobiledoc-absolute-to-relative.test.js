@@ -70,6 +70,44 @@ describe('utils: mobiledocAbsoluteToRelative()', function () {
         result.markups[7][1][1].should.equal('/content/images/example.jpg');
     });
 
+    it('handles anchor markups with no attributes', function () {
+        const mobiledoc = {
+            version: '0.3.1',
+            atoms: [],
+            cards: [],
+            markups: [
+                ['a']
+            ],
+            sections: []
+        };
+
+        const serializedMobiledoc = JSON.stringify(mobiledoc);
+
+        const serializedResult = mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.markups[0].should.deepEqual(['a']);
+    });
+
+    it('handles anchor markups with multiple attribute pairs', function () {
+        const mobiledoc = {
+            version: '0.3.1',
+            atoms: [],
+            cards: [],
+            markups: [
+                ['a', ['target', '_blank', 'href', 'http://my-ghost-blog.com/foo']]
+            ],
+            sections: []
+        };
+
+        const serializedMobiledoc = JSON.stringify(mobiledoc);
+
+        const serializedResult = mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.markups[0].should.deepEqual(['a', ['target', '_blank', 'href', '/foo']]);
+    });
+
     it('converts absolute URLs in card payloads using external processors', function () {
         const markdownCardTransformer = {
             name: 'markdown',
