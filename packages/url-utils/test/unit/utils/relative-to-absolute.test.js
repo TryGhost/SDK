@@ -59,6 +59,34 @@ describe('utils: relativeToAbsolute()', function () {
         relativeToAbsolute(url, root).should.eql('?test=true', 'with /subdir/ root');
     });
 
+    describe('with page-relative URL (no leading slash)', function () {
+        it('returns path as-is with no item path', function () {
+            let url = 'test';
+            let root = 'https://example.com';
+
+            relativeToAbsolute(url, root)
+                .should.equal('test');
+        });
+
+        it('returns absolute url with item path', function () {
+            let url = 'test';
+            let root = 'https://example.com';
+            let itemPath = 'my-ghost-path';
+
+            relativeToAbsolute(url, root, itemPath)
+                .should.equal('https://example.com/my-ghost-path/test');
+        });
+
+        it('ignores root url if itemPath is a full url', function () {
+            let url = 'test';
+            let root = 'https://example.com';
+            let itemPath = 'https://example.com/my-ghost-path';
+
+            relativeToAbsolute(url, root, itemPath)
+                .should.equal('https://example.com/my-ghost-path/test');
+        });
+    });
+
     describe('with root-relative URL (leading slash)', function () {
         it('returns absolute file', function () {
             let url = '/my/file.png';

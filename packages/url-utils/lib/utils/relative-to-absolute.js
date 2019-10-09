@@ -28,6 +28,12 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
         itemPath = null;
     }
 
+    // itemPath could be sent as a full url in which case, extract the pathname
+    if (itemPath && itemPath.match(/^http/)) {
+        const itemUrl = new URL(itemPath);
+        itemPath = itemUrl.pathname;
+    }
+
     const defaultOptions = {};
     const options = Object.assign({}, defaultOptions, _options);
 
