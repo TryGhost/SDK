@@ -15,6 +15,13 @@ export function estimatedReadingTimeInMinutes({wordCount, imageCount}) {
 
     return readingTimeMinutes;
 }
+/**
+ * Reading minutes method
+ *
+ * @param {string} html - HTML that we want to calculate reading time for
+ * @param {string} additionalImages - additional images that need to be taken into account outside HTML
+ * @returns {number} estimated reading in minutes
+ */
 
 export default function readingMinutes(html, additionalImages) {
     if (!html) {
