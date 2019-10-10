@@ -15,21 +15,31 @@ function markdownAbsoluteToRelative(markdown = '', siteUrl, _options = {}) {
 
     visit(tree, ['link', 'image', 'html'], (node) => {
         if (node.type === 'html' && node.value.match(/src|srcset|href/)) {
-            replacements.push({
-                old: node.value,
-                new: htmlAbsoluteToRelative(node.value, siteUrl, urlOptions),
-                start: node.position.start.offset,
-                end: node.position.end.offset
-            });
+            const oldValue = node.value;
+            const newValue = htmlAbsoluteToRelative(node.value, siteUrl, urlOptions);
+
+            if (newValue !== oldValue) {
+                replacements.push({
+                    old: oldValue,
+                    new: newValue,
+                    start: node.position.start.offset,
+                    end: node.position.end.offset
+                });
+            }
         }
 
         if (node.type === 'link' || node.type === 'image') {
-            replacements.push({
-                old: node.url,
-                new: absoluteToRelative(node.url, siteUrl, urlOptions),
-                start: node.position.start.offset,
-                end: node.position.end.offset
-            });
+            const oldValue = node.url;
+            const newValue = absoluteToRelative(node.url, siteUrl, urlOptions);
+
+            if (newValue !== oldValue) {
+                replacements.push({
+                    old: oldValue,
+                    new: newValue,
+                    start: node.position.start.offset,
+                    end: node.position.end.offset
+                });
+            }
         }
     });
 
