@@ -44,7 +44,7 @@ Testing <a href="http://my-ghost-blog.com/link">Inline</a> with **markdown**
 
     it('skips relative URLS in code blocks', function () {
         const markdown = '## Testing\n\n    ![](/content/images/image.png)';
-        markdownRelativeToAbsolute(markdown, siteUrl, options)
+        markdownRelativeToAbsolute(markdown, siteUrl, itemPath, options)
             .should.equal(markdown);
     });
 
@@ -77,7 +77,14 @@ Testing <a href="http://my-ghost-blog.com/link">Inline</a> with **markdown**
 
     it('retains whitespace layout inside list elements', function () {
         const markdown = '## testing\n\nmctesters\n\n- test\n- line\n- items"';
-        markdownRelativeToAbsolute(markdown, siteUrl, options)
+        markdownRelativeToAbsolute(markdown, siteUrl, itemPath, options)
+            .should.equal(markdown);
+    });
+
+    it('does not strip chars from end', function () {
+        const markdown = '<a href="https://example.com">Test</a> <a href="https://example.com/2">Test2</a> Test';
+
+        markdownRelativeToAbsolute(markdown, siteUrl, itemPath, options)
             .should.equal(markdown);
     });
 });

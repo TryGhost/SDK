@@ -79,4 +79,11 @@ Testing <a href="/link">Inline</a> with **markdown**
         markdownAbsoluteToRelative(markdown, siteUrl, options)
             .should.equal(markdown);
     });
+
+    it('does not strip chars from end', function () {
+        const markdown = '<a href="https://example.com">Test</a> <a href="https://example.com/2">Test2</a> Test';
+
+        markdownAbsoluteToRelative(markdown, siteUrl, options)
+            .should.equal(markdown);
+    });
 });

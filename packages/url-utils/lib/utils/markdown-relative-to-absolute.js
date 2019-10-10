@@ -41,7 +41,7 @@ function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options =
         const transformed = original.replace(replacement.old, replacement.new);
 
         let before = result.slice(0, replacement.start + offsetAdjustment);
-        let after = result.slice(replacement.end + offsetAdjustment, markdown.length - 1);
+        let after = result.slice(replacement.end + offsetAdjustment, markdown.length);
 
         result = before + transformed + after;
 
