@@ -29,6 +29,12 @@ describe('utils: absoluteToRelative()', function () {
         absoluteToRelative(url, root).should.eql('mailto:test@example.com');
     });
 
+    it('ignores invalid urls', function () {
+        let url = 'http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong';
+        let root = 'https://example.com';
+        absoluteToRelative(url, root).should.eql('http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong');
+    });
+
     describe('with matching root', function () {
         it('returns relative file', function () {
             let url = 'https://example.com/my/file.png';

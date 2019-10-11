@@ -18,12 +18,18 @@ const absoluteToRelative = function absoluteToRelative(url, rootUrl, _options = 
         withoutSubdirectory: false
     };
     const options = Object.assign({}, defaultOptions, _options);
+    let parsedUrl;
+    let parsedRoot;
 
-    const parsedUrl = new URL(url, 'http://relative');
-    const parsedRoot = parsedUrl.origin === 'null' ? undefined : new URL(rootUrl || parsedUrl.origin);
+    try {
+        parsedUrl = new URL(url, 'http://relative');
+        parsedRoot = parsedUrl.origin === 'null' ? undefined : new URL(rootUrl || parsedUrl.origin);
 
-    // return the url as-is if it was relative or non-http
-    if (parsedUrl.origin === 'null' || parsedUrl.origin === 'http://relative') {
+        // return the url as-is if it was relative or non-http
+        if (parsedUrl.origin === 'null' || parsedUrl.origin === 'http://relative') {
+            return url;
+        }
+    } catch (e) {
         return url;
     }
 

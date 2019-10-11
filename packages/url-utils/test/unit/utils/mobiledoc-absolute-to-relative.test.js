@@ -108,6 +108,27 @@ describe('utils: mobiledocAbsoluteToRelative()', function () {
         result.markups[0].should.deepEqual(['a', ['target', '_blank', 'href', '/foo']]);
     });
 
+    it('handles invalid urls', function () {
+        const mobiledoc = {
+            version: '0.3.1',
+            atoms: [],
+            cards: [],
+            markups: [
+                ['a', ['href', 'http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong']],
+                ['a', ['href', 'i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong']]
+            ],
+            sections: []
+        };
+
+        const serializedMobiledoc = JSON.stringify(mobiledoc);
+
+        const serializedResult = mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.markups[0].should.deepEqual(['a', ['href', 'http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong']]);
+        result.markups[1].should.deepEqual(['a', ['href', 'i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong']]);
+    });
+
     it('converts absolute URLs in card payloads using external processors', function () {
         const markdownCardTransformer = {
             name: 'markdown',
