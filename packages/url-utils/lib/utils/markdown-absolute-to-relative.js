@@ -4,10 +4,17 @@ const absoluteToRelative = require('./absolute-to-relative');
 const htmlAbsoluteToRelative = require('./html-absolute-to-relative');
 
 function markdownAbsoluteToRelative(markdown = '', siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false};
+    const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
     const urlOptions = Object.assign({}, defaultOptions, _options);
 
     const replacements = [];
+
+    // exit early and avoid parsing if the content does not contain the siteUrl
+    let urlMatchStr = urlOptions.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
+    urlMatchStr = urlMatchStr.replace(/\/$/, '');
+    if (!markdown || !markdown.match(new RegExp(urlMatchStr))) {
+        return markdown;
+    }
 
     const tree = remark()
         .use({settings: {commonmark: true, footnotes: true}})

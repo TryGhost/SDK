@@ -11,7 +11,17 @@ function extractSrcsetUrls(srcset = '') {
     });
 }
 
-function htmlAbsoluteToRelative(html = '', siteUrl, options = {assetsOnly: false}) {
+function htmlAbsoluteToRelative(html = '', siteUrl, _options = {}) {
+    const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
+    const options = Object.assign({}, defaultOptions, _options);
+
+    // exit early and avoid parsing if the content does not contain the siteUrl
+    let urlMatchStr = options.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
+    urlMatchStr = urlMatchStr.replace(/\/$/, '');
+    if (!html || !html.match(new RegExp(urlMatchStr))) {
+        return html;
+    }
+
     const htmlContent = cheerio.load(html, {decodeEntities: false});
 
     // replacements is keyed with the attr name + original absolute value so
