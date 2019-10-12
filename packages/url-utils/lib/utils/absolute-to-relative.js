@@ -15,9 +15,19 @@ const stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
 const absoluteToRelative = function absoluteToRelative(url, rootUrl, _options = {}) {
     const defaultOptions = {
         ignoreProtocol: true,
-        withoutSubdirectory: false
+        withoutSubdirectory: false,
+        assetsOnly: false,
+        staticImageUrlPrefix: 'content/images'
     };
     const options = Object.assign({}, defaultOptions, _options);
+
+    if (options.assetsOnly) {
+        const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
+        if (!url.match(staticImageUrlPrefixRegex)) {
+            return url;
+        }
+    }
+
     let parsedUrl;
     let parsedRoot;
 

@@ -167,4 +167,34 @@ describe('utils: absoluteToRelative()', function () {
             absoluteToRelative(url, root).should.eql('/subdir/my/file.png');
         });
     });
+
+    describe('{assetsOnly}', function () {
+        it('skips urls that do not match default assets path', function () {
+            let url = 'https://example.com/other/images/file.png';
+            let root = 'https://example.com/';
+            absoluteToRelative(url, root, {assetsOnly: true})
+                .should.equal('https://example.com/other/images/file.png');
+        });
+
+        it('skips urls that do not match custom assets path', function () {
+            let url = 'https://example.com/content/images/file.png';
+            let root = 'https://example.com/';
+            absoluteToRelative(url, root, {assetsOnly: true, staticImageUrlPrefix: 'other/images'})
+                .should.equal('https://example.com/content/images/file.png');
+        });
+
+        it('transforms urls that match default assets path', function () {
+            let url = 'https://example.com/content/images/file.png';
+            let root = 'https://example.com/';
+            absoluteToRelative(url, root, {assetsOnly: true})
+                .should.equal('/content/images/file.png');
+        });
+
+        it('transforms urls that match custom assets path', function () {
+            let url = 'https://example.com/my/files/file.png';
+            let root = 'https://example.com/';
+            absoluteToRelative(url, root, {assetsOnly: true, staticImageUrlPrefix: '/my/files/'})
+                .should.equal('/my/files/file.png');
+        });
+    });
 });

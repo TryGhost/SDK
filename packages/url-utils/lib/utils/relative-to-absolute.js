@@ -34,8 +34,19 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
         itemPath = itemUrl.pathname;
     }
 
-    const defaultOptions = {};
+    const defaultOptions = {
+        assetsOnly: false,
+        staticImageUrlPrefix: 'content/images'
+    };
     const options = Object.assign({}, defaultOptions, _options);
+
+    // return the path as-is if it's not an asset path and we're only modifying assets
+    if (options.assetsOnly) {
+        const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
+        if (!path.match(staticImageUrlPrefixRegex)) {
+            return path;
+        }
+    }
 
     // if URL is absolute return it as-is
     try {
@@ -60,12 +71,6 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
 
     // return the path as-is if it's not root-relative and we have no itemPath
     if (!itemPath && !path.match(/^\//)) {
-        return path;
-    }
-
-    // return the path as-is if it's not an asset path and we're only modifying assets
-    const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
-    if (options.assetsOnly && !path.match(staticImageUrlPrefixRegex)) {
         return path;
     }
 

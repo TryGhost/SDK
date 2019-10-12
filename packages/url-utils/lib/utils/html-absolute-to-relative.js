@@ -5,17 +5,6 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function _absoluteToRelative(url, siteUrl, options) {
-    const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
-
-    if (options.assetsOnly && !url.match(staticImageUrlPrefixRegex)) {
-        return;
-    }
-
-    // remove the site url (excluding sub-directory) from the url
-    return absoluteToRelative(url, siteUrl, {ignoreProtocol: true});
-}
-
 function extractSrcsetUrls(srcset = '') {
     return srcset.split(',').map((part) => {
         return part.trim().split(/\s+/)[0];
@@ -65,7 +54,7 @@ function htmlAbsoluteToRelative(html = '', siteUrl, options = {assetsOnly: false
 
             if (attributeName === 'srcset') {
                 const urls = extractSrcsetUrls(originalValue);
-                const relativeUrls = urls.map(url => _absoluteToRelative(url, siteUrl, options));
+                const relativeUrls = urls.map(url => absoluteToRelative(url, siteUrl, options));
                 let relativeValue = originalValue;
 
                 urls.forEach((url, i) => {
@@ -84,7 +73,7 @@ function htmlAbsoluteToRelative(html = '', siteUrl, options = {assetsOnly: false
                 }
             } else {
                 // remove the site url (excluding sub-directory) from the url
-                const relativeValue = _absoluteToRelative(originalValue, siteUrl, options);
+                const relativeValue = absoluteToRelative(originalValue, siteUrl, options);
 
                 if (relativeValue) {
                     addReplacement({
