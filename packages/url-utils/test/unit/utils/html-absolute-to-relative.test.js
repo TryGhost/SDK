@@ -181,17 +181,17 @@ describe('utils: htmlAbsoluteToRelative()', function () {
     });
 
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy, sandbox;
+        let cheerioLoadSpy, rewireRestore;
 
         beforeEach(function () {
-            sandbox = sinon.createSandbox();
             const cheerio = htmlAbsoluteToRelative.__get__('cheerio');
             cheerioLoadSpy = sinon.spy(cheerio, 'load');
-            htmlAbsoluteToRelative.__set__('cheerio', cheerio);
+            rewireRestore = htmlAbsoluteToRelative.__set__('cheerio', cheerio);
         });
 
         afterEach(function () {
-            sandbox.restore();
+            cheerioLoadSpy.restore();
+            rewireRestore();
         });
 
         it('when html has no absolute URLs matching siteUrl', function () {

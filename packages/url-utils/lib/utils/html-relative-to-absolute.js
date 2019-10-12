@@ -15,6 +15,15 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemPath, _options) {
     const defaultOptions = {assetsOnly: false, secure: false};
     const options = Object.assign({}, defaultOptions, _options || {});
 
+    // exit early and avoid parsing if the content does not contain an attribute we might transform
+    let attrMatchString = 'href=|src=|srcset=';
+    if (options.assetsOnly) {
+        attrMatchString = options.staticImageUrlPrefix;
+    }
+    if (!html || !html.match(new RegExp(attrMatchString))) {
+        return html;
+    }
+
     const htmlContent = cheerio.load(html, {decodeEntities: false});
 
     // replacements is keyed with the attr name + original relative value so

@@ -7,6 +7,16 @@ function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options =
     const defaultOptions = {assetsOnly: false};
     const urlOptions = Object.assign({}, defaultOptions, _options);
 
+    // exit early and avoid parsing if the content does not contain an
+    // attribute we might transform
+    let attrMatchString = '\\]\\([^\\s\\)]|href=|src=|srcset=';
+    if (urlOptions.assetsOnly) {
+        attrMatchString = urlOptions.staticImageUrlPrefix;
+    }
+    if (!markdown || !markdown.match(new RegExp(attrMatchString))) {
+        return markdown;
+    }
+
     const replacements = [];
 
     const tree = remark()
