@@ -2,6 +2,8 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
+const fs = require('fs');
+const path = require('path');
 const rewire = require('rewire');
 const sinon = require('sinon');
 const markdownAbsoluteToRelative = rewire('../../../lib/utils/markdown-absolute-to-relative');
@@ -14,6 +16,14 @@ describe('utils: markdownAbsoluteToRelative()', function () {
         options = {
             staticImageUrlPrefix: 'content/images'
         };
+    });
+
+    it('works (demo post)', function () {
+        const relativeMarkdown = fs.readFileSync(path.join(__dirname, '../../fixtures/long-markdown-relative.md'), 'utf8');
+        const absoluteMarkdown = fs.readFileSync(path.join(__dirname, '../../fixtures/long-markdown-absolute.md'), 'utf8');
+
+        markdownAbsoluteToRelative(absoluteMarkdown, 'https://demo.ghost.io/', options)
+            .should.equal(relativeMarkdown);
     });
 
     it('converts absolute URLs in markdown', function () {
