@@ -3,7 +3,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const token = require('./token');
 
-const supportedVersions = ['v2', 'canary'];
+const supportedVersions = ['v2', 'v3', 'canary'];
 
 module.exports = function GhostAdminAPI(options) {
     if (this instanceof GhostAdminAPI) {
