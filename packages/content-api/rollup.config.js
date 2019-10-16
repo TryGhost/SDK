@@ -48,7 +48,8 @@ export default [
                     ['@babel/preset-env', {
                         modules: false,
                         targets: 'defaults',
-                        useBuiltIns: 'usage'
+                        useBuiltIns: 'usage',
+                        corejs: 2
                     }]
                 ],
                 exclude: ['node_modules/**', '../../node_modules/**']
@@ -82,7 +83,8 @@ export default [
                     ['@babel/preset-env', {
                         modules: false,
                         targets: 'defaults',
-                        useBuiltIns: 'usage'
+                        useBuiltIns: 'usage',
+                        corejs: 2
                     }]
                 ],
                 exclude: ['node_modules/**', '../../node_modules/**']
