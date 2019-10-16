@@ -1,5 +1,7 @@
 # Admin Api
 
+JavaScript Client Library for the Ghost [Admin API](https://ghost.org/docs/api/admin/)
+
 ## Install
 
 `npm install @tryghost/admin-api --save`
@@ -10,6 +12,8 @@ or
 
 
 ## Usage
+
+See https://ghost.org/docs/api/javascript/
 
 
 ## Develop

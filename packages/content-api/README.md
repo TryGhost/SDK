@@ -1,11 +1,11 @@
 # Ghost Content API
 
-JavaScript Client Library for the Ghost [Content API](http://localhost:8003/api/content/)
+JavaScript Client Library for the Ghost [Content API](https://ghost.org/docs/api/content/)
 
 
 ## Usage
 
-See https://docs.ghost.org/api/javascript/
+See https://ghost.org/docs/api/javascript/
 
 ## Develop
 
