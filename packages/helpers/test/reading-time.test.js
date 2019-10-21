@@ -116,4 +116,13 @@ describe('readingTime helper', function () {
 
         result.should.equal('200 min read');
     });
+
+    it('accepts and uses pre-filled reading_time even when html is not present', function () {
+        const post = {
+            reading_time: 200
+        };
+        const result = readingTimeHelper(post);
+
+        result.should.equal('200 min read');
+    });
 });
