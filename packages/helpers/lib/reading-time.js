@@ -11,11 +11,10 @@ import readingMinutes from './utils/reading-minutes';
  */
 
 export default function (post, options = {}) {
-    const html = post.html;
     const minuteStr = typeof options.minute === 'string' ? options.minute : '1 min read';
     const minutesStr = typeof options.minutes === 'string' ? options.minutes : '% min read';
 
-    if (!html) {
+    if (!post.html && !post.reading_time) {
         return '';
     }
 
