@@ -51,8 +51,8 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemPath, _options) {
     // find all of the relative url attributes that we care about
     ['href', 'src', 'srcset'].forEach((attributeName) => {
         htmlContent('[' + attributeName + ']').each((ix, el) => {
-            // ignore html inside of <code> elements
-            if (htmlContent(el).closest('code').length) {
+            // ignore <stream> elems and html inside of <code> elements
+            if (el.name === 'stream' || htmlContent(el).closest('code').length) {
                 addReplacement({
                     name: attributeName,
                     originalValue: htmlContent(el).attr(attributeName),

@@ -152,6 +152,13 @@ describe('utils: htmlAbsoluteToRelative()', function () {
             .should.eql('<p>You can use <code>href="http://my-ghost-blog.com/relative"</code> to make links like <a href="/relative">this</a></p>');
     });
 
+    it('skips <stream> elements', function () {
+        let html = '<stream src="http://my-ghost-blog.com/8f6257280d40bbb240853442ebb1c361" playsinline="" autoplay="" loop="" mute="">';
+
+        htmlAbsoluteToRelative(html, siteUrl, options)
+            .should.eql(html);
+    });
+
     describe('srcset support', function () {
         /* eslint-disable no-irregular-whitespace */
         it('converts multiple urls', function () {
