@@ -23,7 +23,7 @@
     "sinon": "7.4.1"
   },
   "dependencies": {
-    "bluebird": "3.7.1",
+    "bluebird": "3.7.2",
     "ghost-ignition": "3.1.0",
     "lodash": "4.17.11"
   }
