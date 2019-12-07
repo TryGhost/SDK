@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('./utils');
 const should = require('should');
-
+const FormData = require('form-data');
 const http = require('http');
 const url = require('url');
 const path = require('path');
@@ -790,6 +790,83 @@ describe('GhostAdminAPI', function () {
 
         after(function () {
             server.close();
+        });
+
+        describe('api.themes', function () {
+            it('has an upload method', function () {
+                const api = new GhostAdminAPI(config);
+                should.equal(typeof api.images.upload, 'function');
+            });
+
+            it('has an activate method', function () {
+                const api = new GhostAdminAPI(config);
+                should.equal(typeof api.images.upload, 'function');
+            });
+
+            describe('api.themes.upload', function () {
+                const zipPath = path.join(__dirname, './fixtures/theme.zip');
+
+                describe('expected data format', function () {
+                    it('expects data to be passed in', function (done) {
+                        const api = new GhostAdminAPI(config);
+
+                        api.themes.upload().catch((err) => {
+                            should.exist(err);
+                            done();
+                        });
+                    });
+
+                    it('expects data to be instance of FormData', function (done) {
+                        const api = new GhostAdminAPI(config);
+
+                        api.themes.upload({}).catch((err) => {
+                            should.exist(err);
+                            done();
+                        });
+                    });
+
+                    it('expects data.file to be passed in', function (done) {
+                        const api = new GhostAdminAPI(config);
+
+                        const data = new FormData();
+                        api.themes.upload(data)
+                            .catch((err) => {
+                                should.exist(err);
+                                done();
+                            });
+                    });
+
+                    it('should pass with file present', function (done) {
+                        const api = new GhostAdminAPI(config);
+
+                        const data = new FormData({file: zipPath});
+                        api.themes.upload(data)
+                            .then(() => done())
+                            .catch(done);
+                    });
+                });
+            });
+
+            describe('api.themes.activate', function () {
+                describe('expected name format', function () {
+                    it('expects name to be passed in', function (done) {
+                        const api = new GhostAdminAPI(config);
+
+                        api.themes.activate().catch((err) => {
+                            should.exist(err);
+                            done();
+                        });
+                    });
+
+                    it('should pass with name present', function (done) {
+                        const api = new GhostAdminAPI(config);
+
+                        api.themes.activate('theme')
+                            .then(() => done())
+                            .catch(done);
+                    });
+                });
+            });
         });
 
         it('works', function (done) {

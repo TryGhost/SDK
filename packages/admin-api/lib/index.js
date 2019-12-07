@@ -206,7 +206,7 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (!(data instanceof FormData) && !data.file) {
+            if (!(data instanceof FormData) || !data.file) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
@@ -217,6 +217,13 @@ module.exports = function GhostAdminAPI(options) {
             }
 
             return makeUploadRequest('themes', formData || data, endpointFor('themes/upload'));
+        },
+        activate(name) {
+            if (!name) {
+                return Promise.reject(new Error('Missing theme name'));
+            }
+
+            return makeResourceRequest('themes', {}, {}, 'PUT', {id: `${name}/activate`});
         }
     };
 
