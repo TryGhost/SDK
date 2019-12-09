@@ -125,45 +125,47 @@ describe('GhostAdminAPI', function () {
         });
 
         it('Requires a config object with host, version and key', function () {
-            try {
-                new GhostAdminAPI();
-                return should.fail();
-            } catch (err) {
-                //
-            }
+            should.throws(
+                () => new GhostAdminAPI(),
+                Error,
+                'Missing config object'
+            );
+            should.throws(
+                () => new GhostAdminAPI({url: config.url, version: config.version}),
+                Error,
+                'Missing config.key property'
+            );
 
-            try {
-                new GhostAdminAPI({url: config.url, version: config.version});
-                return should.fail();
-            } catch (err) {
-                //
-            }
+            should.throws(
+                () => new GhostAdminAPI({version: config.version, key: config.key}),
+                Error,
+                'Missing config.url property'
+            );
 
-            try {
-                new GhostAdminAPI({version: config.version, key: config.key});
-                return should.fail();
-            } catch (err) {
-                //
-            }
+            should.throws(
+                () => new GhostAdminAPI({url: config.url, key: config.key}),
+                Error,
+                'Missing config.version property'
+            );
 
-            try {
-                new GhostAdminAPI({url: config.url, key: config.key});
-                return should.fail();
-            } catch (err) {
-                //
-            }
-
-            new GhostAdminAPI({url: config.url, version: config.version, key: config.key});
-            new GhostAdminAPI(config);
+            should.doesNotThrow(
+                () => new GhostAdminAPI({url: config.url, version: config.version, key: config.key}),
+                Error,
+                'Correct config properties'
+            );
+            should.doesNotThrow(
+                () => new GhostAdminAPI(config),
+                Error,
+                'Correct config object'
+            );
         });
 
-        it('Requires correct key format in config object', function (){
-            try {
-                new GhostAdminAPI({key: 'badkey', config: config.url, version: config.version});
-                return should.fail();
-            } catch (err) {
-                //
-            }
+        it('Requires correct key format in config object', function () {
+            should.throws(
+                () => new GhostAdminAPI({key: 'badkey', url: config.url, version: config.version}),
+                Error,
+                'Invalid config.key property'
+            );
         });
 
         ['posts', 'pages', 'tags'].forEach((resource) => {

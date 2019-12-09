@@ -60,6 +60,9 @@ module.exports = function GhostAdminAPI(options) {
     if (config.ghostPath.endsWith('/') || config.ghostPath.startsWith('/')) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
     }
+    if (!config.key) {
+        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" to be supplied');
+    }
     if (config.key && !/[0-9a-f]{24}:[0-9a-f]{64}/.test(config.key)) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" in following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters');
     }
