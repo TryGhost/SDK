@@ -35,4 +35,4 @@ NOTE: use `yarn ship --git-remote upstream` to correctly update tags and version
 
 # Copyright & License
 
-Copyright (c) 2018-2019 Ghost Foundation - Released under the [MIT license](LICENSE).
+Copyright (c) 2018-2020 Ghost Foundation - Released under the [MIT license](LICENSE).
