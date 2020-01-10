@@ -4,7 +4,7 @@
   ],
   "travis": { "enabled": true },
   "node": {
-    "supportPolicy": ["lts_active"]
+    "supportPolicy": ["lts"]
    },
   "ignorePaths": ["packages/members"],
   "packageRules": [
