@@ -87,7 +87,7 @@ var Tags = function Tags(props) {
 
   opts.fn = function process(tag) {
     var tagLink = props.permalink;
-    tagLink = tagLink.replace(/:slug/, tag.slug) || "/".concat(tag.slug, "/");
+    tagLink = tagLink.replace(/:slug/, tag.slug) || "/tag/".concat(tag.slug, "/");
     return props.autolink ? _react["default"].createElement("span", {
       className: props.classes,
       key: tag.slug
@@ -111,7 +111,7 @@ Tags.defaultProps = {
   prefixClasses: "",
   suffixClasses: "",
   linkClasses: "",
-  permalink: "/:slug/",
+  permalink: "/tag/:slug/",
   autolink: true
 };
 Tags.propTypes = {
