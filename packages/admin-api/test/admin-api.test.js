@@ -17,7 +17,7 @@ describe('GhostAdminAPI', function () {
         };
         let server, returnError;
 
-        beforeEach(() => {
+        beforeEach(function () {
             returnError = false;
         });
 
@@ -168,6 +168,7 @@ describe('GhostAdminAPI', function () {
             );
         });
 
+        // eslint-disable-next-line
         ['posts', 'pages', 'tags'].forEach((resource) => {
             describe(`api.${resource}`, function () {
                 describe(`api.${resource}.browse`, function () {
@@ -624,7 +625,11 @@ describe('GhostAdminAPI', function () {
             });
 
             describe('api.images.upload', function () {
-                const imagePath = path.join(__dirname, './fixtures/ghost-logo.png');
+                let imagePath;
+
+                beforeEach(function () {
+                    imagePath = path.join(__dirname, './fixtures/ghost-logo.png');
+                });
 
                 describe('expected data format', function () {
                     it('expects data to be passed in', function (done) {
@@ -732,7 +737,7 @@ describe('GhostAdminAPI', function () {
         };
         let server, returnError;
 
-        beforeEach(() => {
+        beforeEach(function () {
             returnError = false;
         });
 
@@ -813,7 +818,7 @@ describe('GhostAdminAPI', function () {
         };
         let server, returnError;
 
-        beforeEach(() => {
+        beforeEach(function () {
             returnError = false;
         });
 

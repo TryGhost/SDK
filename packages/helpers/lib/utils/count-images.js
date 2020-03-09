@@ -9,7 +9,7 @@ export default function countImages(html) {
         return 0;
     }
     // protect against Handlebars.SafeString
-    if (html.hasOwnProperty('string')) {
+    if (Object.prototype.hasOwnProperty.call(html, 'string')) {
         html = html.string;
     }
     return (html.match(/<img(.|\n)*?>/g) || []).length;
