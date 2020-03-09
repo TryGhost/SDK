@@ -34,14 +34,14 @@
     "@babel/core": "7.8.7",
     "@babel/polyfill": "7.8.7",
     "istanbul": "0.4.5",
-    "mocha": "6.2.0",
+    "mocha": "7.1.0",
     "rollup": "2.0.2",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
     "rollup-plugin-terser": "5.2.0",
     "should": "13.2.3",
-    "sinon": "7.4.1"
+    "sinon": "9.0.0"
   },
   "dependencies": {
     "lodash-es": "^4.17.11"
