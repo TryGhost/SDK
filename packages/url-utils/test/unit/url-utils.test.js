@@ -528,7 +528,7 @@ describe('UrlUtils', function () {
             utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
         });
 
-        // eslint-disable-next-line ghost/mocha/no-setup-in-describe
+        // eslint-disable-next-line
         ['v0.1', 'v2'].forEach((apiVersion) => {
             function getApiPath(options) {
                 const baseAPIPath = '/ghost/api/';

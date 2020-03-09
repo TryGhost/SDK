@@ -11,7 +11,7 @@ export default function countWords(text) {
         return 0;
     }
     // protect against Handlebars.SafeString
-    if (text.hasOwnProperty('string')) {
+    if (Object.prototype.hasOwnProperty.call(text, 'string')) {
         text = text.string;
     }
 

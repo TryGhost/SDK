@@ -17,7 +17,7 @@ describe('GhostContentApi', function () {
 
         let returnError;
 
-        beforeEach(() => {
+        beforeEach(function () {
             returnError = false;
         });
 
