@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/timezone-data",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/timezone-data",
   "author": "Ghost Foundation",
   "license": "MIT",
