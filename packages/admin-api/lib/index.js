@@ -268,10 +268,18 @@ module.exports = function GhostAdminAPI(options) {
     }
 
     function endpointFor(resource, {id, slug, email} = {}) {
-        const {ghostPath, version} = config;
-        let endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
+        // the second arguement implemented the conditional destructuring
+        // and if {} is null or undefined the assigned variables will be undefined.
+        // resource can be 'images/upload' dir
+        
+        const {ghostPath, version} = config; 
+        //destructuring: expose the config properties
 
-        if (id) {
+        let endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
+        // constructs an endpoint route
+
+        // conditional mutation of the endpoint variable
+        if (id) { 
             endpoint = `${endpoint}${id}/`;
         } else if (slug) {
             endpoint = `${endpoint}slug/${slug}/`;
@@ -283,7 +291,22 @@ module.exports = function GhostAdminAPI(options) {
     }
 
     function makeApiRequest({endpoint, method, body, queryParams = {}, headers = {}}) {
+        // the arguement is an object with ppt:
+        //  endpoint: endpointFor(resourceType, urlParams),
+        // Method = POST/DELETE/GET
+        // queryParams = {}  undefined
+        // headers = {}  undefined
+
         const {url: apiUrl, key, version, makeRequest} = config;
+        // Destructing of map config
+        // example of a use case 
+        // const config = {
+        //     slug: { apiUrl: "232ldsfds"},
+        //     key: "1213sfdsf"
+        // }
+        // const {slug:apiUrl, key} = config
+
+        // recontructs the url variable
         const url = `${apiUrl}${endpoint}`;
 
         headers = Object.assign({}, headers, {
