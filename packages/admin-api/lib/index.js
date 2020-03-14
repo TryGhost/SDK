@@ -308,7 +308,8 @@ module.exports = function GhostAdminAPI(options) {
 
         // recontructs the url variable
         const url = `${apiUrl}${endpoint}`;
-
+        
+        // merging objects
         headers = Object.assign({}, headers, {
             Authorization: `Ghost ${token(version, key)}`
         });
