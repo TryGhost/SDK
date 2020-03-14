@@ -81,72 +81,88 @@ module.exports = function GhostAdminAPI(options) {
     ];
 
     const api = resources.reduce((apiObject, resourceType) => {
+        // function add with an arguement of data and queryPrams
         function add(data, queryParams = {}) {
+            // check if data is empty
             if (!data || !Object.keys(data).length) {
                 return Promise.reject(new Error('Missing data'));
             }
 
             const mapped = {};
+            //CHECK RESOUCES TYPE FROM FROM RESOURCE (STABLE AND EXPERIMENTAL)
             mapped[resourceType] = [data];
 
             return makeResourceRequest(resourceType, queryParams, mapped, 'POST');
         }
-
+// it allows users to edit
         function edit(data, queryParams = {}) {
+            //checks if data is supply
             if (!data) {
+                // it returns a promise with an error message is the data is not found
                 return Promise.reject(new Error('Missing data'));
             }
-
+// checks for a data with id
             if (!data.id) {
+                // return error messgae is a data with and id is not foound
                 return Promise.reject(new Error('Must include data.id'));
             }
-
+// assigning empty object to body and also declaring body as an object
             const body = {};
+            // declaring urlParams as an object
             const urlParams = {};
 
             if (data.id) {
                 urlParams.id = data.id;
                 delete data.id;
             }
-
+// body contains an array of data
             body[resourceType] = [data];
-
+            
+//makes request with a method of PUT
             return makeResourceRequest(resourceType, queryParams, body, 'PUT', urlParams);
         }
-
+// function to delete, it take parameters of data and queryParams
         function del(data, queryParams = {}) {
+            // checks for data
             if (!data) {
+                //return a promise with error message is data is not found
                 return Promise.reject(new Error('Missing data'));
             }
-
+// checks for for data with id and email
             if (!data.id && !data.email) {
+                // returns a promise with error message if data with id and email is not found
                 return Promise.reject(new Error('Must include either data.id or data.email'));
             }
-
+// assigning urlParams to data
             const urlParams = data;
-
+            //makes request with a method of delete
             return makeResourceRequest(resourceType, queryParams, data, 'DELETE', urlParams);
         }
-
+// function browse take a default parameter of empty object
         function browse(options = {}) {
+            // calls makeResourceRequest funtion and pass the arguement of resourceType and options
             return makeResourceRequest(resourceType, options);
         }
-
+// create funtion read with an arguement of data and queryParams
         function read(data, queryParams) {
+            // check if there is data
             if (!data) {
+                // return a promise with an error message if data is not found
                 return Promise.reject(new Error('Missing data'));
             }
-
+// checks for data with id, email and slug
             if (!data.id && !data.slug && !data.email) {
+                //return a promise with an error message if a data  with id, slug and email is not found
                 return Promise.reject(new Error('Must include either data.id or data.slug or data.email'));
             }
-
+            
+// urlParams is an object of slug,id and email
             const urlParams = {
                 id: data.id,
                 slug: data.slug,
                 email: data.email
             };
-
+// it delete unused and unnecessary data
             delete data.id;
             delete data.slug;
             delete data.email;
@@ -191,7 +207,7 @@ module.exports = function GhostAdminAPI(options) {
             return makeUploadRequest('images', formData || data, endpointFor('images/upload'));
         }
     };
-
+// this methods a
     api.config = {
         read() {
             return makeResourceRequest('config', {}, {});
@@ -263,10 +279,12 @@ module.exports = function GhostAdminAPI(options) {
             if (data[resourceType].length === 1 && !data.meta) {
                 return data[resourceType][0];
             }
-            return Object.assign(data[resourceType], {meta: data.meta});
+            return Object.assign
+        }
+    };(data[resourceType], {meta: data.meta});
         });
     }
-
+//
     function endpointFor(resource, {id, slug, email} = {}) {
         const {ghostPath, version} = config;
         let endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
@@ -281,7 +299,7 @@ module.exports = function GhostAdminAPI(options) {
 
         return endpoint;
     }
-
+// allows api
     function makeApiRequest({endpoint, method, body, queryParams = {}, headers = {}}) {
         const {url: apiUrl, key, version, makeRequest} = config;
         const url = `${apiUrl}${endpoint}`;
