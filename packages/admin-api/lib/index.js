@@ -5,9 +5,21 @@ const token = require('./token');
 
 const supportedVersions = ['v2', 'v3', 'canary'];
 
+// the adin API library handles all the details for making auths and making twoway network interaction/request
+// everything is javascript is an object
+// thus functions are not treated first class citizens 
+// they can also be instantiated
+
 module.exports = function GhostAdminAPI(options) {
     if (this instanceof GhostAdminAPI) {
+        // options include 
+        // {
+        //     url: 'http://localhost:2368',
+        //     key: 'YOUR_ADMIN_API_KEY',
+        //     version: "v3"
+        //   };
         return GhostAdminAPI(options);
+        // it calls it self while passing the obj options as arguements
     }
 
     const defaultConfig = {
@@ -31,6 +43,17 @@ module.exports = function GhostAdminAPI(options) {
             });
         }
     };
+
+    // Merging objects, using object.assign(target, source)
+    // since defaultConfig returns res.data
+    
+    // where options :
+    // url: 'http://localhost:2368',
+    //     key: 'YOUR_ADMIN_API_KEY',
+    //     version: "v3"
+    // config = {res.data, options }
+
+    // validations of the config object
 
     const config = Object.assign({}, defaultConfig, options);
 
@@ -79,7 +102,7 @@ module.exports = function GhostAdminAPI(options) {
         'subscribers',
         'members'
     ];
-
+          //  the resourceType is current value of the resource within the loop
     const api = resources.reduce((apiObject, resourceType) => {
         function add(data, queryParams = {}) {
             if (!data || !Object.keys(data).length) {
@@ -108,8 +131,11 @@ module.exports = function GhostAdminAPI(options) {
                 urlParams.id = data.id;
                 delete data.id;
             }
-
             body[resourceType] = [data];
+             // array spreading within the body { object}
+            // example {pages, posts, tags: Array[data]
+        // body[pages,posts,tags] /// Array[d]
+    } 
 
             return makeResourceRequest(resourceType, queryParams, body, 'PUT', urlParams);
         }
@@ -245,7 +271,7 @@ module.exports = function GhostAdminAPI(options) {
             }
         });
     }
-
+// it is called when making calls from the add, browse, edit etc
     function makeResourceRequest(resourceType, queryParams = {}, body = {}, method = 'GET', urlParams = {}) {
         return makeApiRequest({
             endpoint: endpointFor(resourceType, urlParams),
@@ -291,9 +317,11 @@ module.exports = function GhostAdminAPI(options) {
     }
 
     function makeApiRequest({endpoint, method, body, queryParams = {}, headers = {}}) {
+        // 
         // the arguement is an object with ppt:
         //  endpoint: endpointFor(resourceType, urlParams),
         // Method = POST/DELETE/GET
+        //set default values, avoid errors if not included
         // queryParams = {}  undefined
         // headers = {}  undefined
 
