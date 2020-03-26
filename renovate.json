@@ -2,9 +2,6 @@
   "extends": [
     "@tryghost:quietJS"
   ],
-  "node": {
-    "supportPolicy": ["lts"]
-   },
   "ignorePaths": ["packages/members"],
   "packageRules": [
     {
