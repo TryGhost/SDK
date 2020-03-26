@@ -6,7 +6,7 @@ export default function GhostContentAPI({url, host, ghostPath = 'ghost', version
     // host parameter is deprecated
     if (host) {
         // eslint-disable-next-line
-        console.warn('GhostAdminAPI\'s `host` parameter is deprecated, please use `url` instead');
+        console.warn('GhostContentAPI\'s `host` parameter is deprecated, please use `url` instead');
         if (!url) {
             url = host;
         }
