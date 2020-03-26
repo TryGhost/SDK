@@ -811,7 +811,11 @@ describe('GhostAdminAPI', function () {
             });
 
             describe('api.themes.upload', function () {
-                const zipPath = path.join(__dirname, './fixtures/theme.zip');
+                let zipPath;
+
+                before(function () {
+                    zipPath = path.join(__dirname, './fixtures/theme.zip');
+                });
 
                 describe('expected data format', function () {
                     it('expects data to be passed in', function (done) {
