@@ -1,12 +1,13 @@
 import axios from 'axios';
 
 const supportedVersions = ['v2', 'v3', 'canary'];
+const name = '@tryghost/content-api';
 
 export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key}) {
     // host parameter is deprecated
     if (host) {
         // eslint-disable-next-line
-        console.warn('GhostContentAPI\'s `host` parameter is deprecated, please use `url` instead');
+        console.warn(`${name}: The 'host' parameter is deprecated, please use 'url' instead`);
         if (!url) {
             url = host;
         }
@@ -17,37 +18,33 @@ export default function GhostContentAPI({url, host, ghostPath = 'ghost', version
     }
 
     if (!version) {
-        throw new Error('GhostContentAPI Config Missing: @tryghost/content-api requires a "version" like "v2"');
+        throw new Error(`${name} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
     }
     if (!supportedVersions.includes(version)) {
-        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api does not support the supplied version');
+        throw new Error(`${name} Config Invalid: 'version' ${version} is not supported`);
     }
     if (!url) {
-        throw new Error('GhostContentAPI Config Missing: @tryghost/content-api requires a "url" like "https://site.com" or "https://site.com/blog"');
+        throw new Error(`${name} Config Missing: 'url' is required. E.g. 'https://site.com'`);
     }
     if (!/https?:\/\//.test(url)) {
-        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "url" with a protocol like "https://site.com" or "https://site.com/blog"');
+        throw new Error(`${name} Config Invalid: 'url' ${url} requires a protocol. E.g. 'https://site.com'`);
     }
     if (url.endsWith('/')) {
-        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "url" without a trailing slash like "https://site.com" or "https://site.com/blog"');
+        throw new Error(`${name} Config Invalid: 'url' ${url} must not have a trailing slash. E.g. 'https://site.com'`);
     }
     if (ghostPath.endsWith('/') || ghostPath.startsWith('/')) {
-        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
+        throw new Error(`${name} Config Invalid: 'ghostPath' ${ghostPath} must not have a leading or trailing slash. E.g. 'ghost'`);
     }
     if (key && !/[0-9a-f]{26}/.test(key)) {
-        throw new Error('GhostContentAPI Config Invalid: @tryghost/content-api requires a "key" with 26 hex characters');
+        throw new Error(`${name} Config Invalid: 'key' ${key} must have 26 hex characters`);
     }
     const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeRequest(resourceType, options, null, memberToken);
         }
         function read(data, options = {}, memberToken) {
-            if (!data) {
-                return Promise.reject(new Error('Missing data'));
-            }
-
-            if (!data.id && !data.slug) {
-                return Promise.reject(new Error('Must include either data.id or data.slug'));
+            if (!data || !data.id && !data.slug) {
+                return Promise.reject(new Error(`${name} read requires an id or slug.`));
             }
 
             const params = Object.assign({}, data, options);
@@ -70,7 +67,7 @@ export default function GhostContentAPI({url, host, ghostPath = 'ghost', version
     function makeRequest(resourceType, params, id, membersToken = null) {
         if (!membersToken && !key) {
             return Promise.reject(
-                new Error('GhostContentAPI Config Missing: @tryghost/content-api was instantiated without a content key')
+                new Error(`${name} Config Missing: 'key' is required.`)
             );
         }
         delete params.id;

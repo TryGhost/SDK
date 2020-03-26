@@ -4,6 +4,7 @@ const fs = require('fs');
 const token = require('./token');
 
 const supportedVersions = ['v2', 'v3', 'canary'];
+const name = '@tryghost/admin-api';
 
 module.exports = function GhostAdminAPI(options) {
     if (this instanceof GhostAdminAPI) {
@@ -37,35 +38,35 @@ module.exports = function GhostAdminAPI(options) {
     // new GhostAdminAPI({host: '...'}) is deprecated
     if (config.host) {
         // eslint-disable-next-line
-        console.warn('GhostAdminAPI\'s `host` parameter is deprecated, please use `url` instead');
+        console.warn(`${name}: The 'host' parameter is deprecated, please use 'url' instead`);
         if (!config.url) {
             config.url = config.host;
         }
     }
 
     if (!config.version) {
-        throw new Error('GhostAdminAPI Config Missing: @tryghost/admin-api requires a "version" like "v2"');
+        throw new Error(`${name} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
     }
     if (!supportedVersions.includes(config.version)) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api does not support the supplied version');
+        throw new Error(`${name} Config Invalid: 'version' ${config.version} is not supported`);
     }
     if (!config.url) {
-        throw new Error('GhostAdminAPI Config Missing: @tryghost/admin-api requires a "url" like "https://site.com" or "https://site.com/blog"');
+        throw new Error(`${name} Config Missing: 'url' is required. E.g. 'https://site.com'`);
     }
     if (!/https?:\/\//.test(config.url)) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" with a protocol like "https://site.com" or "https://site.com/blog"');
+        throw new Error(`${name} Config Invalid: 'url' ${config.url} requires a protocol. E.g. 'https://site.com'`);
     }
     if (config.url.endsWith('/')) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" without a trailing slash like "https://site.com" or "https://site.com/blog"');
+        throw new Error(`${name} Config Invalid: 'url' ${config.url} must not have a trailing slash. E.g. 'https://site.com'`);
     }
     if (config.ghostPath.endsWith('/') || config.ghostPath.startsWith('/')) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
+        throw new Error(`${name} Config Invalid: 'ghostPath' ${config.ghostPath} must not have a leading or trailing slash. E.g. 'ghost'`);
     }
     if (!config.key) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" to be supplied');
+        throw new Error(`${name} Config Invalid: 'key' ${config.key} must have 26 hex characters`);
     }
     if (!/[0-9a-f]{24}:[0-9a-f]{64}/.test(config.key)) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "key" in following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters');
+        throw new Error(`${name} Config Invalid: 'key' ${config.key} must have the following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters`);
     }
 
     const resources = [
