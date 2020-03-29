@@ -1,4 +1,5 @@
 const remark = require('remark');
+const footnotes = require('remark-footnotes');
 const visit = require('unist-util-visit');
 const htmlRelativeToAbsolute = require('./html-relative-to-absolute');
 const relativeToAbsolute = require('./relative-to-absolute');
@@ -20,7 +21,8 @@ function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options =
     const replacements = [];
 
     const tree = remark()
-        .use({settings: {commonmark: true, footnotes: true}})
+        .use({settings: {commonmark: true}})
+        .use(footnotes, {inlineNotes: true})
         .parse(markdown);
 
     visit(tree, ['link', 'image', 'html'], (node) => {
