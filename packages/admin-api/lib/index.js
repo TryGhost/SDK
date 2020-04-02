@@ -56,7 +56,7 @@ module.exports = function GhostAdminAPI(options) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" with a protocol like "https://site.com" or "https://site.com/blog"');
     }
     if (config.url.endsWith('/')) {
-        throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" without a trailing slash like "https://site.com" or "https://site.com/blog"');
+        throw new Error(`The URL you passed is ${config.url}, But, GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" without a trailing slash like "https://site.com" or "https://site.com/blog"`);
     }
     if (config.ghostPath.endsWith('/') || config.ghostPath.startsWith('/')) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
@@ -226,7 +226,7 @@ module.exports = function GhostAdminAPI(options) {
 
     return api;
 
-        //this function is used to upload a a resource to an endpoint
+        //this function is used to upload  a resource to an endpoint
         //the resource type can be a post, page, an image, a theme,
         //the function is taking in three parameters, which are the resourcetype(the type of what you want to upload), data(the payload i.e file), endpoint(the route you want to upload to)
     function makeUploadRequest(resourceType, data, endpoint) {
