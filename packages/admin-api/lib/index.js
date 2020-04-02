@@ -56,7 +56,7 @@ module.exports = function GhostAdminAPI(options) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" with a protocol like "https://site.com" or "https://site.com/blog"');
     }
     if (config.url.endsWith('/')) {
-        throw new Error(`The URL you passed is ${config.url}, But, GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" without a trailing slash like "https://site.com" or "https://site.com/blog"`);
+        throw new Error(`The URL ${config.url} you passed has a trailing slash, But GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "url" without a trailing slash like "https://site.com" or "https://site.com/blog"`);
     }
     if (config.ghostPath.endsWith('/') || config.ghostPath.startsWith('/')) {
         throw new Error('GhostAdminAPI Config Invalid: @tryghost/admin-api requires a "ghostPath" without a leading or trailing slash like "ghost"');
