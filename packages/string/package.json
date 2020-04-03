@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/string",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "repository": "https://github.com/TryGhost/Ghost-SDK/tree/master/packages/string",
   "author": "Ghost Foundation",
   "license": "MIT",
