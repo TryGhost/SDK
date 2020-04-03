@@ -1,7 +1,7 @@
 {
   "name": "@tryghost/admin-api",
   "version": "1.1.0",
-  "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/admin-api",
+  "repository": "https://github.com/TryGhost/Ghost-SDK/tree/master/packages/admin-api",
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "lib/index.js",

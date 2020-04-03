@@ -1,7 +1,7 @@
 {
   "name": "@tryghost/members-layer0",
   "version": "0.0.0",
-  "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/layer0",
+  "repository": "https://github.com/TryGhost/Ghost-SDK/tree/master/packages/layer0",
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "index.js",

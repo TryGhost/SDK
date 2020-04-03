@@ -1,7 +1,7 @@
 {
   "name": "@tryghost/social-urls",
   "version": "0.1.7",
-  "repository": "https://github.com/TryGhost/Ghost-SDKs/tree/master/packages/social-urls",
+  "repository": "https://github.com/TryGhost/Ghost-SDK/tree/master/packages/social-urls",
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "lib/index.js",
