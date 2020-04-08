@@ -43,7 +43,7 @@
     "rollup-plugin-replace": "2.2.0",
     "rollup-plugin-terser": "5.3.0",
     "should": "13.2.3",
-    "sinon": "9.0.1"
+    "sinon": "9.0.2"
   },
   "dependencies": {
     "axios": "0.19.2"
