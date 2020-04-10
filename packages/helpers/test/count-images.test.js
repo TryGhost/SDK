@@ -1,6 +1,6 @@
 require('./utils');
 
-const helperUtils = ('../').utils;
+const helperUtils = require('../').utils;
 
 describe('Image Count', function () {
     it('[success] can count images', function () {

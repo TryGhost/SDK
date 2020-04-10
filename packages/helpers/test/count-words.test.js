@@ -1,6 +1,6 @@
 require('./utils');
 
-const helperUtils = ('../').utils;
+const helperUtils = require('../').utils;
 
 describe('Word Count', function () {
     it('[success] can count words', function () {
