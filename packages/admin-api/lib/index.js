@@ -167,28 +167,51 @@ module.exports = function GhostAdminAPI(options) {
         });
     }, {});
 
+    function isValidUpload(data) {
+        if (data instanceof FormData) {
+            return true;
+        }
+
+        if (data.file) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function getFormData(data) {
+        let formData;
+
+        if (data instanceof FormData) {
+            return data;
+        }
+
+        if (data.file) {
+            formData = new FormData();
+            formData.append('file', fs.createReadStream(data.file));
+            formData.append('purpose', data.purpose || 'image');
+
+            if (data.ref) {
+                formData.append('ref', data.ref);
+            }
+
+            return formData;
+        }
+    }
+
     api.images = {
         upload(data) {
             if (!data) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (!(data instanceof FormData) && !data.file) {
+            if (!isValidUpload(data)) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
-            let formData;
-            if (data.file) {
-                formData = new FormData();
-                formData.append('file', fs.createReadStream(data.file));
-                formData.append('purpose', data.purpose || 'image');
+            let formData = getFormData(data);
 
-                if (data.ref) {
-                    formData.append('ref', data.ref);
-                }
-            }
-
-            return makeUploadRequest('images', formData || data, endpointFor('images/upload'));
+            return makeUploadRequest('images', formData, endpointFor('images/upload'));
         }
     };
 
@@ -210,17 +233,13 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Missing data'));
             }
 
-            if (!(data instanceof FormData) || !data.file) {
+            if (!isValidUpload(data)) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
-            let formData;
-            if (data.file) {
-                formData = new FormData();
-                formData.append('file', fs.createReadStream(data.file));
-            }
+            let formData = getFormData(data);
 
-            return makeUploadRequest('themes', formData || data, endpointFor('themes/upload'));
+            return makeUploadRequest('themes', formData, endpointFor('themes/upload'));
         },
         activate(name) {
             if (!name) {
