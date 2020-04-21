@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const supportedVersions = ['v2', 'v3', 'canary'];
 
-export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key}) {
+export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key, formatResponse}) {
     // host parameter is deprecated
     if (host) {
         // eslint-disable-next-line
@@ -13,7 +13,11 @@ export default function GhostContentAPI({url, host, ghostPath = 'ghost', version
     }
 
     if (this instanceof GhostContentAPI) {
-        return GhostContentAPI({url, version, key});
+        return GhostContentAPI({url, version, key, formatResponse});
+    }
+
+    if (!formatResponse) {
+        throw new Error('GhostContentAPI Config Missing: @tryghost/content-api requires you select, if you want a "formatted response" returned');
     }
 
     if (!version) {
@@ -90,12 +94,27 @@ export default function GhostContentAPI({url, host, ghostPath = 'ghost', version
             headers
         }).then((res) => {
             if (!Array.isArray(res.data[resourceType])) {
-                return res.data[resourceType];
+                if (formatResponse === true){
+                    return res.data[resourceType];
+                } else {
+                    return res.data;
+                }
+                
             }
             if (res.data[resourceType].length === 1 && !res.data.meta) {
-                return res.data[resourceType][0];
+                if (formatResponse === true){
+                    return res.data[resourceType][0];
+                } else {
+                    return res.data;
+                }
+                
             }
-            return Object.assign(res.data[resourceType], {meta: res.data.meta});
+            if(formatResponse === true ){
+                return Object.assign(res.dat, {meta: res.data.meta});
+            } else {
+                return Object.assign(res.data[resourceType], {meta: res.data.meta});
+            }
+            
         }).catch((err) => {
             if (err.response && err.response.data && err.response.data.errors) {
                 const props = err.response.data.errors[0];
