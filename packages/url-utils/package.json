@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "cheerio": "0.22.0",
-    "moment": "2.25.1",
+    "moment": "2.25.2",
     "moment-timezone": "0.5.28",
     "remark": "^11.0.2",
     "remark-footnotes": "^1.0.0",
