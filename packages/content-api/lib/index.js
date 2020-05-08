@@ -3,7 +3,7 @@ import axios from 'axios';
 const supportedVersions = ['v2', 'v3', 'canary'];
 const name = '@tryghost/content-api';
 
-export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key}) {
+export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key, formatResponse = true}) {
     // host parameter is deprecated
     if (host) {
         // eslint-disable-next-line
@@ -86,13 +86,16 @@ export default function GhostContentAPI({url, host, ghostPath = 'ghost', version
             },
             headers
         }).then((res) => {
-            if (!Array.isArray(res.data[resourceType])) {
-                return res.data[resourceType];
+            if (formatResponse) {
+                if (!Array.isArray(res.data[resourceType])) {
+                    return res.data[resourceType];
+                }
+                if (res.data[resourceType].length === 1 && !res.data.meta) {
+                    return res.data[resourceType][0];
+                }
+                return Object.assign(res.data[resourceType], {meta: res.data.meta});
             }
-            if (res.data[resourceType].length === 1 && !res.data.meta) {
-                return res.data[resourceType][0];
-            }
-            return Object.assign(res.data[resourceType], {meta: res.data.meta});
+            return res;
         }).catch((err) => {
             if (err.response && err.response.data && err.response.data.errors) {
                 const props = err.response.data.errors[0];
