@@ -34,7 +34,7 @@
     "@babel/polyfill": "7.8.7",
     "@babel/preset-env": "7.9.6",
     "core-js": "2.6.11",
-    "eslint-plugin-ghost": "1.4.0",
+    "eslint-plugin-ghost": "1.4.1",
     "mocha": "7.1.2",
     "rollup": "2.9.1",
     "rollup-plugin-babel": "4.4.0",
