@@ -28,7 +28,7 @@
     "@babel/core": "7.9.6",
     "@babel/preset-env": "7.9.6",
     "@babel/preset-react": "7.9.4",
-    "mocha": "7.1.2",
+    "mocha": "7.2.0",
     "react": "16.13.1",
     "rimraf": "3.0.2",
     "should": "13.2.3",
