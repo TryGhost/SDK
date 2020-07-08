@@ -25,6 +25,6 @@
   "dependencies": {
     "bluebird": "3.7.2",
     "ghost-ignition": "4.2.1",
-    "lodash": "4.17.17"
+    "lodash": "4.17.18"
   }
 }
