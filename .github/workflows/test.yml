@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - master
-
+      - 'renovate/*'
 jobs:
   build:
     runs-on: ubuntu-18.04
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'renovate/'))
     strategy:
       matrix:
         node: [ '10', '12' ]
@@ -18,5 +19,5 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: yarn global add lerna
-      - run: yarn install
+      - run: yarn
       - run: yarn test
