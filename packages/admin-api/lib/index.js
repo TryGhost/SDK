@@ -74,9 +74,9 @@ module.exports = function GhostAdminAPI(options) {
         'posts',
         'pages',
         'tags',
+        'webhooks',
         // @NOTE: experimental
         'users',
-        'webhooks',
         'subscribers',
         'members'
     ];
