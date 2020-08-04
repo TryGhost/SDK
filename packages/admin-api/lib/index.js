@@ -157,15 +157,28 @@ module.exports = function GhostAdminAPI(options) {
             return makeResourceRequest(resourceType, queryParams, {}, 'GET', urlParams);
         }
 
-        return Object.assign(apiObject, {
-            [resourceType]: {
-                read,
-                browse,
-                add,
-                edit,
-                delete: del
-            }
-        });
+        let resourceAPI = {};
+        if (resourceType === 'webhooks') {
+            resourceAPI = {
+                [resourceType]: {
+                    add,
+                    edit,
+                    delete: del
+                }
+            };
+        } else {
+            resourceAPI = {
+                [resourceType]: {
+                    read,
+                    browse,
+                    add,
+                    edit,
+                    delete: del
+                }
+            };
+        }
+
+        return Object.assign(apiObject, resourceAPI);
     }, {});
 
     function isValidUpload(data) {
