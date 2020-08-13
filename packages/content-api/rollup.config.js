@@ -49,7 +49,7 @@ export default [
                         modules: false,
                         targets: 'defaults',
                         useBuiltIns: 'usage',
-                        corejs: 2
+                        corejs: 3
                     }]
                 ],
                 exclude: ['node_modules/**', '../../node_modules/**']
@@ -84,7 +84,7 @@ export default [
                         modules: false,
                         targets: 'defaults',
                         useBuiltIns: 'usage',
-                        corejs: 2
+                        corejs: 3
                     }]
                 ],
                 exclude: ['node_modules/**', '../../node_modules/**']
