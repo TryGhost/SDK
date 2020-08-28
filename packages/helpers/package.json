@@ -39,7 +39,7 @@
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
-    "rollup-plugin-terser": "7.0.0",
+    "rollup-plugin-terser": "7.0.1",
     "should": "13.2.3",
     "sinon": "9.0.3"
   },
