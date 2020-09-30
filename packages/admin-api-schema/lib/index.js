@@ -1,6 +1,13 @@
 const errors = require('@tryghost/errors');
 const jsonSchema = require('./utils/json-schema');
 
+/**
+ *
+ * @param {'v2'|'canary'} version - API's JSON schema version to check against
+ * @param {string} name -JSON schema to retreive from "version" folder
+ *
+ * @returns {Object} - JSON schema file content
+ */
 const getJSONDefinition = (version, name) => {
     const definitionPath = `./${version}/${name}`;
 
