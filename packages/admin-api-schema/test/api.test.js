@@ -50,7 +50,7 @@ describe('Exposes a correct API', function () {
             it('Returns schema definition by name', function () {
                 const postsDefinition = apiSchema.get('posts-edit');
                 postsDefinition.title.should.eql('posts.edit');
-                postsDefinition.properties.posts.items.allOf[0].$ref.should.equal('posts#/definitions/post');
+                postsDefinition.properties.posts.items.allOf[0].$ref.should.equal('posts.canary#/definitions/post');
             });
 
             it('Returns null when schema definition does not exist', function () {
@@ -119,7 +119,7 @@ describe('Exposes a correct API', function () {
             it('Returns schema definition by name', function () {
                 const postsDefinition = apiSchema.get('posts-edit', 'v2');
                 postsDefinition.title.should.eql('posts.edit');
-                postsDefinition.properties.posts.items.allOf[0].$ref.should.equal('posts#/definitions/post');
+                postsDefinition.properties.posts.items.allOf[0].$ref.should.equal('posts.v2#/definitions/post');
             });
 
             it('Returns null when schema definition does not exist', function () {
