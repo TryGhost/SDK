@@ -11,7 +11,7 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'renovate/'))
     strategy:
       matrix:
-        node: [ '10', '12' ]
+        node: [ '10.13.0', '12.10.0', '14.13.0', '10', '12', '14' ]
     name: Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v2
