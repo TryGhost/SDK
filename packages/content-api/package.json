@@ -46,6 +46,6 @@
     "sinon": "9.2.1"
   },
   "dependencies": {
-    "axios": "0.20.0"
+    "axios": "0.21.0"
   }
 }
