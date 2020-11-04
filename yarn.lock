@@ -2704,10 +2704,10 @@ ghost-ignition@4.2.2:
     prettyjson "1.2.1"
     uuid "8.3.0"
 
-ghost-ignition@4.2.3:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/ghost-ignition/-/ghost-ignition-4.2.3.tgz#4806d3b19fd1d97da23e99e56929e48148ec6981"
-  integrity sha512-LPZ/yf19gKYslFipbBucW1cXMnl2neR3bzpWg2lkVt1/1g7B92Zv1cqng8ti+mw1W4wZdD28+0o7azApQ5y8ug==
+ghost-ignition@4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/ghost-ignition/-/ghost-ignition-4.2.4.tgz#df0e3817174d4f8a938243ade50ac6f1a9e0c2bb"
+  integrity sha512-Y03+dM27Lc3yRhQY1PSbL3f9NWZLFZ31tW36h+QkwM4BJ/uo88keh8AZ+pVIHLOYfTU2wLt5Io2+hVJj5tkelw==
   dependencies:
     bunyan "1.8.14"
     bunyan-loggly "1.4.2"
