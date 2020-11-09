@@ -61,7 +61,7 @@ export default [
     },
     {
         name: 'America/Halifax',
-        label: '(GMT -4:00) Atlantic Time (Canada); Brasilia, Greenland'
+        label: '(GMT -4:00) Atlantic Time (Canada); Greenland'
     },
     {
         name: 'America/Santiago',
@@ -73,7 +73,7 @@ export default [
     },
     {
         name: 'America/Argentina/Buenos_Aires',
-        label: '(GMT -3:00) Buenos Aires, Georgetown'
+        label: '(GMT -3:00) Buenos Aires, Brasilia, Georgetown'
     },
     {
         name: 'America/Noronha',
