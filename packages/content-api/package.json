@@ -33,7 +33,7 @@
     "@babel/core": "7.12.10",
     "@babel/polyfill": "7.12.1",
     "@babel/preset-env": "7.12.11",
-    "core-js": "3.8.1",
+    "core-js": "3.8.2",
     "eslint-plugin-ghost": "1.5.0",
     "mocha": "7.2.0",
     "rollup": "2.35.1",
