@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/url-utils",
-  "version": "0.6.24",
+  "version": "0.6.25",
   "repository": "https://github.com/TryGhost/SDK/tree/master/packages/url-utils",
   "author": "Ghost Foundation",
   "license": "MIT",
