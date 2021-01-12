@@ -31,7 +31,7 @@ To add a new package to the repo:
     - Publishes all packages which have changed
     - Also updates any packages which depend on changed packages
 
-NOTE: use `yarn ship --git-remote upstream` to correctly update tags and version commits, when your remote `origin` is set up to a fork of TryGhost/Ghost-SDK and original repository is set to `upstream`.
+NOTE: use `yarn ship --git-remote upstream` to correctly update tags and version commits, when your remote `origin` is set up to a fork of TryGhost/SDK and original repository is set to `upstream`.
 
 # Copyright & License
 

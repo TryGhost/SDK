@@ -11,7 +11,7 @@
     },
     "local": {
         "public": "true",
-        "repo": "https://github.com/TryGhost/Ghost-SDK",
+        "repo": "https://github.com/TryGhost/SDK",
         "scope": "@tryghost"
     }
 }
