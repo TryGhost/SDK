@@ -1,6 +1,6 @@
 # Admin Api
 
-JavaScript Client Library for the Ghost [Admin API](https://ghost.org/docs/api/admin/)
+JavaScript Client Library for the Ghost [Admin API](https://ghost.org/docs/admin-api/)
 
 ## Install
 
@@ -13,7 +13,7 @@ or
 
 ## Usage
 
-See https://ghost.org/docs/api/javascript/
+See https://ghost.org/docs/admin-api/javascript/
 
 
 ## Develop

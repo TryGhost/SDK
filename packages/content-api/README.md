@@ -1,11 +1,11 @@
 # Ghost Content API
 
-JavaScript Client Library for the Ghost [Content API](https://ghost.org/docs/api/content/)
+JavaScript Client Library for the Ghost [Content API](https://ghost.org/docs/content-api/)
 
 
 ## Usage
 
-See https://ghost.org/docs/api/javascript/
+See https://ghost.org/docs/content-api/javascript/
 
 ## Develop
 

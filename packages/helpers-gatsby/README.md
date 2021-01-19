@@ -1,10 +1,10 @@
 # Ghost Gatsby Helpers
 
-Gatsby Helpers for working with the Ghost [Content API](https://ghost.org/docs/api/content/)
+Gatsby Helpers for working with the Ghost [Content API](https://ghost.org/docs/content-api/)
 
 ## Usage
 
-See https:/ghost.org/docs/api/gatsby/
+See https://ghost.org/docs/jamstack/gatsby/
 
 ## Develop
 

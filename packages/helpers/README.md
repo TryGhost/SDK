@@ -1,10 +1,10 @@
 # Ghost JavaScript Helpers
 
-Javascript Helpers for working with the Ghost [Content API](https://docs.ghost.org/api/content/)
+Javascript Helpers for working with the Ghost [Content API](https://ghost.org/docs/content-api/)
 
 ## Usage
 
-See https://docs.ghost.org/api/helpers/
+See https://ghost.org/docs/content-api/javascript/#helpers
 
 ## Develop
 
