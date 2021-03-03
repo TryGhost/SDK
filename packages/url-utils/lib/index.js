@@ -33,7 +33,7 @@ module.exports = class UrlUtils {
             slugs: null,
             redirectCacheMaxAge: null,
             baseApiPath: '/ghost/api',
-            defaultApiVersion: 'v0.1',
+            defaultApiVersion: 'v4',
             defaultApiType: 'content',
             staticImageUrlPrefix: 'content/images'
         };
@@ -51,7 +51,7 @@ module.exports = class UrlUtils {
     /**
      * Returns API path combining base path and path for specific version asked or deprecated by default
      * @param {Object} options
-     * @param {string} [options.version="v0.1"] for which to get the path (v0.1, v2, canary, etc)
+     * @param {string} [options.version="v4"] for which to get the path (v2, v3, canary, etc)
      * @param {string} [options.type="content"] (admin, content, members)
      * @return {string} API Path for version
      */
@@ -63,7 +63,7 @@ module.exports = class UrlUtils {
     /**
      * Returns path containing only the path for the specific version asked or deprecated by default
      * @param {Object} options
-     * @param {string} [options.version="v0.1"] for which to get the path (v0.1, v2, canary, etc)
+     * @param {string} [options.version="v4"] for which to get the path (v2, v3, canary, etc)
      * @param {string} [options.type="content"] (admin, content)
      * @return {string} API version path
      */

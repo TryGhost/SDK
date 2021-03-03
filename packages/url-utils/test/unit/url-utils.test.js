@@ -12,16 +12,24 @@ const constants = {
 describe('UrlUtils', function () {
     let sandbox;
 
-    const defaultAPIVersions = {
-        all: ['v0.1', 'v2'],
+    // these come from Ghost - refs https://github.com/TryGhost/Ghost/blob/f09216efdef0141682c085081f9eaacabd79d17c/core/shared/config/overrides.json#L63-L82
+    const apiVersions = {
+        all: ['v2', 'v3', 'v4', 'canary'],
+        canary: {
+            admin: 'canary/admin',
+            content: 'canary/content'
+        },
+        v4: {
+            admin: 'v4/admin',
+            content: 'v4/content'
+        },
+        v3: {
+            admin: 'v3/admin',
+            content: 'v3/content'
+        },
         v2: {
             admin: 'v2/admin',
-            content: 'v2/content',
-            members: 'v2/members'
-        },
-        'v0.1': {
-            admin: 'v0.1',
-            content: 'v0.1'
+            content: 'v2/content'
         }
     };
 
@@ -529,21 +537,14 @@ describe('UrlUtils', function () {
         });
 
         // eslint-disable-next-line
-        ['v0.1', 'v2'].forEach((apiVersion) => {
+        ['v2', 'v3','v4', 'canary'].forEach((apiVersion) => {
             function getApiPath(options) {
                 const baseAPIPath = '/ghost/api/';
 
-                switch (options.version) {
-                case 'v0.1':
-                    return `${baseAPIPath}v0.1/`;
-                case 'v2':
-                    if (options.versionType === 'admin') {
-                        return `${baseAPIPath}v2/admin/`;
-                    } else {
-                        return `${baseAPIPath}v2/content/`;
-                    }
-                default:
-                    return `${baseAPIPath}v0.1/`;
+                if (options.versionType === 'admin') {
+                    return `${baseAPIPath}${apiVersion}/admin/`;
+                } else {
+                    return `${baseAPIPath}${apiVersion}/content/`;
                 }
             }
 
@@ -552,7 +553,7 @@ describe('UrlUtils', function () {
                     const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com',
                         adminUrl: 'https://something.de',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -563,7 +564,7 @@ describe('UrlUtils', function () {
                 it('api: url has subdir', function () {
                     const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com/blog',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -574,7 +575,7 @@ describe('UrlUtils', function () {
                 it('api: relative path is correct', function () {
                     const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com/',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -585,7 +586,7 @@ describe('UrlUtils', function () {
                 it('api: relative path with subdir is correct', function () {
                     const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com/blog',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -596,7 +597,7 @@ describe('UrlUtils', function () {
                 it('api: should return http if config.url is http', function () {
                     const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -607,7 +608,7 @@ describe('UrlUtils', function () {
                 it('api: should return https if config.url is https', function () {
                     const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -618,7 +619,7 @@ describe('UrlUtils', function () {
                 it('api: with cors, blog url is http: should return no protocol', function () {
                     const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -630,7 +631,7 @@ describe('UrlUtils', function () {
                     const utils = new UrlUtils({
                         url: 'http://my-ghost-blog.com',
                         adminUrl: 'http://admin.ghost.example',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -642,7 +643,7 @@ describe('UrlUtils', function () {
                     const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
                         adminUrl: 'https://admin.ghost.example',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -653,7 +654,7 @@ describe('UrlUtils', function () {
                 it('api: with cors, blog url is https: should return with protocol', function () {
                     const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -664,7 +665,7 @@ describe('UrlUtils', function () {
                 it('api: with stable version, blog url is https: should return stable content api path', function () {
                     const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -675,7 +676,7 @@ describe('UrlUtils', function () {
                 it('api: with stable version and admin true, blog url is https: should return stable admin api path', function () {
                     const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -686,7 +687,7 @@ describe('UrlUtils', function () {
                 it('api: with just version and no version type returns correct api path', function () {
                     const utils = new UrlUtils({
                         url: 'https://my-ghost-blog.com',
-                        apiVersions: defaultAPIVersions
+                        apiVersions: apiVersions
                     });
 
                     utils
@@ -699,7 +700,7 @@ describe('UrlUtils', function () {
         it('api: with active version, blog url is https: should return active content api path', function () {
             const utils = new UrlUtils({
                 url: 'https://my-ghost-blog.com',
-                apiVersions: defaultAPIVersions
+                apiVersions: apiVersions
             });
 
             utils.urlFor('api', {cors: true, version: 'v2', versionType: 'content'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/content/');
@@ -708,7 +709,7 @@ describe('UrlUtils', function () {
         it('api: with active version and admin true, blog url is https: should return active admin api path', function () {
             const utils = new UrlUtils({
                 url: 'https://my-ghost-blog.com',
-                apiVersions: defaultAPIVersions
+                apiVersions: apiVersions
             });
 
             utils.urlFor('api', {cors: true, version: 'v2', versionType: 'admin'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/admin/');
