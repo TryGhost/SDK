@@ -7,13 +7,19 @@ const {URL} = require('url');
  * @param {string} rootUrl Root URL (eg, 'https://mysite.com/my/subdir/)
  * @returns {string} Path relative to the rootUrl's path
  */
-const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path, rootUrl) {
+const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path = '', rootUrl = '') {
     // force root to always have a trailing-slash for consistent behaviour
     if (!rootUrl.endsWith('/')) {
         rootUrl = `${rootUrl}/`;
     }
 
-    const parsedRoot = new URL(rootUrl);
+    let parsedRoot;
+
+    try {
+        parsedRoot = new URL(rootUrl);
+    } catch (e) {
+        return path;
+    }
 
     // do nothing if rootUrl does not have a subdirectory
     if (parsedRoot.pathname === '/') {

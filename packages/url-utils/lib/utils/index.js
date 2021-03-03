@@ -1,5 +1,6 @@
 module.exports = {
     absoluteToRelative: require('./absolute-to-relative'),
+    absoluteToTransformReady: require('./absolute-to-transform-ready'),
     deduplicateDoubleSlashes: require('./deduplicate-double-slashes'),
     deduplicateSubdirectory: require('./deduplicate-subdirectory'),
     getApiPath: require('./get-api-path'),
@@ -12,7 +13,10 @@ module.exports = {
     mobiledocAbsoluteToRelative: require('./mobiledoc-absolute-to-relative'),
     mobiledocRelativeToAbsolute: require('./mobiledoc-relative-to-absolute'),
     relativeToAbsolute: require('./relative-to-absolute'),
+    relativeToTransformReady: require('./relative-to-transform-ready'),
     replacePermalink: require('./replace-permalink'),
     stripSubdirectoryFromPath: require('./strip-subdirectory-from-path'),
+    transformReadyToAbsolute: require('./transform-ready-to-absolute'),
+    transformReadyToRelative: require('./transform-ready-to-relative'),
     urlJoin: require('./url-join')
 };
