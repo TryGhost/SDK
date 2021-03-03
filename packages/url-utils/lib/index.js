@@ -1,6 +1,6 @@
 // Contains all path information to be used throughout the codebase.
 const _ = require('lodash');
-const url = require('url');
+const {URL} = require('url');
 const utils = require('./utils');
 
 // similar to Object.assign but will not override defaults if a source value is undefined
@@ -102,15 +102,15 @@ module.exports = class UrlUtils {
      */
     getSubdir() {
         // Parse local path location
-        var localPath = url.parse(this._config.url).path,
-            subdir;
+        let {pathname} = new URL(this._config.url);
+        let subdir;
 
         // Remove trailing slash
-        if (localPath !== '/') {
-            localPath = localPath.replace(/\/$/, '');
+        if (pathname !== '/') {
+            pathname = pathname.replace(/\/$/, '');
         }
 
-        subdir = localPath === '/' ? '' : localPath;
+        subdir = pathname === '/' ? '' : pathname;
         return subdir;
     }
 
