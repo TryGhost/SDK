@@ -48,5 +48,7 @@ describe('utils: getVersionPath()', function () {
         getVersionPath({version: 'alias', type: 'members', apiVersions}).should.eql('/v2/members/', 'alias members');
     });
 
-    it('throws error for unknown api version');
+    it('throws error for unknown api version', function () {
+        // TODO: implement me
+    });
 });

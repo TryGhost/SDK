@@ -40,5 +40,7 @@ describe('utils: getApiPath()', function () {
         getApiPath({version: 'canary', type: 'content', baseApiPath: '/ghost/api', apiVersions}).should.eql('/ghost/api/canary/content/', 'canary content');
     });
 
-    it('handles trailing slash in options.baseApiPath');
+    it('handles trailing slash in options.baseApiPath', function () {
+        // TODO: implement me
+    });
 });
