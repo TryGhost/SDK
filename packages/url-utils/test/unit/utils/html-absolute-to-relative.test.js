@@ -202,27 +202,27 @@ describe('utils: htmlAbsoluteToRelative()', function () {
         });
 
         it('when html has no absolute URLs matching siteUrl', function () {
-            const siteUrl = 'http://my-ghost-blog.com/';
+            const url = 'http://my-ghost-blog.com/';
 
-            htmlAbsoluteToRelative('', siteUrl, options);
+            htmlAbsoluteToRelative('', url, options);
             cheerioLoadSpy.called.should.be.false('blank html triggered parse');
 
-            htmlAbsoluteToRelative('<a href="#test">test</a>', siteUrl, options);
+            htmlAbsoluteToRelative('<a href="#test">test</a>', url, options);
             cheerioLoadSpy.called.should.be.false('hash url triggered parse');
 
-            htmlAbsoluteToRelative('<a href="https://example.com">test</a>)', siteUrl, options);
+            htmlAbsoluteToRelative('<a href="https://example.com">test</a>)', url, options);
             cheerioLoadSpy.called.should.be.false('external url triggered parse');
 
-            htmlAbsoluteToRelative('<a href="http://my-ghost-blog.com">test</a>)', siteUrl, options);
+            htmlAbsoluteToRelative('<a href="http://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledOnce.should.be.true('site url didn\'t trigger parse');
 
             // ignores protocol when ignoreProtocol: true
-            htmlAbsoluteToRelative('<a href="https://my-ghost-blog.com">test</a>)', siteUrl, options);
+            htmlAbsoluteToRelative('<a href="https://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol didn\'t trigger parse');
 
             // respects protocol when ignoreProtocol: false
             options.ignoreProtocol = false;
-            htmlAbsoluteToRelative('<a href="https://my-ghost-blog.com">test</a>)', siteUrl, options);
+            htmlAbsoluteToRelative('<a href="https://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol triggered parse when ignoreProtocol is false');
         });
     });

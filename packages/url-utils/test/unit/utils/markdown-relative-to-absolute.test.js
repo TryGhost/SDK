@@ -115,37 +115,37 @@ Testing <a href="http://my-ghost-blog.com/link">Inline</a> with **markdown**
         });
 
         it('when markdown has no content that would be transformed', function () {
-            const siteUrl = 'http://my-ghost-blog.com/';
+            const url = 'http://my-ghost-blog.com/';
 
-            markdownRelativeToAbsolute('', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('', url, itemPath, options);
             remarkSpy.called.should.be.false('blank markdown triggered parse');
 
-            markdownRelativeToAbsolute('# Testing plain markdown', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('# Testing plain markdown', url, itemPath, options);
             remarkSpy.called.should.be.false('markdown with no links/images triggered parse');
 
-            markdownRelativeToAbsolute('<p>HTML without links</p>', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('<p>HTML without links</p>', url, itemPath, options);
             remarkSpy.called.should.be.false('html with no links triggered parse');
 
-            markdownRelativeToAbsolute('[test](/test)', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('[test](/test)', url, itemPath, options);
             remarkSpy.callCount.should.equal(1, 'markdown link didn\'t trigger parse');
 
-            markdownRelativeToAbsolute('![test](/image.png)', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('![test](/image.png)', url, itemPath, options);
             remarkSpy.callCount.should.equal(2, 'markdown image didn\'t trigger parse');
 
-            markdownRelativeToAbsolute('<a href="#test">test</a>', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('<a href="#test">test</a>', url, itemPath, options);
             remarkSpy.callCount.should.equal(3, 'href didn\'t trigger parse');
 
-            markdownRelativeToAbsolute('<img src="/image.png">', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('<img src="/image.png">', url, itemPath, options);
             remarkSpy.callCount.should.equal(4, 'src didn\'t trigger parse');
 
-            markdownRelativeToAbsolute('<img srcset="/image-4x.png 4x, /image-2x.png 2x">)', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('<img srcset="/image-4x.png 4x, /image-2x.png 2x">)', url, itemPath, options);
             remarkSpy.callCount.should.equal(5, 'srcset didn\'t trigger parse');
 
             options.assetsOnly = true;
-            markdownRelativeToAbsolute('[test](/my-post)', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('[test](/my-post)', url, itemPath, options);
             remarkSpy.callCount.should.equal(5, 'markdown link triggered parse when no url matches asset path');
 
-            markdownRelativeToAbsolute('<a href="/my-post/">post</a>', siteUrl, itemPath, options);
+            markdownRelativeToAbsolute('<a href="/my-post/">post</a>', url, itemPath, options);
             remarkSpy.callCount.should.equal(5, 'href triggered parse when no url matches asset path');
         });
     });

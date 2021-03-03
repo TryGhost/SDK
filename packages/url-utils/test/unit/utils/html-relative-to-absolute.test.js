@@ -57,14 +57,14 @@ describe('utils: htmlRelativeToAbsolute()', function () {
     });
 
     it('converts a relative URL including subdirectories', function () {
-        const siteUrl = 'http://my-ghost-blog.com/blog';
+        const url = 'http://my-ghost-blog.com/blog';
 
         let html = '<a href="/about#nowhere" title="Relative URL">';
-        htmlRelativeToAbsolute(html, siteUrl, 'blog/my-awesome-post', options)
+        htmlRelativeToAbsolute(html, url, 'blog/my-awesome-post', options)
             .should.equal('<a href="http://my-ghost-blog.com/blog/about#nowhere" title="Relative URL">');
 
         html = '<a href="about#nowhere" title="Relative URL">';
-        htmlRelativeToAbsolute(html, siteUrl, 'blog/my-awesome-post', options)
+        htmlRelativeToAbsolute(html, url, 'blog/my-awesome-post', options)
             .should.equal('<a href="http://my-ghost-blog.com/blog/my-awesome-post/about#nowhere" title="Relative URL">');
     });
 
@@ -154,13 +154,13 @@ describe('utils: htmlRelativeToAbsolute()', function () {
     });
 
     it('forces https urls with options.secure = true', function () {
-        let siteUrl = 'http://my-ghost-blog.com';
+        let url = 'http://my-ghost-blog.com';
         let html = '<p><a href="/test">Test</a><code><a href="/test">Test</a></code><a href="/test">Test</a></p>';
 
-        htmlRelativeToAbsolute(html, siteUrl, itemPath)
+        htmlRelativeToAbsolute(html, url, itemPath)
             .should.eql('<p><a href="http://my-ghost-blog.com/test">Test</a><code><a href="/test">Test</a></code><a href="http://my-ghost-blog.com/test">Test</a></p>');
 
-        htmlRelativeToAbsolute(html, siteUrl, itemPath, {secure: true})
+        htmlRelativeToAbsolute(html, url, itemPath, {secure: true})
             .should.eql('<p><a href="https://my-ghost-blog.com/test">Test</a><code><a href="/test">Test</a></code><a href="https://my-ghost-blog.com/test">Test</a></p>');
     });
 
@@ -212,7 +212,7 @@ describe('utils: htmlRelativeToAbsolute()', function () {
         });
 
         it('forces https urls with options.secure = true', function () {
-            let siteUrl = 'http://my-ghost-blog.com';
+            let url = 'http://my-ghost-blog.com';
 
             let html = `
                 <img srcset="/content/images/elva-fairy-320w.jpg 320w,
@@ -224,7 +224,7 @@ describe('utils: htmlRelativeToAbsolute()', function () {
                     src="/content/images/elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
             `;
 
-            let result = htmlRelativeToAbsolute(html, siteUrl, itemPath, {secure: true});
+            let result = htmlRelativeToAbsolute(html, url, itemPath, {secure: true});
 
             result.should.eql(`
                 <img srcset="https://my-ghost-blog.com/content/images/elva-fairy-320w.jpg 320w,
@@ -254,25 +254,25 @@ describe('utils: htmlRelativeToAbsolute()', function () {
         });
 
         it('when html has no attributes that would be transformed', function () {
-            const siteUrl = 'http://my-ghost-blog.com/';
+            const url = 'http://my-ghost-blog.com/';
 
-            htmlRelativeToAbsolute('', siteUrl, itemPath, options);
+            htmlRelativeToAbsolute('', url, itemPath, options);
             cheerioLoadSpy.called.should.be.false('blank html triggered parse');
 
-            htmlRelativeToAbsolute('<p>HTML without links</p>', siteUrl, itemPath, options);
+            htmlRelativeToAbsolute('<p>HTML without links</p>', url, itemPath, options);
             cheerioLoadSpy.called.should.be.false('html with no links triggered parse');
 
-            htmlRelativeToAbsolute('<a href="#test">test</a>', siteUrl, itemPath, options);
+            htmlRelativeToAbsolute('<a href="#test">test</a>', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(1, 'href didn\'t trigger parse');
 
-            htmlRelativeToAbsolute('<img src="/image.png">', siteUrl, itemPath, options);
+            htmlRelativeToAbsolute('<img src="/image.png">', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(2, 'src didn\'t trigger parse');
 
-            htmlRelativeToAbsolute('<img srcset="/image-4x.png 4x, /image-2x.png 2x">)', siteUrl, itemPath, options);
+            htmlRelativeToAbsolute('<img srcset="/image-4x.png 4x, /image-2x.png 2x">)', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(3, 'srcset didn\'t trigger parse');
 
             options.assetsOnly = true;
-            htmlRelativeToAbsolute('<a href="/my-post/">post</a>', siteUrl, itemPath, options);
+            htmlRelativeToAbsolute('<a href="/my-post/">post</a>', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(3, 'href triggered parse when no url matches asset path');
         });
     });

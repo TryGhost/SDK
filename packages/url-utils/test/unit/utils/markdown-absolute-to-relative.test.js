@@ -121,27 +121,27 @@ Testing <a href="/link">Inline</a> with **markdown**
         });
 
         it('when markdown has no absolute URLs matching siteUrl', function () {
-            const siteUrl = 'http://my-ghost-blog.com/';
+            const url = 'http://my-ghost-blog.com/';
 
-            markdownAbsoluteToRelative('', siteUrl, options);
+            markdownAbsoluteToRelative('', url, options);
             remarkSpy.called.should.be.false();
 
-            markdownAbsoluteToRelative('[test](#test)', siteUrl, options);
+            markdownAbsoluteToRelative('[test](#test)', url, options);
             remarkSpy.called.should.be.false();
 
-            markdownAbsoluteToRelative('[test](https://example.com)', siteUrl, options);
+            markdownAbsoluteToRelative('[test](https://example.com)', url, options);
             remarkSpy.called.should.be.false();
 
-            markdownAbsoluteToRelative('[test](http://my-ghost-blog.com)', siteUrl, options);
+            markdownAbsoluteToRelative('[test](http://my-ghost-blog.com)', url, options);
             remarkSpy.calledOnce.should.be.true();
 
             // ignores protocol when ignoreProtocol: true
-            markdownAbsoluteToRelative('[test](https://my-ghost-blog.com)', siteUrl, options);
+            markdownAbsoluteToRelative('[test](https://my-ghost-blog.com)', url, options);
             remarkSpy.calledTwice.should.be.true();
 
             // respects protocol when ignoreProtocol: false
             options.ignoreProtocol = false;
-            markdownAbsoluteToRelative('[test](https://my-ghost-blog.com)', siteUrl, options);
+            markdownAbsoluteToRelative('[test](https://my-ghost-blog.com)', url, options);
             remarkSpy.calledTwice.should.be.true();
         });
     });
