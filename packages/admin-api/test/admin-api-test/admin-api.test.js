@@ -1,13 +1,13 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
-require('./utils');
+require('../utils');
 const should = require('should');
 const FormData = require('form-data');
 const http = require('http');
 const url = require('url');
 const path = require('path');
 
-const GhostAdminAPI = require('../');
+const GhostAdminAPI = require('../../lib');
 
 describe('GhostAdminAPI', function () {
     describe('API v2', function () {
@@ -633,7 +633,7 @@ describe('GhostAdminAPI', function () {
                     let imagePath;
 
                     beforeEach(function () {
-                        imagePath = path.join(__dirname, './fixtures/ghost-logo.png');
+                        imagePath = path.join(__dirname, '../fixtures/ghost-logo.png');
                     });
 
                     describe('expected data format', function () {
@@ -743,7 +743,7 @@ describe('GhostAdminAPI', function () {
                     let zipPath;
 
                     before(function () {
-                        zipPath = path.join(__dirname, './fixtures/theme.zip');
+                        zipPath = path.join(__dirname, '../fixtures/theme.zip');
                     });
 
                     describe('expected data format', function () {
