@@ -1,24 +1,24 @@
-// require the whatwg compatible URL library (same behaviour in node and browser)
-const {URL} = require('url');
-const deduplicateSubdirectory = require('./deduplicate-subdirectory');
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
-const transformReadyToRelative = function transformReadyToRelative(url, root, _options = {}) {
+const transformReadyToRelative = function (str = '', root, _options = {}) {
     const defaultOptions = {
         replacementStr: '__GHOST_URL__'
     };
     const options = Object.assign({}, defaultOptions, _options);
 
-    if (url.indexOf(options.replacementStr) !== 0) {
-        return url;
+    if (!str || str.indexOf(options.replacementStr) === -1) {
+        return str;
     }
 
     const rootURL = new URL(root);
+    // subdir with no trailing slash because we'll always have a trailing slash after the magic string
+    const subdir = rootURL.pathname.replace(/\/$/, '');
 
-    const transformedUrl = url
-        .replace(options.replacementStr, rootURL.pathname || '')
-        .replace(/\/\//g, '/');
+    const replacementRegex = new RegExp(escapeRegExp(options.replacementStr), 'g');
 
-    return deduplicateSubdirectory(transformedUrl, root);
+    return str.replace(replacementRegex, subdir);
 };
 
 module.exports = transformReadyToRelative;

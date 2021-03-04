@@ -402,14 +402,6 @@ module.exports = class UrlUtils {
         return utils.htmlAbsoluteToTransformReady(html, this.getSiteUrl(), _options);
     }
 
-    htmlTransformReadyToAbsolute(html, options) {
-        return utils.htmlTransformTreadyToAbsolute(html, this.getSiteUrl(), options);
-    }
-
-    htmlTransformReadyToRelative(html, options) {
-        return utils.htmlTransformTreadyToAbsolute(html, this.getSiteUrl(), options);
-    }
-
     markdownRelativeToAbsolute(markdown, itemPath, options) {
         if (typeof itemPath === 'object' && !options) {
             options = itemPath;
@@ -452,14 +444,6 @@ module.exports = class UrlUtils {
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.markdownAbsoluteToTransformReady(markdown, this.getSiteUrl(), _options);
-    }
-
-    markdownTransformReadyToAbsolute(markdown, options) {
-        return utils.markdownTransformTreadyToAbsolute(markdown, this.getSiteUrl(), options);
-    }
-
-    markdownTransformReadyToRelative(markdown, options) {
-        return utils.markdownTransformTreadyToAbsolute(markdown, this.getSiteUrl(), options);
     }
 
     mobiledocRelativeToAbsolute(serializedMobiledoc, itemPath, options) {
@@ -508,14 +492,6 @@ module.exports = class UrlUtils {
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.mobiledocAbsoluteToTransformReady(serializedMobiledoc, this.getSiteUrl(), _options);
-    }
-
-    mobiledocTransformReadyToAbsolute(mobiledoc, options) {
-        return utils.mobiledocTransformTreadyToAbsolute(mobiledoc, this.getSiteUrl(), options);
-    }
-
-    mobiledocTransformReadyToRelative(mobiledoc, options) {
-        return utils.mobiledocTransformTreadyToAbsolute(mobiledoc, this.getSiteUrl(), options);
     }
 
     get isSSL() {
