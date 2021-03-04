@@ -14,7 +14,7 @@ const htmlTransformReadyToAbsolute = function (html = '', root, _options = {}) {
 
     const replacementRegex = new RegExp(escapeRegExp(options.replacementStr), 'g');
 
-    return html.replace(replacementRegex, root);
+    return html.replace(replacementRegex, root.replace(/\/$/, ''));
 };
 
 module.exports = htmlTransformReadyToAbsolute;
