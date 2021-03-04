@@ -199,7 +199,9 @@ describe('utils: mobiledocAbsoluteToRelative()', function () {
         markdownCardTransformer.absoluteToRelative.firstCall.args[1].should.deepEqual({
             siteUrl: 'http://my-ghost-blog.com',
             assetsOnly: false,
-            secure: false
+            secure: false,
+            itemPath: '',
+            transformType: 'absoluteToRelative'
         });
 
         imageCardTransformer.absoluteToRelative.calledOnce.should.be.true();
@@ -208,7 +210,9 @@ describe('utils: mobiledocAbsoluteToRelative()', function () {
         imageCardTransformer.absoluteToRelative.firstCall.args[1].should.deepEqual({
             siteUrl: 'http://my-ghost-blog.com',
             assetsOnly: false,
-            secure: false
+            secure: false,
+            itemPath: '',
+            transformType: 'absoluteToRelative'
         });
 
         markdownCardTransformer.relativeToAbsolute.called.should.be.false();

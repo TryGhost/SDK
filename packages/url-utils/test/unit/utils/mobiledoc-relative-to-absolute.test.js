@@ -180,7 +180,8 @@ describe('utils: mobiledocRelativeToAbsolute()', function () {
             siteUrl: 'http://my-ghost-blog.com',
             itemPath: '/my-awesome-post',
             assetsOnly: false,
-            secure: false
+            secure: false,
+            transformType: 'relativeToAbsolute'
         });
 
         imageCardTransformer.relativeToAbsolute.calledOnce.should.be.true();
@@ -190,7 +191,8 @@ describe('utils: mobiledocRelativeToAbsolute()', function () {
             siteUrl: 'http://my-ghost-blog.com',
             itemPath: '/my-awesome-post',
             assetsOnly: false,
-            secure: false
+            secure: false,
+            transformType: 'relativeToAbsolute'
         });
 
         markdownCardTransformer.absoluteToRelative.called.should.be.false();
