@@ -21,7 +21,7 @@ const relativeToTransformReady = function (url, root, itemPath, _options) {
     // replace root with replacement string
     const transformedUrl = absoluteUrl
         .replace(root, `${options.replacementStr}/`)
-        .replace(/([^:])\/\//g, '$1/');
+        .replace(/([^:])\/\//g, '$1/'); // always have trailing slash after magic string
 
     return transformedUrl;
 };

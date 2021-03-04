@@ -19,6 +19,7 @@ const absoluteToTransformReady = function (url, root, _options) {
     }
 
     // convert to relative with stripped subdir
+    // always returns root-relative starting with forward slash
     const relativeUrl = absoluteToRelative(url, root, options);
 
     // return still absolute urls as-is (eg. external site, mailto, etc)
