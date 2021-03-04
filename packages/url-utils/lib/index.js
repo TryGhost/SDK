@@ -324,12 +324,28 @@ module.exports = class UrlUtils {
         return res.redirect(redirectUrl);
     }
 
-    absoluteToRelative(url, options = {}) {
+    absoluteToRelative(url, options) {
         return utils.absoluteToRelative(url, this.getSiteUrl(), options);
     }
 
     relativeToAbsolute(url, options) {
         return utils.relativeToAbsolute(url, this.getSiteUrl(), options);
+    }
+
+    absoluteToTransformReady(url, options) {
+        return utils.absoluteToTransformReady(url, this.getSiteUrl(), options);
+    }
+
+    relativeToTransformReady(url, options) {
+        return utils.relativeToTransformReady(url, this.getSiteUrl(), options);
+    }
+
+    transformReadyToAbsolute(url, options) {
+        return utils.transformReadyToAbsolute(url, this.getSiteUrl(), options);
+    }
+
+    transformReadyToRelative(url, options) {
+        return utils.transformReadyToRelative(url, this.getSiteUrl(), options);
     }
 
     /**
@@ -355,6 +371,19 @@ module.exports = class UrlUtils {
         return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath, _options);
     }
 
+    htmlRelativeToTransformReady(html, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.htmlRelativeToTransformReady(html, this.getSiteUrl(), itemPath, _options);
+    }
+
     htmlAbsoluteToRelative(html, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
@@ -362,6 +391,15 @@ module.exports = class UrlUtils {
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
+    }
+
+    htmlAbsoluteToTransformReady(html, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.htmlAbsoluteToTransformReady(html, this.getSiteUrl(), _options);
     }
 
     markdownRelativeToAbsolute(markdown, itemPath, options) {
@@ -377,6 +415,19 @@ module.exports = class UrlUtils {
         return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath, _options);
     }
 
+    markdownRelativeToTransformReady(markdown, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPath, _options);
+    }
+
     markdownAbsoluteToRelative(markdown, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
@@ -384,6 +435,15 @@ module.exports = class UrlUtils {
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
+    }
+
+    markdownAbsoluteToTransformReady(markdown, options) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.markdownAbsoluteToTransformReady(markdown, this.getSiteUrl(), _options);
     }
 
     mobiledocRelativeToAbsolute(serializedMobiledoc, itemPath, options) {
@@ -400,6 +460,20 @@ module.exports = class UrlUtils {
         return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
     }
 
+    mobiledocRelativeToTransformReady(serializedMobiledoc, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            cardTransformers: this._config.cardTransformers
+        };
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.mobiledocRelativeToTransformReady(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
+    }
+
     mobiledocAbsoluteToRelative(serializedMobiledoc, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
@@ -408,6 +482,16 @@ module.exports = class UrlUtils {
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.mobiledocAbsoluteToRelative(serializedMobiledoc, this.getSiteUrl(), _options);
+    }
+
+    mobiledocAbsoluteToTransformReady(serializedMobiledoc, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            cardTransformers: this._config.cardTransformers
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.mobiledocAbsoluteToTransformReady(serializedMobiledoc, this.getSiteUrl(), _options);
     }
 
     get isSSL() {

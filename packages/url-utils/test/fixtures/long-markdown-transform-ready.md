@@ -25,7 +25,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 ### Big Image
 
-![Test Image](https://demo.ghost.io/content/images/2014/09/testimg1.jpeg)
+![Test Image](__GHOST_URL__/content/images/2014/09/testimg1.jpeg)
 
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 
@@ -33,7 +33,7 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
 
-![Small Test Image](https://demo.ghost.io/content/images/2014/09/testimg2.jpg)
+![Small Test Image](__GHOST_URL__/content/images/2014/09/testimg2.jpg)
 
 Labore et dolore.
 
@@ -339,8 +339,8 @@ Isn't it beautiful.
 
 ### Internal Links Test
 
-- [First Link](https://demo.ghost.io/first/)
-- [Second Link](https://demo.ghost.io/second/)
-- [Third Link](https://demo.ghost.io/third/)
-- [Fourth Link](https://demo.ghost.io/fourth/)
-- [Fifth Link](https://demo.ghost.io/fifth/)
+- [First Link](__GHOST_URL__/first/)
+- [Second Link](__GHOST_URL__/second/)
+- [Third Link](__GHOST_URL__/third/)
+- [Fourth Link](__GHOST_URL__/fourth/)
+- [Fifth Link](__GHOST_URL__/fifth/)

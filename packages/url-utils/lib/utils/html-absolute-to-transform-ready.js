@@ -1,7 +1,7 @@
 const htmlTransform = require('./_html-transform');
-const absoluteToRelative = require('./absolute-to-relative');
+const absoluteToTransformReady = require('./absolute-to-transform-ready');
 
-function htmlAbsoluteToRelative(html = '', siteUrl, _options) {
+const htmlAbsoluteToTransformReady = function (html = '', siteUrl, _options) {
     const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
     const options = Object.assign({}, defaultOptions, _options || {});
 
@@ -11,10 +11,10 @@ function htmlAbsoluteToRelative(html = '', siteUrl, _options) {
 
     // need to ignore itemPath because absoluteToRelative doesn't take that option
     const transformFunction = function (_url, _siteUrl, _itemPath, __options) {
-        return absoluteToRelative(_url, _siteUrl, __options);
+        return absoluteToTransformReady(_url, _siteUrl, __options);
     };
 
     return htmlTransform(html, siteUrl, transformFunction, '', options);
-}
+};
 
-module.exports = htmlAbsoluteToRelative;
+module.exports = htmlAbsoluteToTransformReady;
