@@ -1,73 +1,25 @@
-const remark = require('remark');
-const footnotes = require('remark-footnotes');
-const visit = require('unist-util-visit');
+const markdownTransform = require('./_markdown-transform');
 const absoluteToRelative = require('./absolute-to-relative');
 const htmlAbsoluteToRelative = require('./html-absolute-to-relative');
 
 function markdownAbsoluteToRelative(markdown = '', siteUrl, _options = {}) {
     const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
-    const urlOptions = Object.assign({}, defaultOptions, _options);
+    const options = Object.assign({}, defaultOptions, _options);
 
-    const replacements = [];
+    options.earlyExitMatchStr = options.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
+    options.earlyExitMatchStr = options.earlyExitMatchStr.replace(/\/$/, '');
 
-    // exit early and avoid parsing if the content does not contain the siteUrl
-    let urlMatchStr = urlOptions.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
-    urlMatchStr = urlMatchStr.replace(/\/$/, '');
-    if (!markdown || !markdown.match(new RegExp(urlMatchStr))) {
-        return markdown;
-    }
-
-    const tree = remark()
-        .use({settings: {commonmark: true}})
-        .use(footnotes, {inlineNotes: true})
-        .parse(markdown);
-
-    visit(tree, ['link', 'image', 'html'], (node) => {
-        if (node.type === 'html' && node.value.match(/src|srcset|href/)) {
-            const oldValue = node.value;
-            const newValue = htmlAbsoluteToRelative(node.value, siteUrl, urlOptions);
-
-            if (newValue !== oldValue) {
-                replacements.push({
-                    old: oldValue,
-                    new: newValue,
-                    start: node.position.start.offset,
-                    end: node.position.end.offset
-                });
-            }
+    // need to ignore itemPath because absoluteToRelative functions doen't take that option
+    const transformFunctions = {
+        html(_url, _siteUrl, _itemPath, __options) {
+            return htmlAbsoluteToRelative(_url, _siteUrl, __options);
+        },
+        url(_url, _siteUrl, _itemPath, __options) {
+            return absoluteToRelative(_url, _siteUrl, __options);
         }
+    };
 
-        if (node.type === 'link' || node.type === 'image') {
-            const oldValue = node.url;
-            const newValue = absoluteToRelative(node.url, siteUrl, urlOptions);
-
-            if (newValue !== oldValue) {
-                replacements.push({
-                    old: oldValue,
-                    new: newValue,
-                    start: node.position.start.offset,
-                    end: node.position.end.offset
-                });
-            }
-        }
-    });
-
-    let result = markdown;
-    let offsetAdjustment = 0;
-
-    replacements.forEach((replacement) => {
-        const original = markdown.slice(replacement.start, replacement.end);
-        const transformed = original.replace(replacement.old, replacement.new);
-
-        let before = result.slice(0, replacement.start + offsetAdjustment);
-        let after = result.slice(replacement.end + offsetAdjustment, markdown.length);
-
-        result = before + transformed + after;
-
-        offsetAdjustment = offsetAdjustment + (transformed.length - original.length);
-    });
-
-    return result;
+    return markdownTransform(markdown, siteUrl, transformFunctions, '', options);
 }
 
 module.exports = markdownAbsoluteToRelative;

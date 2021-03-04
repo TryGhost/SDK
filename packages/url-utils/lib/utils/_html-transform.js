@@ -10,7 +10,7 @@ function extractSrcsetUrls(srcset = '') {
     });
 }
 
-function htmlRelativeToAbsolute(html = '', siteUrl, transformFunction, itemPath, _options) {
+function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options) {
     const defaultOptions = {assetsOnly: false, secure: false};
     const options = Object.assign({}, defaultOptions, _options || {});
 
@@ -123,4 +123,4 @@ function htmlRelativeToAbsolute(html = '', siteUrl, transformFunction, itemPath,
     return html;
 }
 
-module.exports = htmlRelativeToAbsolute;
+module.exports = htmlTransform;
