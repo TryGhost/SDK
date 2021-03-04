@@ -18,10 +18,14 @@ const relativeToTransformReady = function (url, root, itemPath, _options) {
     // convert to absolute
     const absoluteUrl = relativeToAbsolute(url, root, itemPath, options);
 
+    if (absoluteUrl === url) {
+        return url;
+    }
+
     // replace root with replacement string
     const transformedUrl = absoluteUrl
-        .replace(root, `${options.replacementStr}/`)
-        .replace(/([^:])\/\//g, '$1/'); // always have trailing slash after magic string
+        .replace(root, `${options.replacementStr}/`) // always have trailing slash after magic string
+        .replace(/([^:])\/\//g, '$1/');
 
     return transformedUrl;
 };
