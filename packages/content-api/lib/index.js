@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const supportedVersions = ['v2', 'v3', 'canary'];
+const supportedVersions = ['v2', 'v3', 'v4', 'canary'];
 const name = '@tryghost/content-api';
 
 export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key}) {
