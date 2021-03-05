@@ -10,8 +10,9 @@ const path = require('path');
 const GhostAdminAPI = require('../../lib');
 
 describe('GhostAdminAPI v2', function () {
+    const API_VERSION = 'v2';
     const config = {
-        version: 'v2',
+        version: API_VERSION,
         key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0'
     };
     let server, returnError;
@@ -135,7 +136,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/`);
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/${resource}/`);
                         done();
                     });
 
@@ -200,7 +201,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/1/`);
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/${resource}/1/`);
                         done();
                     });
 
@@ -211,7 +212,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/slug/booyar/`);
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/${resource}/slug/booyar/`);
                         done();
                     });
 
@@ -222,7 +223,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/email/test@example.com/`);
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/${resource}/email/test@example.com/`);
                         done();
                     });
 
@@ -299,7 +300,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname, query}) => {
-                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/slug/kevin/`);
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/${resource}/slug/kevin/`);
 
                         should.deepEqual(query.fields, 'id,slug');
                         should.deepEqual(query.include, 'author,tag');
@@ -358,7 +359,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/`);
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/${resource}/`);
                         done();
                     });
 
@@ -440,7 +441,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/1/`);
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/${resource}/1/`);
                         done();
                     });
 
@@ -542,7 +543,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, `/ghost/api/v2/admin/${resource}/1/`);
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/${resource}/1/`);
                         done();
                     });
 
@@ -647,7 +648,7 @@ describe('GhostAdminAPI v2', function () {
                     const api = new GhostAdminAPI(config);
 
                     server.once('url', ({pathname}) => {
-                        should.equal(pathname, '/ghost/api/v2/admin/images/upload/');
+                        should.equal(pathname, `/ghost/api/${API_VERSION}/admin/images/upload/`);
                         done();
                     });
 
@@ -780,7 +781,7 @@ describe('GhostAdminAPI v2', function () {
             const api = new GhostAdminAPI(config);
 
             server.once('url', ({pathname}) => {
-                should.equal(pathname, '/ghost/api/v2/admin/config/');
+                should.equal(pathname, `/ghost/api/${API_VERSION}/admin/config/`);
                 done();
             });
 
