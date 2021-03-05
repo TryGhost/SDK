@@ -775,13 +775,6 @@ describe('GhostAdminAPI v2', function () {
         });
     });
 
-    describe('api.webhooks API', function () {
-        it('webhook exposes only add, delete, and edit methods', function () {
-            const api = new GhostAdminAPI(config);
-            should.deepEqual(Object.keys(api.webhooks), ['add', 'edit', 'delete']);
-        });
-    });
-
     describe('api.config.read', function () {
         it('makes a GET request to the config endpoint', function (done) {
             const api = new GhostAdminAPI(config);

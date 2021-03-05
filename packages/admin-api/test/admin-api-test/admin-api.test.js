@@ -183,4 +183,11 @@ describe('GhostAdminAPI general', function () {
             should.deepEqual(data, {test: true});
         });
     });
+
+    describe('api.webhooks API', function () {
+        it('webhook exposes only add, delete, and edit methods', function () {
+            const api = new GhostAdminAPI(config);
+            should.deepEqual(Object.keys(api.webhooks), ['add', 'edit', 'delete']);
+        });
+    });
 });
