@@ -332,6 +332,14 @@ module.exports = class UrlUtils {
         return utils.relativeToAbsolute(url, this.getSiteUrl(), options);
     }
 
+    toTransformReady(url, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        return utils.toTransformReady(url, this.getSiteUrl(), itemPath, options);
+    }
+
     absoluteToTransformReady(url, options) {
         return utils.absoluteToTransformReady(url, this.getSiteUrl(), options);
     }
@@ -346,6 +354,14 @@ module.exports = class UrlUtils {
 
     transformReadyToRelative(url, options) {
         return utils.transformReadyToRelative(url, this.getSiteUrl(), options);
+    }
+
+    htmlToTransformReady(html, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        return utils.htmlToTransformReady(html, this.getSiteUrl(), itemPath, options);
     }
 
     /**
@@ -402,6 +418,14 @@ module.exports = class UrlUtils {
         return utils.htmlAbsoluteToTransformReady(html, this.getSiteUrl(), _options);
     }
 
+    markdownToTransformReady(markdown, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        return utils.markdownToTransformReady(markdown, this.getSiteUrl(), itemPath, options);
+    }
+
     markdownRelativeToAbsolute(markdown, itemPath, options) {
         if (typeof itemPath === 'object' && !options) {
             options = itemPath;
@@ -444,6 +468,18 @@ module.exports = class UrlUtils {
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.markdownAbsoluteToTransformReady(markdown, this.getSiteUrl(), _options);
+    }
+
+    mobiledocToTransformReady(serializedMobiledoc, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        const defaultOptions = {
+            cardTransformers: this._config.cardTransformers
+        };
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.mobiledocToTransformReady(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
     }
 
     mobiledocRelativeToAbsolute(serializedMobiledoc, itemPath, options) {

@@ -3,7 +3,7 @@ const mobiledocTransform = require('./_mobiledoc-transform');
 
 function mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, _options = {}) {
     const defaultOptions = {assetsOnly: false, secure: false, cardTransformers: []};
-    const overrideOptions = {siteUrl, transformType: 'absoluteToTransformReady'};
+    const overrideOptions = {siteUrl, transformType: 'toTransformReady'};
     const options = Object.assign({}, defaultOptions, _options, overrideOptions);
 
     const transformFunction = function (_url, _siteUrl, _itemPath, __options) {
