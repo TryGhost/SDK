@@ -46,13 +46,14 @@ describe('GhostContentApi', function () {
             new GhostContentApi(config);
         });
 
-        it('Returns an "api" object with posts,tags,authors&pages properties', function () {
+        it('Returns an "api" object with posts, tags, authors, pages, and settings properties', function () {
             const api = new GhostContentApi(config);
 
             should.exist(api.posts);
             should.exist(api.tags);
             should.exist(api.authors);
             should.exist(api.pages);
+            should.exist(api.settings);
         });
     });
 });
