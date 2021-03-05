@@ -4,6 +4,7 @@ require('../utils');
 const should = require('should');
 const FormData = require('form-data');
 const path = require('path');
+
 const {getInstance} = require('../utils/ghost-server-mock');
 const GhostAdminAPI = require('../../lib');
 
