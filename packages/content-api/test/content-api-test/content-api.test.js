@@ -1,13 +1,12 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
-require('./utils');
 
 const http = require('http');
 const url = require('url');
 const should = require('should');
 
-const {getInstance} = require('./utils/ghost-server-mock');
-const GhostContentApi = require('../');
+const {getInstance} = require('../utils/ghost-server-mock');
+const GhostContentApi = require('../../cjs/content-api');
 
 describe('GhostContentApi', function () {
     describe('API v2', function () {
