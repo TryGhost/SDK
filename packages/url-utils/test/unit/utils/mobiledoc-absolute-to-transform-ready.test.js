@@ -132,16 +132,11 @@ describe('utils: mobiledocAbsoluteToTransformReady()', function () {
     it('converts absolute URLs in card payloads using external processors', function () {
         const markdownCardTransformer = {
             name: 'markdown',
-            absoluteToTransformReady: sinon.stub().returns({markdown: 'Testing [markdown links](__GHOST_URL__/markdown-links)'}),
-            relativeToTransformReady: sinon.stub().returns({markdown: 'Testing [markdown links](__GHOST_URL__/markdown-links)'})
+            toTransformReady: sinon.stub().returns({markdown: 'Testing [markdown links](__GHOST_URL__/markdown-links)'})
         };
         const imageCardTransformer = {
             name: 'image',
-            absoluteToTransformReady: sinon.stub().returns({
-                src: '__GHOST_URL__/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg',
-                caption: 'Captions are HTML with <a href="__GHOST_URL__/caption-link/">links</a>'
-            }),
-            relativeToTransformReady: sinon.stub().returns({
+            toTransformReady: sinon.stub().returns({
                 src: '__GHOST_URL__/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg',
                 caption: 'Captions are HTML with <a href="__GHOST_URL__/caption-link/">links</a>'
             })
@@ -193,30 +188,27 @@ describe('utils: mobiledocAbsoluteToTransformReady()', function () {
         result.cards[2][1].html.should.eql('<a href="http://my-ghost-blog.com/html/">HTML</a> with no card transformer specified');
 
         // calls card transformers
-        markdownCardTransformer.absoluteToTransformReady.calledOnce.should.be.true();
-        markdownCardTransformer.absoluteToTransformReady.firstCall.args[0].should.deepEqual(mobiledoc.cards[1][1]);
-        markdownCardTransformer.absoluteToTransformReady.firstCall.args[0].should.not.equal(mobiledoc.cards[1][1]); // it should be a copy
-        markdownCardTransformer.absoluteToTransformReady.firstCall.args[1].should.deepEqual({
+        markdownCardTransformer.toTransformReady.calledOnce.should.be.true();
+        markdownCardTransformer.toTransformReady.firstCall.args[0].should.deepEqual(mobiledoc.cards[1][1]);
+        markdownCardTransformer.toTransformReady.firstCall.args[0].should.not.equal(mobiledoc.cards[1][1]); // it should be a copy
+        markdownCardTransformer.toTransformReady.firstCall.args[1].should.deepEqual({
             siteUrl: 'http://my-ghost-blog.com',
             assetsOnly: false,
             secure: false,
             itemPath: '',
-            transformType: 'absoluteToTransformReady'
+            transformType: 'toTransformReady'
         });
 
-        imageCardTransformer.absoluteToTransformReady.calledOnce.should.be.true();
-        imageCardTransformer.absoluteToTransformReady.firstCall.args[0].should.deepEqual(mobiledoc.cards[0][1]);
-        imageCardTransformer.absoluteToTransformReady.firstCall.args[0].should.not.equal(mobiledoc.cards[0][1]); // it should be a copy
-        imageCardTransformer.absoluteToTransformReady.firstCall.args[1].should.deepEqual({
+        imageCardTransformer.toTransformReady.calledOnce.should.be.true();
+        imageCardTransformer.toTransformReady.firstCall.args[0].should.deepEqual(mobiledoc.cards[0][1]);
+        imageCardTransformer.toTransformReady.firstCall.args[0].should.not.equal(mobiledoc.cards[0][1]); // it should be a copy
+        imageCardTransformer.toTransformReady.firstCall.args[1].should.deepEqual({
             siteUrl: 'http://my-ghost-blog.com',
             assetsOnly: false,
             secure: false,
             itemPath: '',
-            transformType: 'absoluteToTransformReady'
+            transformType: 'toTransformReady'
         });
-
-        markdownCardTransformer.relativeToTransformReady.called.should.be.false();
-        imageCardTransformer.relativeToTransformReady.called.should.be.false();
 
         // does not modify original mobiledoc/payloads
         mobiledoc.cards[0][1].src.should.eql('http://my-ghost-blog.com/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg');

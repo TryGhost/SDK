@@ -112,16 +112,11 @@ describe('utils: mobiledocRelativeToTransformReady()', function () {
     it('converts relative URLs in card payloads using external processors', function () {
         const markdownCardTransformer = {
             name: 'markdown',
-            absoluteToTransformReady: sinon.stub().returns({markdown: 'Testing [markdown links](__GHOST_URL__/markdown-links)'}),
-            relativeToTransformReady: sinon.stub().returns({markdown: 'Testing [markdown links](__GHOST_URL__/markdown-links)'})
+            toTransformReady: sinon.stub().returns({markdown: 'Testing [markdown links](__GHOST_URL__/markdown-links)'})
         };
         const imageCardTransformer = {
             name: 'image',
-            absoluteToTransformReady: sinon.stub().returns({
-                src: '__GHOST_URL__/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg',
-                caption: 'Captions are HTML with <a href="__GHOST_URL__/caption-link/">links</a>'
-            }),
-            relativeToTransformReady: sinon.stub().returns({
+            toTransformReady: sinon.stub().returns({
                 src: '__GHOST_URL__/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg',
                 caption: 'Captions are HTML with <a href="__GHOST_URL__/caption-link/">links</a>'
             })
@@ -173,30 +168,27 @@ describe('utils: mobiledocRelativeToTransformReady()', function () {
         result.cards[2][1].html.should.eql('<a href="/html/">HTML</a> with no card transformer specified');
 
         // calls card transformers
-        markdownCardTransformer.relativeToTransformReady.calledOnce.should.be.true();
-        markdownCardTransformer.relativeToTransformReady.firstCall.args[0].should.deepEqual(mobiledoc.cards[1][1]);
-        markdownCardTransformer.relativeToTransformReady.firstCall.args[0].should.not.equal(mobiledoc.cards[1][1]); // it should be a copy
-        markdownCardTransformer.relativeToTransformReady.firstCall.args[1].should.deepEqual({
+        markdownCardTransformer.toTransformReady.calledOnce.should.be.true();
+        markdownCardTransformer.toTransformReady.firstCall.args[0].should.deepEqual(mobiledoc.cards[1][1]);
+        markdownCardTransformer.toTransformReady.firstCall.args[0].should.not.equal(mobiledoc.cards[1][1]); // it should be a copy
+        markdownCardTransformer.toTransformReady.firstCall.args[1].should.deepEqual({
             siteUrl: 'http://my-ghost-blog.com',
             itemPath: '/my-awesome-post',
             assetsOnly: false,
             secure: false,
-            transformType: 'relativeToTransformReady'
+            transformType: 'toTransformReady'
         });
 
-        imageCardTransformer.relativeToTransformReady.calledOnce.should.be.true();
-        imageCardTransformer.relativeToTransformReady.firstCall.args[0].should.deepEqual(mobiledoc.cards[0][1]);
-        imageCardTransformer.relativeToTransformReady.firstCall.args[0].should.not.equal(mobiledoc.cards[0][1]); // it should be a copy
-        imageCardTransformer.relativeToTransformReady.firstCall.args[1].should.deepEqual({
+        imageCardTransformer.toTransformReady.calledOnce.should.be.true();
+        imageCardTransformer.toTransformReady.firstCall.args[0].should.deepEqual(mobiledoc.cards[0][1]);
+        imageCardTransformer.toTransformReady.firstCall.args[0].should.not.equal(mobiledoc.cards[0][1]); // it should be a copy
+        imageCardTransformer.toTransformReady.firstCall.args[1].should.deepEqual({
             siteUrl: 'http://my-ghost-blog.com',
             itemPath: '/my-awesome-post',
             assetsOnly: false,
             secure: false,
-            transformType: 'relativeToTransformReady'
+            transformType: 'toTransformReady'
         });
-
-        markdownCardTransformer.absoluteToTransformReady.called.should.be.false();
-        imageCardTransformer.absoluteToTransformReady.called.should.be.false();
 
         // does not modify original mobiledoc/payloads
         mobiledoc.cards[0][1].src.should.eql('/content/images/2019/09/jf-brou-915UJQaxtrk-unsplash-1.jpg');
