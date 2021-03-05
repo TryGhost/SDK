@@ -9,6 +9,7 @@ const GhostContentApi = require('../../cjs/content-api');
 describe('GhostContentApi v4', function () {
     let server;
     const config = {
+        // url: `http://localhost:2368`, // NOTE: comment out to run the test against local version, remember to remove "before" clauses and changes the key below
         version: 'v4',
         key: '0123456789abcdef0123456789'
     };
