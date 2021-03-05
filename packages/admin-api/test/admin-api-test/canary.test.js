@@ -9,6 +9,7 @@ const GhostAdminAPI = require('../../lib');
 describe('GhostAdminAPI canary', function () {
     const API_VERSION = 'canary';
     const config = {
+        // url: `http://localhost:2368`,    // NOTE: comment out to run the test against local version, remember to remove "before" clauses and changes the key below
         version: API_VERSION,
         key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0'
     };
@@ -17,7 +18,6 @@ describe('GhostAdminAPI canary', function () {
     before(function (done) {
         server = getInstance(config, (serverURL) => {
             config.url = serverURL;
-            // config.url = `http://ghost.local`;
             done();
         });
     });
