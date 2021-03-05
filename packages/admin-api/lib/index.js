@@ -75,9 +75,9 @@ module.exports = function GhostAdminAPI(options) {
         'pages',
         'tags',
         'webhooks',
+        'members',
         // @NOTE: experimental
-        'users',
-        'members'
+        'users'
     ];
 
     const api = resources.reduce((apiObject, resourceType) => {
