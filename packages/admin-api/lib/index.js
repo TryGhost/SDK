@@ -4,7 +4,7 @@ const fs = require('fs');
 const token = require('./token');
 
 const supportedVersions = ['v2', 'v3', 'v4', 'canary'];
-const name = '@tryghost/admin-api';
+const packageName = '@tryghost/admin-api';
 
 module.exports = function GhostAdminAPI(options) {
     if (this instanceof GhostAdminAPI) {
@@ -21,9 +21,9 @@ module.exports = function GhostAdminAPI(options) {
                 data,
                 headers,
                 maxContentLength: Infinity,
-                paramsSerializer(params) {
-                    return Object.keys(params).reduce((parts, key) => {
-                        const val = encodeURIComponent([].concat(params[key]).join(','));
+                paramsSerializer(parameters) {
+                    return Object.keys(parameters).reduce((parts, key) => {
+                        const val = encodeURIComponent([].concat(parameters[key]).join(','));
                         return parts.concat(`${key}=${val}`);
                     }, []).join('&');
                 }
@@ -38,35 +38,35 @@ module.exports = function GhostAdminAPI(options) {
     // new GhostAdminAPI({host: '...'}) is deprecated
     if (config.host) {
         // eslint-disable-next-line
-        console.warn(`${name}: The 'host' parameter is deprecated, please use 'url' instead`);
+        console.warn(`${packageName}: The 'host' parameter is deprecated, please use 'url' instead`);
         if (!config.url) {
             config.url = config.host;
         }
     }
 
     if (!config.version) {
-        throw new Error(`${name} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
+        throw new Error(`${packageName} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
     }
     if (!supportedVersions.includes(config.version)) {
-        throw new Error(`${name} Config Invalid: 'version' ${config.version} is not supported`);
+        throw new Error(`${packageName} Config Invalid: 'version' ${config.version} is not supported`);
     }
     if (!config.url) {
-        throw new Error(`${name} Config Missing: 'url' is required. E.g. 'https://site.com'`);
+        throw new Error(`${packageName} Config Missing: 'url' is required. E.g. 'https://site.com'`);
     }
     if (!/https?:\/\//.test(config.url)) {
-        throw new Error(`${name} Config Invalid: 'url' ${config.url} requires a protocol. E.g. 'https://site.com'`);
+        throw new Error(`${packageName} Config Invalid: 'url' ${config.url} requires a protocol. E.g. 'https://site.com'`);
     }
     if (config.url.endsWith('/')) {
-        throw new Error(`${name} Config Invalid: 'url' ${config.url} must not have a trailing slash. E.g. 'https://site.com'`);
+        throw new Error(`${packageName} Config Invalid: 'url' ${config.url} must not have a trailing slash. E.g. 'https://site.com'`);
     }
     if (config.ghostPath.endsWith('/') || config.ghostPath.startsWith('/')) {
-        throw new Error(`${name} Config Invalid: 'ghostPath' ${config.ghostPath} must not have a leading or trailing slash. E.g. 'ghost'`);
+        throw new Error(`${packageName} Config Invalid: 'ghostPath' ${config.ghostPath} must not have a leading or trailing slash. E.g. 'ghost'`);
     }
     if (!config.key) {
-        throw new Error(`${name} Config Invalid: 'key' ${config.key} must have 26 hex characters`);
+        throw new Error(`${packageName} Config Invalid: 'key' ${config.key} must have 26 hex characters`);
     }
     if (!/[0-9a-f]{24}:[0-9a-f]{64}/.test(config.key)) {
-        throw new Error(`${name} Config Invalid: 'key' ${config.key} must have the following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters`);
+        throw new Error(`${packageName} Config Invalid: 'key' ${config.key} must have the following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters`);
     }
 
     const resources = [
@@ -129,8 +129,8 @@ module.exports = function GhostAdminAPI(options) {
             return makeResourceRequest(resourceType, queryParams, data, 'DELETE', urlParams);
         }
 
-        function browse(options = {}) {
-            return makeResourceRequest(resourceType, options);
+        function browse(opts = {}) {
+            return makeResourceRequest(resourceType, opts);
         }
 
         function read(data, queryParams) {
@@ -276,12 +276,12 @@ module.exports = function GhostAdminAPI(options) {
             method: 'POST',
             body: data,
             headers
-        }).then((data) => {
-            if (!Array.isArray(data[resourceType])) {
-                return data[resourceType];
+        }).then((apiData) => {
+            if (!Array.isArray(apiData[resourceType])) {
+                return apiData[resourceType];
             }
-            if (data[resourceType].length === 1 && !data.meta) {
-                return data[resourceType][0];
+            if (apiData[resourceType].length === 1 && !apiData.meta) {
+                return apiData[resourceType][0];
             }
         });
     }
@@ -350,8 +350,8 @@ module.exports = function GhostAdminAPI(options) {
 
                 toThrow.name = props.type;
 
-                keys.forEach((key) => {
-                    toThrow[key] = props[key];
+                keys.forEach((k) => {
+                    toThrow[k] = props[k];
                 });
 
                 // @TODO: bring back with a better design idea. if you log the error, the stdout is hard to read
