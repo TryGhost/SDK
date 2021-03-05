@@ -8,8 +8,9 @@ const url = require('url');
 const GhostAdminAPI = require('../../lib');
 
 describe('GhostAdminAPI', function () {
+    const API_VERSION = 'v3';
     const config = {
-        version: 'v3',
+        version: API_VERSION,
         key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0'
     };
     let server, returnError;
@@ -80,7 +81,7 @@ describe('GhostAdminAPI', function () {
         const api = new GhostAdminAPI(config);
 
         server.once('url', ({pathname}) => {
-            should.equal(pathname, `/ghost/api/v3/admin/posts/`);
+            should.equal(pathname, `/ghost/api/${API_VERSION}/admin/posts/`);
             done();
         });
 

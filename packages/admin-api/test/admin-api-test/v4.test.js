@@ -8,8 +8,9 @@ const url = require('url');
 const GhostAdminAPI = require('../../lib');
 
 describe('GhostAdminAPI v4', function () {
+    const API_VERSION = 'v4';
     const config = {
-        version: 'v4',
+        version: API_VERSION,
         key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0'
     };
     let server, returnError;
