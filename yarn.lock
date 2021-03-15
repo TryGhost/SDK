@@ -1185,17 +1185,17 @@
     ghost-ignition "4.4.3"
     lodash "4.17.20"
 
-"@tryghost/kg-clean-basic-html@^1.0.14":
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-clean-basic-html/-/kg-clean-basic-html-1.0.14.tgz#d561a6b9b90f4efd458fa5dd7551d966ed30ba90"
-  integrity sha512-O9kXMdE0eUzZ8TjuI2Vxbe1y2yy37RgfRDT/uq8sKZh7M7f5a2J6rf2oz/RntZQuDUuWFhIevMs3JBXk1WdRzg==
+"@tryghost/kg-clean-basic-html@^1.0.15":
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/@tryghost/kg-clean-basic-html/-/kg-clean-basic-html-1.0.15.tgz#89a9cf3d52042c7bd5be7af46ce98116769bb679"
+  integrity sha512-jQLKvDK0Oxq/rvTkq1e8OJuGc1jgT8I2zkm/NRGlICm0M/+bDkEYDqcAjVjzkWbmIGwIPANwNM8riPkrRa+Aow==
 
-"@tryghost/kg-parser-plugins@1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@tryghost/kg-parser-plugins/-/kg-parser-plugins-1.1.4.tgz#2e2cae3f75a1ab23e24ecdff17bf514afba691b8"
-  integrity sha512-pBWphIaq8EgtsOso9DGfkhT/NOP2LiTWntZiBDOhKCqA/BmcylUWFbV9fzc9DjdnGleH52ziZ6TM298qZ2+COw==
+"@tryghost/kg-parser-plugins@1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@tryghost/kg-parser-plugins/-/kg-parser-plugins-1.1.5.tgz#0a658ad67cb04ecce936fcfb8c6ceb581591691e"
+  integrity sha512-CQIoVbhkeDxMXxT4KZK/XWdUjyatPKHVho/2VVkx4XvUnUXfHxlT9+vC+u1XzU4sfh0bFp72HLrv2OagxI+IvQ==
   dependencies:
-    "@tryghost/kg-clean-basic-html" "^1.0.14"
+    "@tryghost/kg-clean-basic-html" "^1.0.15"
 
 "@tryghost/mobiledoc-kit@^0.12.4-ghost.1":
   version "0.12.4-ghost.1"
