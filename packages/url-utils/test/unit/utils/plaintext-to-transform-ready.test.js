@@ -10,7 +10,7 @@ describe('utils: plaintextToTransformReady', function () {
         const plaintext = 'Relative link [/first-link] and Absolute link [http://my-ghost-blog.com/second-link]';
 
         plaintextToTransformReady(plaintext, siteUrl)
-            .should.equal('First Link [__GHOST_URL__first-link] and Second Link [__GHOST_URL__second-link]');
+            .should.equal('Relative link [__GHOST_URL__/first-link] and Absolute link [__GHOST_URL__/second-link]');
     });
 
     it('works with subdirectories', function () {
