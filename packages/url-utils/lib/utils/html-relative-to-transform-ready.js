@@ -2,6 +2,12 @@ const htmlTransform = require('./_html-transform');
 const relativeToTransformReady = require('./relative-to-transform-ready');
 
 const htmlRelativeToTransformReady = function (html = '', root, itemPath, _options) {
+    // itemPath is optional, if it's an object may be the options param instead
+    if (typeof itemPath === 'object' && !_options) {
+        _options = itemPath;
+        itemPath = null;
+    }
+
     const defaultOptions = {
         replacementStr: '__GHOST_URL__'
     };

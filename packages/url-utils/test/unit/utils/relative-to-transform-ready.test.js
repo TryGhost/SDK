@@ -106,10 +106,23 @@ describe('utils: relativeToTransformReady()', function () {
             relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png', 'with root trailing slash');
 
             root = 'https://example.com/subdir';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png', 'with root subdir without trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my/file.png', 'with non-matching root subdir without trailing slash');
 
             root = 'https://example.com/subdir/';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png', 'with root subdir with trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my/file.png', 'with non-matching root subdir with trailing slash');
+
+            root = 'https://example.com/my';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/file.png', 'with matching root subdir without trailing slash');
+
+            root = 'https://example.com/my/';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/file.png', 'with matching root subdir with trailing slash');
+
+            url = '/content/images/file.png';
+            root = 'https://example.com/subdir';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/content/images/file.png', 'with non-matching root subdir without trailing slash for static image');
+
+            root = 'https://example.com/subdir/';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/content/images/file.png', 'with non-matching root subdir with trailing slash for static image');
         });
 
         it('returns absolute directory without trailing slash', function () {
@@ -121,10 +134,16 @@ describe('utils: relativeToTransformReady()', function () {
             relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my', 'with root trailing slash');
 
             root = 'https://example.com/subdir';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my', 'with root subdir without trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my', 'with non-matching root subdir without trailing slash');
 
             root = 'https://example.com/subdir/';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my', 'with root subdir with trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my', 'with non-matching root subdir with trailing slash');
+
+            root = 'https://example.com/my';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/', 'with matching root my without trailing slash');
+
+            root = 'https://example.com/my/';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/', 'with matching root subdir with trailing slash');
         });
 
         it('returns absolute directory with trailing slash', function () {
@@ -136,10 +155,16 @@ describe('utils: relativeToTransformReady()', function () {
             relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/', 'with root trailing slash');
 
             root = 'https://example.com/subdir';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/', 'with root subdir without trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my/', 'with non-matching root subdir without trailing slash');
 
             root = 'https://example.com/subdir/';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/', 'with root subdir with trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my/', 'with non-matching root subdir with trailing slash');
+
+            root = 'https://example.com/my';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/', 'with matching root subdir without trailing slash');
+
+            root = 'https://example.com/my/';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/', 'with matching root subdir with trailing slash');
         });
 
         it('keeps query params', function () {
@@ -151,10 +176,16 @@ describe('utils: relativeToTransformReady()', function () {
             relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png?v=1234', 'with root trailing slash');
 
             root = 'https://example.com/subdir';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png?v=1234', 'with root subdir without trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my/file.png?v=1234', 'with non-matching root subdir without trailing slash');
 
             root = 'https://example.com/subdir/';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png?v=1234', 'with root subdir with trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my/file.png?v=1234', 'with non-matching root subdir with trailing slash');
+
+            root = 'https://example.com/my';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/file.png?v=1234', 'with matching root subdir without trailing slash');
+
+            root = 'https://example.com/my/';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/file.png?v=1234', 'with matching root subdir with trailing slash');
         });
 
         it('keeps hash param', function () {
@@ -166,10 +197,16 @@ describe('utils: relativeToTransformReady()', function () {
             relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png#1234', 'with root trailing slash');
 
             root = 'https://example.com/subdir';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png#1234', 'with root subdir without trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my/file.png#1234', 'with non-matching root subdir without trailing slash');
 
             root = 'https://example.com/subdir/';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/my/file.png#1234', 'with root subdir with trailing slash');
+            relativeToTransformReady(url, root).should.eql('/my/file.png#1234', 'with non-matching root subdir with trailing slash');
+
+            root = 'https://example.com/my';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/file.png#1234', 'with matching root subdir without trailing slash');
+
+            root = 'https://example.com/my/';
+            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/file.png#1234', 'with matching root subdir with trailing slash');
         });
 
         it('handles duplicated subdir', function () {
@@ -185,10 +222,10 @@ describe('utils: relativeToTransformReady()', function () {
 
             url = '/subdir/my/file.png';
             root = 'https://example.com/subdir/test/';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/subdir/my/file.png', 'nested subdir (no match)');
+            relativeToTransformReady(url, root).should.eql('/subdir/my/file.png', 'nested subdir (no match)');
 
             url = '/sub';
-            relativeToTransformReady(url, root).should.eql('__GHOST_URL__/sub', 'partial subdir match');
+            relativeToTransformReady(url, root).should.eql('/sub', 'partial subdir match');
         });
 
         // options.secure shouldn't affect transform-ready transforms but we need to make sure the option

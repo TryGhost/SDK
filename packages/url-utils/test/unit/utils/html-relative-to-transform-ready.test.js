@@ -51,16 +51,28 @@ describe('utils: htmlRelativeToTransformReady()', function () {
         result.should.containEql('<a href="__GHOST_URL__/about#nowhere" title="Relative URL">');
     });
 
-    it('converts a relative URL including subdirectories', function () {
+    it('skips relative URLs if subdirectory does not match', function () {
         const url = 'http://my-ghost-blog.com/blog';
 
         let html = '<a href="/about#nowhere" title="Relative URL">';
-        htmlRelativeToTransformReady(html, url, 'blog/my-awesome-post', options)
-            .should.equal('<a href="__GHOST_URL__/about#nowhere" title="Relative URL">');
+        htmlRelativeToTransformReady(html, url, options)
+            .should.equal('<a href="/about#nowhere" title="Relative URL">');
+    });
 
-        html = '<a href="about#nowhere" title="Relative URL">';
+    it('converts page-relative URLs', function () {
+        const url = 'http://my-ghost-blog.com/blog';
+
+        let html = '<a href="about#nowhere" title="Relative URL">';
         htmlRelativeToTransformReady(html, url, 'blog/my-awesome-post', options)
             .should.equal('<a href="__GHOST_URL__/my-awesome-post/about#nowhere" title="Relative URL">');
+    });
+
+    it('converts relative URLs with matching subdirectories', function () {
+        const url = 'http://my-ghost-blog.com/blog';
+
+        let html = '<a href="/blog/about#nowhere" title="Relative URL">';
+        htmlRelativeToTransformReady(html, url, 'blog/my-awesome-post', options)
+            .should.equal('<a href="__GHOST_URL__/about#nowhere" title="Relative URL">');
     });
 
     it('converts relative URLs (not starting with "/") to absolute links using `itemPath` param', function () {

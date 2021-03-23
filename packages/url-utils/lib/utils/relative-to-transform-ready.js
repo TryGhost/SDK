@@ -8,7 +8,8 @@ const relativeToTransformReady = function (url, root, itemPath, _options) {
     }
 
     const defaultOptions = {
-        replacementStr: '__GHOST_URL__'
+        replacementStr: '__GHOST_URL__',
+        staticImageUrlPrefix: 'content/images'
     };
     const overrideOptions = {
         secure: false
@@ -22,12 +23,20 @@ const relativeToTransformReady = function (url, root, itemPath, _options) {
         return url;
     }
 
-    // replace root with replacement string
-    const transformedUrl = absoluteUrl
-        .replace(root, `${options.replacementStr}/`) // always have trailing slash after magic string
-        .replace(/([^:])\/\//g, '$1/');
+    const rootUrl = new URL(root);
+    const rootPathname = rootUrl.pathname.replace(/\/$/, '');
 
-    return transformedUrl;
+    // only convert to transform-ready if root url has no subdirectory or the subdirectory matches
+    if (!url.match(/^\//) || rootPathname === '' || url.indexOf(rootPathname) === 0 || url.indexOf(`/${options.staticImageUrlPrefix}`) === 0) {
+        // replace root with replacement string
+        const transformedUrl = absoluteUrl
+            .replace(root, `${options.replacementStr}/`) // always have trailing slash after magic string
+            .replace(/([^:])\/\//g, '$1/');
+
+        return transformedUrl;
+    }
+
+    return url;
 };
 
 module.exports = relativeToTransformReady;
