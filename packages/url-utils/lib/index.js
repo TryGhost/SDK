@@ -530,6 +530,14 @@ module.exports = class UrlUtils {
         return utils.mobiledocAbsoluteToTransformReady(serializedMobiledoc, this.getSiteUrl(), _options);
     }
 
+    plaintextToTransformReady(plaintext, options = {}) {
+        const defaultOptions = {
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.plaintextToTransformReady(plaintext, this.getSiteUrl(), _options);
+    }
+
     get isSSL() {
         return utils.isSSL;
     }
