@@ -101,6 +101,14 @@ Testing <a href="http://my-ghost-blog.com/link">Inline</a> with **markdown**
             .should.equal(markdown);
     });
 
+    it('handles linked images', function () {
+        const markdown = '[![Test](/content/images/2014/01/test.jpg)](/content/images/2014/01/test.jpg)';
+
+        const result = markdownRelativeToAbsolute(markdown, siteUrl, itemPath, options);
+
+        result.should.equal('[![Test](http://my-ghost-blog.com/content/images/2014/01/test.jpg)](http://my-ghost-blog.com/content/images/2014/01/test.jpg)');
+    });
+
     describe('AST parsing is skipped', function () {
         let remarkSpy, sandbox;
 
