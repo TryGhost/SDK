@@ -101,6 +101,40 @@ Testing <a href="__GHOST_URL__/link">Inline</a> with **markdown**
             .should.equal(markdown);
     });
 
+    it('handles linked images', function () {
+        const markdown = '[![Test](/content/images/2014/01/test.jpg)](/post)';
+
+        const result = markdownRelativeToTransformReady(markdown, siteUrl, itemPath, options);
+
+        result.should.equal('[![Test](__GHOST_URL__/content/images/2014/01/test.jpg)](__GHOST_URL__/post)');
+    });
+
+    it('handles images linked to themselves', function () {
+        const markdown = '[![Test](/content/images/2014/01/test.jpg)](/content/images/2014/01/test.jpg)';
+
+        const result = markdownRelativeToTransformReady(markdown, siteUrl, itemPath, options);
+
+        result.should.equal('[![Test](__GHOST_URL__/content/images/2014/01/test.jpg)](__GHOST_URL__/content/images/2014/01/test.jpg)');
+    });
+
+    it('handles linked images with further content', function () {
+        const markdown = `
+[![Test](/content/images/2014/01/test.jpg)](/post)
+[![Test](/content/images/2014/01/test.jpg)](/content/images/2014/01/test.jpg)
+Just testing
+![](/content/images/image.png) [](/just-a-link)
+        `;
+
+        const result = markdownRelativeToTransformReady(markdown, siteUrl, itemPath, options);
+
+        result.should.equal(`
+[![Test](__GHOST_URL__/content/images/2014/01/test.jpg)](__GHOST_URL__/post)
+[![Test](__GHOST_URL__/content/images/2014/01/test.jpg)](__GHOST_URL__/content/images/2014/01/test.jpg)
+Just testing
+![](__GHOST_URL__/content/images/image.png) [](__GHOST_URL__/just-a-link)
+        `);
+    });
+
     describe('AST parsing is skipped', function () {
         let remarkSpy, sandbox;
 
