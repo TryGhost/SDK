@@ -1277,20 +1277,13 @@
   dependencies:
     "@elastic/elasticsearch" "^7.10.0"
 
-"@tryghost/elasticsearch-bunyan@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@tryghost/elasticsearch-bunyan/-/elasticsearch-bunyan-0.1.0.tgz#cb66b2eba0c5e5970645b4548e2a41b1ce7a33cc"
-  integrity sha512-Qg/6JfMU5l5+dWJDuXLTrq4CIzucIeZ2H3bH5cOY6Yp+rLqBAADhRzAdlwL6s2Ab/X7/156Ljl58Ik+dpsgWRQ==
+"@tryghost/errors@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-0.2.10.tgz#70410c06326d6ce87ed915b6bb89c4b68101da4e"
+  integrity sha512-ZxhPPNrp5geBdGo1k/UUYajmSnt8+IDHQK2QbhAI15duFP5DYBUYwwiuPwbFPjTP1jEbSPzj++kv5LV6fAT58g==
   dependencies:
-    "@elastic/elasticsearch" "^7.10.0"
-
-"@tryghost/errors@0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-0.2.8.tgz#887531bd41dc6f6fdfc8a6dda8ef08acccddf08b"
-  integrity sha512-PF6vFZnRhMKxZ9FeNtYOHTn3wKMF2u+rgC4Iw33O2tHPCPtRzQTGUU8kO02sY5pjx19OjBOlYyye5n9fRHwJPA==
-  dependencies:
-    ghost-ignition "4.4.3"
-    lodash "4.17.20"
+    ghost-ignition "4.6.1"
+    lodash "4.17.21"
 
 "@tryghost/kg-clean-basic-html@^1.0.17":
   version "1.0.17"
@@ -2954,26 +2947,6 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-ghost-ignition@4.4.3:
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/ghost-ignition/-/ghost-ignition-4.4.3.tgz#c837ab11e1f3a1cfd22cc24df6b506a9afc1bc25"
-  integrity sha512-eViE/ae+AGV/YmVbTq2W5TBWVu724EUJ0pjtSwa4q6o1+fXxMIqoELJaxMX+Gc9PBK0nI3J+E0JI8GdrEiqndg==
-  dependencies:
-    "@tryghost/elasticsearch-bunyan" "^0.1.0"
-    bunyan "1.8.15"
-    bunyan-loggly "1.4.2"
-    caller "1.0.1"
-    debug "4.3.1"
-    find-root "1.1.0"
-    fs-extra "9.1.0"
-    gelf-stream "1.1.1"
-    json-stringify-safe "5.0.1"
-    lodash "4.17.20"
-    moment "2.27.0"
-    nconf "0.10.0"
-    prettyjson "1.2.1"
-    uuid "8.3.2"
-
 ghost-ignition@4.6.1:
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/ghost-ignition/-/ghost-ignition-4.6.1.tgz#c6ddfecdd119f4c3479960423c5c2e0733f0708d"
@@ -3970,15 +3943,15 @@ lodash.sortby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
 
-lodash@4.17.20, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19:
-  version "4.17.20"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
-  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
-
 lodash@4.17.21, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+
+lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19:
+  version "4.17.20"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
+  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
 
 log-symbols@3.0.0:
   version "3.0.0"
