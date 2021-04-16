@@ -18,15 +18,15 @@
     "access": "public"
   },
   "devDependencies": {
-    "mocha": "7.2.0",
-    "rewire": "5.0.0",
-    "should": "13.2.3",
-    "sinon": "9.2.4"
+    "mocha": "^7.2.0",
+    "rewire": "^5.0.0",
+    "should": "^13.2.3",
+    "sinon": "^9.2.4"
   },
   "dependencies": {
-    "cheerio": "0.22.0",
-    "moment": "2.27.0",
-    "moment-timezone": "0.5.31",
+    "cheerio": "^0.22.0",
+    "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
     "remark": "^11.0.2",
     "remark-footnotes": "^1.0.0",
     "unist-util-visit": "^2.0.0"

@@ -21,12 +21,12 @@
     "access": "public"
   },
   "devDependencies": {
-    "mocha": "7.2.0",
-    "should": "13.2.3",
-    "sinon": "9.2.4"
+    "mocha": "^7.2.0",
+    "should": "^13.2.3",
+    "sinon": "^9.2.4"
   },
   "dependencies": {
-    "axios": "0.21.1",
+    "axios": "^0.21.1",
     "form-data": "^3.0.0",
     "jsonwebtoken": "^8.4.0"
   }
