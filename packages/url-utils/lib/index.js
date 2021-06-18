@@ -1,6 +1,5 @@
 // Contains all path information to be used throughout the codebase.
 const _ = require('lodash');
-const {URL} = require('url');
 const utils = require('./utils');
 
 // similar to Object.assign but will not override defaults if a source value is undefined
@@ -16,8 +15,9 @@ module.exports = class UrlUtils {
     /**
      * Initialization method to pass in URL configurations
      * @param {Object} options
-     * @param {String} options.url Ghost instance blog URL
-     * @param {String} options.adminUrl Ghost instance admin URL
+     * @param {Function} options.getSubdir
+     * @param {Function} options.getSiteUrl
+     * @param {Function} options.getAdminUrl Ghost instance admin URL
      * @param {Object} options.apiVersions configuration object which has defined `all` property which is an array of keys for other available properties
      * @param {('v2' | 'v3' | 'v4' | 'canary')} [options.defaultApiVersion] default API version which is one of the values from options.apiVersions
      * @param {('content' | 'admin')} [options.defaultApiType] default API type to be used and is one of the values from options.apiVersions
@@ -28,8 +28,6 @@ module.exports = class UrlUtils {
      */
     constructor(options = {}) {
         const defaultOptions = {
-            url: null,
-            adminUrl: null,
             apiVersions: null,
             slugs: null,
             redirectCacheMaxAge: null,
@@ -47,6 +45,10 @@ module.exports = class UrlUtils {
             type: this._config.defaultApiType,
             apiVersions: this._config.apiVersions
         };
+
+        this.getSubdir = options.getSubdir;
+        this.getSiteUrl = options.getSiteUrl;
+        this.getAdminUrl = options.getAdminUrl;
     }
 
     /**
@@ -73,48 +75,6 @@ module.exports = class UrlUtils {
         return utils.getVersionPath(_options);
     }
 
-    /**
-     * Returns the base URL of the site as set in the config.
-     *
-     * Secure:
-     * If the request is secure, we want to force returning the site url as https.
-     * Imagine Ghost runs with http, but nginx allows SSL connections.
-     *
-     * @param {boolean} secure
-     * @return {string} URL returns the url as defined in config, but always with a trailing `/`
-     */
-    getSiteUrl(secure = false) {
-        let siteUrl = this._config.url;
-
-        if (secure) {
-            siteUrl = this._config.url.replace('http://', 'https://');
-        }
-
-        if (!siteUrl.match(/\/$/)) {
-            siteUrl += '/';
-        }
-
-        return siteUrl;
-    }
-
-    /**
-     * Returns a subdirectory URL, if defined so in the config.
-     * @return {string} URL a subdirectory if configured.
-     */
-    getSubdir() {
-        // Parse local path location
-        let {pathname} = new URL(this._config.url);
-        let subdir;
-
-        // Remove trailing slash
-        if (pathname !== '/') {
-            pathname = pathname.replace(/\/$/, '');
-        }
-
-        subdir = pathname === '/' ? '' : pathname;
-        return subdir;
-    }
-
     getProtectedSlugs() {
         var subDir = this.getSubdir();
 
@@ -132,26 +92,6 @@ module.exports = class UrlUtils {
      */
     urlJoin(...parts) {
         return utils.urlJoin(parts, {rootUrl: this.getSiteUrl()});
-    }
-
-    /**
-     * admin:url is optional
-     */
-    getAdminUrl() {
-        let adminUrl = this._config.adminUrl;
-        const subDir = this.getSubdir();
-
-        if (!adminUrl) {
-            return;
-        }
-
-        if (!adminUrl.match(/\/$/)) {
-            adminUrl += '/';
-        }
-
-        adminUrl = this.urlJoin(adminUrl, subDir, '/');
-        adminUrl = utils.deduplicateSubdirectory(adminUrl, this.getSiteUrl());
-        return adminUrl;
     }
 
     // ## createUrl
@@ -278,6 +218,7 @@ module.exports = class UrlUtils {
         } else if (context === 'api') {
             urlPath = this.getAdminUrl() || this.getSiteUrl();
             let apiPath = this.getApiPath();
+
             // CASE: with or without protocol? If your blog url (or admin url) is configured to http, it's still possible that e.g. nginx allows both https+http.
             // So it depends how you serve your blog. The main focus here is to avoid cors problems.
             // @TODO: rename cors
