@@ -7,7 +7,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
+    "test": "NODE_ENV=testing c8 mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
     "posttest": "yarn lint",
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
@@ -22,6 +22,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "c8": "7.7.3",
     "istanbul": "0.4.5",
     "mocha": "7.2.0",
     "should": "13.2.3",

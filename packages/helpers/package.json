@@ -14,7 +14,7 @@
     "build": "rollup -c",
     "prepare": "yarn build",
     "pretest": "yarn build",
-    "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
+    "test": "NODE_ENV=testing c8 mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
     "posttest": "yarn lint",
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
@@ -33,6 +33,7 @@
   "devDependencies": {
     "@babel/core": "7.14.6",
     "@babel/polyfill": "7.12.1",
+    "c8": "7.7.3",
     "istanbul": "0.4.5",
     "mocha": "7.2.0",
     "rollup": "2.53.1",
