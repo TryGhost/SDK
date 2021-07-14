@@ -13,8 +13,7 @@
     "dev": "echo \"Implement me!\"",
     "presetup": "yarn",
     "setup": "lerna bootstrap",
-    "test:parent": "NODE_ENV=testing mocha ./test/**/*.test.js",
-    "test": "yarn test:parent && lerna run test",
+    "test": "lerna run test",
     "lint": "lerna run lint",
     "preship": "yarn test",
     "ship": "lerna publish"
