@@ -285,7 +285,7 @@ module.exports = function GhostAdminAPI(options) {
         });
     }
 
-    function makeResourceRequest(resourceType, queryParams = {}, body = {}, method = 'GET', urlParams = {}) {
+    function makeResourceRequest(resourceType, queryParams = {}, body = "", method = 'GET', urlParams = {}) {
         return makeApiRequest({
             endpoint: endpointFor(resourceType, urlParams),
             method,
