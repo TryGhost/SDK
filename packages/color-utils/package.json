@@ -40,6 +40,6 @@
     "sinon": "11.1.2"
   },
   "dependencies": {
-    "color": "^3.2.1"
+    "color": "^4.0.0"
   }
 }
