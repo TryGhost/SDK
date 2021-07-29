@@ -1,0 +1,4 @@
+coverage
+cjs/*
+umd/*
+es/*
