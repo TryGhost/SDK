@@ -26,7 +26,12 @@ module.exports = function GhostAdminAPI(options) {
                         const val = encodeURIComponent([].concat(parameters[key]).join(','));
                         return parts.concat(`${key}=${val}`);
                     }, []).join('&');
-                }
+                },
+
+                httpsAgent: new require('https').Agent({
+                    rejectUnauthorized: false
+                })
+
             }).then((res) => {
                 return res.data;
             });
