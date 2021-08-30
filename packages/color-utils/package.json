@@ -29,7 +29,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "mocha": "9.1.0",
+    "mocha": "9.1.1",
     "rollup": "2.56.3",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
