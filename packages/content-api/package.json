@@ -30,9 +30,9 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/core": "7.15.0",
+    "@babel/core": "7.15.4",
     "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.15.0",
+    "@babel/preset-env": "7.15.4",
     "c8": "7.8.0",
     "core-js": "3.17.2",
     "eslint-plugin-ghost": "1.5.0",
