@@ -2,9 +2,9 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const rewire = require('rewire');
 const sinon = require('sinon');
-const htmlTransform = rewire('../../../lib/utils/_html-transform');
+
+const cheerio = require('cheerio');
 const htmlAbsoluteToRelative = require('../../../lib/utils/html-absolute-to-relative');
 
 describe('utils: htmlAbsoluteToRelative()', function () {
@@ -189,17 +189,14 @@ describe('utils: htmlAbsoluteToRelative()', function () {
     });
 
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy, rewireRestore;
+        let cheerioLoadSpy;
 
         beforeEach(function () {
-            const cheerio = htmlTransform.__get__('cheerio');
             cheerioLoadSpy = sinon.spy(cheerio, 'load');
-            rewireRestore = htmlTransform.__set__('cheerio', cheerio);
         });
 
         afterEach(function () {
             cheerioLoadSpy.restore();
-            rewireRestore();
         });
 
         it('when html has no absolute URLs matching siteUrl', function () {

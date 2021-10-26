@@ -5,6 +5,7 @@ require('../../utils');
 const sinon = require('sinon');
 const rewire = require('rewire');
 
+const cheerio = require('cheerio');
 const htmlTransform = rewire('../../../lib/utils/_html-transform');
 const htmlRelativeToAbsolute = require('../../../lib/utils/html-relative-to-absolute');
 
@@ -245,7 +246,6 @@ describe('utils: htmlRelativeToAbsolute()', function () {
         let cheerioLoadSpy, rewireRestore;
 
         beforeEach(function () {
-            const cheerio = htmlTransform.__get__('cheerio');
             cheerioLoadSpy = sinon.spy(cheerio, 'load');
             rewireRestore = htmlTransform.__set__('cheerio', cheerio);
         });
