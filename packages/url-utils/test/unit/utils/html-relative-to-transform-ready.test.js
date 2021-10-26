@@ -3,9 +3,8 @@
 require('../../utils');
 
 const sinon = require('sinon');
-const rewire = require('rewire');
 
-const htmlTransform = rewire('../../../lib/utils/_html-transform');
+const cheerio = require('cheerio');
 const htmlRelativeToTransformReady = require('../../../lib/utils/html-relative-to-transform-ready');
 
 describe('utils: htmlRelativeToTransformReady()', function () {
@@ -237,17 +236,14 @@ describe('utils: htmlRelativeToTransformReady()', function () {
     });
 
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy, rewireRestore;
+        let cheerioLoadSpy;
 
         beforeEach(function () {
-            const cheerio = htmlTransform.__get__('cheerio');
             cheerioLoadSpy = sinon.spy(cheerio, 'load');
-            rewireRestore = htmlTransform.__set__('cheerio', cheerio);
         });
 
         afterEach(function () {
             cheerioLoadSpy.restore();
-            rewireRestore();
         });
 
         it('when html has no attributes that would be transformed', function () {

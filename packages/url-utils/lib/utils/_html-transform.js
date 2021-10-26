@@ -1,5 +1,3 @@
-const cheerio = require('cheerio');
-
 function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -18,6 +16,7 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
         return html;
     }
 
+    const cheerio = require('cheerio');
     const htmlContent = cheerio.load(html, {decodeEntities: false});
 
     // replacements is keyed with the attr name + original relative value so
