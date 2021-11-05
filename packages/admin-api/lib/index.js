@@ -208,6 +208,10 @@ module.exports = function GhostAdminAPI(options) {
                 formData.append('ref', data.ref);
             }
 
+            if (data.thumbnail) {
+                formData.append('thumbnail', fs.createReadStream(data.thumbnail));
+            }
+
             return formData;
         }
     }
@@ -225,6 +229,30 @@ module.exports = function GhostAdminAPI(options) {
             let formData = getFormData(data);
 
             return makeUploadRequest('images', formData, endpointFor('images/upload'));
+        }
+    };
+
+    api.media = {
+        /**
+         *
+         * @param {Object} data
+         * @param {String} data.file - file path to a media file
+         * @param {String} [data.thumbnail] - file path to a thumbnail file
+         * @param {String} [data.purpose]
+         * @returns Promise<Object>
+         */
+        upload(data) {
+            if (!data) {
+                return Promise.reject(new Error('Missing data'));
+            }
+
+            if (!isValidUpload(data)) {
+                return Promise.reject(new Error('Must be of FormData or include path'));
+            }
+
+            let formData = getFormData(data);
+
+            return makeUploadRequest('media', formData, endpointFor('media/upload'));
         }
     };
 
