@@ -50,10 +50,10 @@ function textColorForBackgroundColor(background) {
 
     // shared with Portal https://github.com/TryGhost/Portal/blob/317876f20d22431df15e655ea6cc197fe636615e/src/utils/contrast-color.js#L26-L29
     const yiq = (
-        backgroundColor.red() * 299 +
-        backgroundColor.green() * 587 +
-        backgroundColor.b() * 114
-    ) / 1000;
+        backgroundColor.red() * 0.299 +
+        backgroundColor.green() * 0.587 +
+        backgroundColor.b() * 0.114
+    );
 
     return (yiq >= 186) ? black : white;
 }

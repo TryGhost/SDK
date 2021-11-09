@@ -58,13 +58,13 @@ var Tags = function Tags(props) {
     get: function get() {
       if (props.separator === '') {
         return null;
-      } else if (_react["default"].isValidElement(props.separator)) {
-        return _react["default"].createElement(_react["default"].Fragment, {
+      } else if ( /*#__PURE__*/_react["default"].isValidElement(props.separator)) {
+        return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, {
           key: generateKey('separator')
         }, props.separator);
       }
 
-      return _react["default"].createElement("span", {
+      return /*#__PURE__*/_react["default"].createElement("span", {
         className: props.separatorClasses,
         key: generateKey('separator')
       }, props.separator);
@@ -72,14 +72,14 @@ var Tags = function Tags(props) {
   });
 
   if (props.prefix) {
-    opts.prefix = _react["default"].isValidElement(props.prefix) ? props.prefix : _react["default"].createElement("span", {
+    opts.prefix = /*#__PURE__*/_react["default"].isValidElement(props.prefix) ? props.prefix : /*#__PURE__*/_react["default"].createElement("span", {
       className: props.prefixClasses,
       key: "prefix"
     }, props.prefix);
   }
 
   if (props.suffix) {
-    opts.suffix = _react["default"].isValidElement(props.suffix) ? props.suffix : _react["default"].createElement("span", {
+    opts.suffix = /*#__PURE__*/_react["default"].isValidElement(props.suffix) ? props.suffix : /*#__PURE__*/_react["default"].createElement("span", {
       className: props.suffixClasses,
       key: "suffix"
     }, props.suffix);
@@ -88,13 +88,13 @@ var Tags = function Tags(props) {
   opts.fn = function process(tag) {
     var tagLink = props.permalink;
     tagLink = tagLink.replace(/:slug/, tag.slug) || "/".concat(tag.slug, "/");
-    return props.autolink ? _react["default"].createElement("span", {
+    return props.autolink ? /*#__PURE__*/_react["default"].createElement("span", {
       className: props.classes,
       key: tag.slug
-    }, _react["default"].createElement(_gatsbyLink["default"], {
+    }, /*#__PURE__*/_react["default"].createElement(_gatsbyLink["default"], {
       to: tagLink,
       className: props.linkClasses
-    }, tag.name)) : _react["default"].createElement("span", {
+    }, tag.name)) : /*#__PURE__*/_react["default"].createElement("span", {
       className: props.classes,
       key: tag.slug
     }, tag.name);
