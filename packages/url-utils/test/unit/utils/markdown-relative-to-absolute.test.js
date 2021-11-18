@@ -6,6 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const sinon = require('sinon');
 const rewire = require('rewire');
+
+const remark = require('remark');
 const markdownTransform = rewire('../../../lib/utils/_markdown-transform');
 const markdownRelativeToAbsolute = rewire('../../../lib/utils/markdown-relative-to-absolute');
 
@@ -114,7 +116,6 @@ Testing <a href="http://my-ghost-blog.com/link">Inline</a> with **markdown**
 
         beforeEach(function () {
             sandbox = sinon.createSandbox();
-            const remark = markdownTransform.__get__('remark');
             remarkSpy = sinon.spy(remark);
             markdownTransform.__set__('remark', remarkSpy);
             markdownRelativeToAbsolute.__set__('markdownTransform', markdownTransform);
