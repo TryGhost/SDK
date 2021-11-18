@@ -1,4 +1,4 @@
-const remark = require('remark');
+let remark;
 const footnotes = require('remark-footnotes');
 const visit = require('unist-util-visit');
 
@@ -24,6 +24,10 @@ function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath,
     }
 
     const replacements = [];
+
+    if (!remark) {
+        remark = require('remark');
+    }
 
     const tree = remark()
         .use({settings: {commonmark: true}})

@@ -6,6 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const sinon = require('sinon');
 const rewire = require('rewire');
+
+const remark = require('remark');
 const markdownTransform = rewire('../../../lib/utils/_markdown-transform');
 const markdownRelativeToTransformReady = rewire('../../../lib/utils/markdown-relative-to-transform-ready');
 
@@ -140,7 +142,6 @@ Just testing
 
         beforeEach(function () {
             sandbox = sinon.createSandbox();
-            const remark = markdownTransform.__get__('remark');
             remarkSpy = sinon.spy(remark);
             markdownTransform.__set__('remark', remarkSpy);
             markdownRelativeToTransformReady.__set__('markdownTransform', markdownTransform);
