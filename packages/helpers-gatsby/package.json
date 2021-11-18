@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/helpers-gatsby",
-  "version": "1.0.60",
+  "version": "1.0.61",
   "repository": "https://github.com/TryGhost/SDK/tree/master/packages/helpers-gatsby",
   "author": "Ghost Foundation",
   "license": "MIT",
