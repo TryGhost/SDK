@@ -34,7 +34,7 @@
     "@babel/preset-env": "7.16.4",
     "c8": "7.10.0",
     "mocha": "7.2.0",
-    "rollup": "2.60.0",
+    "rollup": "2.60.1",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
