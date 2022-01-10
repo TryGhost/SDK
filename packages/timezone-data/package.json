@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.16.7",
-    "@babel/preset-env": "7.16.7",
+    "@babel/preset-env": "7.16.8",
     "c8": "7.11.0",
     "mocha": "7.2.0",
     "rollup": "2.63.0",
