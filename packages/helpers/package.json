@@ -36,7 +36,7 @@
     "c8": "7.11.0",
     "istanbul": "0.4.5",
     "mocha": "7.2.0",
-    "rollup": "2.67.0",
+    "rollup": "2.67.1",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
