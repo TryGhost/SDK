@@ -226,9 +226,7 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
-            let formData = getFormData(data);
-
-            return makeUploadRequest('images', formData, endpointFor('images/upload'));
+            return makeUploadRequest('images', data, endpointFor('images/upload'));
         }
     };
 
@@ -250,9 +248,7 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
-            let formData = getFormData(data);
-
-            return makeUploadRequest('media', formData, endpointFor('media/upload'));
+            return makeUploadRequest('media', data, endpointFor('media/upload'));
         }
     };
 
@@ -273,9 +269,7 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
-            let formData = getFormData(data);
-
-            return makeUploadRequest('files', formData, endpointFor('files/upload'));
+            return makeUploadRequest('files', data, endpointFor('files/upload'));
         }
     };
 
@@ -301,9 +295,7 @@ module.exports = function GhostAdminAPI(options) {
                 return Promise.reject(new Error('Must be of FormData or include path'));
             }
 
-            let formData = getFormData(data);
-
-            return makeUploadRequest('themes', formData, endpointFor('themes/upload'));
+            return makeUploadRequest('themes', data, endpointFor('themes/upload'));
         },
         activate(name) {
             if (!name) {
@@ -317,14 +309,16 @@ module.exports = function GhostAdminAPI(options) {
     return api;
 
     function makeUploadRequest(resourceType, data, endpoint) {
+        let formData = getFormData(data);
+
         const headers = {
-            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`
         };
 
         return makeApiRequest({
             endpoint: endpoint,
             method: 'POST',
-            body: data,
+            body: formData,
             headers
         }).then((apiData) => {
             if (!Array.isArray(apiData[resourceType])) {
