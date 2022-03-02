@@ -202,6 +202,8 @@ module.exports = function GhostAdminAPI(options) {
         if (data.file) {
             formData = new FormData();
             formData.append('file', fs.createReadStream(data.file));
+            // NOTE: this default "image" doesn't work for all upload endpoints. Should be moved from here and required as
+            //       an explicit method parameter. Leaving it here for now as I'm focusing on a different problem.
             formData.append('purpose', data.purpose || 'image');
 
             if (data.ref) {
