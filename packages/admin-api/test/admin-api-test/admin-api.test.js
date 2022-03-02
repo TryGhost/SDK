@@ -71,10 +71,15 @@ describe('GhostAdminAPI general', function () {
         });
     });
 
-    describe('api.webhooks API', function () {
-        it('webhook exposes only add, delete, and edit methods', function () {
-            const api = new GhostAdminAPI(config);
-            should.deepEqual(Object.keys(api.webhooks), ['add', 'edit', 'delete']);
-        });
+    it('Exposes an API', function () {
+        const api = new GhostAdminAPI(config);
+        const keyMethodMap = {
+            webhooks: ['add', 'edit', 'delete'],
+            files: ['upload']
+        };
+
+        for (const key in keyMethodMap) {
+            should.deepEqual(Object.keys(api[key]), keyMethodMap[key]);
+        }
     });
 });

@@ -256,6 +256,29 @@ module.exports = function GhostAdminAPI(options) {
         }
     };
 
+    api.files = {
+        /**
+         *
+         * @param {Object} data
+         * @param {String} data.file - file path to a media file
+         * @param {String} [data.ref] - reference field returned in the response
+         * @returns Promise<Object>
+         */
+        upload(data) {
+            if (!data) {
+                return Promise.reject(new Error('Missing data'));
+            }
+
+            if (!isValidUpload(data)) {
+                return Promise.reject(new Error('Must be of FormData or include path'));
+            }
+
+            let formData = getFormData(data);
+
+            return makeUploadRequest('files', formData, endpointFor('files/upload'));
+        }
+    };
+
     api.config = {
         read() {
             return makeResourceRequest('config', {}, {});
