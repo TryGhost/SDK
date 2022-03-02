@@ -74,8 +74,18 @@ describe('GhostAdminAPI general', function () {
     it('Exposes an API', function () {
         const api = new GhostAdminAPI(config);
         const keyMethodMap = {
+            posts: ['read', 'browse', 'add', 'edit', 'delete'],
+            pages: ['read', 'browse', 'add', 'edit', 'delete'],
+            tags: ['read', 'browse', 'add', 'edit', 'delete'],
+            members: ['read', 'browse', 'add', 'edit', 'delete'],
+            users: ['read', 'browse', 'add', 'edit', 'delete'],
             webhooks: ['add', 'edit', 'delete'],
-            files: ['upload']
+            themes: ['upload', 'activate'],
+            images: ['upload'],
+            media: ['upload'],
+            files: ['upload'],
+            config: ['read'],
+            site: ['read']
         };
 
         for (const key in keyMethodMap) {
