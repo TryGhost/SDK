@@ -218,14 +218,6 @@ module.exports = function GhostAdminAPI(options) {
 
     api.images = {
         upload(data) {
-            if (!data) {
-                return Promise.reject(new Error('Missing data'));
-            }
-
-            if (!isValidUpload(data)) {
-                return Promise.reject(new Error('Must be of FormData or include path'));
-            }
-
             return makeUploadRequest('images', data, endpointFor('images/upload'));
         }
     };
@@ -240,14 +232,6 @@ module.exports = function GhostAdminAPI(options) {
          * @returns Promise<Object>
          */
         upload(data) {
-            if (!data) {
-                return Promise.reject(new Error('Missing data'));
-            }
-
-            if (!isValidUpload(data)) {
-                return Promise.reject(new Error('Must be of FormData or include path'));
-            }
-
             return makeUploadRequest('media', data, endpointFor('media/upload'));
         }
     };
@@ -261,14 +245,6 @@ module.exports = function GhostAdminAPI(options) {
          * @returns Promise<Object>
          */
         upload(data) {
-            if (!data) {
-                return Promise.reject(new Error('Missing data'));
-            }
-
-            if (!isValidUpload(data)) {
-                return Promise.reject(new Error('Must be of FormData or include path'));
-            }
-
             return makeUploadRequest('files', data, endpointFor('files/upload'));
         }
     };
@@ -287,14 +263,6 @@ module.exports = function GhostAdminAPI(options) {
 
     api.themes = {
         upload(data) {
-            if (!data) {
-                return Promise.reject(new Error('Missing data'));
-            }
-
-            if (!isValidUpload(data)) {
-                return Promise.reject(new Error('Must be of FormData or include path'));
-            }
-
             return makeUploadRequest('themes', data, endpointFor('themes/upload'));
         },
         activate(name) {
@@ -309,6 +277,14 @@ module.exports = function GhostAdminAPI(options) {
     return api;
 
     function makeUploadRequest(resourceType, data, endpoint) {
+        if (!data) {
+            return Promise.reject(new Error('Missing data'));
+        }
+
+        if (!isValidUpload(data)) {
+            return Promise.reject(new Error('Must be of FormData or include path'));
+        }
+
         let formData = getFormData(data);
 
         const headers = {
