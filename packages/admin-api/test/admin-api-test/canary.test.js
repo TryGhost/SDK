@@ -49,4 +49,34 @@ describe('GhostAdminAPI canary', function () {
             api.config.read();
         });
     });
+
+    describe('api.files.upload', function () {
+        it('makes a POST request to the files upload endpoint', function (done) {
+            const api = new GhostAdminAPI(config);
+
+            server.once('url', ({pathname}) => {
+                should.equal(pathname, `/ghost/api/${API_VERSION}/admin/files/upload/`);
+                done();
+            });
+
+            api.files.upload({
+                file: __dirname + '/../fixtures/ghost-logo.png'
+            });
+        });
+    });
+
+    describe('api.images.upload', function () {
+        it('makes a POST request to the images upload endpoint', function (done) {
+            const api = new GhostAdminAPI(config);
+
+            server.once('url', ({pathname}) => {
+                should.equal(pathname, `/ghost/api/${API_VERSION}/admin/images/upload/`);
+                done();
+            });
+
+            api.images.upload({
+                file: __dirname + '/../fixtures/ghost-logo.png'
+            });
+        });
+    });
 });
