@@ -21,4 +21,18 @@ describe('Token', function () {
             audience: new RegExp(`^/v4/admin/$`)
         });
     });
+
+    it('generates a valid token based only on key', function () {
+        const key = 'something:secret';
+
+        const result = token(key);
+        const decoded = jwt.decode(result, {complete: true});
+
+        should.equal(decoded.payload.aud, `/admin/`);
+
+        const secret = Buffer.from('secret', 'hex');
+        jwt.verify(result, secret, {
+            audience: new RegExp(`^/admin/$`)
+        });
+    });
 });

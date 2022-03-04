@@ -8,11 +8,12 @@ const jwt = require('jsonwebtoken');
  */
 module.exports = function token(key, version) {
     const [id, secret] = key.split(':');
+    const audience = version ? `/${version}/admin/` : '/admin/';
 
     return jwt.sign({}, Buffer.from(secret, 'hex'), { // eslint-disable-line no-undef
         keyid: id,
         algorithm: 'HS256',
         expiresIn: '5m',
-        audience: `/${version}/admin/`
+        audience
     });
 };
