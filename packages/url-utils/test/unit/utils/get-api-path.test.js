@@ -9,8 +9,8 @@ describe('utils: getApiPath()', function () {
     const apiVersions = {
         all: ['v2', 'v3', 'v4', 'canary'],
         canary: {
-            admin: 'canary/admin',
-            content: 'canary/content'
+            admin: 'admin',
+            content: 'content'
         },
         v4: {
             admin: 'v4/admin',
@@ -36,8 +36,8 @@ describe('utils: getApiPath()', function () {
         getApiPath({version: 'v4', type: 'admin', baseApiPath: '/ghost/api', apiVersions}).should.eql('/ghost/api/v4/admin/', 'v4 admin');
         getApiPath({version: 'v4', type: 'content', baseApiPath: '/ghost/api', apiVersions}).should.eql('/ghost/api/v4/content/', 'v4 content');
 
-        getApiPath({version: 'canary', type: 'admin', baseApiPath: '/ghost/api', apiVersions}).should.eql('/ghost/api/canary/admin/', 'canary admin');
-        getApiPath({version: 'canary', type: 'content', baseApiPath: '/ghost/api', apiVersions}).should.eql('/ghost/api/canary/content/', 'canary content');
+        getApiPath({version: 'canary', type: 'admin', baseApiPath: '/ghost/api', apiVersions}).should.eql('/ghost/api/admin/', 'canary admin');
+        getApiPath({version: 'canary', type: 'content', baseApiPath: '/ghost/api', apiVersions}).should.eql('/ghost/api/content/', 'canary content');
     });
 
     it('handles trailing slash in options.baseApiPath', function () {
