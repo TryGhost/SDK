@@ -349,7 +349,7 @@ module.exports = function GhostAdminAPI(options) {
         const url = `${apiUrl}${endpoint}`;
 
         headers = Object.assign({}, headers, {
-            Authorization: `Ghost ${token(version, key)}`
+            Authorization: `Ghost ${token(key, version)}`
         });
 
         return makeRequest({

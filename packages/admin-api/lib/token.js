@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = function token(version, key) {
+/**
+ *
+ * @param {String} key - API key to sign JWT with
+ * @param {String} version - API version to use as a part of audience
+ * @returns
+ */
+module.exports = function token(key, version) {
     const [id, secret] = key.split(':');
 
     return jwt.sign({}, Buffer.from(secret, 'hex'), { // eslint-disable-line no-undef
