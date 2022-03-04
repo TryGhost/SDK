@@ -353,9 +353,15 @@ module.exports = function GhostAdminAPI(options) {
         const {url: apiUrl, key, version, makeRequest} = config;
         const url = `${apiUrl}${endpoint}`;
 
-        headers = Object.assign({}, headers, {
+        const ghostHeaders = {
             Authorization: `Ghost ${token(key, version)}`
-        });
+        };
+
+        if (!version || ['v4', 'canary'].includes(version)) {
+            ghostHeaders['Accept-Version'] = version || 'v5';
+        }
+
+        headers = Object.assign({}, headers, ghostHeaders);
 
         return makeRequest({
             url,
@@ -367,7 +373,7 @@ module.exports = function GhostAdminAPI(options) {
             /**
              * @NOTE:
              *
-             * If you are overriding `makeRequest`, we can't garantee that the returned format is the same, but
+             * If you are overriding `makeRequest`, we can't garante that the returned format is the same, but
              * we try to detect & return a proper error instance.
              */
             if (err.response && err.response.data && err.response.data.errors) {
