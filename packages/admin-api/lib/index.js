@@ -3,7 +3,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const token = require('./token');
 
-const supportedVersions = ['v2', 'v3', 'v4', 'canary'];
+const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const packageName = '@tryghost/admin-api';
 
 module.exports = function GhostAdminAPI(options) {
@@ -64,6 +64,11 @@ module.exports = function GhostAdminAPI(options) {
     }
     if (!/[0-9a-f]{24}:[0-9a-f]{64}/.test(config.key)) {
         throw new Error(`${packageName} Config Invalid: 'key' ${config.key} must have the following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters`);
+    }
+
+    if (config.version === 'v5') {
+        // NOTE: the version parameter is supported but not necessary for non-versioned API, starting with Ghost v5
+        delete config.version;
     }
 
     const resources = [
