@@ -101,7 +101,11 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
 
         const headers = membersToken ? {
             Authorization: `GhostMembers ${membersToken}`
-        } : undefined;
+        } : {};
+
+        if (!version || ['v4', 'canary'].includes(version)) {
+            headers['Accept-Version'] = version || 'v5';
+        }
 
         params = Object.assign({key}, params);
 

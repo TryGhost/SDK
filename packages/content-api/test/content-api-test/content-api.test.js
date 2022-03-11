@@ -76,5 +76,45 @@ describe('GhostContentApi', function () {
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].params.key, '0123456789abcdef0123456789');
         });
+
+        it('Adds Accept-Version header for v4, v5, canary, and no API versions', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                data: {
+                    settings: {}
+                }
+            }));
+
+            const api = new GhostContentApi({
+                version: 'canary',
+                url: `http://ghost.local`,
+                key: '0123456789abcdef0123456789',
+                makeRequest: makeRequestStub
+            });
+
+            await api.settings.browse();
+
+            makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'canary');
+        });
+
+        it('Does NOT add Accept-Version header for v3 API', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                data: {
+                    settings: {}
+                }
+            }));
+
+            const api = new GhostContentApi({
+                version: 'v3',
+                url: `http://ghost.local`,
+                key: '0123456789abcdef0123456789',
+                makeRequest: makeRequestStub
+            });
+
+            await api.settings.browse();
+
+            makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], undefined);
+        });
     });
 });
