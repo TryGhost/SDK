@@ -2,6 +2,7 @@
 // const testUtils = require('./utils');
 
 const should = require('should');
+const sinon = require('sinon');
 
 const GhostContentApi = require('../../cjs/content-api');
 
