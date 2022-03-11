@@ -53,7 +53,7 @@ export default function GhostContentAPI({url, key, host, ghostPath = 'ghost', ve
     }
     const api = ['posts', 'authors', 'tags', 'pages', 'settings'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
-            return makeRequest(resourceType, options, null, memberToken);
+            return makeApiRequest(resourceType, options, null, memberToken);
         }
         function read(data, options = {}, memberToken) {
             if (!data || !data.id && !data.slug) {
@@ -62,7 +62,7 @@ export default function GhostContentAPI({url, key, host, ghostPath = 'ghost', ve
 
             const params = Object.assign({}, data, options);
 
-            return makeRequest(resourceType, params, data.id || `slug/${data.slug}`, memberToken);
+            return makeApiRequest(resourceType, params, data.id || `slug/${data.slug}`, memberToken);
         }
 
         return Object.assign(apiObject, {
@@ -77,7 +77,7 @@ export default function GhostContentAPI({url, key, host, ghostPath = 'ghost', ve
 
     return api;
 
-    function makeRequest(resourceType, params, id, membersToken = null) {
+    function makeApiRequest(resourceType, params, id, membersToken = null) {
         if (!membersToken && !key) {
             return Promise.reject(
                 new Error(`${name} Config Missing: 'key' is required.`)
