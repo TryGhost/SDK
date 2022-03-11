@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const supportedVersions = ['v2', 'v3', 'v4', 'canary'];
+const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const name = '@tryghost/content-api';
 
 const defaultMakeRequest = ({url, method, params, headers}) => {
@@ -44,10 +44,7 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
         return GhostContentAPI({url, key, version, ghostPath, makeRequest});
     }
 
-    if (!version) {
-        throw new Error(`${name} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
-    }
-    if (!supportedVersions.includes(version)) {
+    if (version && !supportedVersions.includes(version)) {
         throw new Error(`${name} Config Invalid: 'version' ${version} is not supported`);
     }
     if (!url) {
@@ -103,14 +100,17 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
             Authorization: `GhostMembers ${membersToken}`
         } : {};
 
-        if (!version || ['v4', 'canary'].includes(version)) {
+        if (!version || ['v4', 'v5', 'canary'].includes(version)) {
             headers['Accept-Version'] = version || 'v5';
         }
 
         params = Object.assign({key}, params);
+        const apiUrl = version
+            ? `${url}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`
+            : `${url}/${ghostPath}/api/content/${resourceType}/${id ? id + '/' : ''}`;
 
         return makeRequest({
-            url: `${url}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`,
+            url: apiUrl,
             method: 'get',
             params,
             headers
