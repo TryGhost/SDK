@@ -3,6 +3,19 @@ import axios from 'axios';
 const supportedVersions = ['v2', 'v3', 'v4', 'canary'];
 const name = '@tryghost/content-api';
 
+const defaultMakeRequest = ({url, method, params, headers}) => {
+    return axios[method](url, {
+        params,
+        paramsSerializer: (parameters) => {
+            return Object.keys(parameters).reduce((parts, k) => {
+                const val = encodeURIComponent([].concat(parameters[k]).join(','));
+                return parts.concat(`${k}=${val}`);
+            }, []).join('&');
+        },
+        headers
+    });
+};
+
 /**
  *
  * @param {Object} options
@@ -10,10 +23,11 @@ const name = '@tryghost/content-api';
  * @param {String} options.key
  * @param {String} [options.ghostPath]
  * @param {String} [options.version]
+ * @param {Function} [options.makeRequest]
  * @param {String} [options.host] Deprecated
  * @returns
  */
-export default function GhostContentAPI({url, key, host, ghostPath = 'ghost', version}) {
+export default function GhostContentAPI({url, key, host, version, ghostPath = 'ghost', makeRequest = defaultMakeRequest}) {
     /**
      * host parameter is deprecated
      * @deprecated use "url" instead
@@ -27,7 +41,7 @@ export default function GhostContentAPI({url, key, host, ghostPath = 'ghost', ve
     }
 
     if (this instanceof GhostContentAPI) {
-        return GhostContentAPI({url, version, key});
+        return GhostContentAPI({url, key, version, ghostPath, makeRequest});
     }
 
     if (!version) {
@@ -89,45 +103,44 @@ export default function GhostContentAPI({url, key, host, ghostPath = 'ghost', ve
             Authorization: `GhostMembers ${membersToken}`
         } : undefined;
 
-        return axios.get(`${url}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`, {
-            params: Object.assign({key}, params),
-            paramsSerializer: (parameters) => {
-                return Object.keys(parameters).reduce((parts, k) => {
-                    const val = encodeURIComponent([].concat(parameters[k]).join(','));
-                    return parts.concat(`${k}=${val}`);
-                }, []).join('&');
-            },
+        params = Object.assign({key}, params);
+
+        return makeRequest({
+            url: `${url}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`,
+            method: 'get',
+            params,
             headers
-        }).then((res) => {
-            if (!Array.isArray(res.data[resourceType])) {
-                return res.data[resourceType];
-            }
-            if (res.data[resourceType].length === 1 && !res.data.meta) {
-                return res.data[resourceType][0];
-            }
-            return Object.assign(res.data[resourceType], {meta: res.data.meta});
-        }).catch((err) => {
-            if (err.response && err.response.data && err.response.data.errors) {
-                const props = err.response.data.errors[0];
-                const toThrow = new Error(props.message);
-                const keys = Object.keys(props);
+        })
+            .then((res) => {
+                if (!Array.isArray(res.data[resourceType])) {
+                    return res.data[resourceType];
+                }
+                if (res.data[resourceType].length === 1 && !res.data.meta) {
+                    return res.data[resourceType][0];
+                }
+                return Object.assign(res.data[resourceType], {meta: res.data.meta});
+            }).catch((err) => {
+                if (err.response && err.response.data && err.response.data.errors) {
+                    const props = err.response.data.errors[0];
+                    const toThrow = new Error(props.message);
+                    const keys = Object.keys(props);
 
-                toThrow.name = props.type;
+                    toThrow.name = props.type;
 
-                keys.forEach((k) => {
-                    toThrow[k] = props[k];
-                });
+                    keys.forEach((k) => {
+                        toThrow[k] = props[k];
+                    });
 
-                toThrow.response = err.response;
+                    toThrow.response = err.response;
 
-                // @TODO: remove in 2.0. We have enhanced the error handling, but we don't want to break existing implementations.
-                toThrow.request = err.request;
-                toThrow.config = err.config;
+                    // @TODO: remove in 2.0. We have enhanced the error handling, but we don't want to break existing implementations.
+                    toThrow.request = err.request;
+                    toThrow.config = err.config;
 
-                throw toThrow;
-            } else {
-                throw err;
-            }
-        });
+                    throw toThrow;
+                } else {
+                    throw err;
+                }
+            });
     }
 }

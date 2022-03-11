@@ -56,4 +56,25 @@ describe('GhostContentApi', function () {
             should.exist(api.settings);
         });
     });
+
+    describe('makeApiRequest', function () {
+        it('Can override makeRequest through constructor parameter', async function (){
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                data: {
+                    settings: {}
+                }
+            }));
+            const api = new GhostContentApi({
+                url: 'https://ghost.local',
+                version: 'v4',
+                key: '0123456789abcdef0123456789',
+                makeRequest: makeRequestStub
+            });
+
+            await api.settings.browse();
+
+            makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].params.key, '0123456789abcdef0123456789');
+        });
+    });
 });
