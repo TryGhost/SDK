@@ -3,8 +3,21 @@ import axios from 'axios';
 const supportedVersions = ['v2', 'v3', 'v4', 'canary'];
 const name = '@tryghost/content-api';
 
-export default function GhostContentAPI({url, host, ghostPath = 'ghost', version, key}) {
-    // host parameter is deprecated
+/**
+ *
+ * @param {Object} options
+ * @param {String} options.url
+ * @param {String} options.key
+ * @param {String} [options.ghostPath]
+ * @param {String} [options.version]
+ * @param {String} [options.host] Deprecated
+ * @returns
+ */
+export default function GhostContentAPI({url, key, host, ghostPath = 'ghost', version}) {
+    /**
+     * host parameter is deprecated
+     * @deprecated use "url" instead
+     */
     if (host) {
         // eslint-disable-next-line
         console.warn(`${name}: The 'host' parameter is deprecated, please use 'url' instead`);
