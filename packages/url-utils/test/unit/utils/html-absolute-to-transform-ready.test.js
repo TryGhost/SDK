@@ -190,6 +190,50 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
         /* eslint-enable no-irregular-whitespace */
     });
 
+    describe('css support', function () {
+        it('converts background-image', function () {
+            let html = `
+                <div style="background-image: url('http://my-ghost-blog.com/content/images/elva-fairy-320w.jpg')"></div>
+            `;
+
+            let result = htmlAbsoluteToTransformReady(html, siteUrl, options);
+
+            result.should.eql(`
+                <div style="background-image: url('__GHOST_URL__/content/images/elva-fairy-320w.jpg')"></div>
+            `);
+        });
+
+        it('converts background image with multiple values', function () {
+            let html = `
+            <div style="background: transparent url('https://ghost.local/content/images/2022/03/68omdg.png') 50% 50% cover no-repeat;">
+            </div>`;
+
+            let result = htmlAbsoluteToTransformReady(html, siteUrl, options);
+
+            result.should.eql(`
+            <div style="background: transparent url('https://ghost.local/content/images/2022/03/68omdg.png') 50% 50% cover no-repeat;">
+            </div>`);
+        });
+
+        it('converts background-image with multiple urls', function () {
+            let html = `
+                <div style="background-image:
+                        url('http://my-ghost-blog.com/content/images/elva-fairy-320w.jpg'),
+                        url('http://my-ghost-blog.com/content/images/elva-fairy-480w.jpg')">
+                </div>
+            `;
+
+            let result = htmlAbsoluteToTransformReady(html, siteUrl, options);
+
+            result.should.eql(`
+                <div style="background-image:
+                        url('__GHOST_URL__/content/images/elva-fairy-320w.jpg'),
+                        url('__GHOST_URL__/content/images/elva-fairy-480w.jpg')">
+                </div>
+            `);
+        });
+    });
+
     describe('DOM parsing is skipped', function () {
         let cheerioLoadSpy, rewireRestore;
 

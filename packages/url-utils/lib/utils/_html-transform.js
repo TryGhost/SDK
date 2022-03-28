@@ -8,6 +8,18 @@ function extractSrcsetUrls(srcset = '') {
     });
 }
 
+function extractStyleUrls(style = '') {
+    const urls = [];
+    const regex = /url\(['|"]([^)]+)['|"]\)/g;
+    let match;
+
+    while ((match = regex.exec(style)) !== null) {
+        urls.push(match[1]);
+    }
+
+    return urls;
+}
+
 function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options) {
     const defaultOptions = {assetsOnly: false, secure: false};
     const options = Object.assign({}, defaultOptions, _options || {});
@@ -42,7 +54,7 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
     }
 
     // find all of the relative url attributes that we care about
-    ['href', 'src', 'srcset'].forEach((attributeName) => {
+    ['href', 'src', 'srcset', 'style'].forEach((attributeName) => {
         htmlContent('[' + attributeName + ']').each((ix, el) => {
             // ignore <stream> elems and html inside of <code> elements
             if (el.name === 'stream' || htmlContent(el).closest('code').length) {
@@ -57,8 +69,14 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
             el = htmlContent(el);
             const originalValue = el.attr(attributeName);
 
-            if (attributeName === 'srcset') {
-                const urls = extractSrcsetUrls(originalValue);
+            if (attributeName === 'srcset' || attributeName === 'style') {
+                let urls;
+
+                if (attributeName === 'srcset') {
+                    urls = extractSrcsetUrls(originalValue);
+                } else {
+                    urls = extractStyleUrls(originalValue);
+                }
                 const absoluteUrls = urls.map(url => transformFunction(url, siteUrl, itemPath, options));
                 let transformedValue = originalValue;
 
