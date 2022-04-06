@@ -6,6 +6,15 @@ const token = require('./token');
 const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const packageName = '@tryghost/admin-api';
 
+/**
+ *
+ * @param {Object} options
+ * @param {String} options.url
+ * @param {String} [options.ghostPath]
+ * @param {String} [options.version]
+ * @param {Function} [options.makeRequest]
+ * @param {String} [options.host] Deprecated
+ */
 module.exports = function GhostAdminAPI(options) {
     if (this instanceof GhostAdminAPI) {
         return GhostAdminAPI(options);
@@ -35,7 +44,12 @@ module.exports = function GhostAdminAPI(options) {
 
     const config = Object.assign({}, defaultConfig, options);
 
-    // new GhostAdminAPI({host: '...'}) is deprecated
+    //
+    /**
+     * host parameter is deprecated
+     * @deprecated use "url" instead
+     * @example new GhostAdminAPI({host: '...'})
+     */
     if (config.host) {
         // eslint-disable-next-line
         console.warn(`${packageName}: The 'host' parameter is deprecated, please use 'url' instead`);

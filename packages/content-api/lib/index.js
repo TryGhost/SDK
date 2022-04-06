@@ -25,7 +25,6 @@ const defaultMakeRequest = ({url, method, params, headers}) => {
  * @param {String} [options.version]
  * @param {Function} [options.makeRequest]
  * @param {String} [options.host] Deprecated
- * @returns
  */
 export default function GhostContentAPI({url, key, host, version, ghostPath = 'ghost', makeRequest = defaultMakeRequest}) {
     /**
