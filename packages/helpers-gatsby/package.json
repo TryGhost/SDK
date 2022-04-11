@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/helpers-gatsby",
-  "version": "1.0.69",
+  "version": "1.0.70",
   "repository": "https://github.com/TryGhost/SDK/tree/master/packages/helpers-gatsby",
   "author": "Ghost Foundation",
   "license": "MIT",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@reach/router": "^1.2.1",
-    "@tryghost/helpers": "^1.1.62",
+    "@tryghost/helpers": "^1.1.63",
     "gatsby-link": "^2.9.0",
     "prop-types": "^15.6.2"
   },
