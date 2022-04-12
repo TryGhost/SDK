@@ -7,6 +7,25 @@ const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const packageName = '@tryghost/admin-api';
 
 /**
+ * This method can go away in favor of only sending 'Accept-Version` headers
+ * once the Ghost API removes a concept of version from it's URLS (with Ghost v5)
+ *
+ * @param {string} version version in `v{major}` format
+ * @returns
+ */
+const resolveAPIPrefix = (version) => {
+    let prefix;
+
+    if (version === 'v5') {
+        prefix = `/admin/`;
+    } else {
+        prefix = `/${version}/admin/`;
+    }
+
+    return prefix;
+};
+
+/**
  *
  * @param {Object} options
  * @param {String} options.url
@@ -346,12 +365,8 @@ module.exports = function GhostAdminAPI(options) {
     function endpointFor(resource, {id, slug, email} = {}) {
         const {ghostPath, version} = config;
 
-        let endpoint;
-        if (version === 'v5') {
-            endpoint = `/${ghostPath}/api/admin/${resource}/`;
-        } else {
-            endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
-        }
+        const apiPrefix = resolveAPIPrefix(version);
+        let endpoint = `/${ghostPath}/api${apiPrefix}${resource}/`;
 
         if (id) {
             endpoint = `${endpoint}${id}/`;
