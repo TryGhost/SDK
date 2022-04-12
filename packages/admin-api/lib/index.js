@@ -3,6 +3,8 @@ const FormData = require('form-data');
 const fs = require('fs');
 const token = require('./token');
 
+// NOTE: bump this default when Ghost v5 is released
+const defaultAcceptVersionHeader = 'v4.0';
 const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const packageName = '@tryghost/admin-api';
 
@@ -86,9 +88,24 @@ module.exports = function GhostAdminAPI(options) {
 
     if (typeof config.version === 'boolean') {
         config.sendAcceptVersionHeader = config.version;
+        if (config.version === true) {
+            config.acceptVersionHeader = defaultAcceptVersionHeader;
+        }
         config.version = undefined;
     } else if (!supportedVersions.includes(config.version)) {
         throw new Error(`${packageName} Config Invalid: 'version' ${config.version} is not supported`);
+    }
+
+    if (supportedVersions.includes(config.version)) {
+        // eslint-disable-next-line
+        console.warn(`${packageName}: The 'version' parameter has a deprecated format 'v{major}', please use 'v{major}.{minor}' format instead`);
+
+        if (config.version === 'canary') {
+            config.acceptVersionHeader = defaultAcceptVersionHeader;
+        } else {
+            // CASE: all the v1, v2, v4 ... strings
+            config.acceptVersionHeader = `${config.version}.0`;
+        }
     }
 
     if (!config.url) {
@@ -397,8 +414,8 @@ module.exports = function GhostAdminAPI(options) {
             Authorization: authorizationHeader
         };
 
-        if (config.sendAcceptVersionHeader) {
-            ghostHeaders['Accept-Version'] = `${version}.0`;
+        if (config.acceptVersionHeader) {
+            ghostHeaders['Accept-Version'] = config.acceptVersionHeader;
         }
 
         headers = Object.assign({}, headers, ghostHeaders);
