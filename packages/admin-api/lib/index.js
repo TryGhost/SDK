@@ -46,7 +46,6 @@ module.exports = function GhostAdminAPI(options) {
     const defaultConfig = {
         ghostPath: 'ghost',
         generateToken: token,
-        sendAcceptVersionHeader: true,
         makeRequest({url, method, data, params = {}, headers = {}}) {
             return axios({
                 url,
@@ -88,8 +87,6 @@ module.exports = function GhostAdminAPI(options) {
     }
 
     if (typeof config.version === 'boolean') {
-        config.sendAcceptVersionHeader = config.version;
-
         if (config.version === true) {
             config.acceptVersionHeader = defaultAcceptVersionHeader;
         }

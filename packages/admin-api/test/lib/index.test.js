@@ -205,5 +205,27 @@ describe('GhostAdminAPI general', function () {
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
         });
+
+        it('when version parameter is set to "true" should send a default "Accept-Version" header', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                config: {}
+            }));
+            const generateTokenSpy = sinon.spy();
+
+            const api = new GhostAdminAPI({
+                version: true,
+                url: `http://ghost.local`,
+                key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0',
+                makeRequest: makeRequestStub,
+                generateToken: generateTokenSpy
+            });
+
+            await api.config.read();
+
+            makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
+            should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
+            should.equal(generateTokenSpy.args[0][1], '/admin/');
+        });
     });
 });
