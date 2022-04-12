@@ -10,13 +10,13 @@ const packageName = '@tryghost/admin-api';
  * This method can go away in favor of only sending 'Accept-Version` headers
  * once the Ghost API removes a concept of version from it's URLS (with Ghost v5)
  *
- * @param {string} version version in `v{major}` format
- * @returns
+ * @param {string} [version] version in `v{major}` format
+ * @returns {string}
  */
 const resolveAPIPrefix = (version) => {
     let prefix;
 
-    if (version === 'v5') {
+    if (version === 'v5' || version === undefined) {
         prefix = `/admin/`;
     } else {
         prefix = `/${version}/admin/`;
@@ -30,7 +30,7 @@ const resolveAPIPrefix = (version) => {
  * @param {Object} options
  * @param {String} options.url
  * @param {String} [options.ghostPath]
- * @param {String} [options.version]
+ * @param {String|Boolean} [options.version] - a version string like v3, v4, v5 or boolean 'false' value identifying no Accept-Version header
  * @param {Function} [options.makeRequest]
  * @param {Function} [options.generateToken]
  * @param {String} [options.host] Deprecated
@@ -43,6 +43,7 @@ module.exports = function GhostAdminAPI(options) {
     const defaultConfig = {
         ghostPath: 'ghost',
         generateToken: token,
+        sendAcceptVersionHeader: true,
         makeRequest({url, method, data, params = {}, headers = {}}) {
             return axios({
                 url,
@@ -79,12 +80,17 @@ module.exports = function GhostAdminAPI(options) {
         }
     }
 
-    if (!config.version) {
+    if (config.version === undefined) {
         throw new Error(`${packageName} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
     }
-    if (!supportedVersions.includes(config.version)) {
+
+    if (typeof config.version === 'boolean') {
+        config.sendAcceptVersionHeader = config.version;
+        config.version = undefined;
+    } else if (!supportedVersions.includes(config.version)) {
         throw new Error(`${packageName} Config Invalid: 'version' ${config.version} is not supported`);
     }
+
     if (!config.url) {
         throw new Error(`${packageName} Config Missing: 'url' is required. E.g. 'https://site.com'`);
     }
@@ -390,9 +396,12 @@ module.exports = function GhostAdminAPI(options) {
         authorizationHeader = `Ghost ${config.generateToken(key, audience)}`;
 
         const ghostHeaders = {
-            Authorization: authorizationHeader,
-            'Accept-Version': `${version}.0`
+            Authorization: authorizationHeader
         };
+
+        if (config.sendAcceptVersionHeader) {
+            ghostHeaders['Accept-Version'] = `${version}.0`;
+        }
 
         headers = Object.assign({}, headers, ghostHeaders);
 
