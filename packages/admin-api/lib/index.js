@@ -33,7 +33,7 @@ const resolveAPIPrefix = (version) => {
  * @param {Object} options
  * @param {String} options.url
  * @param {String} [options.ghostPath]
- * @param {String|Boolean} [options.version] - a version string like v3.2, v4.1, v5.8 or boolean 'false' value identifying no Accept-Version header
+ * @param {String|Boolean} options.version - a version string like v3.2, v4.1, v5.8 or boolean 'false' value identifying no Accept-Version header
  * @param {Function} [options.makeRequest]
  * @param {Function} [options.generateToken]
  * @param {String} [options.host] Deprecated
