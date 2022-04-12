@@ -58,7 +58,10 @@ module.exports = function GhostAdminAPI(options) {
         }
     }
 
-    if (config.version && !supportedVersions.includes(config.version)) {
+    if (!config.version) {
+        throw new Error(`${packageName} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
+    }
+    if (!supportedVersions.includes(config.version)) {
         throw new Error(`${packageName} Config Invalid: 'version' ${config.version} is not supported`);
     }
     if (!config.url) {
@@ -347,10 +350,7 @@ module.exports = function GhostAdminAPI(options) {
 
     function endpointFor(resource, {id, slug, email} = {}) {
         const {ghostPath, version} = config;
-
-        let endpoint = version
-            ? `/${ghostPath}/api/${version}/admin/${resource}/`
-            : `/${ghostPath}/api/admin/${resource}/`;
+        let endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
 
         if (id) {
             endpoint = `${endpoint}${id}/`;

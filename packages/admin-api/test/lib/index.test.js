@@ -30,7 +30,7 @@ describe('GhostAdminAPI general', function () {
             'Missing config.url property'
         );
 
-        should.doesNotThrow(
+        should.throws(
             () => new GhostAdminAPI({url: config.url, key: config.key}),
             Error,
             'Missing config.version property'
