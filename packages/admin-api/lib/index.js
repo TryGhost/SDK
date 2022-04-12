@@ -383,8 +383,15 @@ module.exports = function GhostAdminAPI(options) {
         const {url: apiUrl, key, version, makeRequest} = config;
         const url = `${apiUrl}${endpoint}`;
 
+        let authorizationHeader;
+        if (version === 'v5') {
+            authorizationHeader = `Ghost ${token(key, version)}`;
+        } else {
+            authorizationHeader = `Ghost ${token(key)}`;
+        }
+
         const ghostHeaders = {
-            Authorization: `Ghost ${token(key, version)}`,
+            Authorization: authorizationHeader,
             'Accept-Version': version
         };
 
