@@ -94,7 +94,7 @@ describe('GhostAdminAPI general', function () {
     });
 
     describe('makeApiRequest', function () {
-        it('adds Accept-Version header for v4, v5, canary, and no API versions', async function () {
+        it('adds Accept-Version header for v5 API', async function () {
             const makeRequestStub = sinon.stub().returns(Promise.resolve({
                 config: {}
             }));
@@ -112,24 +112,7 @@ describe('GhostAdminAPI general', function () {
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5');
         });
 
-        it('adds default "v5" Accept-Version header for non-versioned SDK', async function () {
-            const makeRequestStub = sinon.stub().returns(Promise.resolve({
-                config: {}
-            }));
-
-            const api = new GhostAdminAPI({
-                url: `http://ghost.local`,
-                key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0',
-                makeRequest: makeRequestStub
-            });
-
-            await api.config.read();
-
-            makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5');
-        });
-
-        it('does NOT add Accept-Version header for v3 API', async function () {
+        it('adds Accept-Version header for v3 API', async function () {
             const makeRequestStub = sinon.stub().returns(Promise.resolve({
                 config: {}
             }));
@@ -144,7 +127,7 @@ describe('GhostAdminAPI general', function () {
             await api.config.read();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], undefined);
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3');
         });
     });
 });

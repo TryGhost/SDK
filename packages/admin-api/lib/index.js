@@ -83,11 +83,6 @@ module.exports = function GhostAdminAPI(options) {
         throw new Error(`${packageName} Config Invalid: 'key' ${config.key} must have the following format {A}:{B}, where A is 24 hex characters and B is 64 hex characters`);
     }
 
-    if (config.version === 'v5') {
-        // NOTE: the version parameter is supported but not necessary for non-versioned API, starting with Ghost v5
-        delete config.version;
-    }
-
     const resources = [
         // @NOTE: stable
         'posts',
@@ -350,7 +345,13 @@ module.exports = function GhostAdminAPI(options) {
 
     function endpointFor(resource, {id, slug, email} = {}) {
         const {ghostPath, version} = config;
-        let endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
+
+        let endpoint;
+        if (version === 'v5') {
+            endpoint = `/${ghostPath}/api/admin/${resource}/`;
+        } else {
+            endpoint = `/${ghostPath}/api/${version}/admin/${resource}/`;
+        }
 
         if (id) {
             endpoint = `${endpoint}${id}/`;
@@ -368,12 +369,9 @@ module.exports = function GhostAdminAPI(options) {
         const url = `${apiUrl}${endpoint}`;
 
         const ghostHeaders = {
-            Authorization: `Ghost ${token(key, version)}`
+            Authorization: `Ghost ${token(key, version)}`,
+            'Accept-Version': version
         };
-
-        if (!version || ['v4', 'canary'].includes(version)) {
-            ghostHeaders['Accept-Version'] = version || 'v5';
-        }
 
         headers = Object.assign({}, headers, ghostHeaders);
 
