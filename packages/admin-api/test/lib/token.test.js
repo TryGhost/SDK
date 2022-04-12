@@ -9,9 +9,9 @@ const token = require('../../lib/token');
 describe('Token', function () {
     it('generates a valid token based on key and API version', function () {
         const key = 'something:secret';
-        const version = 'v4';
+        const audience = '/v4/admin/';
 
-        const result = token(key, version);
+        const result = token(key, audience);
         const decoded = jwt.decode(result, {complete: true});
 
         should.equal(decoded.payload.aud, `/v4/admin/`);
@@ -25,7 +25,7 @@ describe('Token', function () {
     it('generates a valid token based only on key', function () {
         const key = 'something:secret';
 
-        const result = token(key);
+        const result = token(key, '/admin/');
         const decoded = jwt.decode(result, {complete: true});
 
         should.equal(decoded.payload.aud, `/admin/`);

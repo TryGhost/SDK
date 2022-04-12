@@ -98,36 +98,45 @@ describe('GhostAdminAPI general', function () {
             const makeRequestStub = sinon.stub().returns(Promise.resolve({
                 config: {}
             }));
+            const generateTokenSpy = sinon.spy();
 
             const api = new GhostAdminAPI({
                 version: 'v5',
                 url: `http://ghost.local`,
                 key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0',
-                makeRequest: makeRequestStub
+                makeRequest: makeRequestStub,
+                generateToken: generateTokenSpy
             });
 
             await api.config.read();
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5');
+            should.equal(generateTokenSpy.calledOnce, true);
+            should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
+            should.equal(generateTokenSpy.args[0][1], '/admin/');
         });
 
         it('adds Accept-Version header for v3 API', async function () {
             const makeRequestStub = sinon.stub().returns(Promise.resolve({
                 config: {}
             }));
+            const generateTokenSpy = sinon.spy();
 
             const api = new GhostAdminAPI({
                 version: 'v3',
                 url: `http://ghost.local`,
                 key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0',
-                makeRequest: makeRequestStub
+                makeRequest: makeRequestStub,
+                generateToken: generateTokenSpy
             });
 
             await api.config.read();
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3');
+            should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
+            should.equal(generateTokenSpy.args[0][1], '/v3/admin/');
         });
     });
 });

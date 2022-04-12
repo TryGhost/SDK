@@ -32,6 +32,7 @@ const resolveAPIPrefix = (version) => {
  * @param {String} [options.ghostPath]
  * @param {String} [options.version]
  * @param {Function} [options.makeRequest]
+ * @param {Function} [options.generateToken]
  * @param {String} [options.host] Deprecated
  */
 module.exports = function GhostAdminAPI(options) {
@@ -41,6 +42,7 @@ module.exports = function GhostAdminAPI(options) {
 
     const defaultConfig = {
         ghostPath: 'ghost',
+        generateToken: token,
         makeRequest({url, method, data, params = {}, headers = {}}) {
             return axios({
                 url,
@@ -384,11 +386,8 @@ module.exports = function GhostAdminAPI(options) {
         const url = `${apiUrl}${endpoint}`;
 
         let authorizationHeader;
-        if (version === 'v5') {
-            authorizationHeader = `Ghost ${token(key, version)}`;
-        } else {
-            authorizationHeader = `Ghost ${token(key)}`;
-        }
+        const audience = resolveAPIPrefix(version);
+        authorizationHeader = `Ghost ${config.generateToken(key, audience)}`;
 
         const ghostHeaders = {
             Authorization: authorizationHeader,
