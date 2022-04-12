@@ -391,7 +391,7 @@ module.exports = function GhostAdminAPI(options) {
 
         const ghostHeaders = {
             Authorization: authorizationHeader,
-            'Accept-Version': version
+            'Accept-Version': `${version}.0`
         };
 
         headers = Object.assign({}, headers, ghostHeaders);
