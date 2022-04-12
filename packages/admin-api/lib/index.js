@@ -18,7 +18,8 @@ const packageName = '@tryghost/admin-api';
 const resolveAPIPrefix = (version) => {
     let prefix;
 
-    if (version === 'v5' || version === undefined) {
+    // NOTE: the "version.match(/^v5\.\d+/)" expression should be changed to "version.match(/^v\d+\.\d+/)" once Ghost v5 is out
+    if (version === 'v5' || version === undefined || version.match(/^v5\.\d+/)) {
         prefix = `/admin/`;
     } else {
         prefix = `/${version}/admin/`;
@@ -32,7 +33,7 @@ const resolveAPIPrefix = (version) => {
  * @param {Object} options
  * @param {String} options.url
  * @param {String} [options.ghostPath]
- * @param {String|Boolean} [options.version] - a version string like v3, v4, v5 or boolean 'false' value identifying no Accept-Version header
+ * @param {String|Boolean} [options.version] - a version string like v3.2, v4.1, v5.8 or boolean 'false' value identifying no Accept-Version header
  * @param {Function} [options.makeRequest]
  * @param {Function} [options.generateToken]
  * @param {String} [options.host] Deprecated
@@ -88,23 +89,27 @@ module.exports = function GhostAdminAPI(options) {
 
     if (typeof config.version === 'boolean') {
         config.sendAcceptVersionHeader = config.version;
+
         if (config.version === true) {
             config.acceptVersionHeader = defaultAcceptVersionHeader;
         }
         config.version = undefined;
-    } else if (!supportedVersions.includes(config.version)) {
+    } else if (!supportedVersions.includes(config.version) && !(config.version.match(/^v\d+\.\d+/))) {
         throw new Error(`${packageName} Config Invalid: 'version' ${config.version} is not supported`);
-    }
-
-    if (supportedVersions.includes(config.version)) {
-        // eslint-disable-next-line
-        console.warn(`${packageName}: The 'version' parameter has a deprecated format 'v{major}', please use 'v{major}.{minor}' format instead`);
-
+    } else if (supportedVersions.includes(config.version) || config.version.match(/^v\d+\.\d+/)) {
         if (config.version === 'canary') {
+            // eslint-disable-next-line
+            console.warn(`${packageName}: The 'version' parameter has a deprecated format 'canary', please use 'v{major}.{minor}' format instead`);
+
             config.acceptVersionHeader = defaultAcceptVersionHeader;
-        } else {
-            // CASE: all the v1, v2, v4 ... strings
+        } else if (config.version.match(/^v\d+$/)) {
+            // eslint-disable-next-line
+            console.warn(`${packageName}: The 'version' parameter has a deprecated format 'v{major}', please use 'v{major}.{minor}' format instead`);
+
+            // CASE: all the v1, v2, v4 ... strings should be normalized to fit 'v{major}.{minor}' format
             config.acceptVersionHeader = `${config.version}.0`;
+        } else {
+            config.acceptVersionHeader = config.version;
         }
     }
 
