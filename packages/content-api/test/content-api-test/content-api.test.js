@@ -137,5 +137,45 @@ describe('GhostContentApi', function () {
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3');
         });
+
+        it('Does NOT add Accept-Version when version set to "false"', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                data: {
+                    settings: {}
+                }
+            }));
+
+            const api = new GhostContentApi({
+                version: false,
+                url: `http://ghost.local`,
+                key: '0123456789abcdef0123456789',
+                makeRequest: makeRequestStub
+            });
+
+            await api.settings.browse();
+
+            makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], undefined);
+        });
+
+        it('Adds default Accept-Version when version set to "true"', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                data: {
+                    settings: {}
+                }
+            }));
+
+            const api = new GhostContentApi({
+                version: true,
+                url: `http://ghost.local`,
+                key: '0123456789abcdef0123456789',
+                makeRequest: makeRequestStub
+            });
+
+            await api.settings.browse();
+
+            makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4');
+        });
     });
 });

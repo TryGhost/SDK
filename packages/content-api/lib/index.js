@@ -24,7 +24,7 @@ const defaultMakeRequest = ({url, method, params, headers}) => {
  * @param {String} options.url
  * @param {String} options.key
  * @param {String} [options.ghostPath]
- * @param {String} options.version
+ * @param {String|Boolean} options.version - a version string like v3, v4, v5 or boolean value identifying presence of Accept-Version header
  * @param {Function} [options.makeRequest]
  * @param {String} [options.host] Deprecated
  */
@@ -45,12 +45,17 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
         return GhostContentAPI({url, key, version, ghostPath, makeRequest});
     }
 
-    if (!version) {
+    if (version === undefined) {
         throw new Error(`${name} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
     }
 
     let acceptVersionHeader;
-    if (version && !supportedVersions.includes(version)) {
+    if (typeof version === 'boolean') {
+        if (version === true) {
+            acceptVersionHeader = defaultAcceptVersionHeader;
+        }
+        version = undefined;
+    } else if (version && !supportedVersions.includes(version)) {
         throw new Error(`${name} Config Invalid: 'version' ${version} is not supported`);
     } else {
         if (version === 'canary') {
