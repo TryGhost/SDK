@@ -111,13 +111,11 @@ module.exports = function GhostAdminAPI(options) {
     }
 
     const resources = [
-        // @NOTE: stable
         'posts',
         'pages',
         'tags',
         'webhooks',
         'members',
-        // @NOTE: experimental
         'users'
     ];
 
