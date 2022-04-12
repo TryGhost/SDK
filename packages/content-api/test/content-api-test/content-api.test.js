@@ -95,7 +95,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
         });
 
         it('Adds "v5" Accept-Version header when parameter is provided', async function () {
@@ -115,7 +115,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
         });
 
         it('Adds Accept-Version header for v3 API', async function () {
@@ -135,7 +135,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3.0');
         });
 
         it('Does NOT add Accept-Version when version set to "false"', async function () {
@@ -175,7 +175,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
         });
     });
 });

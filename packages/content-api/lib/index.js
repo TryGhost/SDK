@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // NOTE: bump this default when Ghost v5 is released
-const defaultAcceptVersionHeader = 'v4';
+const defaultAcceptVersionHeader = 'v4.0';
 const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const name = '@tryghost/content-api';
 
@@ -59,9 +59,15 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
         throw new Error(`${name} Config Invalid: 'version' ${version} is not supported`);
     } else {
         if (version === 'canary') {
+            // eslint-disable-next-line
+            console.warn(`${name}: The 'version' parameter has a deprecated format 'canary', please use 'v{major}.{minor}' format instead`);
+
             acceptVersionHeader = defaultAcceptVersionHeader;
         } else if (version.match(/^v\d+$/)) {
-            acceptVersionHeader = `${version}`;
+            // eslint-disable-next-line
+            console.warn(`${name}: The 'version' parameter has a deprecated format 'v{major}', please use 'v{major}.{minor}' format instead`);
+
+            acceptVersionHeader = `${version}.0`;
         }
     }
 
