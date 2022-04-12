@@ -55,7 +55,7 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
             acceptVersionHeader = defaultAcceptVersionHeader;
         }
         version = undefined;
-    } else if (version && !supportedVersions.includes(version)) {
+    } else if (version && !supportedVersions.includes(version) && !(version.match(/^v\d+\.\d+/))) {
         throw new Error(`${name} Config Invalid: 'version' ${version} is not supported`);
     } else {
         if (version === 'canary') {
@@ -68,6 +68,8 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
             console.warn(`${name}: The 'version' parameter has a deprecated format 'v{major}', please use 'v{major}.{minor}' format instead`);
 
             acceptVersionHeader = `${version}.0`;
+        } else {
+            acceptVersionHeader = version;
         }
     }
 
