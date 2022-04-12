@@ -95,7 +95,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'canary');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4');
         });
 
         it('Adds "v5" Accept-Version header when parameter is provided', async function () {
@@ -118,7 +118,7 @@ describe('GhostContentApi', function () {
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5');
         });
 
-        it('Does NOT add Accept-Version header for v3 API', async function () {
+        it('Adds Accept-Version header for v3 API', async function () {
             const makeRequestStub = sinon.stub().returns(Promise.resolve({
                 data: {
                     settings: {}
@@ -135,7 +135,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], undefined);
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3');
         });
     });
 });

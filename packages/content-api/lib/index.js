@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// NOTE: bump this default when Ghost v5 is released
+const defaultAcceptVersionHeader = 'v4';
 const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const name = '@tryghost/content-api';
 
@@ -47,9 +49,17 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
         throw new Error(`${name} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
     }
 
+    let acceptVersionHeader;
     if (version && !supportedVersions.includes(version)) {
         throw new Error(`${name} Config Invalid: 'version' ${version} is not supported`);
+    } else {
+        if (version === 'canary') {
+            acceptVersionHeader = defaultAcceptVersionHeader;
+        } else if (version.match(/^v\d+$/)) {
+            acceptVersionHeader = `${version}`;
+        }
     }
+
     if (!url) {
         throw new Error(`${name} Config Missing: 'url' is required. E.g. 'https://site.com'`);
     }
@@ -103,8 +113,8 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
             Authorization: `GhostMembers ${membersToken}`
         } : {};
 
-        if (!version || ['v4', 'v5', 'canary'].includes(version)) {
-            headers['Accept-Version'] = version || 'v5';
+        if (acceptVersionHeader) {
+            headers['Accept-Version'] = acceptVersionHeader;
         }
 
         params = Object.assign({key}, params);
