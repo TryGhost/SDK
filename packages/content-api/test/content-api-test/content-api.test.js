@@ -23,20 +23,27 @@ describe('GhostContentApi', function () {
             }
 
             try {
-                new GhostContentApi({url: config.url});
+                new GhostContentApi({url: config.url, version: config.version});
                 return should.fail();
             } catch (err) {
             //
             }
 
             try {
-                new GhostContentApi({key: config.key});
+                new GhostContentApi({version: config.version, key: config.key});
                 return should.fail();
             } catch (err) {
             //
             }
 
-            new GhostContentApi({host: config.url, key: config.key});
+            try {
+                new GhostContentApi({url: config.url, key: config.key});
+                return should.fail();
+            } catch (err) {
+            //
+            }
+
+            new GhostContentApi({host: config.url, key: config.key, version: config.version});
             new GhostContentApi(config);
         });
 
@@ -89,25 +96,6 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'canary');
-        });
-
-        it('Adds default "v5" Accept-Version header for non-versioned SDK', async function () {
-            const makeRequestStub = sinon.stub().returns(Promise.resolve({
-                data: {
-                    settings: {}
-                }
-            }));
-
-            const api = new GhostContentApi({
-                url: `http://ghost.local`,
-                key: '0123456789abcdef0123456789',
-                makeRequest: makeRequestStub
-            });
-
-            await api.settings.browse();
-
-            makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5');
         });
 
         it('Adds "v5" Accept-Version header when parameter is provided', async function () {

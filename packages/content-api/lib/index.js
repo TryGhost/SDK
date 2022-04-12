@@ -22,7 +22,7 @@ const defaultMakeRequest = ({url, method, params, headers}) => {
  * @param {String} options.url
  * @param {String} options.key
  * @param {String} [options.ghostPath]
- * @param {String} [options.version]
+ * @param {String} options.version
  * @param {Function} [options.makeRequest]
  * @param {String} [options.host] Deprecated
  */
@@ -41,6 +41,10 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
 
     if (this instanceof GhostContentAPI) {
         return GhostContentAPI({url, key, version, ghostPath, makeRequest});
+    }
+
+    if (!version) {
+        throw new Error(`${name} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
     }
 
     if (version && !supportedVersions.includes(version)) {
