@@ -138,6 +138,10 @@ module.exports = function GhostAdminAPI(options) {
         'users'
     ];
 
+    if (typeof config.version === 'string' && config.version.startsWith('v2')) {
+        resources.push('subscribers');
+    }
+
     const api = resources.reduce((apiObject, resourceType) => {
         function add(data, queryParams = {}) {
             if (!data || !Object.keys(data).length) {

@@ -71,7 +71,7 @@ describe('GhostAdminAPI general', function () {
         });
     });
 
-    it('Exposes an API', function () {
+    it('Exposes a v4 API', function () {
         const api = new GhostAdminAPI(config);
         const keyMethodMap = {
             posts: ['read', 'browse', 'add', 'edit', 'delete'],
@@ -88,6 +88,36 @@ describe('GhostAdminAPI general', function () {
             site: ['read']
         };
 
+        should.deepEqual(Object.keys(keyMethodMap).sort(), Object.keys(api).sort());
+        for (const key in keyMethodMap) {
+            should.deepEqual(Object.keys(api[key]), keyMethodMap[key]);
+        }
+    });
+
+    it('Exposes a v2 API', function () {
+        const v3Config = {
+            version: 'v2',
+            url: `http://ghost.local`,
+            key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0'
+        };
+        const api = new GhostAdminAPI(v3Config);
+        const keyMethodMap = {
+            posts: ['read', 'browse', 'add', 'edit', 'delete'],
+            pages: ['read', 'browse', 'add', 'edit', 'delete'],
+            tags: ['read', 'browse', 'add', 'edit', 'delete'],
+            members: ['read', 'browse', 'add', 'edit', 'delete'],
+            users: ['read', 'browse', 'add', 'edit', 'delete'],
+            webhooks: ['add', 'edit', 'delete'],
+            themes: ['upload', 'activate'],
+            images: ['upload'],
+            media: ['upload'],
+            files: ['upload'],
+            config: ['read'],
+            site: ['read'],
+            subscribers: ['read', 'browse', 'add', 'edit', 'delete']
+        };
+
+        should.deepEqual(Object.keys(keyMethodMap).sort(), Object.keys(api).sort());
         for (const key in keyMethodMap) {
             should.deepEqual(Object.keys(api[key]), keyMethodMap[key]);
         }
