@@ -4,6 +4,8 @@ require('../utils');
 const should = require('should');
 
 const GhostAdminAPI = require('../../lib');
+const packageJSON = require('../../package.json');
+const packageVersion = packageJSON.version;
 
 describe('GhostAdminAPI general', function () {
     const config = {
@@ -124,7 +126,7 @@ describe('GhostAdminAPI general', function () {
     });
 
     describe('makeApiRequest', function () {
-        it('adds Accept-Version header for v5 API', async function () {
+        it('adds Accept-Version headers for v5 API', async function () {
             const makeRequestStub = sinon.stub().returns(Promise.resolve({
                 config: {}
             }));
@@ -142,6 +144,7 @@ describe('GhostAdminAPI general', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.calledOnce, true);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
@@ -165,6 +168,7 @@ describe('GhostAdminAPI general', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.3');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.calledOnce, true);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
@@ -188,6 +192,7 @@ describe('GhostAdminAPI general', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/v3/admin/');
         });
@@ -210,6 +215,7 @@ describe('GhostAdminAPI general', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/canary/admin/');
         });
@@ -232,6 +238,7 @@ describe('GhostAdminAPI general', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], undefined);
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
         });
@@ -254,6 +261,7 @@ describe('GhostAdminAPI general', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
         });

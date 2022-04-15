@@ -3,6 +3,9 @@ const FormData = require('form-data');
 const fs = require('fs');
 const token = require('./token');
 
+const packageInfo = require('../package.json');
+const packageVersion = packageInfo.version;
+
 // NOTE: bump this default when Ghost v5 is released
 const defaultAcceptVersionHeader = 'v4.0';
 const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
@@ -417,7 +420,8 @@ module.exports = function GhostAdminAPI(options) {
         authorizationHeader = `Ghost ${config.generateToken(key, audience)}`;
 
         const ghostHeaders = {
-            Authorization: authorizationHeader
+            Authorization: authorizationHeader,
+            'User-Agent': `GhostAdminSDK/${packageVersion}`
         };
 
         if (config.acceptVersionHeader) {
