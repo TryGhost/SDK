@@ -57,6 +57,7 @@ module.exports = function GhostAdminAPI(options) {
                 data,
                 headers,
                 maxContentLength: Infinity,
+                maxBodyLength: Infinity,
                 paramsSerializer(parameters) {
                     return Object.keys(parameters).reduce((parts, key) => {
                         const val = encodeURIComponent([].concat(parameters[key]).join(','));
