@@ -4,6 +4,7 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import {terser} from 'rollup-plugin-terser';
 import replace from 'rollup-plugin-replace';
+import json from '@rollup/plugin-json';
 import pkg from './package.json';
 
 const dependencies = Object.keys(pkg.dependencies);
@@ -19,6 +20,7 @@ export default [
             interop: false
         },
         plugins: [
+            json(),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
             })
@@ -37,6 +39,7 @@ export default [
             sourcemap: true
         }],
         plugins: [
+            json(),
             resolve({
                 browser: true
             }),
@@ -72,6 +75,7 @@ export default [
             sourcemap: true
         },
         plugins: [
+            json(),
             resolve({
                 browser: true
             }),

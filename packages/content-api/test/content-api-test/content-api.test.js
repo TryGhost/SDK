@@ -5,6 +5,8 @@ const should = require('should');
 const sinon = require('sinon');
 
 const GhostContentApi = require('../../cjs/content-api');
+const packageJSON = require('../../package.json');
+const packageVersion = packageJSON.version;
 
 describe('GhostContentApi', function () {
     const config = {
@@ -96,6 +98,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
 
         it('Adds "v5" Accept-Version header when parameter is provided', async function () {
@@ -116,6 +119,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
 
         it('Adds Accept-Version header for v3 API', async function () {
@@ -136,6 +140,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
 
         it('Adds Accept-Version header for version v3.6', async function () {
@@ -156,6 +161,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3.6');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
 
         it('Does NOT add Accept-Version when version set to "false"', async function () {
@@ -176,6 +182,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], undefined);
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
 
         it('Adds default Accept-Version when version set to "true"', async function () {
@@ -196,6 +203,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
     });
 });

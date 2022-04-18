@@ -1,4 +1,7 @@
 import axios from 'axios';
+import packageInfo from '../package.json';
+
+const packageVersion = packageInfo.version;
 
 // NOTE: bump this default when Ghost v5 is released
 const defaultAcceptVersionHeader = 'v4.0';
@@ -126,6 +129,7 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
             Authorization: `GhostMembers ${membersToken}`
         } : {};
 
+        headers['User-Agent'] = `GhostContentSDK/${packageVersion}`;
         if (acceptVersionHeader) {
             headers['Accept-Version'] = acceptVersionHeader;
         }
