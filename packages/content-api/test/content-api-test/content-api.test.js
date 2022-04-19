@@ -97,6 +97,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/canary/content/settings/');
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
@@ -118,6 +119,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/content/settings/');
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
@@ -139,6 +141,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/v3/content/settings/');
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
@@ -160,6 +163,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/v3/content/settings/');
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v3.6');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
@@ -181,6 +185,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/content/settings/');
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], undefined);
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });

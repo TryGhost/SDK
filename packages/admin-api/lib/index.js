@@ -24,6 +24,9 @@ const resolveAPIPrefix = (version) => {
     // NOTE: the "version.match(/^v5\.\d+/)" expression should be changed to "version.match(/^v\d+\.\d+/)" once Ghost v5 is out
     if (version === 'v5' || version === undefined || version.match(/^v5\.\d+/)) {
         prefix = `/admin/`;
+    } else if (version.match(/^v\d+\.\d+/)) {
+        const versionPrefix = /^(v\d+)\.\d+/.exec(version)[1];
+        prefix = `/${versionPrefix}/admin/`;
     } else {
         prefix = `/${version}/admin/`;
     }

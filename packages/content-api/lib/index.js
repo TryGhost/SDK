@@ -8,6 +8,29 @@ const defaultAcceptVersionHeader = 'v4.0';
 const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const name = '@tryghost/content-api';
 
+/**
+ * This method can go away in favor of only sending 'Accept-Version` headers
+ * once the Ghost API removes a concept of version from it's URLS (with Ghost v5)
+ *
+ * @param {string} [version] version in `v{major}` format
+ * @returns {string}
+ */
+const resolveAPIPrefix = (version) => {
+    let prefix;
+
+    // NOTE: the "version.match(/^v5\.\d+/)" expression should be changed to "version.match(/^v\d+\.\d+/)" once Ghost v5 is out
+    if (version === 'v5' || version === undefined || version.match(/^v5\.\d+/)) {
+        prefix = `/content/`;
+    } else if (version.match(/^v\d+\.\d+/)) {
+        const versionPrefix = /^(v\d+)\.\d+/.exec(version)[1];
+        prefix = `/${versionPrefix}/content/`;
+    } else {
+        prefix = `/${version}/content/`;
+    }
+
+    return prefix;
+};
+
 const defaultMakeRequest = ({url, method, params, headers}) => {
     return axios[method](url, {
         params,
@@ -135,9 +158,7 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
         }
 
         params = Object.assign({key}, params);
-        const apiUrl = version
-            ? `${url}/${ghostPath}/api/${version}/content/${resourceType}/${id ? id + '/' : ''}`
-            : `${url}/${ghostPath}/api/content/${resourceType}/${id ? id + '/' : ''}`;
+        const apiUrl = `${url}/${ghostPath}/api${resolveAPIPrefix(version)}${resourceType}/${id ? id + '/' : ''}`;
 
         return makeRequest({
             url: apiUrl,
