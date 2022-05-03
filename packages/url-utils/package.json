@@ -20,10 +20,10 @@
   "devDependencies": {
     "@tryghost/config-url-helpers": "0.1.6",
     "c8": "7.11.2",
-    "mocha": "7.2.0",
-    "rewire": "5.0.0",
+    "mocha": "10.0.0",
+    "rewire": "6.0.0",
     "should": "13.2.3",
-    "sinon": "9.2.4"
+    "sinon": "13.0.2"
   },
   "dependencies": {
     "cheerio": "^0.22.0",
