@@ -44,16 +44,16 @@ export const filter = (items, visibility, fn) => {
     const returnByDefault = includes(visArray, defaultVisibility);
 
     // We don't want to change the structure of what is returned
-    return reduce(items, function (items, item, key) {
+    return reduce(items, function (accumulator, item, key) {
         // If the item has visibility, check to see if it matches, else if there's no visibility check for a match with the default visibility
         if (includes(visArray, 'all') || item.visibility && includes(visArray, item.visibility) || !item.visibility && returnByDefault) {
             const newItem = fn ? fn(item) : item;
             if (isArray(items)) {
-                memo.push(newItem);
+                accumulator.push(newItem);
             } else {
-                memo[key] = newItem;
+                accumulator[key] = newItem;
             }
         }
-        return memo;
+        return accumulator;
     }, memo);
 };

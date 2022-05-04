@@ -4,7 +4,7 @@ require('../utils');
 const should = require('should');
 
 const {getInstance} = require('../utils/ghost-server-mock');
-const GhostAdminAPI = require('../../lib');
+const GhostAdminAPI = require('../../lib/admin-api');
 
 describe('GhostAdminAPI', function () {
     const API_VERSION = 'v3';

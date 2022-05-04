@@ -4,12 +4,13 @@
   "repository": "https://github.com/TryGhost/SDK/tree/master/packages/admin-api",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "index.js",
   "files": [
     "LICENSE",
     "README.md",
     "cjs/",
-    "lib/"
+    "lib/",
+    "index.js"
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
@@ -22,9 +23,9 @@
   },
   "devDependencies": {
     "c8": "7.11.2",
-    "mocha": "7.2.0",
+    "mocha": "10.0.0",
     "should": "13.2.3",
-    "sinon": "9.2.4"
+    "sinon": "13.0.2"
   },
   "dependencies": {
     "axios": "^0.21.1",

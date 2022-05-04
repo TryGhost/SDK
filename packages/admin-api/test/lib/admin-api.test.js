@@ -3,7 +3,7 @@
 require('../utils');
 const should = require('should');
 
-const GhostAdminAPI = require('../../lib');
+const GhostAdminAPI = require('../../lib/admin-api');
 const packageJSON = require('../../package.json');
 const packageVersion = packageJSON.version;
 

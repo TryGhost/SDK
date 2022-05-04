@@ -76,7 +76,7 @@ module.exports = class UrlUtils {
     }
 
     getProtectedSlugs() {
-        var subDir = this.getSubdir();
+        let subDir = this.getSubdir();
 
         if (!_.isEmpty(subDir)) {
             return this._config.slugs.concat([subDir.split('/').pop()]);
@@ -143,18 +143,18 @@ module.exports = class UrlUtils {
     // This is probably not the right place for this, but it's the best place for now
     // @TODO: rewrite, very hard to read, create private functions!
     urlFor(context, data, absolute) {
-        var urlPath = '/',
-            secure,
-            imagePathRe,
-            knownObjects = ['image', 'nav'],
-            baseUrl,
-            hostname,
+        let urlPath = '/';
+        let secure;
+        let imagePathRe;
+        let knownObjects = ['image', 'nav'];
+        let baseUrl;
+        let hostname;
 
-            // this will become really big
-            knownPaths = {
-                home: '/',
-                sitemap_xsl: '/sitemap.xsl'
-            };
+        // this will become really big
+        let knownPaths = {
+            home: '/',
+            sitemap_xsl: '/sitemap.xsl'
+        };
 
         // Make data properly optional
         if (_.isBoolean(data)) {
@@ -257,7 +257,7 @@ module.exports = class UrlUtils {
     }
 
     redirectToAdmin(status, res, adminPath) {
-        var redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
+        let redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
 
         if (status === 301) {
             return this.redirect301(res, redirectUrl);
