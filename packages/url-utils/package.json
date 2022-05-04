@@ -19,7 +19,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@tryghost/config-url-helpers": "0.1.6",
+    "@tryghost/config-url-helpers": "0.1.7",
     "c8": "7.11.2",
     "mocha": "10.0.0",
     "rewire": "6.0.0",
