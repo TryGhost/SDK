@@ -421,7 +421,7 @@ describe('UrlUtils', function () {
             }
 
             describe(`for api version: ${apiVersion}`, function () {
-                it('api: should return admin url is set', function () {
+                it('api: should return admin url when set', function () {
                     fakeConfig.url = 'http://my-ghost-blog.com';
                     fakeConfig.adminUrl = 'https://something.de';
 
@@ -467,56 +467,26 @@ describe('UrlUtils', function () {
                         .should.eql(`https://my-ghost-blog.com${getApiPath({version: apiVersion, versionType: 'content'})}`);
                 });
 
-                it('api: with cors, blog url is http: should return no protocol', function () {
-                    fakeConfig.url = 'http://my-ghost-blog.com';
-                    utils
-                        .urlFor('api', {cors: true, version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`//my-ghost-blog.com${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: with cors, admin url is http: cors should return no protocol', function () {
-                    fakeConfig.url = 'http://my-ghost-blog.com';
-                    fakeConfig.adminUrl = 'http://admin.ghost.example';
-
-                    utils
-                        .urlFor('api', {cors: true, version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`//admin.ghost.example${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: with cors, admin url is https: should return with protocol', function () {
+                it('api: should return https if admin.url is https', function () {
                     fakeConfig.url = 'https://my-ghost-blog.com';
                     fakeConfig.adminUrl = 'https://admin.ghost.example';
 
                     utils
-                        .urlFor('api', {cors: true, version: apiVersion, versionType: 'content'}, true)
+                        .urlFor('api', {version: apiVersion, versionType: 'content'}, true)
                         .should.eql(`https://admin.ghost.example${getApiPath({version: apiVersion, versionType: 'content'})}`);
                 });
 
-                it('api: with cors, blog url is https: should return with protocol', function () {
+                it('api: should return admin api path when requested', function () {
                     fakeConfig.url = 'https://my-ghost-blog.com';
                     utils
-                        .urlFor('api', {cors: true, version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`https://my-ghost-blog.com${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: with stable version, blog url is https: should return stable content api path', function () {
-                    fakeConfig.url = 'https://my-ghost-blog.com';
-                    utils
-                        .urlFor('api', {cors: true, version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`https://my-ghost-blog.com${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: with stable version and admin true, blog url is https: should return stable admin api path', function () {
-                    fakeConfig.url = 'https://my-ghost-blog.com';
-                    utils
-                        .urlFor('api', {cors: true, version: apiVersion, versionType: 'admin'}, true)
+                        .urlFor('api', {version: apiVersion, versionType: 'admin'}, true)
                         .should.eql(`https://my-ghost-blog.com${getApiPath({version: apiVersion, versionType: 'admin'})}`);
                 });
 
                 it('api: with just version and no version type returns correct api path', function () {
                     fakeConfig.url = 'https://my-ghost-blog.com';
                     utils
-                        .urlFor('api', {cors: true, version: apiVersion}, true)
+                        .urlFor('api', {version: apiVersion}, true)
                         .should.eql(`https://my-ghost-blog.com${getApiPath({version: apiVersion})}`);
                 });
             });
@@ -524,12 +494,12 @@ describe('UrlUtils', function () {
 
         it('api: with active version, blog url is https: should return active content api path', function () {
             fakeConfig.url = 'https://my-ghost-blog.com';
-            utils.urlFor('api', {cors: true, version: 'v2', versionType: 'content'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/content/');
+            utils.urlFor('api', {version: 'v2', versionType: 'content'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/content/');
         });
 
         it('api: with active version and admin true, blog url is https: should return active admin api path', function () {
             fakeConfig.url = 'https://my-ghost-blog.com';
-            utils.urlFor('api', {cors: true, version: 'v2', versionType: 'admin'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/admin/');
+            utils.urlFor('api', {version: 'v2', versionType: 'admin'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/admin/');
         });
     });
 

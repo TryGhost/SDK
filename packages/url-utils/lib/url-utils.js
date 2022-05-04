@@ -219,15 +219,6 @@ module.exports = class UrlUtils {
             urlPath = this.getAdminUrl() || this.getSiteUrl();
             let apiPath = this.getApiPath();
 
-            // CASE: with or without protocol? If your blog url (or admin url) is configured to http, it's still possible that e.g. nginx allows both https+http.
-            // So it depends how you serve your blog. The main focus here is to avoid cors problems.
-            // @TODO: rename cors
-            if (data && data.cors) {
-                if (!urlPath.match(/^https:/)) {
-                    urlPath = urlPath.replace(/^.*?:\/\//g, '//');
-                }
-            }
-
             if (data && data.version) {
                 apiPath = this.getApiPath({version: data.version, type: data.versionType});
             }
