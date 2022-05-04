@@ -173,15 +173,16 @@ module.exports = class UrlUtils {
                 urlPath = urlPath.replace(/\/$/, '');
             }
         } else if (context === 'admin') {
-            urlPath = this.getAdminUrl() || this.getSiteUrl();
+            let adminUrl = this.getAdminUrl() || this.getSiteUrl();
+            let adminPath = '/ghost/';
 
             if (absolute) {
-                urlPath += 'ghost/';
+                urlPath = this.urlJoin(adminUrl, adminPath);
             } else {
-                urlPath = '/ghost/';
+                urlPath = adminPath;
             }
         } else if (context === 'api') {
-            urlPath = this.getAdminUrl() || this.getSiteUrl();
+            let adminUrl = this.getAdminUrl() || this.getSiteUrl();
             let apiPath = this._config.baseApiPath + '/';
 
             if (data.type && ['admin', 'content'].includes(data.type)) {
@@ -190,10 +191,13 @@ module.exports = class UrlUtils {
                 apiPath += this._config.defaultApiType;
             }
 
+            // Ensure we end with a trailing slash
+            apiPath += '/';
+
             if (absolute) {
-                urlPath = urlPath.replace(/\/$/, '') + apiPath + '/';
+                urlPath = this.urlJoin(adminUrl, apiPath);
             } else {
-                urlPath = apiPath + '/';
+                urlPath = apiPath;
             }
         } else if (_.isString(context) && _.indexOf(_.keys(knownPaths), context) !== -1) {
             // trying to create a url for a named path
