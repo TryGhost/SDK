@@ -395,7 +395,7 @@ describe('UrlUtils', function () {
                 fakeConfig.adminUrl = 'https://something.de';
 
                 utils
-                    .urlFor('api', {versionType: 'content'}, true)
+                    .urlFor('api', {type: 'content'}, true)
                     .should.eql('https://something.de/ghost/api/content/');
             });
 
@@ -403,14 +403,14 @@ describe('UrlUtils', function () {
                 fakeConfig.url = 'http://my-ghost-blog.com/blog';
 
                 utils
-                    .urlFor('api', {versionType: 'content'}, true)
+                    .urlFor('api', {type: 'content'}, true)
                     .should.eql('http://my-ghost-blog.com/blog/ghost/api/content/');
             });
 
             it('relative path is correct', function () {
                 fakeConfig.url = 'http://my-ghost-blog.com';
                 utils
-                    .urlFor('api', {versionType: 'content'})
+                    .urlFor('api', {type: 'content'})
                     .should.eql('/ghost/api/content/');
             });
 
@@ -418,21 +418,21 @@ describe('UrlUtils', function () {
                 fakeConfig.url = 'http://my-ghost-blog.com/blog';
 
                 utils
-                    .urlFor('api', {versionType: 'content'})
+                    .urlFor('api', {type: 'content'})
                     .should.eql('/blog/ghost/api/content/');
             });
 
             it('should return http if config.url is http', function () {
                 fakeConfig.url = 'http://my-ghost-blog.com';
                 utils
-                    .urlFor('api', {versionType: 'content'}, true)
+                    .urlFor('api', {type: 'content'}, true)
                     .should.eql('http://my-ghost-blog.com/ghost/api/content/');
             });
 
             it('should return https if config.url is https', function () {
                 fakeConfig.url = 'https://my-ghost-blog.com';
                 utils
-                    .urlFor('api', {versionType: 'content'}, true)
+                    .urlFor('api', {type: 'content'}, true)
                     .should.eql('https://my-ghost-blog.com/ghost/api/content/');
             });
 
@@ -441,21 +441,21 @@ describe('UrlUtils', function () {
                 fakeConfig.adminUrl = 'https://admin.ghost.example';
 
                 utils
-                    .urlFor('api', {versionType: 'content'}, true)
+                    .urlFor('api', {type: 'content'}, true)
                     .should.eql('https://admin.ghost.example/ghost/api/content/');
             });
 
             it('should return admin api path when requested', function () {
                 fakeConfig.url = 'https://my-ghost-blog.com';
                 utils
-                    .urlFor('api', {versionType: 'admin'}, true)
+                    .urlFor('api', {type: 'admin'}, true)
                     .should.eql('https://my-ghost-blog.com/ghost/api/admin/');
             });
 
             it('returns default type if type is unknown', function () {
                 fakeConfig.url = 'https://my-ghost-blog.com';
                 utils
-                    .urlFor('api', {versionType: 'fred'}, true)
+                    .urlFor('api', {type: 'fred'}, true)
                     .should.eql('https://my-ghost-blog.com/ghost/api/content/');
             });
 

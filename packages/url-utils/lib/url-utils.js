@@ -184,8 +184,8 @@ module.exports = class UrlUtils {
             urlPath = this.getAdminUrl() || this.getSiteUrl();
             let apiPath = this._config.baseApiPath + '/';
 
-            if (data.versionType && ['admin', 'content'].includes(data.versionType)) {
-                apiPath += data.versionType;
+            if (data.type && ['admin', 'content'].includes(data.type)) {
+                apiPath += data.type;
             } else {
                 apiPath += this._config.defaultApiType;
             }
