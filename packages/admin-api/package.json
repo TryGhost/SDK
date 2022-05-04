@@ -4,12 +4,13 @@
   "repository": "https://github.com/TryGhost/SDK/tree/master/packages/admin-api",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "index.js",
   "files": [
     "LICENSE",
     "README.md",
     "cjs/",
-    "lib/"
+    "lib/",
+    "index.js"
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",

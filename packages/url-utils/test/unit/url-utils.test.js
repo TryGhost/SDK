@@ -3,7 +3,7 @@
 require('../utils');
 
 const sinon = require('sinon');
-const UrlUtils = require('../../lib/index');
+const UrlUtils = require('../../lib/url-utils');
 const configUrlHelpers = require('@tryghost/config-url-helpers');
 
 const constants = {

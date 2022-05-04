@@ -8,7 +8,7 @@
   "umd:main": "umd/content-api.min.js",
   "unpkg": "umd/content-api.min.js",
   "module": "es/content-api.js",
-  "source": "lib/index.js",
+  "source": "lib/content-api.js",
   "files": [
     "LICENSE",
     "README.md",

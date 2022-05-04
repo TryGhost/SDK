@@ -6,7 +6,7 @@ const FormData = require('form-data');
 const path = require('path');
 
 const {getInstance} = require('../utils/ghost-server-mock');
-const GhostAdminAPI = require('../../lib');
+const GhostAdminAPI = require('../../lib/admin-api');
 
 describe('GhostAdminAPI v2', function () {
     const API_VERSION = 'v2';

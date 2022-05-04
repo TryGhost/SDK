@@ -4,7 +4,7 @@
   "repository": "https://github.com/TryGhost/SDK/tree/master/packages/url-utils",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha './test/**/*.test.js'",
@@ -12,7 +12,8 @@
     "posttest": "yarn lint"
   },
   "files": [
-    "lib/"
+    "lib/",
+    "index.js"
   ],
   "publishConfig": {
     "access": "public"
