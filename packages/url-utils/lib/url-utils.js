@@ -18,61 +18,26 @@ module.exports = class UrlUtils {
      * @param {Function} options.getSubdir
      * @param {Function} options.getSiteUrl
      * @param {Function} options.getAdminUrl Ghost instance admin URL
-     * @param {Object} options.apiVersions configuration object which has defined `all` property which is an array of keys for other available properties
-     * @param {('v2' | 'v3' | 'v4' | 'canary')} [options.defaultApiVersion='v4'] default API version which is one of the values from options.apiVersions
-     * @param {('content' | 'admin')} [options.defaultApiType='content'] default API type to be used and is one of the values from options.apiVersions
+    * @param {String} [options.baseApiPath='/ghost/api'] static prefix for serving API. Should not te passed in, unless the API is being run under custom URL
+    * @param {('content' | 'admin')} [options.defaultApiType='content'] default API type to be used and is one of the values from options.apiVersions
      * @param {Object} [options.slugs] object with 2 properties reserved and protected containing arrays of special case slugs
      * @param {Number} [options.redirectCacheMaxAge]
-     * @param {String} [options.baseApiPath='/ghost/api'] static prefix for serving API. Should not te passed in, unless the API is being run under custom URL
      * @param {String} [options.staticImageUrlPrefix='content/images'] static prefix for serving images. Should not be passed in, unless customizing ghost instance image storage
      */
     constructor(options = {}) {
         const defaultOptions = {
-            apiVersions: null,
             slugs: null,
             redirectCacheMaxAge: null,
             baseApiPath: '/ghost/api',
-            defaultApiVersion: 'v4',
             defaultApiType: 'content',
             staticImageUrlPrefix: 'content/images'
         };
 
         this._config = assignOptions({}, defaultOptions, options);
 
-        this._defaultApiPathOptions = {
-            baseApiPath: this._config.baseApiPath,
-            version: this._config.defaultApiVersion,
-            type: this._config.defaultApiType,
-            apiVersions: this._config.apiVersions
-        };
-
         this.getSubdir = options.getSubdir;
         this.getSiteUrl = options.getSiteUrl;
         this.getAdminUrl = options.getAdminUrl;
-    }
-
-    /**
-     * Returns API path combining base path and path for specific version asked or deprecated by default
-     * @param {Object} options
-     * @param {string} [options.version="v4"] for which to get the path (v2, v3, canary, etc)
-     * @param {string} [options.type="content"] (admin, content, members)
-     * @return {string} API Path for version
-     */
-    getApiPath(options = {}) {
-        const _options = assignOptions({}, this._defaultApiPathOptions, options);
-        return utils.getApiPath(_options);
-    }
-
-    /**
-     * Returns path containing only the path for the specific version asked or deprecated by default
-     * @param {Object} options
-     * @param {string} [options.version="v4"] for which to get the path (v2, v3, canary, etc)
-     * @param {string} [options.type="content"] (admin, content)
-     * @return {string} API version path
-     */
-    getVersionPath(options = {}) {
-        const _options = assignOptions({}, this._defaultApiPathOptions, options);
-        return utils.getVersionPath(_options);
     }
 
     getProtectedSlugs() {
@@ -217,16 +182,18 @@ module.exports = class UrlUtils {
             }
         } else if (context === 'api') {
             urlPath = this.getAdminUrl() || this.getSiteUrl();
-            let apiPath = this.getApiPath();
+            let apiPath = this._config.baseApiPath + '/';
 
-            if (data && data.version) {
-                apiPath = this.getApiPath({version: data.version, type: data.versionType});
+            if (data.versionType) {
+                apiPath += data.versionType;
+            } else {
+                apiPath += this._config.defaultApiType;
             }
 
             if (absolute) {
-                urlPath = urlPath.replace(/\/$/, '') + apiPath;
+                urlPath = urlPath.replace(/\/$/, '') + apiPath + '/';
             } else {
-                urlPath = apiPath;
+                urlPath = apiPath + '/';
             }
         } else if (_.isString(context) && _.indexOf(_.keys(knownPaths), context) !== -1) {
             // trying to create a url for a named path

@@ -3,8 +3,6 @@ module.exports = {
     absoluteToTransformReady: require('./absolute-to-transform-ready'),
     deduplicateDoubleSlashes: require('./deduplicate-double-slashes'),
     deduplicateSubdirectory: require('./deduplicate-subdirectory'),
-    getApiPath: require('./get-api-path'),
-    getVersionPath: require('./get-version-path'),
     htmlAbsoluteToRelative: require('./html-absolute-to-relative'),
     htmlRelativeToAbsolute: require('./html-relative-to-absolute'),
     htmlAbsoluteToTransformReady: require('./html-absolute-to-transform-ready'),

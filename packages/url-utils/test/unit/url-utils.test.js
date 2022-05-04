@@ -21,27 +21,6 @@ let nconf;
 describe('UrlUtils', function () {
     let sandbox;
 
-    // these come from Ghost - refs https://github.com/TryGhost/Ghost/blob/f09216efdef0141682c085081f9eaacabd79d17c/core/shared/config/overrides.json#L63-L82
-    const apiVersions = {
-        all: ['v2', 'v3', 'v4', 'canary'],
-        canary: {
-            admin: 'canary/admin',
-            content: 'canary/content'
-        },
-        v4: {
-            admin: 'v4/admin',
-            content: 'v4/content'
-        },
-        v3: {
-            admin: 'v3/admin',
-            content: 'v3/content'
-        },
-        v2: {
-            admin: 'v2/admin',
-            content: 'v2/content'
-        }
-    };
-
     before(function () {
         const configFaker = (arg) => {
             if (arg === 'url') {
@@ -68,7 +47,7 @@ describe('UrlUtils', function () {
             getSubdir: nconf.getSubdir,
             getSiteUrl: nconf.getSiteUrl,
             getAdminUrl: nconf.getAdminUrl,
-            apiVersions: apiVersions,
+            apiVersions: {},
             slugs: ['ghost', 'rss', 'amp'],
             redirectCacheMaxAge: constants.ONE_YEAR_S,
             staticImageUrlPrefix: 'static/images'
@@ -348,158 +327,137 @@ describe('UrlUtils', function () {
             utils.urlFor('sitemap_xsl', true).should.equal('http://my-ghost-blog.com/sitemap.xsl');
         });
 
-        it('admin: relative', function () {
-            utils.urlFor('admin').should.equal('/ghost/');
-        });
+        describe('admin', function () {
+            it('relative', function () {
+                utils.urlFor('admin').should.equal('/ghost/');
+            });
 
-        it('admin: url is http', function () {
-            utils.urlFor('admin', true).should.equal('http://my-ghost-blog.com/ghost/');
-        });
+            it('url is http', function () {
+                utils.urlFor('admin', true).should.equal('http://my-ghost-blog.com/ghost/');
+            });
 
-        it('admin: custom admin url is set', function () {
-            fakeConfig.adminUrl = 'https://admin.my-ghost-blog.com';
+            it('custom admin url is set', function () {
+                fakeConfig.adminUrl = 'https://admin.my-ghost-blog.com';
 
-            utils.urlFor('admin', true).should.equal('https://admin.my-ghost-blog.com/ghost/');
-        });
+                utils.urlFor('admin', true).should.equal('https://admin.my-ghost-blog.com/ghost/');
+            });
 
-        it('admin: blog is on subdir (absolute, no trailing slash)', function () {
-            fakeConfig.url = 'http://my-ghost-blog.com/blog';
+            it('blog is on subdir (absolute, no trailing slash)', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog';
 
-            utils.urlFor('admin', true).should.equal('http://my-ghost-blog.com/blog/ghost/');
-        });
+                utils.urlFor('admin', true).should.equal('http://my-ghost-blog.com/blog/ghost/');
+            });
 
-        it('admin: blog is on subdir (absolute, trailing slash)', function () {
-            fakeConfig.url = 'http://my-ghost-blog.com/blog/';
+            it('blog is on subdir (absolute, trailing slash)', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog/';
 
-            utils.urlFor('admin', true).should.equal('http://my-ghost-blog.com/blog/ghost/');
-        });
+                utils.urlFor('admin', true).should.equal('http://my-ghost-blog.com/blog/ghost/');
+            });
 
-        it('admin: blog is on subdir (relative, no trailing slash)', function () {
-            fakeConfig.url = 'http://my-ghost-blog.com/blog';
+            it('blog is on subdir (relative, no trailing slash)', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog';
 
-            utils.urlFor('admin').should.equal('/blog/ghost/');
-        });
+                utils.urlFor('admin').should.equal('/blog/ghost/');
+            });
 
-        it('admin: blog is on subdir (separate admin, absolute, no trailing slash)', function () {
-            fakeConfig.url = 'http://my-ghost-blog.com/blog';
-            fakeConfig.adminUrl = 'http://something.com';
+            it('blog is on subdir (separate admin, absolute, no trailing slash)', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog';
+                fakeConfig.adminUrl = 'http://something.com';
 
-            utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
-        });
+                utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
+            });
 
-        it('admin: blog is on subdir (separate admin with subdir, absolute, no trailing slash)', function () {
-            fakeConfig.url = 'http://my-ghost-blog.com/blog';
-            fakeConfig.adminUrl = 'http://something.com/blog';
+            it('blog is on subdir (separate admin with subdir, absolute, no trailing slash)', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog';
+                fakeConfig.adminUrl = 'http://something.com/blog';
 
-            utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
-        });
+                utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
+            });
 
-        it('admin: blog is on subdir (separate admin with subdir, absolute, trailing slash)', function () {
-            fakeConfig.url = 'http://my-ghost-blog.com/blog/';
-            fakeConfig.adminUrl = 'http://something.com/blog/';
+            it('blog is on subdir (separate admin with subdir, absolute, trailing slash)', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog/';
+                fakeConfig.adminUrl = 'http://something.com/blog/';
 
-            utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
-        });
+                utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
+            });
 
-        it('admin: blog is on subdir (separate admin with subdir, absolute, no trailing admin slash)', function () {
-            fakeConfig.url = 'http://my-ghost-blog.com/blog/';
-            fakeConfig.adminUrl = 'http://something.com/blog';
+            it('blog is on subdir (separate admin with subdir, absolute, no trailing admin slash)', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog/';
+                fakeConfig.adminUrl = 'http://something.com/blog';
 
-            utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
-        });
-
-        // eslint-disable-next-line
-        ['v2', 'v3','v4', 'canary'].forEach((apiVersion) => {
-            function getApiPath(options) {
-                const baseAPIPath = '/ghost/api/';
-
-                if (options.versionType === 'admin') {
-                    return `${baseAPIPath}${apiVersion}/admin/`;
-                } else {
-                    return `${baseAPIPath}${apiVersion}/content/`;
-                }
-            }
-
-            describe(`for api version: ${apiVersion}`, function () {
-                it('api: should return admin url when set', function () {
-                    fakeConfig.url = 'http://my-ghost-blog.com';
-                    fakeConfig.adminUrl = 'https://something.de';
-
-                    utils
-                        .urlFor('api', {version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`https://something.de${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: url has subdir', function () {
-                    fakeConfig.url = 'http://my-ghost-blog.com/blog';
-
-                    utils
-                        .urlFor('api', {version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`http://my-ghost-blog.com/blog${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: relative path is correct', function () {
-                    fakeConfig.url = 'http://my-ghost-blog.com';
-                    utils
-                        .urlFor('api', {version: apiVersion, versionType: 'content'})
-                        .should.eql(getApiPath({version: apiVersion, versionType: 'content'}));
-                });
-
-                it('api: relative path with subdir is correct', function () {
-                    fakeConfig.url = 'http://my-ghost-blog.com/blog';
-
-                    utils
-                        .urlFor('api', {version: apiVersion, versionType: 'content'})
-                        .should.eql(`/blog${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: should return http if config.url is http', function () {
-                    fakeConfig.url = 'http://my-ghost-blog.com';
-                    utils
-                        .urlFor('api', {version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`http://my-ghost-blog.com${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: should return https if config.url is https', function () {
-                    fakeConfig.url = 'https://my-ghost-blog.com';
-                    utils
-                        .urlFor('api', {version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`https://my-ghost-blog.com${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: should return https if admin.url is https', function () {
-                    fakeConfig.url = 'https://my-ghost-blog.com';
-                    fakeConfig.adminUrl = 'https://admin.ghost.example';
-
-                    utils
-                        .urlFor('api', {version: apiVersion, versionType: 'content'}, true)
-                        .should.eql(`https://admin.ghost.example${getApiPath({version: apiVersion, versionType: 'content'})}`);
-                });
-
-                it('api: should return admin api path when requested', function () {
-                    fakeConfig.url = 'https://my-ghost-blog.com';
-                    utils
-                        .urlFor('api', {version: apiVersion, versionType: 'admin'}, true)
-                        .should.eql(`https://my-ghost-blog.com${getApiPath({version: apiVersion, versionType: 'admin'})}`);
-                });
-
-                it('api: with just version and no version type returns correct api path', function () {
-                    fakeConfig.url = 'https://my-ghost-blog.com';
-                    utils
-                        .urlFor('api', {version: apiVersion}, true)
-                        .should.eql(`https://my-ghost-blog.com${getApiPath({version: apiVersion})}`);
-                });
+                utils.urlFor('admin', true).should.equal('http://something.com/blog/ghost/');
             });
         });
 
-        it('api: with active version, blog url is https: should return active content api path', function () {
-            fakeConfig.url = 'https://my-ghost-blog.com';
-            utils.urlFor('api', {version: 'v2', versionType: 'content'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/content/');
-        });
+        describe('api', function () {
+            it('should return admin url when set', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com';
+                fakeConfig.adminUrl = 'https://something.de';
 
-        it('api: with active version and admin true, blog url is https: should return active admin api path', function () {
-            fakeConfig.url = 'https://my-ghost-blog.com';
-            utils.urlFor('api', {version: 'v2', versionType: 'admin'}, true).should.eql('https://my-ghost-blog.com/ghost/api/v2/admin/');
+                utils
+                    .urlFor('api', {versionType: 'content'}, true)
+                    .should.eql('https://something.de/ghost/api/content/');
+            });
+
+            it('url has subdir', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog';
+
+                utils
+                    .urlFor('api', {versionType: 'content'}, true)
+                    .should.eql('http://my-ghost-blog.com/blog/ghost/api/content/');
+            });
+
+            it('relative path is correct', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com';
+                utils
+                    .urlFor('api', {versionType: 'content'})
+                    .should.eql('/ghost/api/content/');
+            });
+
+            it('relative path with subdir is correct', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com/blog';
+
+                utils
+                    .urlFor('api', {versionType: 'content'})
+                    .should.eql('/blog/ghost/api/content/');
+            });
+
+            it('should return http if config.url is http', function () {
+                fakeConfig.url = 'http://my-ghost-blog.com';
+                utils
+                    .urlFor('api', {versionType: 'content'}, true)
+                    .should.eql('http://my-ghost-blog.com/ghost/api/content/');
+            });
+
+            it('should return https if config.url is https', function () {
+                fakeConfig.url = 'https://my-ghost-blog.com';
+                utils
+                    .urlFor('api', {versionType: 'content'}, true)
+                    .should.eql('https://my-ghost-blog.com/ghost/api/content/');
+            });
+
+            it('should return https if admin.url is https', function () {
+                fakeConfig.url = 'https://my-ghost-blog.com';
+                fakeConfig.adminUrl = 'https://admin.ghost.example';
+
+                utils
+                    .urlFor('api', {versionType: 'content'}, true)
+                    .should.eql('https://admin.ghost.example/ghost/api/content/');
+            });
+
+            it('should return admin api path when requested', function () {
+                fakeConfig.url = 'https://my-ghost-blog.com';
+                utils
+                    .urlFor('api', {versionType: 'admin'}, true)
+                    .should.eql('https://my-ghost-blog.com/ghost/api/admin/');
+            });
+
+            it('with just version and no version type returns correct api path', function () {
+                fakeConfig.url = 'https://my-ghost-blog.com';
+                utils
+                    .urlFor('api', {}, true)
+                    .should.eql('https://my-ghost-blog.com/ghost/api/content/');
+            });
         });
     });
 
