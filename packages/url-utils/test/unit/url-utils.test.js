@@ -452,6 +452,13 @@ describe('UrlUtils', function () {
                     .should.eql('https://my-ghost-blog.com/ghost/api/admin/');
             });
 
+            it('returns default type if type is unknown', function () {
+                fakeConfig.url = 'https://my-ghost-blog.com';
+                utils
+                    .urlFor('api', {versionType: 'fred'}, true)
+                    .should.eql('https://my-ghost-blog.com/ghost/api/content/');
+            });
+
             it('with just version and no version type returns correct api path', function () {
                 fakeConfig.url = 'https://my-ghost-blog.com';
                 utils

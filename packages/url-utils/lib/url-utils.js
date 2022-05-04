@@ -19,7 +19,7 @@ module.exports = class UrlUtils {
      * @param {Function} options.getSiteUrl
      * @param {Function} options.getAdminUrl Ghost instance admin URL
     * @param {String} [options.baseApiPath='/ghost/api'] static prefix for serving API. Should not te passed in, unless the API is being run under custom URL
-    * @param {('content' | 'admin')} [options.defaultApiType='content'] default API type to be used and is one of the values from options.apiVersions
+    * @param {('content' | 'admin')} [options.defaultApiType='content'] default API type to be used
      * @param {Object} [options.slugs] object with 2 properties reserved and protected containing arrays of special case slugs
      * @param {Number} [options.redirectCacheMaxAge]
      * @param {String} [options.staticImageUrlPrefix='content/images'] static prefix for serving images. Should not be passed in, unless customizing ghost instance image storage
@@ -184,7 +184,7 @@ module.exports = class UrlUtils {
             urlPath = this.getAdminUrl() || this.getSiteUrl();
             let apiPath = this._config.baseApiPath + '/';
 
-            if (data.versionType) {
+            if (data.versionType && ['admin', 'content'].includes(data.versionType)) {
                 apiPath += data.versionType;
             } else {
                 apiPath += this._config.defaultApiType;
