@@ -1133,10 +1133,10 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@tryghost/config-url-helpers@0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@tryghost/config-url-helpers/-/config-url-helpers-0.1.7.tgz#197c9c5d25e201cdede4e5f5c2bb84a4e773c33e"
-  integrity sha512-cKYbXDk/6efbK+maMy3bBigs1ERWZKcpzy8tYXDhoKyJ0xfnjeX51T0PVaWgP70TWZWz46iAs3jbqVJG8pR+2A==
+"@tryghost/config-url-helpers@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@tryghost/config-url-helpers/-/config-url-helpers-0.1.8.tgz#85b3f525cb10dcf5ed63612468371b01276639ef"
+  integrity sha512-YrmCegHLFUzutJn17UhNGAgYItrTEKmIdO5Qaa6TnKekNnLPSI3I8af/xKI1KUPp4wPqErVCYeihQYshPYYsdg==
 
 "@tryghost/errors@^1.0.0":
   version "1.2.10"
