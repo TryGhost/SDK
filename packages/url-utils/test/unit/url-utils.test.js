@@ -128,55 +128,35 @@ describe('UrlUtils', function () {
             fakeConfig.url = 'http://my-ghost-blog.com';
             utils.urlFor(testContext).should.equal('/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/');
-            utils.urlFor(testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/');
 
             fakeConfig.url = 'http://my-ghost-blog.com/';
             utils.urlFor(testContext).should.equal('/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/');
-            utils.urlFor(testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/');
 
             fakeConfig.url = 'http://my-ghost-blog.com/blog';
             utils.urlFor(testContext).should.equal('/blog/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/');
-            utils.urlFor(testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/blog/');
 
             fakeConfig.url = 'http://my-ghost-blog.com/blog/';
             utils.urlFor(testContext).should.equal('/blog/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/');
-            utils.urlFor(testContext, {secure: true}, true).should.equal('https://my-ghost-blog.com/blog/');
 
             // Output blog url without trailing slash
             fakeConfig.url = 'http://my-ghost-blog.com';
             utils.urlFor(testContext).should.equal('/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/');
-            utils.urlFor(testContext, {
-                secure: true,
-                trailingSlash: false
-            }, true).should.equal('https://my-ghost-blog.com');
 
             fakeConfig.url = 'http://my-ghost-blog.com/';
             utils.urlFor(testContext).should.equal('/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/');
-            utils.urlFor(testContext, {
-                secure: true,
-                trailingSlash: false
-            }, true).should.equal('https://my-ghost-blog.com');
 
             fakeConfig.url = 'http://my-ghost-blog.com/blog';
             utils.urlFor(testContext).should.equal('/blog/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/');
-            utils.urlFor(testContext, {
-                secure: true,
-                trailingSlash: false
-            }, true).should.equal('https://my-ghost-blog.com/blog');
 
             fakeConfig.url = 'http://my-ghost-blog.com/blog/';
             utils.urlFor(testContext).should.equal('/blog/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/');
-            utils.urlFor(testContext, {
-                secure: true,
-                trailingSlash: false
-            }, true).should.equal('https://my-ghost-blog.com/blog');
         });
 
         it('should handle weird cases by always returning /', function () {
@@ -200,14 +180,6 @@ describe('UrlUtils', function () {
             fakeConfig.url = 'http://my-ghost-blog.com/blog';
             utils.urlFor(testContext).should.equal('/blog/about/');
             utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/about/');
-
-            testContext.secure = true;
-            utils.urlFor(testContext, true).should.equal('https://my-ghost-blog.com/blog/about/');
-
-            testContext.secure = false;
-            utils.urlFor(testContext, true).should.equal('http://my-ghost-blog.com/blog/about/');
-
-            testContext.secure = false;
 
             fakeConfig.url = 'https://my-ghost-blog.com';
             utils.urlFor(testContext, true).should.equal('https://my-ghost-blog.com/about/');
@@ -254,12 +226,6 @@ describe('UrlUtils', function () {
             testData = {image: '/blog/static/images/my-image4.jpg'};
             utils.urlFor(testContext, testData).should.equal('/blog/static/images/my-image4.jpg');
             utils.urlFor(testContext, testData, true).should.equal('http://my-ghost-blog.com/blog/static/images/my-image4.jpg');
-
-            // Test case for blogs with optional https -
-            // they may be configured with http url but the actual connection may be over https (#8373)
-            fakeConfig.url = 'http://my-ghost-blog.com';
-            testData = {image: '/static/images/my-image.jpg', secure: true};
-            utils.urlFor(testContext, testData, true).should.equal('https://my-ghost-blog.com/static/images/my-image.jpg');
         });
 
         it('should return a url for a nav item when asked for it', function () {
@@ -271,9 +237,6 @@ describe('UrlUtils', function () {
 
             testData = {nav: {url: 'http://my-ghost-blog.com/short-and-sweet/'}};
             utils.urlFor(testContext, testData).should.equal('http://my-ghost-blog.com/short-and-sweet/');
-
-            testData = {nav: {url: 'http://my-ghost-blog.com//short-and-sweet/'}, secure: true};
-            utils.urlFor(testContext, testData).should.equal('https://my-ghost-blog.com/short-and-sweet/');
 
             testData = {nav: {url: 'http://my-ghost-blog.com:3000/'}};
             utils.urlFor(testContext, testData).should.equal('http://my-ghost-blog.com:3000/');

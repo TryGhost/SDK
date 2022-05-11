@@ -70,15 +70,14 @@ module.exports = class UrlUtils {
     // Parameters:
     // - urlPath - string which must start and end with a slash
     // - absolute (optional, default:false) - boolean whether or not the url should be absolute
-    // - secure (optional, default:false) - boolean whether or not to force SSL
     // Returns:
     //  - a URL which always ends with a slash
-    createUrl(urlPath = '/', absolute = false, secure, trailingSlash) {
+    createUrl(urlPath = '/', absolute = false, trailingSlash) {
         let base;
 
         // create base of url, always ends without a slash
         if (absolute) {
-            base = this.getSiteUrl(secure);
+            base = this.getSiteUrl();
         } else {
             base = this.getSubdir();
         }
@@ -109,7 +108,6 @@ module.exports = class UrlUtils {
     // @TODO: rewrite, very hard to read, create private functions!
     urlFor(context, data, absolute) {
         let urlPath = '/';
-        let secure;
         let imagePathRe;
         let knownObjects = ['image', 'nav'];
         let baseUrl;
@@ -127,9 +125,6 @@ module.exports = class UrlUtils {
             data = null;
         }
 
-        // Can pass 'secure' flag in either context or data arg
-        secure = (context && context.secure) || (data && data.secure);
-
         if (_.isObject(context) && context.relativeUrl) {
             urlPath = context.relativeUrl;
         } else if (_.isString(context) && _.indexOf(knownObjects, context) !== -1) {
@@ -141,15 +136,14 @@ module.exports = class UrlUtils {
                 if (absolute) {
                     // Remove the sub-directory from the URL because ghostConfig will add it back.
                     urlPath = urlPath.replace(new RegExp('^' + this.getSubdir()), '');
-                    baseUrl = this.getSiteUrl(secure).replace(/\/$/, '');
+                    baseUrl = this.getSiteUrl().replace(/\/$/, '');
                     urlPath = baseUrl + urlPath;
                 }
 
                 return urlPath;
             } else if (context === 'nav' && data.nav) {
                 urlPath = data.nav.url;
-                secure = data.nav.secure || secure;
-                baseUrl = this.getSiteUrl(secure);
+                baseUrl = this.getSiteUrl();
                 hostname = baseUrl.split('//')[1];
 
                 // If the hostname is present in the url
@@ -165,7 +159,7 @@ module.exports = class UrlUtils {
                 }
             }
         } else if (context === 'home' && absolute) {
-            urlPath = this.getSiteUrl(secure);
+            urlPath = this.getSiteUrl();
 
             // CASE: there are cases where urlFor('home') needs to be returned without trailing
             // slash e. g. the `{{@site.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
@@ -210,7 +204,7 @@ module.exports = class UrlUtils {
             return urlPath;
         }
 
-        return this.createUrl(urlPath, absolute, secure);
+        return this.createUrl(urlPath, absolute);
     }
 
     redirect301(res, redirectUrl) {
