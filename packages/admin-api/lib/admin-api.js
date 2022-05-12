@@ -143,7 +143,8 @@ module.exports = function GhostAdminAPI(options) {
         'tags',
         'webhooks',
         'members',
-        'users'
+        'users',
+        'newsletters'
     ];
 
     if (typeof config.version === 'string' && config.version.startsWith('v2')) {
