@@ -35,7 +35,7 @@
     "@babel/preset-env": "7.18.0",
     "@rollup/plugin-json": "4.1.0",
     "c8": "7.11.3",
-    "core-js": "3.22.5",
+    "core-js": "3.22.6",
     "eslint-plugin-ghost": "2.14.0",
     "mocha": "10.0.0",
     "rollup": "2.74.1",
