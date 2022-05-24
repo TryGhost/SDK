@@ -37,4 +37,18 @@ describe('Word Count', function () {
 
         result.should.equal(8);
     });
+
+    it('[success] counted Arabic characters', function () {
+        var html = '<p>انا هذا رائع جدا يا صاح</p>',
+            result = helperUtils.countWords(html);
+
+        result.should.equal(6);
+    });
+
+    it('[success] counted Hebrew characters', function () {
+        var html = '<p>מנסה לגרום לזה לעבוד</p>',
+            result = helperUtils.countWords(html);
+
+        result.should.equal(4);
+    });
 });
