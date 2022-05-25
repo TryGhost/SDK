@@ -49,7 +49,8 @@ describe('GhostContentApi', function () {
             new GhostContentApi(config);
         });
 
-        it('Returns an "api" object with posts, tags, authors, pages, and settings properties', function () {
+        it('Returns an "api" object with posts, tags, authors, pages, settings, and tiers properties', function () {
+            config.version = 'v5.0';
             const api = new GhostContentApi(config);
 
             should.exist(api.posts);
@@ -57,6 +58,7 @@ describe('GhostContentApi', function () {
             should.exist(api.authors);
             should.exist(api.pages);
             should.exist(api.settings);
+            should.exist(api.tiers);
         });
     });
 
@@ -110,7 +112,7 @@ describe('GhostContentApi', function () {
             }));
 
             const api = new GhostContentApi({
-                version: 'v5',
+                version: 'v5.0',
                 url: `http://ghost.local`,
                 key: '0123456789abcdef0123456789',
                 makeRequest: makeRequestStub
