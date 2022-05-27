@@ -6,6 +6,7 @@ import {terser} from 'rollup-plugin-terser';
 import replace from 'rollup-plugin-replace';
 import json from '@rollup/plugin-json';
 import pkg from './package.json';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 const dependencies = Object.keys(pkg.dependencies);
 
@@ -40,6 +41,7 @@ export default [
         }],
         plugins: [
             json(),
+            nodePolyfills(),
             resolve({
                 browser: true
             }),
@@ -76,6 +78,7 @@ export default [
         },
         plugins: [
             json(),
+            nodePolyfills(),
             resolve({
                 browser: true
             }),
