@@ -114,7 +114,7 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
     if (key && !/[0-9a-f]{26}/.test(key)) {
         throw new Error(`${name} Config Invalid: 'key' ${key} must have 26 hex characters`);
     }
-    const api = ['posts', 'authors', 'tags', 'pages', 'settings', 'tiers'].reduce((apiObject, resourceType) => {
+    const api = ['posts', 'authors', 'tags', 'pages', 'settings', 'tiers', 'newsletters', 'offers'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeApiRequest(resourceType, options, null, memberToken);
         }
@@ -136,9 +136,11 @@ export default function GhostContentAPI({url, key, host, version, ghostPath = 'g
         });
     }, {});
 
-    // Settings and tiers only have browse methods
+    // Settings, tiers & newsletters only have browse methods, offers only has read
     delete api.settings.read;
     delete api.tiers.read;
+    delete api.newsletters.read;
+    delete api.offers.browse;
 
     return api;
 

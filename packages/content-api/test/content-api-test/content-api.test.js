@@ -59,6 +59,12 @@ describe('GhostContentApi', function () {
             should.exist(api.pages);
             should.exist(api.settings);
             should.exist(api.tiers);
+            should.exist(api.newsletters);
+            should.exist(api.offers);
+            should.not.exist(api.settings.read);
+            should.not.exist(api.tiers.read);
+            should.not.exist(api.newsletters.read);
+            should.not.exist(api.offers.browse);
         });
     });
 
