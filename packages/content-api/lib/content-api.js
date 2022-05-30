@@ -3,8 +3,7 @@ import packageInfo from '../package.json';
 
 const packageVersion = packageInfo.version;
 
-// NOTE: bump this default when Ghost v5 is released
-const defaultAcceptVersionHeader = 'v4.0';
+const defaultAcceptVersionHeader = 'v5.0';
 const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
 const name = '@tryghost/content-api';
 

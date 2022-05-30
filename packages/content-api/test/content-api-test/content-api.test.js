@@ -11,7 +11,7 @@ const packageVersion = packageJSON.version;
 describe('GhostContentApi', function () {
     const config = {
         url: 'https://ghost.local',
-        version: 'v2',
+        version: 'v5.0',
         key: '0123456789abcdef0123456789'
     };
 
@@ -50,7 +50,6 @@ describe('GhostContentApi', function () {
         });
 
         it('Returns an "api" object with posts, tags, authors, pages, settings, and tiers properties', function () {
-            config.version = 'v5.0';
             const api = new GhostContentApi(config);
 
             should.exist(api.posts);
@@ -106,7 +105,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/canary/content/settings/');
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
 
@@ -215,7 +214,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v4.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
     });
