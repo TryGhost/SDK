@@ -51,21 +51,8 @@ const defaultMakeRequest = ({url, method, params, headers}) => {
  * @param {String} [options.ghostPath]
  * @param {String|Boolean} options.version - a version string like v3, v4, v5 or boolean value identifying presence of Accept-Version header
  * @param {Function} [options.makeRequest]
- * @param {String} [options.host] Deprecated
  */
-export default function GhostContentAPI({url, key, host, version, ghostPath = 'ghost', makeRequest = defaultMakeRequest}) {
-    /**
-     * host parameter is deprecated
-     * @deprecated use "url" instead
-     */
-    if (host) {
-        // eslint-disable-next-line
-        console.warn(`${name}: The 'host' parameter is deprecated, please use 'url' instead`);
-        if (!url) {
-            url = host;
-        }
-    }
-
+export default function GhostContentAPI({url, key, version, ghostPath = 'ghost', makeRequest = defaultMakeRequest}) {
     if (this instanceof GhostContentAPI) {
         return GhostContentAPI({url, key, version, ghostPath, makeRequest});
     }
