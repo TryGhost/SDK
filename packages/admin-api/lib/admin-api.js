@@ -43,7 +43,6 @@ const resolveAPIPrefix = (version) => {
  * @param {String|Boolean} options.version - a version string like v3.2, v4.1, v5.8 or boolean value identifying presence of Accept-Version header
  * @param {Function} [options.makeRequest]
  * @param {Function} [options.generateToken]
- * @param {String} [options.host] Deprecated
  */
 module.exports = function GhostAdminAPI(options) {
     if (this instanceof GhostAdminAPI) {
@@ -75,20 +74,6 @@ module.exports = function GhostAdminAPI(options) {
     };
 
     const config = Object.assign({}, defaultConfig, options);
-
-    //
-    /**
-     * host parameter is deprecated
-     * @deprecated use "url" instead
-     * @example new GhostAdminAPI({host: '...'})
-     */
-    if (config.host) {
-        // eslint-disable-next-line
-        console.warn(`${packageName}: The 'host' parameter is deprecated, please use 'url' instead`);
-        if (!config.url) {
-            config.url = config.host;
-        }
-    }
 
     if (config.version === undefined) {
         throw new Error(`${packageName} Config Missing: 'version' is required. E.g. ${supportedVersions.join(',')}`);
