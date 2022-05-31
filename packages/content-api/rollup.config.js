@@ -60,7 +60,8 @@ export default [
                 exclude: ['node_modules/**', '../../node_modules/**']
             }),
             replace({
-                'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`
+                'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
+                'USER_AGENT_DEFAULT = true': `USER_AGENT_DEFAULT = false`
             })
         ]
     },
@@ -97,7 +98,8 @@ export default [
                 exclude: ['node_modules/**', '../../node_modules/**']
             }),
             replace({
-                'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`
+                'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
+                'USER_AGENT_DEFAULT = true': `USER_AGENT_DEFAULT = false`
             }),
             terser()
         ]

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import packageInfo from '../package.json';
 
+// @NOTE: this value is dynamically replaced based on browser/node environment
 const USER_AGENT_DEFAULT = true;
 
 const packageVersion = packageInfo.version;
