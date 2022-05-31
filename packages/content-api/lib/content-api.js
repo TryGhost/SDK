@@ -53,7 +53,7 @@ const defaultMakeRequest = ({url, method, params, headers}) => {
  * @param {String} options.key
  * @param {String} [options.ghostPath]
  * @param {String|Boolean} options.version - a version string like v3, v4, v5 or boolean value identifying presence of Accept-Version header
- * @param {Boolean} [options.userAgent] - flag controlling if the 'User-Agent' header should be sent with a request
+ * @param {String|Boolean} [options.userAgent] - value controlling the 'User-Agent' header should be sent with a request
  * @param {Function} [options.makeRequest]
  */
 export default function GhostContentAPI({url, key, version, userAgent, ghostPath = 'ghost', makeRequest = defaultMakeRequest}) {
@@ -152,7 +152,11 @@ export default function GhostContentAPI({url, key, version, userAgent, ghostPath
         } : {};
 
         if (userAgent) {
-            headers['User-Agent'] = `GhostContentSDK/${packageVersion}`;
+            if (typeof userAgent === 'boolean') {
+                headers['User-Agent'] = `GhostContentSDK/${packageVersion}`;
+            } else {
+                headers['User-Agent'] = userAgent;
+            }
         }
 
         if (acceptVersionHeader) {

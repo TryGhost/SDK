@@ -237,5 +237,28 @@ describe('GhostContentApi', function () {
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], undefined);
         });
+
+        it('Sets a custom User-Agent header', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                data: {
+                    settings: {}
+                }
+            }));
+
+            const api = new GhostContentApi({
+                version: 'canary',
+                url: `http://ghost.local`,
+                key: '0123456789abcdef0123456789',
+                makeRequest: makeRequestStub,
+                userAgent: 'I_LOVE_CUSTOM_THINGS'
+            });
+
+            await api.settings.browse();
+
+            makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/canary/content/settings/');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['User-Agent'], 'I_LOVE_CUSTOM_THINGS');
+        });
     });
 });
