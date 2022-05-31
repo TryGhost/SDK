@@ -1,6 +1,8 @@
 import axios from 'axios';
 import packageInfo from '../package.json';
 
+const USER_AGENT_DEFAULT = true;
+
 const packageVersion = packageInfo.version;
 
 const defaultAcceptVersionHeader = 'v5.0';
@@ -50,11 +52,12 @@ const defaultMakeRequest = ({url, method, params, headers}) => {
  * @param {String} options.key
  * @param {String} [options.ghostPath]
  * @param {String|Boolean} options.version - a version string like v3, v4, v5 or boolean value identifying presence of Accept-Version header
+ * @param {Boolean} [options.userAgent] - flag controlling if the 'User-Agent' header should be sent with a request
  * @param {Function} [options.makeRequest]
  */
-export default function GhostContentAPI({url, key, version, ghostPath = 'ghost', makeRequest = defaultMakeRequest}) {
+export default function GhostContentAPI({url, key, version, userAgent, ghostPath = 'ghost', makeRequest = defaultMakeRequest}) {
     if (this instanceof GhostContentAPI) {
-        return GhostContentAPI({url, key, version, ghostPath, makeRequest});
+        return GhostContentAPI({url, key, version, userAgent, ghostPath, makeRequest});
     }
 
     if (version === undefined) {
@@ -100,6 +103,11 @@ export default function GhostContentAPI({url, key, version, ghostPath = 'ghost',
     if (key && !/[0-9a-f]{26}/.test(key)) {
         throw new Error(`${name} Config Invalid: 'key' ${key} must have 26 hex characters`);
     }
+
+    if (userAgent === undefined) {
+        userAgent = USER_AGENT_DEFAULT;
+    }
+
     const api = ['posts', 'authors', 'tags', 'pages', 'settings', 'tiers', 'newsletters', 'offers'].reduce((apiObject, resourceType) => {
         function browse(options = {}, memberToken) {
             return makeApiRequest(resourceType, options, null, memberToken);
@@ -142,7 +150,10 @@ export default function GhostContentAPI({url, key, version, ghostPath = 'ghost',
             Authorization: `GhostMembers ${membersToken}`
         } : {};
 
-        headers['User-Agent'] = `GhostContentSDK/${packageVersion}`;
+        if (userAgent) {
+            headers['User-Agent'] = `GhostContentSDK/${packageVersion}`;
+        }
+
         if (acceptVersionHeader) {
             headers['Accept-Version'] = acceptVersionHeader;
         }
