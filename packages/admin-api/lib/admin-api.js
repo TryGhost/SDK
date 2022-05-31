@@ -41,7 +41,7 @@ const resolveAPIPrefix = (version) => {
  * @param {String} options.url
  * @param {String} [options.ghostPath]
  * @param {String|Boolean} options.version - a version string like v3.2, v4.1, v5.8 or boolean value identifying presence of Accept-Version header
- * @param {Boolean} [options.userAgent] - flag controlling if the 'User-Agent' header should be sent with a request
+ * @param {String|Boolean} [options.userAgent] - flag controlling if the 'User-Agent' header should be sent with a request
  * @param {Function} [options.makeRequest]
  * @param {Function} [options.generateToken]
  */
@@ -417,7 +417,11 @@ module.exports = function GhostAdminAPI(options) {
         };
 
         if (config.userAgent) {
-            ghostHeaders['User-Agent'] = `GhostAdminSDK/${packageVersion}`;
+            if (typeof config.userAgent === 'boolean') {
+                ghostHeaders['User-Agent'] = `GhostAdminSDK/${packageVersion}`;
+            } else {
+                headers['User-Agent'] = config.userAgent;
+            }
         }
 
         if (config.acceptVersionHeader) {
