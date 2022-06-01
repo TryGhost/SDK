@@ -42,7 +42,7 @@ describe('GhostContentApi', function () {
             //
             }
 
-            new GhostContentApi({url: config.url, key: config.key, version: config.version});
+            new GhostContentApi({host: config.url, key: config.key, version: config.version});
             new GhostContentApi(config);
         });
 
