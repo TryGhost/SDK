@@ -1229,10 +1229,10 @@
   resolved "https://registry.yarnpkg.com/@tokenizer/token/-/token-0.3.0.tgz#fe98a93fe789247e998c75e74e9c7c63217aa276"
   integrity sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==
 
-"@tryghost/config-url-helpers@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@tryghost/config-url-helpers/-/config-url-helpers-1.0.1.tgz#5b024ce2eb32f33d88330d46b443d925644b6047"
-  integrity sha512-KhteOAkRxsHhHr1gEhy8hTrpGu6Dltn2SA+Yd5W4acMq+SH56JddyCY98b9NKgIvIjL2OdMNkbah+jn/argEHA==
+"@tryghost/config-url-helpers@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@tryghost/config-url-helpers/-/config-url-helpers-1.0.2.tgz#e12c4a234c98c4019702c8950e2c762b2b62c5f2"
+  integrity sha512-cPc6KZ5mF0hDKs3bwKPx3EPVTc9PXZMiMXGvno+Bq12ss9YfXUyZn/zi2AmaI0sFnSkSvM9860k9+5AP5+L0oA==
 
 "@tryghost/errors@^1.0.0":
   version "1.2.10"
