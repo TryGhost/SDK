@@ -1020,10 +1020,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@gatsbyjs/reach-router@1.3.8":
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/@gatsbyjs/reach-router/-/reach-router-1.3.8.tgz#8d338d974f991945f7f1568805e69d29188e259b"
-  integrity sha512-cENBHwX1XIcYvbe98kUXVAM3RAocq2AtGXcqd8SfKMYEMSQlpKhc8buu2vFOT2hoexSqmsf2MqmtnFKC5L6CEg==
+"@gatsbyjs/reach-router@1.3.9":
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/@gatsbyjs/reach-router/-/reach-router-1.3.9.tgz#305c3c4c5041f27e53fc33e344a08ee2c4b985af"
+  integrity sha512-/354IaUSM54xb7K/TxpLBJB94iEAJ3P82JD38T8bLnIDWF+uw8+W/82DKnQ7y24FJcKxtVmG43aiDLG88KSuYQ==
   dependencies:
     invariant "^2.2.3"
     prop-types "^15.6.1"
