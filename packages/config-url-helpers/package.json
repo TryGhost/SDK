@@ -1,7 +1,7 @@
 {
   "name": "@tryghost/config-url-helpers",
   "version": "1.0.2",
-  "repository": "https://github.com/TryGhost/Utils/tree/main/packages/config-url-helpers",
+  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/config-url-helpers",
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "index.js",
