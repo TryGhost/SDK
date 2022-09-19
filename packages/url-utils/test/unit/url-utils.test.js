@@ -1,6 +1,7 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
 require('../utils');
+const assert = require('assert');
 
 const sinon = require('sinon');
 const UrlUtils = require('../../lib/url-utils');
@@ -730,6 +731,81 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.deepEqual({
                 assetsOnly: true,
                 staticImageUrlPrefix: 'static/images'
+            });
+        });
+    });
+
+    describe('isSiteUrl', function () {
+        describe('Without subdomain', function () {
+            beforeEach(function () {
+                fakeConfig.url = 'http://localhost:2368';
+            });
+
+            it('returns true for the root domain', function () {
+                assert(utils.isSiteUrl(new URL('http://localhost:2368')));
+            });
+    
+            it('returns true for a path along the root domain', function () {
+                assert(utils.isSiteUrl(new URL('http://localhost:2368/path')));
+            });
+    
+            it('returns false for a different domain', function () {
+                assert(!utils.isSiteUrl(new URL('https://google.com/path')));
+            });
+        });
+
+        describe('With subdomain', function () {
+            beforeEach(function () {
+                fakeConfig.url = 'http://localhost:2368/dir';
+            });
+
+            afterEach(function () {
+                sinon.restore();
+            });
+
+            it('returns false for the root domain', function () {
+                assert(!utils.isSiteUrl(new URL('http://localhost:2368')));
+            });
+
+            it('returns false for the root domain with directory without trailing slash', function () {
+                assert(!utils.isSiteUrl(new URL('http://localhost:2368/dir')));
+            });
+
+            it('returns true for the root domain with directory', function () {
+                assert(utils.isSiteUrl(new URL('http://localhost:2368/dir/')));
+            });
+    
+            it('returns true for a path along the root domain', function () {
+                assert(utils.isSiteUrl(new URL('http://localhost:2368/dir/path')));
+            });
+    
+            it('returns false for a different domain', function () {
+                assert(!utils.isSiteUrl(new URL('https://google.com/dir/path')));
+            });
+    
+            it('returns false if not on same subdirectory', function () {
+                assert(!utils.isSiteUrl(new URL('http://localhost:2368/different-dir')));
+                // Check if the matching is not dumb and only matches at the start
+                assert(!utils.isSiteUrl(new URL('http://localhost:2368/different/dir')));
+            });
+        });
+
+        describe('Admin context', function () {
+            beforeEach(function () {
+                fakeConfig.adminUrl = 'http://admin.site';
+                fakeConfig.url = 'http://site.site';
+            });
+
+            it('returns false without ghost subdirectory', function () {
+                assert(!utils.isSiteUrl(new URL('http://admin.site/'), 'admin'));
+            });
+
+            it('returns true for the admin domain', function () {
+                assert(utils.isSiteUrl(new URL('http://admin.site/ghost/'), 'admin'));
+            });
+    
+            it('returns false for the site domain', function () {
+                assert(!utils.isSiteUrl(new URL('http://site.site/ghost/'), 'admin'));
             });
         });
     });
