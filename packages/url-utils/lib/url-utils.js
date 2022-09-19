@@ -495,6 +495,23 @@ module.exports = class UrlUtils {
         return utils.plaintextToTransformReady(plaintext, this.getSiteUrl(), _options);
     }
 
+    /**
+     * Return whether the provided URL is part of the site (checks if same domain and within subdirectory)
+     * @param {URL} url
+     * @param {string} [context] describing the context for which you need to check a url
+     * @returns {boolean}
+     */
+    isSiteUrl(url, context = 'home') {
+        const siteUrl = new URL(this.urlFor(context, true));
+        if (siteUrl.host === url.host) {
+            if (url.pathname.startsWith(siteUrl.pathname)) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
     get isSSL() {
         return utils.isSSL;
     }
