@@ -427,6 +427,66 @@ module.exports = class UrlUtils {
         return utils.mobiledocAbsoluteToTransformReady(serializedMobiledoc, this.getSiteUrl(), _options);
     }
 
+    lexicalToTransformReady(serializedLexical, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        const defaultOptions = {
+            cardTransformers: this._config.cardTransformers
+        };
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.lexicalToTransformReady(serializedLexical, this.getSiteUrl(), itemPath, _options);
+    }
+
+    lexicalRelativeToAbsolute(serializedLexical, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            cardTransformers: this._config.cardTransformers
+        };
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), itemPath, _options);
+    }
+
+    lexicalRelativeToTransformReady(serializedLexical, itemPath, options) {
+        if (typeof itemPath === 'object' && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            cardTransformers: this._config.cardTransformers
+        };
+        const _options = assignOptions({}, defaultOptions, options || {});
+        return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), itemPath, _options);
+    }
+
+    lexicalAbsoluteToRelative(serializedLexical, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            cardTransformers: this._config.cardTransformers
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.lexicalAbsoluteToRelative(serializedLexical, this.getSiteUrl(), _options);
+    }
+
+    lexicalAbsoluteToTransformReady(serializedLexical, options = {}) {
+        const defaultOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            cardTransformers: this._config.cardTransformers
+        };
+        const _options = assignOptions({}, defaultOptions, options);
+        return utils.lexicalAbsoluteToTransformReady(serializedLexical, this.getSiteUrl(), _options);
+    }
+
     plaintextToTransformReady(plaintext, options = {}) {
         const defaultOptions = {
             staticImageUrlPrefix: this._config.staticImageUrlPrefix

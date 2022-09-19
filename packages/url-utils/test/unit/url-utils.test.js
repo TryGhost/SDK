@@ -681,4 +681,56 @@ describe('UrlUtils', function () {
             });
         });
     });
+
+    describe('lexicalRelativeToAbsolute', function () {
+        it('calls out to utils/lexical-relative-to-absolute', function () {
+            const stub = sandbox.stub(utils._utils, 'lexicalRelativeToAbsolute');
+
+            utils.lexicalRelativeToAbsolute('serializedLexical', 'my-awesome-post', {assetsOnly: true});
+
+            const {calledOnce, firstCall} = stub;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('serializedLexical');
+            firstCall.args[1].should.eql('http://my-ghost-blog.com/');
+            firstCall.args[2].should.eql('my-awesome-post');
+            firstCall.args[3].should.deepEqual({
+                assetsOnly: true,
+                staticImageUrlPrefix: 'static/images'
+            });
+        });
+
+        it('correctly passes through options with no itemPath', function () {
+            const stub = sandbox.stub(utils._utils, 'lexicalRelativeToAbsolute');
+
+            utils.lexicalRelativeToAbsolute('serializedLexical', {secure: true});
+
+            const {calledOnce, firstCall} = stub;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('serializedLexical');
+            firstCall.args[1].should.eql('http://my-ghost-blog.com/');
+            should.not.exist(firstCall.args[2]);
+            firstCall.args[3].should.deepEqual({
+                assetsOnly: false,
+                staticImageUrlPrefix: 'static/images',
+                secure: true
+            });
+        });
+    });
+
+    describe('lexicalAbsoluteToRelative', function () {
+        it('calls out to utils/lexical-absolute-to-relative', function () {
+            const stub = sandbox.stub(utils._utils, 'lexicalAbsoluteToRelative');
+
+            utils.lexicalAbsoluteToRelative('serializedLexical', {assetsOnly: true});
+
+            const {calledOnce, firstCall} = stub;
+            calledOnce.should.be.true('called once');
+            firstCall.args[0].should.eql('serializedLexical');
+            firstCall.args[1].should.eql('http://my-ghost-blog.com/');
+            firstCall.args[2].should.deepEqual({
+                assetsOnly: true,
+                staticImageUrlPrefix: 'static/images'
+            });
+        });
+    });
 });
