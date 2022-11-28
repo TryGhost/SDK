@@ -2,7 +2,7 @@ const absoluteToRelative = require('./absolute-to-relative');
 const lexicalTransform = require('./_lexical-transform');
 
 function lexicalAbsoluteToRelative(serializedLexical, siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false, cardTransformers: []};
+    const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
     const overrideOptions = {siteUrl, transformType: 'absoluteToRelative'};
     const options = Object.assign({}, defaultOptions, _options, overrideOptions);
 

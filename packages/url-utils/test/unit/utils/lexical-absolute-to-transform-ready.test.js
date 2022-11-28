@@ -2,6 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
+const UrlUtils = require('../../../lib/url-utils');
 const lexicalAbsoluteToTransformReady = require('../../../lib/utils/lexical-absolute-to-transform-ready');
 
 describe('utils: lexicalAbsoluteToTransformReady()', function () {
@@ -338,5 +339,136 @@ describe('utils: lexicalAbsoluteToTransformReady()', function () {
         result.root.children[0].url.should.equal('http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong');
         result.root.children[1].url.should.equal('i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong');
         result.root.children[2].url.should.equal('__GHOST_URL__/sanity-check');
+    });
+
+    it('handles cards', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class ImageNode {
+                    static getType() {
+                        return 'image';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            src: 'url',
+                            caption: 'html'
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                toTransformReady: {
+                    url: urlUtils.toTransformReady.bind(urlUtils),
+                    html: urlUtils.htmlToTransformReady.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [
+                    {type: 'image', src: 'http://my-ghost-blog.com/image.png', caption: 'Captions are HTML with only <a href="http://my-ghost-blog.com/image-caption-link">links transformed</a> - this is a plaintext url: http://my-ghost-blog.com/plaintext-url'}
+                ]
+            }
+        });
+
+        const serializedResult = lexicalAbsoluteToTransformReady(lexical, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].src.should.equal('__GHOST_URL__/image.png');
+        result.root.children[0].caption.should.equal('Captions are HTML with only <a href="__GHOST_URL__/image-caption-link">links transformed</a> - this is a plaintext url: http://my-ghost-blog.com/plaintext-url');
+    });
+
+    it('does not transform unknown cards', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [],
+            transformMap: {
+                toTransformReady: {
+                    url: urlUtils.toTransformReady.bind(urlUtils),
+                    html: urlUtils.htmlToTransformReady.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [
+                    {type: 'image', src: 'http://my-ghost-blog.com/image.png', caption: 'Captions are HTML with only <a href="http://my-ghost-blog.com/image-caption-link">links transformed</a> - this is a plaintext url: http://my-ghost-blog.com/plaintext-url'}
+                ]
+            }
+        });
+
+        const serializedResult = lexicalAbsoluteToTransformReady(lexical, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].src.should.equal('http://my-ghost-blog.com/image.png');
+        result.root.children[0].caption.should.equal('Captions are HTML with only <a href="http://my-ghost-blog.com/image-caption-link">links transformed</a> - this is a plaintext url: http://my-ghost-blog.com/plaintext-url');
+    });
+
+    it('does not transform unknown card properties', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class ImageNode {
+                    static getType() {
+                        return 'image';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            src: 'url',
+                            caption: 'html'
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                toTransformReady: {
+                    url: urlUtils.toTransformReady.bind(urlUtils),
+                    html: urlUtils.htmlToTransformReady.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [
+                    {type: 'image', src: 'http://my-ghost-blog.com/image.png', other: 'http://my-ghost-blog.com/unknown-card-property'}
+                ]
+            }
+        });
+
+        const serializedResult = lexicalAbsoluteToTransformReady(lexical, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].src.should.equal('__GHOST_URL__/image.png');
+        result.root.children[0].other.should.equal('http://my-ghost-blog.com/unknown-card-property');
     });
 });

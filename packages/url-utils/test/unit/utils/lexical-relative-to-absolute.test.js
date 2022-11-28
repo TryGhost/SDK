@@ -2,6 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
+const UrlUtils = require('../../../lib/url-utils');
 const lexicalRelativeToAbsolute = require('../../../lib/utils/lexical-relative-to-absolute');
 
 describe('utils: lexicalRelativeToAbsolute()', function () {
@@ -319,5 +320,136 @@ describe('utils: lexicalRelativeToAbsolute()', function () {
         result.root.children[2].children[0].url.should.equal('http://my-ghost-blog.com/');
         result.root.children[3].children[0].url.should.equal('https://example.com/external');
         result.root.children[4].children[0].url.should.equal('http://my-ghost-blog.com/content/images/example.jpg');
+    });
+
+    it('handles cards', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class ImageNode {
+                    static getType() {
+                        return 'image';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            src: 'url',
+                            caption: 'html'
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                relativeToAbsolute: {
+                    url: urlUtils.relativeToAbsolute.bind(urlUtils),
+                    html: urlUtils.htmlRelativeToAbsolute.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [
+                    {type: 'image', src: '/image.png', caption: 'Captions are HTML with only <a href="/image-caption-link">links transformed</a> - this is a plaintext url: /plaintext-url'}
+                ]
+            }
+        });
+
+        const serializedResult = lexicalRelativeToAbsolute(lexical, siteUrl, itemPath, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].src.should.equal('http://my-ghost-blog.com/image.png');
+        result.root.children[0].caption.should.equal('Captions are HTML with only <a href="http://my-ghost-blog.com/image-caption-link">links transformed</a> - this is a plaintext url: /plaintext-url');
+    });
+
+    it('does not transform unknown cards', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [],
+            transformMap: {
+                relativeToAbsolute: {
+                    url: urlUtils.relativeToAbsolute.bind(urlUtils),
+                    html: urlUtils.htmlRelativeToAbsolute.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [
+                    {type: 'image', src: '/image.png', caption: 'Captions are HTML with only <a href="/image-caption-link">links transformed</a> - this is a plaintext url: /plaintext-url'}
+                ]
+            }
+        });
+
+        const serializedResult = lexicalRelativeToAbsolute(lexical, siteUrl, itemPath, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].src.should.equal('/image.png');
+        result.root.children[0].caption.should.equal('Captions are HTML with only <a href="/image-caption-link">links transformed</a> - this is a plaintext url: /plaintext-url');
+    });
+
+    it('does not transform unknown card properties', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class ImageNode {
+                    static getType() {
+                        return 'image';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            src: 'url',
+                            caption: 'html'
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                relativeToAbsolute: {
+                    url: urlUtils.relativeToAbsolute.bind(urlUtils),
+                    html: urlUtils.htmlRelativeToAbsolute.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [
+                    {type: 'image', src: '/image.png', other: '/unknown-card-property'}
+                ]
+            }
+        });
+
+        const serializedResult = lexicalRelativeToAbsolute(lexical, siteUrl, itemPath, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].src.should.equal('http://my-ghost-blog.com/image.png');
+        result.root.children[0].other.should.equal('/unknown-card-property');
     });
 });

@@ -1,5 +1,5 @@
 function lexicalTransform(serializedLexical, siteUrl, transformFunction, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false};
+    const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
     const options = Object.assign({}, defaultOptions, _options, {siteUrl, itemPath});
 
     if (!serializedLexical) {
@@ -14,11 +14,21 @@ function lexicalTransform(serializedLexical, siteUrl, transformFunction, itemPat
         return serializedLexical;
     }
 
-    // any lexical links will be a child object with a `url` attribute,
-    // recursively walk the tree transforming any `.url`s
+    const nodeMap = new Map();
+    options.nodes.forEach(node => node.urlTransformMap && nodeMap.set(node.getType(), node.urlTransformMap));
+
     const transformChildren = function (children) {
         for (const child of children) {
-            if (child.url) {
+            // cards (nodes) have a `type` attribute in their node data
+            if (child.type && nodeMap.has(child.type)) {
+                Object.entries(nodeMap.get(child.type)).forEach(([property, transform]) => {
+                    if (child[property]) {
+                        child[property] = options.transformMap[options.transformType][transform](child[property]);
+                    }
+                });
+            } else if (child.url) {
+                // any lexical links will be a child object with a `url` attribute,
+                // recursively walk the tree transforming any `.url`s
                 child.url = transformFunction(child.url, siteUrl, itemPath, options);
             }
 
