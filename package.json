@@ -19,7 +19,7 @@
     "ship": "lerna publish --git-remote ${GHOST_UPSTREAM:-origin}"
   },
   "devDependencies": {
-    "eslint": "8.33.0",
+    "eslint": "8.34.0",
     "eslint-plugin-ghost": "2.16.0",
     "eslint-plugin-react": "7.32.2",
     "mocha": "10.2.0",
