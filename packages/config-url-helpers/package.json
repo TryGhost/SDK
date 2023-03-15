@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/config-url-helpers",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "repository": "https://github.com/TryGhost/SDK/tree/main/packages/config-url-helpers",
   "author": "Ghost Foundation",
   "license": "MIT",
