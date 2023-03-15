@@ -370,6 +370,228 @@ describe('utils: lexicalRelativeToTransformReady()', function () {
         result.root.children[0].caption.should.equal('Captions are HTML with only <a href="__GHOST_URL__/image-caption-link">links transformed</a> - this is a plaintext url: /plaintext-url');
     });
 
+    it('handles cards with array properties', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class GalleryNode {
+                    static getType() {
+                        return 'gallery';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            images: {src: 'url'}
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                toTransformReady: {
+                    url: urlUtils.toTransformReady.bind(urlUtils),
+                    html: urlUtils.htmlToTransformReady.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [{
+                    type: 'gallery',
+                    images: [
+                        {src: '/image1.png'},
+                        {src: '/image2.png'}
+                    ]
+                }]
+            }
+        });
+
+        const serializedResult = lexicalRelativeToTransformReady(lexical, siteUrl, itemPath, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].images[0].src.should.equal('__GHOST_URL__/image1.png');
+        result.root.children[0].images[1].src.should.equal('__GHOST_URL__/image2.png');
+    });
+
+    it('handles cards with deeply nested properties', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class TestNode {
+                    static getType() {
+                        return 'test';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            'meta.image.src': 'url'
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                toTransformReady: {
+                    url: urlUtils.toTransformReady.bind(urlUtils),
+                    html: urlUtils.htmlToTransformReady.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [{
+                    type: 'test',
+                    meta: {
+                        image: {
+                            src: '/image.png'
+                        }
+                    }
+                }]
+            }
+        });
+
+        const serializedResult = lexicalRelativeToTransformReady(lexical, siteUrl, itemPath, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].meta.image.src.should.equal('__GHOST_URL__/image.png');
+    });
+
+    it('handles cards with arrays of deeply nested properties', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class GalleryNode {
+                    static getType() {
+                        return 'gallery';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            images: {
+                                'srcs.main': 'url'
+                            }
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                toTransformReady: {
+                    url: urlUtils.toTransformReady.bind(urlUtils),
+                    html: urlUtils.htmlToTransformReady.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [{
+                    type: 'gallery',
+                    images: [
+                        {srcs: {main: '/image1.png'}},
+                        {srcs: {main: '/image2.png'}}
+                    ]
+                }]
+            }
+        });
+
+        const serializedResult = lexicalRelativeToTransformReady(lexical, siteUrl, itemPath, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].images[0].srcs.main.should.equal('__GHOST_URL__/image1.png');
+        result.root.children[0].images[1].srcs.main.should.equal('__GHOST_URL__/image2.png');
+    });
+
+    it('handles cards with arrays of arrays', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class GalleryNode {
+                    static getType() {
+                        return 'gallery';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            images: {
+                                sizes: {
+                                    src: 'url'
+                                }
+                            }
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                toTransformReady: {
+                    url: urlUtils.toTransformReady.bind(urlUtils),
+                    html: urlUtils.htmlToTransformReady.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [{
+                    type: 'gallery',
+                    images: [
+                        {
+                            sizes: [
+                                {src: '/image1.png'},
+                                {src: '/image2.png'}
+                            ]
+                        },
+                        {
+                            sizes: [
+                                {src: '/image3.png'},
+                                {src: '/image4.png'}
+                            ]
+                        }
+                    ]
+                }]
+            }
+        });
+
+        const serializedResult = lexicalRelativeToTransformReady(lexical, siteUrl, itemPath, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].images[0].sizes[0].src.should.equal('__GHOST_URL__/image1.png');
+        result.root.children[0].images[0].sizes[1].src.should.equal('__GHOST_URL__/image2.png');
+        result.root.children[0].images[1].sizes[0].src.should.equal('__GHOST_URL__/image3.png');
+        result.root.children[0].images[1].sizes[1].src.should.equal('__GHOST_URL__/image4.png');
+    });
+
     it('does not transform unknown cards', function () {
         const urlUtils = new UrlUtils({
             getSubdir: function () {

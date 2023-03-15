@@ -1,3 +1,13 @@
+const _ = require('lodash');
+
+// options.transformMap = {
+//     relativeToAbsolute: {
+//         url: (url, siteUrl, itemPath, options) => 'transformedUrl',
+//         html: (html, siteUrl, itemPath, options) => 'transformedHtml',
+//     }
+// }
+// options.transformType = 'relativeToAbsolute'
+
 function lexicalTransform(serializedLexical, siteUrl, transformFunction, itemPath, _options = {}) {
     const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
     const options = Object.assign({}, defaultOptions, _options, {siteUrl, itemPath});
@@ -14,21 +24,42 @@ function lexicalTransform(serializedLexical, siteUrl, transformFunction, itemPat
         return serializedLexical;
     }
 
+    // create a map of node types to urlTransformMap objects
+    // e.g. {'image': {src: 'url', caption: 'html'}
     const nodeMap = new Map();
     options.nodes.forEach(node => node.urlTransformMap && nodeMap.set(node.getType(), node.urlTransformMap));
 
+    const transformProperty = function (obj, propertyPath, transform) {
+        const propertyValue = _.get(obj, propertyPath);
+
+        if (Array.isArray(propertyValue)) {
+            propertyValue.forEach((item) => {
+                // arrays of objects need to be defined as a nested object in the urlTransformMap
+                // so the `transform` value is that nested object
+                Object.entries(transform).forEach(([itemPropertyPath, itemTransform]) => {
+                    transformProperty(item, itemPropertyPath, itemTransform);
+                });
+            });
+
+            return;
+        }
+
+        if (propertyValue) {
+            _.set(obj, propertyPath, options.transformMap[options.transformType][transform](propertyValue));
+        }
+    };
+
+    // recursively walk the Lexical node tree transforming any card data properties and links
     const transformChildren = function (children) {
         for (const child of children) {
-            // cards (nodes) have a `type` attribute in their node data
-            if (child.type && nodeMap.has(child.type)) {
-                Object.entries(nodeMap.get(child.type)).forEach(([property, transform]) => {
-                    if (child[property]) {
-                        child[property] = options.transformMap[options.transformType][transform](child[property]);
-                    }
+            const isCard = child.type && nodeMap.has(child.type);
+            const isLink = !!child.url;
+
+            if (isCard) {
+                Object.entries(nodeMap.get(child.type)).forEach(([propertyPath, transform]) => {
+                    transformProperty(child, propertyPath, transform);
                 });
-            } else if (child.url) {
-                // any lexical links will be a child object with a `url` attribute,
-                // recursively walk the tree transforming any `.url`s
+            } else if (isLink) {
                 child.url = transformFunction(child.url, siteUrl, itemPath, options);
             }
 

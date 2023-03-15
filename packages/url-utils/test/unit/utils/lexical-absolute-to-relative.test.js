@@ -389,6 +389,228 @@ describe('utils: lexicalAbsoluteToRelative()', function () {
         result.root.children[0].caption.should.equal('Captions are HTML with only <a href="/image-caption-link">links transformed</a> - this is a plaintext url: http://my-ghost-blog.com/plaintext-url');
     });
 
+    it('handles cards with array properties', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class GalleryNode {
+                    static getType() {
+                        return 'gallery';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            images: {src: 'url'}
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                absoluteToRelative: {
+                    url: urlUtils.absoluteToRelative.bind(urlUtils),
+                    html: urlUtils.htmlAbsoluteToRelative.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [{
+                    type: 'gallery',
+                    images: [
+                        {src: 'http://my-ghost-blog.com/image1.png'},
+                        {src: 'http://my-ghost-blog.com/image2.png'}
+                    ]
+                }]
+            }
+        });
+
+        const serializedResult = lexicalAbsoluteToRelative(lexical, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].images[0].src.should.equal('/image1.png');
+        result.root.children[0].images[1].src.should.equal('/image2.png');
+    });
+
+    it('handles cards with deeply nested properties', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class TestNode {
+                    static getType() {
+                        return 'test';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            'meta.image.src': 'url'
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                absoluteToRelative: {
+                    url: urlUtils.absoluteToRelative.bind(urlUtils),
+                    html: urlUtils.htmlAbsoluteToRelative.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [{
+                    type: 'test',
+                    meta: {
+                        image: {
+                            src: 'http://my-ghost-blog.com/image.png'
+                        }
+                    }
+                }]
+            }
+        });
+
+        const serializedResult = lexicalAbsoluteToRelative(lexical, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].meta.image.src.should.equal('/image.png');
+    });
+
+    it('handles cards with arrays of deeply nested properties', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class GalleryNode {
+                    static getType() {
+                        return 'gallery';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            images: {
+                                'srcs.main': 'url'
+                            }
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                absoluteToRelative: {
+                    url: urlUtils.absoluteToRelative.bind(urlUtils),
+                    html: urlUtils.htmlAbsoluteToRelative.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [{
+                    type: 'gallery',
+                    images: [
+                        {srcs: {main: 'http://my-ghost-blog.com/image1.png'}},
+                        {srcs: {main: 'http://my-ghost-blog.com/image2.png'}}
+                    ]
+                }]
+            }
+        });
+
+        const serializedResult = lexicalAbsoluteToRelative(lexical, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].images[0].srcs.main.should.equal('/image1.png');
+        result.root.children[0].images[1].srcs.main.should.equal('/image2.png');
+    });
+
+    it('handles cards with arrays of arrays', function () {
+        const urlUtils = new UrlUtils({
+            getSubdir: function () {
+                return '';
+            },
+            getSiteUrl: function () {
+                return siteUrl;
+            }
+        });
+
+        Object.assign(options, {
+            nodes: [
+                class GalleryNode {
+                    static getType() {
+                        return 'gallery';
+                    }
+
+                    static get urlTransformMap() {
+                        return {
+                            images: {
+                                sizes: {
+                                    src: 'url'
+                                }
+                            }
+                        };
+                    }
+                }
+            ],
+            transformMap: {
+                absoluteToRelative: {
+                    url: urlUtils.absoluteToRelative.bind(urlUtils),
+                    html: urlUtils.htmlAbsoluteToRelative.bind(urlUtils)
+                }
+            }
+        });
+
+        const lexical = JSON.stringify({
+            root: {
+                children: [{
+                    type: 'gallery',
+                    images: [
+                        {
+                            sizes: [
+                                {src: 'http://my-ghost-blog.com/image1.png'},
+                                {src: 'http://my-ghost-blog.com/image2.png'}
+                            ]
+                        },
+                        {
+                            sizes: [
+                                {src: 'http://my-ghost-blog.com/image3.png'},
+                                {src: 'http://my-ghost-blog.com/image4.png'}
+                            ]
+                        }
+                    ]
+                }]
+            }
+        });
+
+        const serializedResult = lexicalAbsoluteToRelative(lexical, siteUrl, options);
+        const result = JSON.parse(serializedResult);
+
+        result.root.children[0].images[0].sizes[0].src.should.equal('/image1.png');
+        result.root.children[0].images[0].sizes[1].src.should.equal('/image2.png');
+        result.root.children[0].images[1].sizes[0].src.should.equal('/image3.png');
+        result.root.children[0].images[1].sizes[1].src.should.equal('/image4.png');
+    });
+
     it('does not transform unknown cards', function () {
         const urlUtils = new UrlUtils({
             getSubdir: function () {
