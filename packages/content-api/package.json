@@ -30,9 +30,9 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/core": "7.21.3",
+    "@babel/core": "7.21.4",
     "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.20.2",
+    "@babel/preset-env": "7.21.4",
     "@rollup/plugin-json": "6.0.0",
     "c8": "7.13.0",
     "core-js": "3.29.1",
