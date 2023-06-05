@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "cheerio": "^0.22.0",
+    "lodash": "^4.17.21",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
     "remark": "^11.0.2",
