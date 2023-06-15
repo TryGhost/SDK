@@ -71,7 +71,7 @@ const getInstance = (config, cb) => {
             };
         }
 
-        if (req.headers['content-type'].match(/multipart/)) {
+        if (req.headers['content-type']?.match(/multipart/)) {
             data = {
                 images: [{
                     url: `${config.url}/image/url`,
