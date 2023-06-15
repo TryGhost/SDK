@@ -226,7 +226,7 @@ module.exports = function GhostAdminAPI(options) {
 
             queryParams = Object.assign({}, queryParams, data);
 
-            return makeResourceRequest(resourceType, queryParams, {}, 'GET', urlParams);
+            return makeResourceRequest(resourceType, queryParams, '', 'GET', urlParams);
         }
 
         let resourceAPI = {};
@@ -381,7 +381,7 @@ module.exports = function GhostAdminAPI(options) {
         });
     }
 
-    function makeResourceRequest(resourceType, queryParams = {}, body = "", method = 'GET', urlParams = {}) {
+    function makeResourceRequest(resourceType, queryParams = {}, body = '', method = 'GET', urlParams = {}) {
         return makeApiRequest({
             endpoint: endpointFor(resourceType, urlParams),
             method,
