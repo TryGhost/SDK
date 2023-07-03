@@ -12,5 +12,5 @@ export default function countImages(html) {
     if (Object.prototype.hasOwnProperty.call(html, 'string')) {
         html = html.string;
     }
-    return (html.match(/<img(.|\n)*?>/g) || []).length;
+    return (html.match(/<img("[^"]*"|'[^']*'|[^'">])+\/?>/g) || []).length;
 }
