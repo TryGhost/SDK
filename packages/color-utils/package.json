@@ -1,7 +1,7 @@
 {
   "name": "@tryghost/color-utils",
   "version": "0.1.26",
-  "repository": "https://github.com/TryGhost/SDK/tree/master/packages/color-utils",
+  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/color-utils",
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "cjs/color-utils.js",
