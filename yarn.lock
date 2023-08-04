@@ -2811,9 +2811,9 @@
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
 "@tryghost/errors@^1.0.0", "@tryghost/errors@^1.2.1":
-  version "1.2.25"
-  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.2.25.tgz#9e1b715624dfd7dbde59a9fc196ebcb00d9c7553"
-  integrity sha512-fVZgnFu3QsEUVPyl+uFLK6X6JSN3m7l1pMl713SmhNrkFNFM3nG1sVeNiTg/Ru4N5qIJBBIefwrfRH80Ccy3oQ==
+  version "1.2.26"
+  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.2.26.tgz#0d0503a51e681998421548fbddbdd7376384c457"
+  integrity sha512-s/eynvVUiAhHP0HB7CPQs7qH7Pm1quJ2iUMTCuH7HV8LqiGoQFNc21/5R4lRv+2Jt3yf69UPCs/6G+kAgZipNw==
   dependencies:
     "@stdlib/utils-copy" "^0.0.7"
     lodash "^4.17.21"
