@@ -24,10 +24,10 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/cli": "7.22.10",
-    "@babel/core": "7.22.11",
-    "@babel/preset-env": "7.22.14",
-    "@babel/preset-react": "7.22.5",
+    "@babel/cli": "7.22.15",
+    "@babel/core": "7.22.15",
+    "@babel/preset-env": "7.22.15",
+    "@babel/preset-react": "7.22.15",
     "c8": "7.13.0",
     "mocha": "10.2.0",
     "react": "18.2.0",
