@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/schema-org",
-  "version": "0.1.36",
+  "version": "0.1.37",
   "repository": "https://github.com/TryGhost/SDK/tree/main/packages/schema-org",
   "author": "Ghost Foundation",
   "license": "MIT",
