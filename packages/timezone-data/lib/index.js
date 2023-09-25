@@ -132,7 +132,7 @@ export default [
         label: '(GMT +2:00) Harare'
     },
     {
-        name: 'Europe/Kyiv',
+        name: 'Europe/Kiev', // Changing name to 'Europe/Kiev', and keeping the UI with Kyiv. Change this once we are passed the moment lib update.
         label: '(GMT +2:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius'
     },
     {
