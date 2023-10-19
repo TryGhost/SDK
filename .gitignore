@@ -63,6 +63,7 @@ typings/
 .idea/*
 *.iml
 *.sublime-*
+.vscode
 
 # OSX
 .DS_Store
