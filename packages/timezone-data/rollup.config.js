@@ -1,8 +1,8 @@
 /* eslint-env node */
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import typescript from '@rollup/plugin-typescript';
 import commonjs from 'rollup-plugin-commonjs';
-import {terser} from 'rollup-plugin-terser';
+import resolve from 'rollup-plugin-node-resolve';
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 export default [
@@ -16,6 +16,7 @@ export default [
             interop: false
         },
         plugins: [
+            typescript(),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
             })
@@ -36,18 +37,9 @@ export default [
             resolve({
                 browser: true
             }),
+            typescript(),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
-            }),
-            babel({
-                presets: [
-                    ['@babel/preset-env', {
-                        modules: false,
-                        targets: 'defaults',
-                        useBuiltIns: 'usage'
-                    }]
-                ],
-                exclude: ['node_modules/**', '../../node_modules/**']
             })
         ]
     },
@@ -67,18 +59,9 @@ export default [
             resolve({
                 browser: true
             }),
+            typescript(),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
-            }),
-            babel({
-                presets: [
-                    ['@babel/preset-env', {
-                        modules: false,
-                        targets: 'defaults',
-                        useBuiltIns: 'usage'
-                    }]
-                ],
-                exclude: ['node_modules/**', '../../node_modules/**']
             }),
             terser()
         ]

@@ -1,4 +1,4 @@
-export default [
+const data: {name: string; label: string}[] = [
     {
         name: 'Pacific/Pago_Pago',
         label: '(GMT -11:00) Midway Island, Samoa'
@@ -264,3 +264,5 @@ export default [
         label: '(GMT +12:00) International Date Line West'
     }
 ];
+
+export default data;

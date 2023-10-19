@@ -8,20 +8,22 @@
   "umd:main": "umd/timezone-data.min.js",
   "unpkg": "umd/timezone-data.min.js",
   "module": "es/timezone-data.js",
-  "source": "lib/index.js",
+  "source": "src/index.ts",
+  "types": "./types/index.d.ts",
   "files": [
     "LICENSE",
     "README.md",
     "cjs/",
-    "lib/",
+    "src/",
     "umd/",
-    "es/"
+    "es/",
+    "types/"
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "pretest": "yarn build",
     "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha './test/**/*.test.js'",
-    "build": "rollup -c",
+    "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
     "lint": "eslint . --ext .js --cache",
     "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
@@ -32,6 +34,7 @@
   "devDependencies": {
     "@babel/core": "7.23.2",
     "@babel/preset-env": "7.23.2",
+    "@rollup/plugin-typescript": "11.1.5",
     "c8": "7.13.0",
     "mocha": "10.2.0",
     "rollup": "2.79.1",
@@ -40,6 +43,7 @@
     "rollup-plugin-node-resolve": "5.2.0",
     "rollup-plugin-terser": "7.0.2",
     "should": "13.2.3",
-    "sinon": "15.0.4"
+    "sinon": "15.0.4",
+    "typescript": "5.2.2"
   }
 }
