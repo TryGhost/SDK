@@ -8,7 +8,7 @@ const rewire = require('rewire');
 const sinon = require('sinon');
 
 const remark = require('remark');
-const markdownTransform = rewire('../../../lib/utils/_markdown-transform');
+const markdownTransform = rewire('../../../lib/utils/markdown-transform');
 const markdownAbsoluteToTransformReady = rewire('../../../lib/utils/markdown-absolute-to-transform-ready');
 
 describe('utils: markdownAbsoluteToTransformReady()', function () {

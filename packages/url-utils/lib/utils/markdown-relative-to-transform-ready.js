@@ -1,4 +1,4 @@
-const markdownTransform = require('./_markdown-transform');
+const markdownTransform = require('./markdown-transform');
 const htmlRelativeToTransformReady = require('./html-relative-to-transform-ready');
 const relativeToTransformReady = require('./relative-to-transform-ready');
 

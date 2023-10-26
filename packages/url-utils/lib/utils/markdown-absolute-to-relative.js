@@ -1,4 +1,4 @@
-const markdownTransform = require('./_markdown-transform');
+const markdownTransform = require('./markdown-transform');
 const absoluteToRelative = require('./absolute-to-relative');
 const htmlAbsoluteToRelative = require('./html-absolute-to-relative');
 

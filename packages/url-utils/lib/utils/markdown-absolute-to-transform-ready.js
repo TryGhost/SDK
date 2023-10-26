@@ -1,4 +1,4 @@
-const markdownTransform = require('./_markdown-transform');
+const markdownTransform = require('./markdown-transform');
 const absoluteToTransformReady = require('./absolute-to-transform-ready');
 const htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
 

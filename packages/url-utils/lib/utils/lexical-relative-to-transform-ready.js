@@ -1,5 +1,5 @@
 const relativeToTransformReady = require('./relative-to-transform-ready');
-const lexicalTransform = require('./_lexical-transform');
+const lexicalTransform = require('./lexical-transform');
 
 function lexicalRelativeToTransformReady(serializedLexical, siteUrl, itemPath, _options = {}) {
     const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
