@@ -9,7 +9,7 @@
   "unpkg": "umd/timezone-data.min.js",
   "module": "es/timezone-data.js",
   "source": "src/index.ts",
-  "types": "./types/index.d.ts",
+  "types": "types/index.d.ts",
   "files": [
     "LICENSE",
     "README.md",

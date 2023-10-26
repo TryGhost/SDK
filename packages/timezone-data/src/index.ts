@@ -1,4 +1,4 @@
-const data: {name: string; label: string}[] = [
+const timezoneData: {name: string; label: string}[] = [
     {
         name: 'Pacific/Pago_Pago',
         label: '(GMT -11:00) Midway Island, Samoa'
@@ -265,4 +265,4 @@ const data: {name: string; label: string}[] = [
     }
 ];
 
-export default data;
+export default timezoneData;
