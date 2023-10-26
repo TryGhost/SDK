@@ -1,16 +1,54 @@
-const camelCase = require('lodash/camelCase');
-const has = require('lodash/has');
-const {IncorrectUsageError} = require('@tryghost/errors');
+import ghostErrors from '@tryghost/errors';
+import camelCase from 'lodash/camelCase';
+import has from 'lodash/has';
 
-const {MaxLimit, MaxPeriodicLimit, FlagLimit, AllowlistLimit} = require('./limit');
-const config = require('./config');
+import config from './config';
+import {AllowlistLimit, FlagLimit, MaxLimit, MaxPeriodicLimit} from './limit';
 
 const messages = {
     missingErrorsConfig: `Config Missing: 'errors' is required.`,
     noSubscriptionParameter: 'Attempted to setup a periodic max limit without a subscription'
 };
 
-class LimitService {
+type Limits = Record<string, AllowlistLimit | FlagLimit | MaxLimit | MaxPeriodicLimit>
+
+export interface LimitServiceErrors {
+    IncorrectUsageError: {
+        new(options: {message?: string}): Error;
+    }
+    HostLimitError: {
+        new(options: {message?: string}): Error;
+    }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CurrentCountFn = (knex?: any, lastPeriodStart?: string) => Promise<number | undefined>
+
+export interface LimitConfig {
+    /** max limit */
+    max?: number;
+
+    /** max limit for a period */
+    maxPeriodic?: number;
+
+    /** flag disabling/enabling limit */
+    disabled?: boolean;
+
+    /** custom error to be displayed when the limit is reached */
+    error: string;
+
+    /** function returning count for the "max" type of limit */
+    currentCountQuery?: CurrentCountFn;
+
+    /** function to format the limit counts before they are passed to the error message */
+    formatter?: (count: number) => string;
+}
+
+export default class LimitService {
+    private limits: Limits;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private errors?: LimitServiceErrors;
+
     constructor() {
         this.limits = {};
     }
@@ -18,16 +56,26 @@ class LimitService {
     /**
      * Initializes the limits based on configuration
      *
-     * @param {Object} options
-     * @param {Object} [options.limits] - hash containing limit configurations keyed by limit name and containing
-     * @param {Object} [options.subscription] - hash containing subscription configuration with interval and startDate properties
-     * @param {String} options.helpLink - URL pointing to help resources for when limit is reached
-     * @param {Object} options.db - knex db connection instance or other data source for the limit checks
-     * @param {Object} options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
+     * @param options
+     * @param options.limits - hash containing limit configurations keyed by limit name and containing
+     * @param options.subscription - hash containing subscription configuration with interval and startDate properties
+     * @param options.helpLink - URL pointing to help resources for when limit is reached
+     * @param options.db - knex db connection instance or other data source for the limit checks
+     * @param options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
      */
-    loadLimits({limits = {}, subscription, helpLink, db, errors}) {
+    loadLimits({limits = {}, subscription, helpLink, db, errors}: {
+        limits: Record<string, LimitConfig>;
+        subscription?: {
+            interval: 'month';
+            startDate: string;
+        };
+        helpLink: string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        db: any;
+        errors: LimitServiceErrors;
+    }) {
         if (!errors) {
-            throw new IncorrectUsageError({
+            throw new ghostErrors.IncorrectUsageError({
                 message: messages.missingErrorsConfig
             });
         }
@@ -42,8 +90,7 @@ class LimitService {
 
             // NOTE: config module acts as an allowlist of supported config names, where each key is a name of supported config
             if (config[name]) {
-                /** @type LimitConfig */
-                let limitConfig = Object.assign({}, config[name], limits[name]);
+                const limitConfig: LimitConfig = Object.assign({}, config[name], limits[name]);
 
                 if (has(limitConfig, 'allowlist')) {
                     this.limits[name] = new AllowlistLimit({name, config: limitConfig, helpLink, errors});
@@ -51,7 +98,7 @@ class LimitService {
                     this.limits[name] = new MaxLimit({name: name, config: limitConfig, helpLink, db, errors});
                 } else if (has(limitConfig, 'maxPeriodic')) {
                     if (subscription === undefined) {
-                        throw new IncorrectUsageError({
+                        throw new ghostErrors.IncorrectUsageError({
                             message: messages.noSubscriptionParameter
                         });
                     }
@@ -65,18 +112,19 @@ class LimitService {
         });
     }
 
-    isLimited(limitName) {
+    isLimited(limitName: string) {
         return !!this.limits[camelCase(limitName)];
     }
 
     /**
      *
-     * @param {String} limitName - name of the configured limit
-     * @param {Object} [options] - limit parameters
-     * @param {Object} [options.transacting] Transaction to run the count query on (if required for the chosen limit)
+     * @param limitName - name of the configured limit
+     * @param options - limit parameters
+     * @param options.transacting Transaction to run the count query on (if required for the chosen limit)
      * @returns
      */
-    async checkIsOverLimit(limitName, options = {}) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async checkIsOverLimit(limitName: string, options: any = {}) {
         if (!this.isLimited(limitName)) {
             return;
         }
@@ -85,7 +133,7 @@ class LimitService {
             await this.limits[limitName].errorIfIsOverLimit(options);
             return false;
         } catch (error) {
-            if (error instanceof this.errors.HostLimitError) {
+            if (error instanceof this.errors!.HostLimitError) {
                 return true;
             }
 
@@ -100,7 +148,8 @@ class LimitService {
      * @param {Object} [options.transacting] Transaction to run the count query on (if required for the chosen limit)
      * @returns
      */
-    async checkWouldGoOverLimit(limitName, options = {}) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async checkWouldGoOverLimit(limitName: string, options: any = {}) {
         if (!this.isLimited(limitName)) {
             return;
         }
@@ -109,7 +158,7 @@ class LimitService {
             await this.limits[limitName].errorIfWouldGoOverLimit(options);
             return false;
         } catch (error) {
-            if (error instanceof this.errors.HostLimitError) {
+            if (error instanceof this.errors!.HostLimitError) {
                 return true;
             }
 
@@ -119,12 +168,12 @@ class LimitService {
 
     /**
      *
-     * @param {String} limitName - name of the configured limit
-     * @param {Object} [options] - limit parameters
-     * @param {Object} [options.transacting] Transaction to run the count query on (if required for the chosen limit)
-     * @returns
+     * @param limitName - name of the configured limit
+     * @param options - limit parameters
+     * @param options.transacting Transaction to run the count query on (if required for the chosen limit)
      */
-    async errorIfIsOverLimit(limitName, options = {}) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async errorIfIsOverLimit(limitName: string, options: any = {}) {
         if (!this.isLimited(limitName)) {
             return;
         }
@@ -134,12 +183,12 @@ class LimitService {
 
     /**
      *
-     * @param {String} limitName - name of the configured limit
-     * @param {Object} [options] - limit parameters
-     * @param {Object} [options.transacting] Transaction to run the count query on (if required for the chosen limit)
-     * @returns
+     * @param limitName - name of the configured limit
+     * @param options - limit parameters
+     * @param options.transacting Transaction to run the count query on (if required for the chosen limit)
      */
-    async errorIfWouldGoOverLimit(limitName, options = {}) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async errorIfWouldGoOverLimit(limitName: string, options: any = {}) {
         if (!this.isLimited(limitName)) {
             return;
         }
@@ -150,11 +199,11 @@ class LimitService {
     /**
      * Checks if any of the configured limits acceded
      *
-     * @param {Object} [options] - limit parameters
-     * @param {Object} [options.transacting] Transaction to run the count queries on (if required for the chosen limit)
-     * @returns {Promise<boolean>}
+     * @param options - limit parameters
+     * @param options.transacting Transaction to run the count queries on (if required for the chosen limit)
      */
-    async checkIfAnyOverLimit(options = {}) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async checkIfAnyOverLimit(options: any = {}) {
         for (const limit in this.limits) {
             if (await this.checkIsOverLimit(limit, options)) {
                 return true;
@@ -164,14 +213,3 @@ class LimitService {
         return false;
     }
 }
-
-module.exports = LimitService;
-
-/**
- * @typedef {Object} LimitConfig
- * @prop {Number} [max] - max limit
- * @prop {Number} [maxPeriodic] - max limit for a period
- * @prop {Boolean} [disabled] - flag disabling/enabling limit
- * @prop {String} error - custom error to be displayed when the limit is reached
- * @prop {Function} [currentCountQuery] - function returning count for the "max" type of limit
- */

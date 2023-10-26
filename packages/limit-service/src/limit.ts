@@ -1,20 +1,44 @@
-const lowerCase = require('lodash/lowerCase');
-const template = require('lodash/template');
-const {lastPeriodStart, SUPPORTED_INTERVALS} = require('./date-utils');
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import lowerCase from 'lodash/lowerCase';
+import template from 'lodash/template';
+import {lastPeriodStart, SUPPORTED_INTERVALS} from './date-utils';
+import {CurrentCountFn, LimitConfig, LimitServiceErrors} from './LimitService';
 
 const interpolate = /{{([\s\S]+?)}}/g;
 
+interface ErrorDetails {
+    message?: string;
+    errorDetails: {
+        name: string;
+        limit?: number;
+        total?: number;
+    };
+    help?: string;
+}
+
 class Limit {
+    protected name: string;
+    protected error: string;
+    protected helpLink?: string;
+    protected db?: any;
+    protected errors: LimitServiceErrors;
+
     /**
      *
-     * @param {Object} options
-     * @param {String} options.name - name of the limit
-     * @param {String} options.error - error message to use when limit is reached
-     * @param {String} options.helpLink - URL to the resource explaining how the limit works
-     * @param {Object} [options.db] - instance of knex db connection that currentCountQuery can use to run state check through
-     * @param {Object} options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
+     * @param options
+     * @param options.name - name of the limit
+     * @param options.error - error message to use when limit is reached
+     * @param options.helpLink - URL to the resource explaining how the limit works
+     * @param options.db - instance of knex db connection that currentCountQuery can use to run state check through
+     * @param options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
      */
-    constructor({name, error, helpLink, db, errors}) {
+    constructor({name, error, helpLink, db, errors}: {
+        name: string;
+        error: string;
+        helpLink?: string;
+        db?: any;
+        errors: LimitServiceErrors;
+    }) {
         this.name = name;
         this.error = error;
         this.helpLink = helpLink;
@@ -22,8 +46,8 @@ class Limit {
         this.errors = errors;
     }
 
-    generateError() {
-        let errorObj = {
+    generateBaseError(): ErrorDetails {
+        const errorObj: ErrorDetails = {
             errorDetails: {
                 name: this.name
             }
@@ -37,21 +61,32 @@ class Limit {
     }
 }
 
-class MaxLimit extends Limit {
+export class MaxLimit extends Limit {
+    protected currentCountQueryFn: CurrentCountFn;
+    protected max: number;
+    protected formatter?: (count: number) => string;
+    protected fallbackMessage: string;
+
     /**
      *
-     * @param {Object} options
-     * @param {String} options.name - name of the limit
-     * @param {Object} options.config - limit configuration
-     * @param {Number} options.config.max - maximum limit the limit would check against
-     * @param {Function} options.config.currentCountQuery - query checking the state that would be compared against the limit
-     * @param {Function} [options.config.formatter] - function to format the limit counts before they are passed to the error message
-     * @param {String} [options.config.error] - error message to use when limit is reached
-     * @param {String} [options.helpLink] - URL to the resource explaining how the limit works
-     * @param {Object} [options.db] - instance of knex db connection that currentCountQuery can use to run state check through
-     * @param {Object} options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
+     * @param options
+     * @param options.name - name of the limit
+     * @param options.config - limit configuration
+     * @param options.config.max - maximum limit the limit would check against
+     * @param options.config.currentCountQuery - query checking the state that would be compared against the limit
+     * @param options.config.formatter - function to format the limit counts before they are passed to the error message
+     * @param options.config.error - error message to use when limit is reached
+     * @param options.helpLink - URL to the resource explaining how the limit works
+     * @param options.db - instance of knex db connection that currentCountQuery can use to run state check through
+     * @param options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
      */
-    constructor({name, config, helpLink, db, errors}) {
+    constructor({name, config, helpLink, db, errors}: {
+        name: string;
+        config: LimitConfig;
+        helpLink?: string;
+        db?: any;
+        errors: any;
+    }) {
         super({name, error: config.error || '', helpLink, db, errors});
 
         if (config.max === undefined) {
@@ -70,11 +105,11 @@ class MaxLimit extends Limit {
 
     /**
      *
-     * @param {Number} count - current count that acceded the limit
+     * @param count - current count that acceded the limit
      * @returns {Object} instance of HostLimitError
      */
-    generateError(count) {
-        let errorObj = super.generateError();
+    generateError(count: number) {
+        const errorObj = super.generateBaseError();
 
         errorObj.message = this.fallbackMessage;
 
@@ -99,11 +134,10 @@ class MaxLimit extends Limit {
     }
 
     /**
-     * @param {Object} [options]
-     * @param {Object} [options.transacting] Transaction to run the count query on
+     * @param options.transacting Transaction to run the count query on
      * @returns
      */
-    async currentCountQuery(options = {}) {
+    async currentCountQuery(options: {transacting?: any} = {}) {
         return await this.currentCountQueryFn(options.transacting ?? this.db?.knex);
     }
 
@@ -115,9 +149,13 @@ class MaxLimit extends Limit {
      * @param {Number} [options.addedCount] - number of items to add to the currentCount during the check
      * @param {Object} [options.transacting] Transaction to run the count query on
      */
-    async errorIfWouldGoOverLimit(options = {}) {
+    async errorIfWouldGoOverLimit(options: {
+        max?: number;
+        addedCount?: number;
+        transacting?: any;
+    } = {}) {
         const {max, addedCount = 1} = options;
-        let currentCount = await this.currentCountQuery(options);
+        const currentCount = await this.currentCountQuery(options) || 0;
 
         if ((currentCount + addedCount) > (max || this.max)) {
             throw this.generateError(currentCount);
@@ -132,8 +170,12 @@ class MaxLimit extends Limit {
      * @param {Number} [options.currentCount] - overrides currentCountQuery to perform checks against
      * @param {Object} [options.transacting] Transaction to run the count query on
      */
-    async errorIfIsOverLimit(options = {}) {
-        const currentCount = options.currentCount || await this.currentCountQuery(options);
+    async errorIfIsOverLimit(options: {
+        max?: number;
+        currentCount?: number;
+        transacting?: any;
+    } = {}) {
+        const currentCount = options.currentCount || await this.currentCountQuery(options) || 0;
 
         if (currentCount > (options.max || this.max)) {
             throw this.generateError(currentCount);
@@ -141,7 +183,13 @@ class MaxLimit extends Limit {
     }
 }
 
-class MaxPeriodicLimit extends Limit {
+export class MaxPeriodicLimit extends Limit {
+    protected currentCountQueryFn: CurrentCountFn;
+    protected maxPeriodic: number;
+    protected interval: 'month';
+    protected startDate: string;
+    protected fallbackMessage: string;
+
     /**
      *
      * @param {Object} options
@@ -156,7 +204,16 @@ class MaxPeriodicLimit extends Limit {
      * @param {Object} [options.db] - instance of knex db connection that currentCountQuery can use to run state check through
      * @param {Object} options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
      */
-    constructor({name, config, helpLink, db, errors}) {
+    constructor({name, config, helpLink, db, errors}: {
+        name: string;
+        config: LimitConfig & {
+            interval?: 'month';
+            startDate?: string;
+        };
+        helpLink?: string;
+        db?: any;
+        errors: any;
+    }) {
         super({name, error: config.error || '', helpLink, db, errors});
 
         if (config.maxPeriodic === undefined) {
@@ -186,8 +243,8 @@ class MaxPeriodicLimit extends Limit {
         this.fallbackMessage = `This action would exceed the ${lowerCase(this.name)} limit on your current plan.`;
     }
 
-    generateError(count) {
-        let errorObj = super.generateError();
+    generateError(count: number) {
+        const errorObj = super.generateBaseError();
 
         errorObj.message = this.fallbackMessage;
 
@@ -215,10 +272,10 @@ class MaxPeriodicLimit extends Limit {
      * @param {Object} [options.transacting] Transaction to run the count query on
      * @returns
      */
-    async currentCountQuery(options = {}) {
+    async currentCountQuery(options: {transacting?: any} = {}) {
         const lastPeriodStartDate = lastPeriodStart(this.startDate, this.interval);
 
-        return await this.currentCountQueryFn(options.transacting ? options.transacting : (this.db ? this.db.knex : undefined), lastPeriodStartDate);
+        return await this.currentCountQueryFn(options.transacting ? options.transacting : (this.db ? this.db.knex : undefined), lastPeriodStartDate || undefined);
     }
 
     /**
@@ -229,9 +286,13 @@ class MaxPeriodicLimit extends Limit {
      * @param {Number} [options.addedCount] - number of items to add to the currentCount during the check
      * @param {Object} [options.transacting] Transaction to run the count query on
      */
-    async errorIfWouldGoOverLimit(options = {}) {
+    async errorIfWouldGoOverLimit(options: {
+        max?: number;
+        addedCount?: number;
+        transacting?: any;
+    } = {}) {
         const {max, addedCount = 1} = options;
-        let currentCount = await this.currentCountQuery(options);
+        const currentCount = await this.currentCountQuery(options) || 0;
 
         if ((currentCount + addedCount) > (max || this.maxPeriodic)) {
             throw this.generateError(currentCount);
@@ -245,9 +306,12 @@ class MaxPeriodicLimit extends Limit {
      * @param {Number} [options.max] - overrides configured default maxPeriodic value to perform checks against
      * @param {Object} [options.transacting] Transaction to run the count query on
      */
-    async errorIfIsOverLimit(options = {}) {
+    async errorIfIsOverLimit(options: {
+        max?: number;
+        transacting?: any;
+    } = {}) {
         const {max} = options;
-        let currentCount = await this.currentCountQuery(options);
+        const currentCount = await this.currentCountQuery(options) || 0;
 
         if (currentCount > (max || this.maxPeriodic)) {
             throw this.generateError(currentCount);
@@ -255,7 +319,10 @@ class MaxPeriodicLimit extends Limit {
     }
 }
 
-class FlagLimit extends Limit {
+export class FlagLimit extends Limit {
+    protected disabled?: boolean;
+    protected fallbackMessage: string;
+
     /**
      *
      * @param {Object} options
@@ -267,7 +334,15 @@ class FlagLimit extends Limit {
      * @param {Object} [options.db] - instance of knex db connection that currentCountQuery can use to run state check through
      * @param {Object} options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
      */
-    constructor({name, config, helpLink, db, errors}) {
+    constructor({name, config, helpLink, db, errors}: {
+        name: string;
+        config: LimitConfig & {
+            disabled?: boolean;
+        };
+        helpLink?: string;
+        db?: any;
+        errors: any;
+    }) {
         super({name, error: config.error || '', helpLink, db, errors});
 
         this.disabled = config.disabled;
@@ -275,7 +350,7 @@ class FlagLimit extends Limit {
     }
 
     generateError() {
-        let errorObj = super.generateError();
+        const errorObj = super.generateBaseError();
 
         if (this.error) {
             errorObj.message = this.error;
@@ -289,7 +364,8 @@ class FlagLimit extends Limit {
     /**
      * Flag limits are on/off so using a feature is always over the limit
      */
-    async errorIfWouldGoOverLimit() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async errorIfWouldGoOverLimit(_options: any) {
         if (this.disabled) {
             throw this.generateError();
         }
@@ -299,12 +375,16 @@ class FlagLimit extends Limit {
      * Flag limits are on/off. They don't necessarily mean the limit wasn't possible to reach
      * NOTE: this method should not be relied on as it's impossible to check the limit was surpassed!
      */
-    async errorIfIsOverLimit() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async errorIfIsOverLimit(_options: any) {
         return;
     }
 }
 
-class AllowlistLimit extends Limit {
+export class AllowlistLimit extends Limit {
+    protected allowlist: string[];
+    protected fallbackMessage: string;
+
     /**
      *
      * @param {Object} options
@@ -315,7 +395,14 @@ class AllowlistLimit extends Limit {
      * @param {String} options.helpLink - URL to the resource explaining how the limit works
      * @param {Object} options.errors - instance of errors compatible with GhostError errors (@tryghost/errors)
      */
-    constructor({name, config, helpLink, errors}) {
+    constructor({name, config, helpLink, errors}: {
+        name: string;
+        config: LimitConfig & {
+            allowlist?: string[];
+        };
+        helpLink?: string;
+        errors: any;
+    }) {
         super({name, error: config.error || '', helpLink, errors});
 
         if (!config.allowlist || !config.allowlist.length) {
@@ -327,7 +414,7 @@ class AllowlistLimit extends Limit {
     }
 
     generateError() {
-        let errorObj = super.generateError();
+        const errorObj = super.generateBaseError();
 
         if (this.error) {
             errorObj.message = this.error;
@@ -338,7 +425,9 @@ class AllowlistLimit extends Limit {
         return new this.errors.HostLimitError(errorObj);
     }
 
-    async errorIfWouldGoOverLimit(metadata) {
+    async errorIfWouldGoOverLimit(metadata?: {
+        value?: string;
+    }) {
         if (!metadata || !metadata.value) {
             throw new this.errors.IncorrectUsageError({message: 'Attempted to check an allowlist limit without a value'});
         }
@@ -347,7 +436,9 @@ class AllowlistLimit extends Limit {
         }
     }
 
-    async errorIfIsOverLimit(metadata) {
+    async errorIfIsOverLimit(metadata?: {
+        value?: string;
+    }) {
         if (!metadata || !metadata.value) {
             throw new this.errors.IncorrectUsageError({message: 'Attempted to check an allowlist limit without a value'});
         }
@@ -356,10 +447,3 @@ class AllowlistLimit extends Limit {
         }
     }
 }
-
-module.exports = {
-    MaxLimit,
-    MaxPeriodicLimit,
-    FlagLimit,
-    AllowlistLimit
-};

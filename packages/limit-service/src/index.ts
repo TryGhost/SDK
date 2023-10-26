@@ -1,1 +1,3 @@
-module.exports = require('./lib/LimitService');
+import LimitService from './LimitService';
+
+export default LimitService;

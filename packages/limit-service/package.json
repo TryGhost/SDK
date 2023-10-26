@@ -4,26 +4,42 @@
   "repository": "https://github.com/TryGhost/SDK/tree/main/packages/limit-service",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "index.js",
-  "exports": "./index.js",
+  "main": "cjs/index.js",
+  "module": "es/index.js",
+  "exports": "./cjs/index.js",
+  "source": "src/index.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
+    "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
+    "prepare": "NODE_ENV=production yarn build",
+    "pretest": "yarn build",
     "posttest": "yarn lint"
   },
   "files": [
-    "index.js",
-    "lib"
+    "LICENSE",
+    "README.md",
+    "cjs/",
+    "es/",
+    "src/",
+    "types/"
   ],
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "11.1.5",
+    "@types/lodash": "^4.14.200",
+    "@types/luxon": "^3.3.3",
     "c8": "8.0.1",
     "mocha": "10.2.0",
+    "rollup": "2.79.1",
+    "rollup-plugin-commonjs": "10.1.0",
+    "rollup-plugin-node-resolve": "5.2.0",
     "should": "13.2.3",
-    "sinon": "17.0.1"
+    "sinon": "17.0.1",
+    "typescript": "5.2.2"
   },
   "dependencies": {
     "@tryghost/errors": "^1.2.26",
