@@ -1,5 +1,5 @@
 const unidecode = require('unidecode');
-const stripInvisibleChars = require('./stripInvisibleChars');
+const stripInvisibleChars = require('./strip-invisible-chars');
 
 /**
  * Slugify

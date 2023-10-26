@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const UrlUtils = require('../../../lib/url-utils');
+const UrlUtils = require('../../../lib/UrlUtils');
 const lexicalRelativeToTransformReady = require('../../../lib/utils/lexical-relative-to-transform-ready');
 
 describe('utils: lexicalRelativeToTransformReady()', function () {

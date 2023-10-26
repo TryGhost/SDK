@@ -1,10 +1,10 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
 require('../utils');
-const assert = require('assert');
+const assert = require('assert/strict');
 
 const sinon = require('sinon');
-const UrlUtils = require('../../lib/url-utils');
+const UrlUtils = require('../../lib/UrlUtils');
 const configUrlHelpers = require('@tryghost/config-url-helpers');
 
 const constants = {
@@ -744,11 +744,11 @@ describe('UrlUtils', function () {
             it('returns true for the root domain', function () {
                 assert(utils.isSiteUrl(new URL('http://localhost:2368')));
             });
-    
+
             it('returns true for a path along the root domain', function () {
                 assert(utils.isSiteUrl(new URL('http://localhost:2368/path')));
             });
-    
+
             it('returns false for a different domain', function () {
                 assert(!utils.isSiteUrl(new URL('https://google.com/path')));
             });
@@ -774,15 +774,15 @@ describe('UrlUtils', function () {
             it('returns true for the root domain with directory', function () {
                 assert(utils.isSiteUrl(new URL('http://localhost:2368/dir/')));
             });
-    
+
             it('returns true for a path along the root domain', function () {
                 assert(utils.isSiteUrl(new URL('http://localhost:2368/dir/path')));
             });
-    
+
             it('returns false for a different domain', function () {
                 assert(!utils.isSiteUrl(new URL('https://google.com/dir/path')));
             });
-    
+
             it('returns false if not on same subdirectory', function () {
                 assert(!utils.isSiteUrl(new URL('http://localhost:2368/different-dir')));
                 // Check if the matching is not dumb and only matches at the start
@@ -803,7 +803,7 @@ describe('UrlUtils', function () {
             it('returns true for the admin domain', function () {
                 assert(utils.isSiteUrl(new URL('http://admin.site/ghost/'), 'admin'));
             });
-    
+
             it('returns false for the site domain', function () {
                 assert(!utils.isSiteUrl(new URL('http://site.site/ghost/'), 'admin'));
             });

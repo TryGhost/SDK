@@ -1,5 +1,5 @@
 const absoluteToTransformReady = require('./absolute-to-transform-ready');
-const mobiledocTransform = require('./_mobiledoc-transform');
+const mobiledocTransform = require('./mobiledoc-transform');
 
 function mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, _options = {}) {
     const defaultOptions = {assetsOnly: false, secure: false, cardTransformers: []};

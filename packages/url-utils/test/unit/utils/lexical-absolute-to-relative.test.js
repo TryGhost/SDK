@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const UrlUtils = require('../../../lib/url-utils');
+const UrlUtils = require('../../../lib/UrlUtils');
 const lexicalAbsoluteToRelative = require('../../../lib/utils/lexical-absolute-to-relative');
 
 describe('utils: lexicalAbsoluteToRelative()', function () {

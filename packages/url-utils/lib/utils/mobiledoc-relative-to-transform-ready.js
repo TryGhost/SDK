@@ -1,5 +1,5 @@
 const relativeToTransformReady = require('./relative-to-transform-ready');
-const mobiledocTransform = require('./_mobiledoc-transform');
+const mobiledocTransform = require('./mobiledoc-transform');
 
 function mobiledocRelativeToTransformReady(serializedMobiledoc, siteUrl, itemPath, _options = {}) {
     const defaultOptions = {assetsOnly: false, secure: false, cardTransformers: []};

@@ -1,4 +1,4 @@
-const htmlTransform = require('./_html-transform');
+const htmlTransform = require('./html-transform');
 const absoluteToTransformReady = require('./absolute-to-transform-ready');
 
 const htmlAbsoluteToTransformReady = function (html = '', siteUrl, _options) {

@@ -6,7 +6,7 @@ const sinon = require('sinon');
 const rewire = require('rewire');
 
 const cheerio = require('cheerio');
-const htmlTransform = rewire('../../../lib/utils/_html-transform');
+const htmlTransform = rewire('../../../lib/utils/html-transform');
 const htmlRelativeToAbsolute = require('../../../lib/utils/html-relative-to-absolute');
 
 describe('utils: htmlRelativeToAbsolute()', function () {

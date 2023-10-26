@@ -1,4 +1,4 @@
-const htmlTransform = require('./_html-transform');
+const htmlTransform = require('./html-transform');
 const absoluteToRelative = require('./absolute-to-relative');
 
 function htmlAbsoluteToRelative(html = '', siteUrl, _options) {

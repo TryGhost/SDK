@@ -1,5 +1,5 @@
 const relativeToAbsolute = require('./relative-to-absolute');
-const lexicalTransform = require('./_lexical-transform');
+const lexicalTransform = require('./lexical-transform');
 
 function lexicalRelativeToAbsolute(serializedLexical, siteUrl, itemPath, _options = {}) {
     const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
