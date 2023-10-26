@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
-    "build": "rollup -c",
+    "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
     "lint": "eslint . --ext .js --cache",
     "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
@@ -29,6 +29,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "11.1.5",
     "mocha": "10.2.0",
     "rollup": "2.79.1",
     "rollup-plugin-babel": "4.4.0",
@@ -40,7 +41,7 @@
     "sinon": "17.0.0"
   },
   "dependencies": {
-    "@rollup/plugin-typescript": "11.1.5",
+    "@types/color": "3.0.2",
     "color": "^3.2.1",
     "typescript": "5.2.2"
   }
