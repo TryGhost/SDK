@@ -8,7 +8,7 @@
   "umd:main": "umd/color-utils.min.js",
   "unpkg": "umd/color-utils.min.js",
   "module": "es/color-utils.js",
-  "source": "lib/color-utils.js",
+  "source": "src/color-utils.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
@@ -21,7 +21,7 @@
     "LICENSE",
     "README.md",
     "cjs/",
-    "lib/",
+    "src/",
     "umd/",
     "es/"
   ],
@@ -40,6 +40,8 @@
     "sinon": "17.0.0"
   },
   "dependencies": {
-    "color": "^3.2.1"
+    "@rollup/plugin-typescript": "11.1.5",
+    "color": "^3.2.1",
+    "typescript": "5.2.2"
   }
 }
