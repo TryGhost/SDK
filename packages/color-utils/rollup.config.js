@@ -1,8 +1,8 @@
 /* eslint-env node */
-import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
-import {terser} from 'rollup-plugin-terser';
+import resolve from 'rollup-plugin-node-resolve';
+// import {terser} from 'rollup-plugin-terser';
 import replace from 'rollup-plugin-replace';
 import pkg from './package.json';
 
@@ -91,8 +91,8 @@ export default [
             }),
             replace({
                 'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`
-            }),
-            terser()
+            })
+            // terser()
         ]
     }
 ];
