@@ -9,6 +9,7 @@
   "unpkg": "umd/color-utils.min.js",
   "module": "es/color-utils.js",
   "source": "src/color-utils.ts",
+  "types": "types/color-utils.d.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing mocha './test/**/*.test.js'",
@@ -23,7 +24,8 @@
     "cjs/",
     "src/",
     "umd/",
-    "es/"
+    "es/",
+    "types/"
   ],
   "publishConfig": {
     "access": "public"
