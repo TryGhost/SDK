@@ -198,12 +198,13 @@ var colorString = createCommonjsModule(function (module) {
 /* MIT license */
 
 
+var hasOwnProperty = Object.hasOwnProperty;
 
-var reverseNames = {};
+var reverseNames = Object.create(null);
 
 // create a list of reverse color names
 for (var name in colorName$1) {
-	if (colorName$1.hasOwnProperty(name)) {
+	if (hasOwnProperty.call(colorName$1, name)) {
 		reverseNames[colorName$1[name]] = name;
 	}
 }
@@ -246,9 +247,9 @@ cs.get.rgb = function (string) {
 
 	var abbr = /^#([a-f0-9]{3,4})$/i;
 	var hex = /^#([a-f0-9]{6})([a-f0-9]{2})?$/i;
-	var rgba = /^rgba?\(\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*,\s*([+-]?\d+)\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/;
-	var per = /^rgba?\(\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*,\s*([+-]?[\d\.]+)\%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/;
-	var keyword = /(\D+)/;
+	var rgba = /^rgba?\(\s*([+-]?\d+)(?=[\s,])\s*(?:,\s*)?([+-]?\d+)(?=[\s,])\s*(?:,\s*)?([+-]?\d+)\s*(?:[,|\/]\s*([+-]?[\d\.]+)(%?)\s*)?\)$/;
+	var per = /^rgba?\(\s*([+-]?[\d\.]+)\%\s*,?\s*([+-]?[\d\.]+)\%\s*,?\s*([+-]?[\d\.]+)\%\s*(?:[,|\/]\s*([+-]?[\d\.]+)(%?)\s*)?\)$/;
+	var keyword = /^(\w+)$/;
 
 	var rgb = [0, 0, 0, 1];
 	var match;
@@ -285,7 +286,11 @@ cs.get.rgb = function (string) {
 		}
 
 		if (match[4]) {
-			rgb[3] = parseFloat(match[4]);
+			if (match[5]) {
+				rgb[3] = parseFloat(match[4]) * 0.01;
+			} else {
+				rgb[3] = parseFloat(match[4]);
+			}
 		}
 	} else if (match = string.match(per)) {
 		for (i = 0; i < 3; i++) {
@@ -293,19 +298,22 @@ cs.get.rgb = function (string) {
 		}
 
 		if (match[4]) {
-			rgb[3] = parseFloat(match[4]);
+			if (match[5]) {
+				rgb[3] = parseFloat(match[4]) * 0.01;
+			} else {
+				rgb[3] = parseFloat(match[4]);
+			}
 		}
 	} else if (match = string.match(keyword)) {
 		if (match[1] === 'transparent') {
 			return [0, 0, 0, 0];
 		}
 
-		rgb = colorName$1[match[1]];
-
-		if (!rgb) {
+		if (!hasOwnProperty.call(colorName$1, match[1])) {
 			return null;
 		}
 
+		rgb = colorName$1[match[1]];
 		rgb[3] = 1;
 
 		return rgb;
@@ -326,12 +334,12 @@ cs.get.hsl = function (string) {
 		return null;
 	}
 
-	var hsl = /^hsla?\(\s*([+-]?(?:\d{0,3}\.)?\d+)(?:deg)?\s*,?\s*([+-]?[\d\.]+)%\s*,?\s*([+-]?[\d\.]+)%\s*(?:[,|\/]\s*([+-]?[\d\.]+)\s*)?\)$/;
+	var hsl = /^hsla?\(\s*([+-]?(?:\d{0,3}\.)?\d+)(?:deg)?\s*,?\s*([+-]?[\d\.]+)%\s*,?\s*([+-]?[\d\.]+)%\s*(?:[,|\/]\s*([+-]?(?=\.\d|\d)(?:0|[1-9]\d*)?(?:\.\d*)?(?:[eE][+-]?\d+)?)\s*)?\)$/;
 	var match = string.match(hsl);
 
 	if (match) {
 		var alpha = parseFloat(match[4]);
-		var h = (parseFloat(match[1]) + 360) % 360;
+		var h = ((parseFloat(match[1]) % 360) + 360) % 360;
 		var s = clamp(parseFloat(match[2]), 0, 100);
 		var l = clamp(parseFloat(match[3]), 0, 100);
 		var a = clamp(isNaN(alpha) ? 1 : alpha, 0, 1);
@@ -347,7 +355,7 @@ cs.get.hwb = function (string) {
 		return null;
 	}
 
-	var hwb = /^hwb\(\s*([+-]?\d{0,3}(?:\.\d+)?)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?[\d\.]+)\s*)?\)$/;
+	var hwb = /^hwb\(\s*([+-]?\d{0,3}(?:\.\d+)?)(?:deg)?\s*,\s*([+-]?[\d\.]+)%\s*,\s*([+-]?[\d\.]+)%\s*(?:,\s*([+-]?(?=\.\d|\d)(?:0|[1-9]\d*)?(?:\.\d*)?(?:[eE][+-]?\d+)?)\s*)?\)$/;
 	var match = string.match(hwb);
 
 	if (match) {
@@ -426,7 +434,7 @@ function clamp(num, min, max) {
 }
 
 function hexDouble(num) {
-	var str = num.toString(16).toUpperCase();
+	var str = Math.round(num).toString(16).toUpperCase();
 	return (str.length < 2) ? '0' + str : str;
 }
 });
@@ -2120,68 +2128,40 @@ function zeroArray(arr, length) {
 var color = Color;
 
 function lightenToContrastThreshold(foreground, background, contrastThreshold) {
-  var foregroundColor = color(foreground);
-  var backgroundColor = color(background);
-
-  var _foregroundColor$hsl$ = foregroundColor.hsl().object(),
-      h = _foregroundColor$hsl$.h,
-      s = _foregroundColor$hsl$.s;
-
-  var newColor = foregroundColor;
-
-  while (newColor.contrast(backgroundColor) < contrastThreshold) {
-    if (newColor.lightness() >= 100) {
-      break;
+    const foregroundColor = color(foreground);
+    const backgroundColor = color(background);
+    const { h, s } = foregroundColor.hsl().object();
+    let newColor = foregroundColor;
+    while (newColor.contrast(backgroundColor) < contrastThreshold) {
+        if (newColor.lightness() >= 100) {
+            break;
+        }
+        newColor = color({ h, s, l: newColor.lightness() + 5 });
     }
-
-    newColor = color({
-      h: h,
-      s: s,
-      l: newColor.lightness() + 5
-    });
-  }
-
-  return newColor;
+    return newColor;
 }
 function darkenToContrastThreshold(foreground, background, contrastThreshold) {
-  var foregroundColor = color(foreground);
-  var backgroundColor = color(background);
-
-  var _foregroundColor$hsl$2 = foregroundColor.hsl().object(),
-      h = _foregroundColor$hsl$2.h,
-      s = _foregroundColor$hsl$2.s;
-
-  var newColor = foregroundColor;
-
-  while (newColor.contrast(backgroundColor) < contrastThreshold) {
-    if (newColor.lightness() <= 0) {
-      break;
+    const foregroundColor = color(foreground);
+    const backgroundColor = color(background);
+    const { h, s } = foregroundColor.hsl().object();
+    let newColor = foregroundColor;
+    while (newColor.contrast(backgroundColor) < contrastThreshold) {
+        if (newColor.lightness() <= 0) {
+            break;
+        }
+        newColor = color({ h, s, l: newColor.lightness() - 5 });
     }
-
-    newColor = color({
-      h: h,
-      s: s,
-      l: newColor.lightness() - 5
-    });
-  }
-
-  return newColor;
+    return newColor;
 }
 function textColorForBackgroundColor(background) {
-  var backgroundColor = color(background);
-  var white = color({
-    r: 255,
-    g: 255,
-    b: 255
-  });
-  var black = color({
-    r: 0,
-    g: 0,
-    b: 0
-  }); // shared with Portal https://github.com/TryGhost/Portal/blob/317876f20d22431df15e655ea6cc197fe636615e/src/utils/contrast-color.js#L26-L29
-
-  var yiq = backgroundColor.red() * 0.299 + backgroundColor.green() * 0.587 + backgroundColor.b() * 0.114;
-  return yiq >= 186 ? black : white;
+    const backgroundColor = color(background);
+    const white = color({ r: 255, g: 255, b: 255 });
+    const black = color({ r: 0, g: 0, b: 0 });
+    // shared with Portal https://github.com/TryGhost/Portal/blob/317876f20d22431df15e655ea6cc197fe636615e/src/utils/contrast-color.js#L26-L29
+    const yiq = (backgroundColor.red() * 0.299 +
+        backgroundColor.green() * 0.587 +
+        backgroundColor.b() * 0.114);
+    return (yiq >= 186) ? black : white;
 }
 
 export { color as Color, darkenToContrastThreshold, lightenToContrastThreshold, textColorForBackgroundColor };

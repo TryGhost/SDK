@@ -1,9 +1,9 @@
 /* eslint-env node */
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import typescript from '@rollup/plugin-typescript';
 import commonjs from 'rollup-plugin-commonjs';
-import {terser} from 'rollup-plugin-terser';
+import resolve from 'rollup-plugin-node-resolve';
 import replace from 'rollup-plugin-replace';
+import {terser} from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const dependencies = Object.keys(pkg.dependencies);
@@ -19,6 +19,7 @@ export default [
             interop: false
         },
         plugins: [
+            typescript(),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
             })
@@ -27,8 +28,6 @@ export default [
     },
 
     // ES module build
-    // Transpiles to es version supported by preset-env's default browsers list,
-    // bundles all necessary dependencies and polyfills
     {
         input: pkg.source,
         output: [{
@@ -37,22 +36,12 @@ export default [
             sourcemap: true
         }],
         plugins: [
+            typescript(),
             resolve({
                 browser: true
             }),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
-            }),
-            babel({
-                presets: [
-                    ['@babel/preset-env', {
-                        modules: false,
-                        targets: 'defaults',
-                        useBuiltIns: 'usage',
-                        corejs: 3
-                    }]
-                ],
-                exclude: ['node_modules/**', '../../node_modules/**']
             }),
             replace({
                 'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`
@@ -60,9 +49,7 @@ export default [
         ]
     },
 
-    // Standalone UMD browser build (minified).
-    // Transpiles to es version supported by preset-env's default browsers list,
-    // bundles all dependencies and polyfills.
+    // Standalone UMD browser build (minified)
     {
         input: pkg.source,
         output: {
@@ -72,22 +59,12 @@ export default [
             sourcemap: true
         },
         plugins: [
+            typescript(),
             resolve({
                 browser: true
             }),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
-            }),
-            babel({
-                presets: [
-                    ['@babel/preset-env', {
-                        modules: false,
-                        targets: 'defaults',
-                        useBuiltIns: 'usage',
-                        corejs: 3
-                    }]
-                ],
-                exclude: ['node_modules/**', '../../node_modules/**']
             }),
             replace({
                 'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`

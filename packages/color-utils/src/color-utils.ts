@@ -2,7 +2,7 @@ import Color from 'color';
 
 export {Color};
 
-export function lightenToContrastThreshold(foreground, background, contrastThreshold) {
+export function lightenToContrastThreshold(foreground: string | Color, background: string | Color, contrastThreshold: number): Color {
     const foregroundColor = Color(foreground);
     const backgroundColor = Color(background);
 
@@ -21,7 +21,7 @@ export function lightenToContrastThreshold(foreground, background, contrastThres
     return newColor;
 }
 
-export function darkenToContrastThreshold(foreground, background, contrastThreshold) {
+export function darkenToContrastThreshold(foreground: string | Color, background: string | Color, contrastThreshold: number): Color {
     const foregroundColor = Color(foreground);
     const backgroundColor = Color(background);
 
@@ -40,7 +40,7 @@ export function darkenToContrastThreshold(foreground, background, contrastThresh
     return newColor;
 }
 
-export function textColorForBackgroundColor(background) {
+export function textColorForBackgroundColor(background: string | Color): Color {
     const backgroundColor = Color(background);
 
     const white = Color({r: 255, g: 255, b: 255});
