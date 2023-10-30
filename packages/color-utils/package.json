@@ -43,7 +43,7 @@
     "typescript": "5.2.2"
   },
   "dependencies": {
-    "@types/color": "3.0.2",
+    "@types/color": "3.0.5",
     "color": "^3.2.1"
   }
 }
