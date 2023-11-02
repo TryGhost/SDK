@@ -1,36 +1,35 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
-require('./utils');
-const should = require('should');
-const LimitService = require('../lib/LimitService');
-const {MaxLimit, MaxPeriodicLimit, FlagLimit} = require('../lib/limit');
-const sinon = require('sinon');
+import './utils';
 
-const errors = require('./fixtures/errors');
+import _ from 'lodash';
+import should from 'should';
+import sinon from 'sinon';
+import LimitService from '../src/LimitService';
+import { FlagLimit, MaxLimit, MaxPeriodicLimit } from '../src/limit';
+
+import errors from './fixtures/errors';
 
 describe('Limit Service', function () {
     describe('Lodash Template', function () {
         it('Does not get clobbered by this lib', function () {
-            require('../lib/limit');
-            let _ = require('lodash');
-
-            _.templateSettings.interpolate.should.eql(/<%=([\s\S]+?)%>/g);
+            _.templateSettings.interpolate!.should.eql(/<%=([\s\S]+?)%>/g);
         });
     });
 
     describe('Error Messages', function () {
         it('Formats numbers correctly', function () {
-            let limit = new MaxLimit({
+            const limit = new MaxLimit({
                 name: 'test',
                 config: {
                     max: 35000000,
-                    currentCountQuery: () => {},
+                    currentCountQuery: async () => undefined,
                     error: 'Your plan supports up to {{max}} staff users. Please upgrade to add more.'
                 },
                 errors
             });
 
-            let error = limit.generateError(35000001);
+            const error = limit.generateError(35000001);
 
             error.message.should.eql('Your plan supports up to 35,000,000 staff users. Please upgrade to add more.');
             error.errorDetails.limit.should.eql(35000000);
@@ -38,17 +37,17 @@ describe('Limit Service', function () {
         });
 
         it('Supports {{max}}, {{count}}, and {{name}} variables', function () {
-            let limit = new MaxLimit({
+            const limit = new MaxLimit({
                 name: 'Test Resources',
                 config: {
                     max: 5,
-                    currentCountQuery: () => {},
+                    currentCountQuery: async () => undefined,
                     error: '{{name}} limit reached. Your plan supports up to {{max}} staff users. You are currently at {{count}} staff users.Please upgrade to add more.'
                 },
                 errors
             });
 
-            let error = limit.generateError(7);
+            const error = limit.generateError(7);
 
             error.message.should.eql('Test Resources limit reached. Your plan supports up to 5 staff users. You are currently at 7 staff users.Please upgrade to add more.');
             error.errorDetails.name.should.eql('Test Resources');
@@ -61,12 +60,12 @@ describe('Limit Service', function () {
         it('throws if errors configuration is not specified', function () {
             const limitService = new LimitService();
 
-            let limits = {staff: {max: 2}};
+            const limits = {staff: {max: 2}};
 
             try {
                 limitService.loadLimits({limits});
                 should.fail(limitService, 'Should have errored');
-            } catch (err) {
+            } catch (err: any) {
                 should.exist(err);
                 err.message.should.eql(`Config Missing: 'errors' is required.`);
             }
@@ -75,7 +74,7 @@ describe('Limit Service', function () {
         it('can load a max limit', function () {
             const limitService = new LimitService();
 
-            let limits = {staff: {max: 2}};
+            const limits = {staff: {max: 2}};
 
             limitService.loadLimits({limits, errors});
 
@@ -88,14 +87,14 @@ describe('Limit Service', function () {
         it('can load a periodic max limit', function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 emails: {
                     maxPeriodic: 3
                 }
             };
 
-            let subscription = {
-                interval: 'month',
+            const subscription = {
+                interval: 'month' as const,
                 startDate: '2021-09-18T19:00:52Z'
             };
 
@@ -110,7 +109,7 @@ describe('Limit Service', function () {
         it('throws when loadding a periodic max limit without a subscription', function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 emails: {
                     maxPeriodic: 3
                 }
@@ -119,7 +118,7 @@ describe('Limit Service', function () {
             try {
                 limitService.loadLimits({limits, errors});
                 throw new Error('Should have failed earlier...');
-            } catch (error) {
+            } catch (error: any) {
                 error.errorType.should.equal('IncorrectUsageError');
                 error.message.should.match(/periodic max limit without a subscription/);
             }
@@ -128,7 +127,7 @@ describe('Limit Service', function () {
         it('can load multiple limits', function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {max: 2},
                 members: {max: 100},
                 emails: {disabled: true}
@@ -147,7 +146,7 @@ describe('Limit Service', function () {
         it('can load camel cased limits', function () {
             const limitService = new LimitService();
 
-            let limits = {customThemes: {disabled: true}};
+            const limits = {customThemes: {disabled: true}};
 
             limitService.loadLimits({limits, errors});
 
@@ -162,7 +161,7 @@ describe('Limit Service', function () {
         it('can load incorrectly cased limits', function () {
             const limitService = new LimitService();
 
-            let limits = {custom_themes: {disabled: true}};
+            const limits = {custom_themes: {disabled: true}};
 
             limitService.loadLimits({limits, errors});
 
@@ -177,7 +176,7 @@ describe('Limit Service', function () {
         it('answers correctly when no limits are provided', function () {
             const limitService = new LimitService();
 
-            let limits = {};
+            const limits = {};
 
             limitService.loadLimits({limits, errors});
 
@@ -215,24 +214,24 @@ describe('Limit Service', function () {
         it('can use a custom implementation of max limit query', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {
                     max: 2,
-                    currentCountQuery: () => 5
+                    currentCountQuery: async () => 5
                 },
                 members: {
                     max: 100,
-                    currentCountQuery: () => 100
+                    currentCountQuery: async () => 100
                 }
             };
 
             limitService.loadLimits({limits, errors});
 
-            (await limitService.checkIsOverLimit('staff')).should.be.true();
-            (await limitService.checkWouldGoOverLimit('staff')).should.be.true();
+            should.equal(await limitService.checkIsOverLimit('staff'), true);
+            should.equal(await limitService.checkWouldGoOverLimit('staff'), true);
 
-            (await limitService.checkIsOverLimit('members')).should.be.false();
-            (await limitService.checkWouldGoOverLimit('members')).should.be.true();
+            should.equal(await limitService.checkIsOverLimit('members'), false);
+            should.equal(await limitService.checkWouldGoOverLimit('members'), true);
         });
     });
 
@@ -240,18 +239,18 @@ describe('Limit Service', function () {
         it('Confirms an acceded limit', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {
                     max: 2,
-                    currentCountQuery: () => 5
+                    currentCountQuery: async () => 5
                 },
                 members: {
                     max: 100,
-                    currentCountQuery: () => 100
+                    currentCountQuery: async () => 100
                 },
                 emails: {
                     maxPeriodic: 3,
-                    currentCountQuery: () => 5
+                    currentCountQuery: async () => 5
                 },
                 customIntegrations: {
                     disabled: true
@@ -259,7 +258,7 @@ describe('Limit Service', function () {
             };
 
             const subscription = {
-                interval: 'month',
+                interval: 'month' as const,
                 startDate: '2021-09-18T19:00:52Z'
             };
 
@@ -271,18 +270,18 @@ describe('Limit Service', function () {
         it('Does not confirm if no limits are acceded', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {
                     max: 2,
-                    currentCountQuery: () => 1
+                    currentCountQuery: async () => 1
                 },
                 members: {
                     max: 100,
-                    currentCountQuery: () => 2
+                    currentCountQuery: async () => 2
                 },
                 emails: {
                     maxPeriodic: 3,
-                    currentCountQuery: () => 2
+                    currentCountQuery: async () => 2
                 },
                 // TODO: allowlist type of limits doesn't have "checkIsOverLimit" implemented yet!
                 // customThemes: {
@@ -296,7 +295,7 @@ describe('Limit Service', function () {
             };
 
             const subscription = {
-                interval: 'month',
+                interval: 'month' as const,
                 startDate: '2021-09-18T19:00:52Z'
             };
 
@@ -324,7 +323,7 @@ describe('Limit Service', function () {
         it('Throws an error when an allowlist limit is checked', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 // TODO: allowlist type of limits doesn't have "checkIsOverLimit" implemented yet!
                 customThemes: {
                     allowlist: ['casper', 'dawn', 'lyra']
@@ -336,7 +335,7 @@ describe('Limit Service', function () {
             try {
                 await limitService.checkIfAnyOverLimit();
                 should.fail(limitService, 'Should have errored');
-            } catch (err) {
+            } catch (err: any) {
                 err.message.should.eql(`Attempted to check an allowlist limit without a value`);
             }
         });
@@ -350,24 +349,24 @@ describe('Limit Service', function () {
         it('passes options for checkIsOverLimit', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {
                     max: 2,
-                    currentCountQuery: () => 1
+                    currentCountQuery: async () => 1
                 }
             };
 
             const maxSpy = sinon.spy(MaxLimit.prototype, 'errorIfIsOverLimit');
 
             const subscription = {
-                interval: 'month',
+                interval: 'month' as const,
                 startDate: '2021-09-18T19:00:52Z'
             };
 
             limitService.loadLimits({limits, errors, subscription});
 
             const options = {
-                testData: 'true'
+                transacting: {}
             };
 
             await limitService.checkIsOverLimit('staff', options);
@@ -379,24 +378,24 @@ describe('Limit Service', function () {
         it('passes options for checkWouldGoOverLimit', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {
                     max: 2,
-                    currentCountQuery: () => 1
+                    currentCountQuery: async () => 1
                 }
             };
 
             const maxSpy = sinon.spy(MaxLimit.prototype, 'errorIfWouldGoOverLimit');
 
             const subscription = {
-                interval: 'month',
+                interval: 'month' as const,
                 startDate: '2021-09-18T19:00:52Z'
             };
 
             limitService.loadLimits({limits, errors, subscription});
 
             const options = {
-                testData: 'true'
+                transacting: {}
             };
 
             await limitService.checkWouldGoOverLimit('staff', options);
@@ -408,24 +407,24 @@ describe('Limit Service', function () {
         it('passes options for errorIfIsOverLimit', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {
                     max: 2,
-                    currentCountQuery: () => 1
+                    currentCountQuery: async () => 1
                 }
             };
 
             const maxSpy = sinon.spy(MaxLimit.prototype, 'errorIfIsOverLimit');
 
             const subscription = {
-                interval: 'month',
+                interval: 'month' as const,
                 startDate: '2021-09-18T19:00:52Z'
             };
 
             limitService.loadLimits({limits, errors, subscription});
 
             const options = {
-                testData: 'true'
+                transacting: {}
             };
 
             await limitService.errorIfIsOverLimit('staff', options);
@@ -437,24 +436,24 @@ describe('Limit Service', function () {
         it('passes options for errorIfWouldGoOverLimit', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {
                     max: 2,
-                    currentCountQuery: () => 1
+                    currentCountQuery: async () => 1
                 }
             };
 
             const maxSpy = sinon.spy(MaxLimit.prototype, 'errorIfWouldGoOverLimit');
 
             const subscription = {
-                interval: 'month',
+                interval: 'month' as const,
                 startDate: '2021-09-18T19:00:52Z'
             };
 
             limitService.loadLimits({limits, errors, subscription});
 
             const options = {
-                testData: 'true'
+                transacting: {}
             };
 
             await limitService.errorIfWouldGoOverLimit('staff', options);
@@ -466,18 +465,18 @@ describe('Limit Service', function () {
         it('passes options for checkIfAnyOverLimit', async function () {
             const limitService = new LimitService();
 
-            let limits = {
+            const limits = {
                 staff: {
                     max: 2,
-                    currentCountQuery: () => 2
+                    currentCountQuery: async () => 2
                 },
                 members: {
                     max: 100,
-                    currentCountQuery: () => 100
+                    currentCountQuery: async () => 100
                 },
                 emails: {
                     maxPeriodic: 3,
-                    currentCountQuery: () => 3
+                    currentCountQuery: async () => 3
                 },
                 customIntegrations: {
                     disabled: true
@@ -489,14 +488,14 @@ describe('Limit Service', function () {
             const maxPeriodSpy = sinon.spy(MaxPeriodicLimit.prototype, 'errorIfIsOverLimit');
 
             const subscription = {
-                interval: 'month',
+                interval: 'month' as const,
                 startDate: '2021-09-18T19:00:52Z'
             };
 
             limitService.loadLimits({limits, errors, subscription});
 
             const options = {
-                testData: 'true'
+                transacting: {}
             };
 
             (await limitService.checkIfAnyOverLimit(options)).should.be.false();

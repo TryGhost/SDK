@@ -1,11 +1,12 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
-require('./utils');
-const should = require('should');
-const sinon = require('sinon');
+import './utils';
 
-const errors = require('./fixtures/errors');
-const {MaxLimit, AllowlistLimit, FlagLimit, MaxPeriodicLimit} = require('../lib/limit');
+import should from 'should';
+import sinon from 'sinon';
+
+import {AllowlistLimit, FlagLimit, MaxLimit, MaxPeriodicLimit} from '../src/limit';
+import errors from './fixtures/errors';
 
 describe('Limit Service', function () {
     describe('Flag Limit', function () {
@@ -30,7 +31,7 @@ describe('Limit Service', function () {
             try {
                 await limit.errorIfWouldGoOverLimit();
                 should.fail(limit, 'Should have errored');
-            } catch (err) {
+            } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                 should.exist(err);
 
                 should.exist(err.errorType);
@@ -59,7 +60,7 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxLimit({name: '', config, errors});
                     await limit.errorIfIsOverLimit({currentCount: 4});
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.fail('Should have not errored', error);
                 }
             });
@@ -70,7 +71,7 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxLimit({name: 'no limits!', config, errors});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
                     should.exist(err.errorType);
                     should.equal(err.errorType, 'IncorrectUsageError');
@@ -86,7 +87,7 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxLimit({name: 'no accountability!', config, errors});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
                     should.exist(err.errorType);
                     should.equal(err.errorType, 'IncorrectUsageError');
@@ -98,7 +99,7 @@ describe('Limit Service', function () {
                 const _5MB = 5000000;
                 const config = {
                     max: _5MB,
-                    formatter: count => `${count / 1000000}MB`,
+                    formatter: (count: number) => `${count / 1000000}MB`,
                     error: 'You have exceeded the maximum file size {{ max }}',
                     currentCountQuery: function () {
                         throw new Error('Should not be called');
@@ -114,7 +115,7 @@ describe('Limit Service', function () {
                     const _10MB = 10000000;
 
                     await limit.errorIfIsOverLimit({currentCount: _10MB});
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     error.errorType.should.equal('HostLimitError');
                     error.errorDetails.name.should.equal('fileSize');
                     error.errorDetails.limit.should.equal(5000000);
@@ -128,14 +129,14 @@ describe('Limit Service', function () {
             it('throws if is over the limit', async function () {
                 const config = {
                     max: 3,
-                    currentCountQuery: () => 42
+                    currentCountQuery: async () => 42
                 };
                 const limit = new MaxLimit({name: 'maxy', config, errors});
 
                 try {
                     await limit.errorIfIsOverLimit();
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
 
                     should.exist(err.errorType);
@@ -152,7 +153,7 @@ describe('Limit Service', function () {
             it('passes if does not go over the limit', async function () {
                 const config = {
                     max: 1,
-                    currentCountQuery: () => 1
+                    currentCountQuery: async () => 1
                 };
 
                 const limit = new MaxLimit({name: 'maxy', config, errors});
@@ -163,7 +164,7 @@ describe('Limit Service', function () {
             it('ignores default configured max limit when it is passed explicitly', async function () {
                 const config = {
                     max: 10,
-                    currentCountQuery: () => 10
+                    currentCountQuery: async () => 10
                 };
 
                 const limit = new MaxLimit({name: 'maxy', config, errors});
@@ -175,7 +176,7 @@ describe('Limit Service', function () {
                     // should fail because limit is overridden to 10 < 9
                     await limit.errorIfIsOverLimit({max: 9});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
 
                     should.exist(err.errorType);
@@ -194,14 +195,14 @@ describe('Limit Service', function () {
             it('throws if would go over the limit', async function () {
                 const config = {
                     max: 1,
-                    currentCountQuery: () => 1
+                    currentCountQuery: async () => 1
                 };
                 const limit = new MaxLimit({name: 'maxy', config, errors});
 
                 try {
                     await limit.errorIfWouldGoOverLimit();
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
 
                     should.exist(err.errorType);
@@ -218,14 +219,14 @@ describe('Limit Service', function () {
             it('throws if would go over the limit with with custom added count', async function () {
                 const config = {
                     max: 23,
-                    currentCountQuery: () => 13
+                    currentCountQuery: async () => 13
                 };
                 const limit = new MaxLimit({name: 'maxy', config, errors});
 
                 try {
                     await limit.errorIfWouldGoOverLimit({addedCount: 11});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
 
                     should.exist(err.errorType);
@@ -242,7 +243,7 @@ describe('Limit Service', function () {
             it('passes if does not go over the limit', async function () {
                 const config = {
                     max: 2,
-                    currentCountQuery: () => 1
+                    currentCountQuery: async () => 1
                 };
 
                 const limit = new MaxLimit({name: 'maxy', config, errors});
@@ -253,7 +254,7 @@ describe('Limit Service', function () {
             it('ignores default configured max limit when it is passed explicitly', async function () {
                 const config = {
                     max: 10,
-                    currentCountQuery: () => 10
+                    currentCountQuery: async () => 10
                 };
 
                 const limit = new MaxLimit({name: 'maxy', config, errors});
@@ -265,7 +266,7 @@ describe('Limit Service', function () {
                     // should fail because limit is overridden to 10 + 1 < 1
                     await limit.errorIfWouldGoOverLimit({max: 1});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
 
                     should.exist(err.errorType);
@@ -294,7 +295,7 @@ describe('Limit Service', function () {
                     const limit = new MaxLimit({name: '', config, errors});
                     await limit.errorIfIsOverLimit();
                     await limit.errorIfWouldGoOverLimit();
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.fail('Should have not errored', error);
                 }
 
@@ -318,7 +319,7 @@ describe('Limit Service', function () {
                     const limit = new MaxLimit({name: '', config, db, errors});
                     await limit.errorIfIsOverLimit();
                     await limit.errorIfWouldGoOverLimit();
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.fail('Should have not errored', error);
                 }
 
@@ -343,7 +344,7 @@ describe('Limit Service', function () {
                     const limit = new MaxLimit({name: '', config, db, errors});
                     await limit.errorIfIsOverLimit({transacting: transaction});
                     await limit.errorIfWouldGoOverLimit({transacting: transaction});
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.fail('Should have not errored', error);
                 }
 
@@ -361,7 +362,7 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxPeriodicLimit({name: 'no limits!', config, errors});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
                     should.exist(err.errorType);
                     should.equal(err.errorType, 'IncorrectUsageError');
@@ -377,7 +378,7 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxPeriodicLimit({name: 'no accountability!', config, errors});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
                     should.exist(err.errorType);
                     should.equal(err.errorType, 'IncorrectUsageError');
@@ -388,13 +389,13 @@ describe('Limit Service', function () {
             it('throws if initialized without interval', function () {
                 const config = {
                     maxPeriodic: 100,
-                    currentCountQuery: () => {}
+                    currentCountQuery: async () => undefined
                 };
 
                 try {
                     const limit = new MaxPeriodicLimit({name: 'no accountability!', config, errors});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
                     should.exist(err.errorType);
                     should.equal(err.errorType, 'IncorrectUsageError');
@@ -405,14 +406,14 @@ describe('Limit Service', function () {
             it('throws if initialized with unsupported interval', function () {
                 const config = {
                     maxPeriodic: 100,
-                    currentCountQuery: () => {},
-                    interval: 'week'
+                    currentCountQuery: async () => undefined,
+                    interval: 'week' as 'month'
                 };
 
                 try {
                     const limit = new MaxPeriodicLimit({name: 'no accountability!', config, errors});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
                     should.exist(err.errorType);
                     should.equal(err.errorType, 'IncorrectUsageError');
@@ -423,14 +424,14 @@ describe('Limit Service', function () {
             it('throws if initialized without start date', function () {
                 const config = {
                     maxPeriodic: 100,
-                    currentCountQuery: () => {},
-                    interval: 'month'
+                    currentCountQuery: async () => undefined,
+                    interval: 'month' as const
                 };
 
                 try {
                     const limit = new MaxPeriodicLimit({name: 'no accountability!', config, errors});
                     should.fail(limit, 'Should have errored');
-                } catch (err) {
+                } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.exist(err);
                     should.exist(err.errorType);
                     should.equal(err.errorType, 'IncorrectUsageError');
@@ -446,7 +447,7 @@ describe('Limit Service', function () {
                 const config = {
                     maxPeriodic: 3,
                     error: 'You have exceeded the number of emails you can send within your billing period.',
-                    interval: 'month',
+                    interval: 'month' as const,
                     startDate: '2021-01-01T00:00:00Z',
                     currentCountQuery: currentCountyQueryMock
                 };
@@ -454,7 +455,7 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxPeriodicLimit({name: 'mailguard', config, errors});
                     await limit.errorIfIsOverLimit();
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     error.errorType.should.equal('HostLimitError');
                     error.errorDetails.name.should.equal('mailguard');
                     error.errorDetails.limit.should.equal(3);
@@ -482,7 +483,7 @@ describe('Limit Service', function () {
                 const config = {
                     maxPeriodic: 5,
                     error: 'You have exceeded the number of emails you can send within your billing period.',
-                    interval: 'month',
+                    interval: 'month' as const,
                     startDate: '2021-01-01T00:00:00Z',
                     currentCountQuery: currentCountyQueryMock
                 };
@@ -490,8 +491,8 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxPeriodicLimit({name: 'mailguard', config, errors});
                     await limit.errorIfWouldGoOverLimit();
-                } catch (error) {
-                    should.fail('MaxPeriodicLimit errorIfWouldGoOverLimit check should not have errored');
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+                    should.fail('MaxPeriodicLimit errorIfWouldGoOverLimit check should not have errored', null);
                 }
             });
 
@@ -501,7 +502,7 @@ describe('Limit Service', function () {
                 const config = {
                     maxPeriodic: 5,
                     error: 'You have exceeded the number of emails you can send within your billing period.',
-                    interval: 'month',
+                    interval: 'month' as const,
                     startDate: '2021-01-01T00:00:00Z',
                     currentCountQuery: currentCountyQueryMock
                 };
@@ -509,7 +510,7 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxPeriodicLimit({name: 'mailguard', config, errors});
                     await limit.errorIfWouldGoOverLimit();
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     error.errorType.should.equal('HostLimitError');
                     error.errorDetails.name.should.equal('mailguard');
                     error.errorDetails.limit.should.equal(5);
@@ -535,7 +536,7 @@ describe('Limit Service', function () {
                 const config = {
                     maxPeriodic: 13,
                     error: 'You have exceeded the number of emails you can send within your billing period.',
-                    interval: 'month',
+                    interval: 'month' as const,
                     startDate: '2021-01-01T00:00:00Z',
                     currentCountQuery: currentCountyQueryMock
                 };
@@ -543,7 +544,7 @@ describe('Limit Service', function () {
                 try {
                     const limit = new MaxPeriodicLimit({name: 'mailguard', config, errors});
                     await limit.errorIfWouldGoOverLimit({addedCount: 9});
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     error.errorType.should.equal('HostLimitError');
                     error.errorDetails.name.should.equal('mailguard');
                     error.errorDetails.limit.should.equal(13);
@@ -569,7 +570,7 @@ describe('Limit Service', function () {
                 const config = {
                     maxPeriodic: 5,
                     error: 'You have exceeded the number of emails you can send within your billing period.',
-                    interval: 'month',
+                    interval: 'month' as const,
                     startDate: '2021-01-01T00:00:00Z',
                     currentCountQuery: sinon.stub()
                 };
@@ -580,7 +581,7 @@ describe('Limit Service', function () {
                     const limit = new MaxPeriodicLimit({name: 'mailguard', config, errors});
                     await limit.errorIfIsOverLimit();
                     await limit.errorIfWouldGoOverLimit();
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.fail('Should have not errored', error);
                 }
 
@@ -592,7 +593,7 @@ describe('Limit Service', function () {
                 const config = {
                     maxPeriodic: 5,
                     error: 'You have exceeded the number of emails you can send within your billing period.',
-                    interval: 'month',
+                    interval: 'month' as const,
                     startDate: '2021-01-01T00:00:00Z',
                     currentCountQuery: sinon.stub()
                 };
@@ -606,7 +607,7 @@ describe('Limit Service', function () {
                     const limit = new MaxPeriodicLimit({name: 'mailguard', config, db, errors});
                     await limit.errorIfIsOverLimit();
                     await limit.errorIfWouldGoOverLimit();
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.fail('Should have not errored', error);
                 }
 
@@ -618,7 +619,7 @@ describe('Limit Service', function () {
                 const config = {
                     maxPeriodic: 5,
                     error: 'You have exceeded the number of emails you can send within your billing period.',
-                    interval: 'month',
+                    interval: 'month' as const,
                     startDate: '2021-01-01T00:00:00Z',
                     currentCountQuery: sinon.stub()
                 };
@@ -633,7 +634,7 @@ describe('Limit Service', function () {
                     const limit = new MaxPeriodicLimit({name: 'mailguard', config, db, errors});
                     await limit.errorIfIsOverLimit({transacting: transaction});
                     await limit.errorIfWouldGoOverLimit({transacting: transaction});
-                } catch (error) {
+                } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                     should.fail('Should have not errored', error);
                 }
 
@@ -648,7 +649,7 @@ describe('Limit Service', function () {
             try {
                 new AllowlistLimit({name: 'test', config: {}, errors});
                 throw new Error('Should have failed earlier...');
-            } catch (error) {
+            } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                 error.errorType.should.equal('IncorrectUsageError');
                 error.message.should.match(/allowlist limit without an allowlist/);
             }
@@ -670,7 +671,7 @@ describe('Limit Service', function () {
             try {
                 await limit.errorIfIsOverLimit({value: 'unknown value'});
                 throw new Error('Should have failed earlier...');
-            } catch (error) {
+            } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                 error.errorType.should.equal('HostLimitError');
             }
         });

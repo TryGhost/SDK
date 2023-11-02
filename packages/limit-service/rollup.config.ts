@@ -1,13 +1,14 @@
 /* eslint-env node */
-const typescript = require('@rollup/plugin-typescript');
-const commonjs = require('rollup-plugin-commonjs');
-const resolve = require('rollup-plugin-node-resolve');
-const pkg = require('./package.json');
+import typescript from '@rollup/plugin-typescript';
+import commonjs from 'rollup-plugin-commonjs';
+import resolve from 'rollup-plugin-node-resolve';
+import pkg from './package.json';
 
-module.exports = [
+export default [
     // Node build
     {
         input: pkg.source,
+        external: [/node_modules/],
         output: {
             file: pkg.main,
             format: 'cjs',
@@ -24,6 +25,7 @@ module.exports = [
     // ES module build
     {
         input: pkg.source,
+        external: [/node_modules/],
         output: [{
             file: pkg.module,
             format: 'es',

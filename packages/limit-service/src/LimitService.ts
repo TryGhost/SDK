@@ -14,10 +14,12 @@ type Limits = Record<string, AllowlistLimit | FlagLimit | MaxLimit | MaxPeriodic
 
 export interface LimitServiceErrors {
     IncorrectUsageError: {
-        new(options: {message?: string}): Error;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        new(options: {message?: string}): any;
     }
     HostLimitError: {
-        new(options: {message?: string}): Error;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        new(options: {message?: string}): any;
     }
 }
 
@@ -35,17 +37,20 @@ export interface LimitConfig {
     disabled?: boolean;
 
     /** custom error to be displayed when the limit is reached */
-    error: string;
+    error?: string;
 
     /** function returning count for the "max" type of limit */
     currentCountQuery?: CurrentCountFn;
 
     /** function to format the limit counts before they are passed to the error message */
     formatter?: (count: number) => string;
+
+    /** allowlist values that would be compared against */
+    allowlist?: string[];
 }
 
 export default class LimitService {
-    private limits: Limits;
+    public limits: Limits;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private errors?: LimitServiceErrors;
 
@@ -69,10 +74,10 @@ export default class LimitService {
             interval: 'month';
             startDate: string;
         };
-        helpLink: string;
+        helpLink?: string;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        db: any;
-        errors: LimitServiceErrors;
+        db?: any;
+        errors?: LimitServiceErrors;
     }) {
         if (!errors) {
             throw new ghostErrors.IncorrectUsageError({

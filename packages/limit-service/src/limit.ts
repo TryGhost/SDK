@@ -365,7 +365,7 @@ export class FlagLimit extends Limit {
      * Flag limits are on/off so using a feature is always over the limit
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async errorIfWouldGoOverLimit(_options: any) {
+    async errorIfWouldGoOverLimit(_options?: any) {
         if (this.disabled) {
             throw this.generateError();
         }
@@ -376,7 +376,7 @@ export class FlagLimit extends Limit {
      * NOTE: this method should not be relied on as it's impossible to check the limit was surpassed!
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async errorIfIsOverLimit(_options: any) {
+    async errorIfIsOverLimit(_options?: any) {
         return;
     }
 }
