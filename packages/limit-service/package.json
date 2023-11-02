@@ -12,8 +12,11 @@
     "dev": "echo \"Implement me!\"",
     "test": "TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha --require ts-node/register './test/**/*.test.ts'",
     "lint": "eslint . --cache",
-    "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
-    "build:bundle": "esbuild src/index.ts --metafile=bundle/meta.json --bundle --format=cjs --outfile=bundle/index.js",
+    "build": "rollup -c --configPlugin @rollup/plugin-typescript && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
+    "build:esbuild": "yarn build:cjs && yarn build:es && yarn build:types",
+    "build:cjs": "yarn esbuild src/*.ts --target=es2020 --bundle --external:@tryghost/errors --outdir=cjs --format=cjs",
+    "build:es": "yarn esbuild src/*.ts --target=es2020 --bundle --external:@tryghost/errors --outdir=es --format=esm",
+    "build:types": "tsc --emitDeclarationOnly --declaration --declarationMap --outDir types",
     "prepare": "NODE_ENV=production yarn build",
     "pretest": "yarn build",
     "posttest": "yarn lint"
@@ -30,7 +33,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@date-fns/utc": "^1.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "11.1.5",
     "@types/mocha": "^10.0.3",
     "@types/sinon": "^10.0.20",
