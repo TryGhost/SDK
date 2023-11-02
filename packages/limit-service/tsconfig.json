@@ -1,19 +1,6 @@
 {
-  "ts-node": {
-    "files": true
-  },
-  "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true
-  },
-  "include": ["src"]
+  "extends": "../tsconfig.json",
+  "include": [
+    "src/**/*"
+  ]
 }
