@@ -1,4 +1,3 @@
-import {UTCDateMini} from '@date-fns/utc';
 import {IncorrectUsageError} from '@tryghost/errors';
 import {differenceInMonths} from 'date-fns';
 
@@ -19,8 +18,8 @@ export const SUPPORTED_INTERVALS = ['month'];
  */
 export const lastPeriodStart = (startDate: string, interval: 'month'): string | null => {
     if (interval === 'month') {
-        const startDateISO = new UTCDateMini(startDate);
-        const now = new UTCDateMini(new Date());
+        const startDateISO = new Date(startDate);
+        const now = new Date();
 
         const fullPeriodsPast = Math.abs(Math.floor(differenceInMonths(startDateISO, now)));
 
