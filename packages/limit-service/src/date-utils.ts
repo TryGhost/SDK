@@ -1,5 +1,6 @@
-import errors from '@tryghost/errors';
-import {DateTime} from 'luxon';
+import {UTCDateMini} from '@date-fns/utc';
+import {IncorrectUsageError} from '@tryghost/errors';
+import {differenceInMonths} from 'date-fns';
 
 const messages = {
     invalidInterval: 'Invalid interval specified. Only "month" value is accepted.'
@@ -18,16 +19,31 @@ export const SUPPORTED_INTERVALS = ['month'];
  */
 export const lastPeriodStart = (startDate: string, interval: 'month'): string | null => {
     if (interval === 'month') {
-        const startDateISO = DateTime.fromISO(startDate, {zone: 'UTC'});
-        const now = DateTime.now().setZone('UTC');
-        const fullPeriodsPast = Math.floor(now.diff(startDateISO, 'months').months);
+        const startDateISO = new UTCDateMini(startDate);
+        const now = new UTCDateMini(new Date());
 
-        const lastPeriodStartDate = startDateISO.plus({months: fullPeriodsPast});
+        const fullPeriodsPast = Math.abs(Math.floor(differenceInMonths(startDateISO, now)));
 
-        return lastPeriodStartDate.toISO();
+        return addMonths(startDateISO, fullPeriodsPast).toISOString();
     }
 
-    throw new errors.IncorrectUsageError({
+    throw new IncorrectUsageError({
         message: messages.invalidInterval
     });
+};
+
+const addMonths = (date: Date, months: number) => {
+    const endOfTargetMonth = new Date(date);
+    endOfTargetMonth.setUTCMonth(endOfTargetMonth.getUTCMonth() + months + 1, 0);
+
+    const daysInTargetMonth = endOfTargetMonth.getUTCDate();
+
+    // Just using setUTCMonth can end up with the wrong month if the target month has fewer days than the original month
+    if (date.getUTCDate() >= daysInTargetMonth) {
+        return endOfTargetMonth;
+    } else {
+        const newDate = new Date(date);
+        newDate.setUTCMonth(newDate.getUTCMonth() + months);
+        return newDate;
+    }
 };
