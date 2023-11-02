@@ -1,13 +1,19 @@
-import ghostErrors from '@tryghost/errors';
-import camelCase from 'lodash/camelCase';
-import has from 'lodash/has';
-
+import {IncorrectUsageError} from '@tryghost/errors';
 import config from './config';
 import {AllowlistLimit, FlagLimit, MaxLimit, MaxPeriodicLimit} from './limit';
 
 const messages = {
     missingErrorsConfig: `Config Missing: 'errors' is required.`,
     noSubscriptionParameter: 'Attempted to setup a periodic max limit without a subscription'
+};
+
+const camelCase = (str: string) => {
+    if (!str) {
+        return '';
+    }
+
+    const result = str.replace(/[^A-Z]+(.)/ig, (_, character) => character.toUpperCase());
+    return result[0].toLowerCase() + result.slice(1);
 };
 
 type Limits = Record<string, AllowlistLimit | FlagLimit | MaxLimit | MaxPeriodicLimit>
@@ -80,7 +86,7 @@ export default class LimitService {
         errors?: LimitServiceErrors;
     }) {
         if (!errors) {
-            throw new ghostErrors.IncorrectUsageError({
+            throw new IncorrectUsageError({
                 message: messages.missingErrorsConfig
             });
         }
@@ -97,13 +103,13 @@ export default class LimitService {
             if (config[name]) {
                 const limitConfig: LimitConfig = Object.assign({}, config[name], limits[name]);
 
-                if (has(limitConfig, 'allowlist')) {
+                if ('allowlist' in limitConfig) {
                     this.limits[name] = new AllowlistLimit({name, config: limitConfig, helpLink, errors});
-                } else if (has(limitConfig, 'max')) {
+                } else if ('max' in limitConfig) {
                     this.limits[name] = new MaxLimit({name: name, config: limitConfig, helpLink, db, errors});
-                } else if (has(limitConfig, 'maxPeriodic')) {
+                } else if ('maxPeriodic' in limitConfig) {
                     if (subscription === undefined) {
-                        throw new ghostErrors.IncorrectUsageError({
+                        throw new IncorrectUsageError({
                             message: messages.noSubscriptionParameter
                         });
                     }

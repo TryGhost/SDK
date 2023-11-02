@@ -1,6 +1,5 @@
 // NOTE: this module is here to serve as a dummy fixture for GhostError errors (@tryghost/errors)
 
-
 interface ErrorOptions {
     errorType?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

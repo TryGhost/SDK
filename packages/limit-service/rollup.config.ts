@@ -1,7 +1,6 @@
 /* eslint-env node */
 import typescript from '@rollup/plugin-typescript';
 import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
 import pkg from './package.json';
 
 export default [
@@ -32,9 +31,6 @@ export default [
             sourcemap: true
         }],
         plugins: [
-            resolve({
-                browser: true
-            }),
             typescript(),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']

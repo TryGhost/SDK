@@ -2,21 +2,14 @@
 // const testUtils = require('./utils');
 import './utils';
 
-import _ from 'lodash';
 import should from 'should';
 import sinon from 'sinon';
 import LimitService from '../src/LimitService';
-import { FlagLimit, MaxLimit, MaxPeriodicLimit } from '../src/limit';
+import {FlagLimit, MaxLimit, MaxPeriodicLimit} from '../src/limit';
 
 import errors from './fixtures/errors';
 
 describe('Limit Service', function () {
-    describe('Lodash Template', function () {
-        it('Does not get clobbered by this lib', function () {
-            _.templateSettings.interpolate!.should.eql(/<%=([\s\S]+?)%>/g);
-        });
-    });
-
     describe('Error Messages', function () {
         it('Formats numbers correctly', function () {
             const limit = new MaxLimit({
@@ -65,6 +58,7 @@ describe('Limit Service', function () {
             try {
                 limitService.loadLimits({limits});
                 should.fail(limitService, 'Should have errored');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (err: any) {
                 should.exist(err);
                 err.message.should.eql(`Config Missing: 'errors' is required.`);
@@ -118,6 +112,7 @@ describe('Limit Service', function () {
             try {
                 limitService.loadLimits({limits, errors});
                 throw new Error('Should have failed earlier...');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 error.errorType.should.equal('IncorrectUsageError');
                 error.message.should.match(/periodic max limit without a subscription/);
@@ -155,22 +150,24 @@ describe('Limit Service', function () {
             limitService.isLimited('staff').should.be.false();
             limitService.isLimited('members').should.be.false();
             limitService.isLimited('custom_themes').should.be.true();
+            limitService.isLimited('custom-themes').should.be.true();
             limitService.isLimited('customThemes').should.be.true();
         });
 
         it('can load incorrectly cased limits', function () {
             const limitService = new LimitService();
 
-            const limits = {custom_themes: {disabled: true}};
+            const limits = {custom_themes: {disabled: true}, 'custom-integrations': {disabled: true}};
 
             limitService.loadLimits({limits, errors});
 
-            limitService.limits.should.be.an.Object().with.properties(['customThemes']);
+            limitService.limits.should.be.an.Object().with.properties(['customThemes', 'customIntegrations']);
             limitService.limits.customThemes.should.be.an.instanceOf(FlagLimit);
             limitService.isLimited('staff').should.be.false();
             limitService.isLimited('members').should.be.false();
             limitService.isLimited('custom_themes').should.be.true();
             limitService.isLimited('customThemes').should.be.true();
+            limitService.isLimited('customIntegrations').should.be.true();
         });
 
         it('answers correctly when no limits are provided', function () {
@@ -335,6 +332,7 @@ describe('Limit Service', function () {
             try {
                 await limitService.checkIfAnyOverLimit();
                 should.fail(limitService, 'Should have errored');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (err: any) {
                 err.message.should.eql(`Attempted to check an allowlist limit without a value`);
             }

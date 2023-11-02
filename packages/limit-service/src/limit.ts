@@ -1,10 +1,11 @@
+// There are a lot of places
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import lowerCase from 'lodash/lowerCase';
-import template from 'lodash/template';
 import {lastPeriodStart, SUPPORTED_INTERVALS} from './date-utils';
 import {CurrentCountFn, LimitConfig, LimitServiceErrors} from './LimitService';
 
 const interpolate = /{{([\s\S]+?)}}/g;
+const template = (message: string, substitutions: Record<string, string>) => message.replace(interpolate, (_, key) => substitutions[key.trim()]);
+const lowerCase = (name: string) => name.replace(/[A-Z]/, letter => ` ${letter.toLowerCase()}`);
 
 interface ErrorDetails {
     message?: string;
@@ -85,7 +86,7 @@ export class MaxLimit extends Limit {
         config: LimitConfig;
         helpLink?: string;
         db?: any;
-        errors: any;
+        errors: LimitServiceErrors;
     }) {
         super({name, error: config.error || '', helpLink, db, errors});
 
@@ -116,12 +117,11 @@ export class MaxLimit extends Limit {
         if (this.error) {
             const formatter = this.formatter || Intl.NumberFormat().format;
             try {
-                errorObj.message = template(this.error, {interpolate})(
-                    {
-                        max: formatter(this.max),
-                        count: formatter(count),
-                        name: this.name
-                    });
+                errorObj.message = template(this.error, {
+                    max: formatter(this.max),
+                    count: formatter(count),
+                    name: this.name
+                });
             } catch (e) {
                 errorObj.message = this.fallbackMessage;
             }
@@ -212,7 +212,7 @@ export class MaxPeriodicLimit extends Limit {
         };
         helpLink?: string;
         db?: any;
-        errors: any;
+        errors: LimitServiceErrors;
     }) {
         super({name, error: config.error || '', helpLink, db, errors});
 
@@ -250,12 +250,11 @@ export class MaxPeriodicLimit extends Limit {
 
         if (this.error) {
             try {
-                errorObj.message = template(this.error, {interpolate})(
-                    {
-                        max: Intl.NumberFormat().format(this.maxPeriodic),
-                        count: Intl.NumberFormat().format(count),
-                        name: this.name
-                    });
+                errorObj.message = template(this.error, {
+                    max: Intl.NumberFormat().format(this.maxPeriodic),
+                    count: Intl.NumberFormat().format(count),
+                    name: this.name
+                });
             } catch (e) {
                 errorObj.message = this.fallbackMessage;
             }
@@ -341,7 +340,7 @@ export class FlagLimit extends Limit {
         };
         helpLink?: string;
         db?: any;
-        errors: any;
+        errors: LimitServiceErrors;
     }) {
         super({name, error: config.error || '', helpLink, db, errors});
 
@@ -401,7 +400,7 @@ export class AllowlistLimit extends Limit {
             allowlist?: string[];
         };
         helpLink?: string;
-        errors: any;
+        errors: LimitServiceErrors;
     }) {
         super({name, error: config.error || '', helpLink, errors});
 

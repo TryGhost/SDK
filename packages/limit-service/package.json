@@ -11,8 +11,9 @@
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha --require ts-node/register './test/**/*.test.ts'",
-    "lint": "eslint . --ext .js --cache",
+    "lint": "eslint . --cache",
     "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
+    "build:bundle": "esbuild src/index.ts --metafile=bundle/meta.json --bundle --format=cjs --outfile=bundle/index.js",
     "prepare": "NODE_ENV=production yarn build",
     "pretest": "yarn build",
     "posttest": "yarn lint"
@@ -29,12 +30,13 @@
     "access": "public"
   },
   "devDependencies": {
+    "@date-fns/utc": "^1.1.0",
     "@rollup/plugin-typescript": "11.1.5",
-    "@types/lodash": "^4.14.200",
-    "@types/luxon": "^3.3.3",
     "@types/mocha": "^10.0.3",
     "@types/sinon": "^10.0.20",
     "c8": "8.0.1",
+    "date-fns": "^2.30.0",
+    "esbuild": "^0.19.5",
     "mocha": "10.2.0",
     "rollup": "2.79.1",
     "rollup-plugin-commonjs": "10.1.0",
@@ -45,8 +47,6 @@
     "typescript": "5.2.2"
   },
   "dependencies": {
-    "@tryghost/errors": "^1.2.26",
-    "lodash": "^4.17.21",
-    "luxon": "^1.26.0"
+    "@tryghost/errors": "^1.2.26"
   }
 }
