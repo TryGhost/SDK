@@ -108,10 +108,15 @@ const unsafeResizeFromBuffer = async (originalBuffer, options = {}) => {
         .rotate();
 
     const metadata = await s.metadata();
-    if (metadata.format === 'jpeg') {
+
+    if (options.format) {
+        if (options.format === 'jpeg') {
+            s.jpeg({mozjpeg: true}); // .jpeg sets format
+        } else {
+            s = s.toFormat(options.format);
+        }
+    } else if (metadata.format === 'jpeg') {
         s.jpeg({mozjpeg: true}); // .jpeg sets format
-    } else if (options.format) {
-        s = s.toFormat(options.format);
     }
 
     const resizedBuffer = await s.toBuffer();
