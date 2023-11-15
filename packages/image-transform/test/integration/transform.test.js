@@ -55,6 +55,16 @@ describe('Image compression', function () {
                     assert(info.width === 1000);
                 });
         });
+
+        it('can create a JPEG from another format by passing the format option', async function () {
+            const inputPngBuffer = await sharp(fixtures.inputPng).toBuffer();
+
+            const outputBuffer = await imageTransform.resizeFromBuffer(inputPngBuffer, {format: 'jpeg'});
+
+            sharp(outputBuffer).metadata().then(function (metadata) {
+                assert.equal(metadata.format, 'jpeg');
+            });
+        });
     });
 
     describe('PNG', function () {
@@ -79,6 +89,16 @@ describe('Image compression', function () {
                     assert(result.length < fixtureBuffer.length);
                     assert(info.width === 1000);
                 });
+        });
+
+        it('can create PNG from another format by passing the format option', async function () {
+            const inputJpegBuffer = await sharp(fixtures.inputJpeg).toBuffer();
+
+            const outputBuffer = await imageTransform.resizeFromBuffer(inputJpegBuffer, {format: 'png'});
+
+            sharp(outputBuffer).metadata().then(function (metadata) {
+                assert.equal(metadata.format, 'png');
+            });
         });
     });
 
