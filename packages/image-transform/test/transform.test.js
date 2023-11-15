@@ -86,7 +86,8 @@ describe('Transform', function () {
             sharpInstance = {
                 resize: sinon.stub().returnsThis(),
                 rotate: sinon.stub().returnsThis(),
-                toBuffer: sinon.stub()
+                toBuffer: sinon.stub(),
+                jpeg: sinon.stub().returnsThis()
             };
 
             sharp = sinon.stub().callsFake(() => {
