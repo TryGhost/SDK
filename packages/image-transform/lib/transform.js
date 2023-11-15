@@ -105,8 +105,11 @@ const unsafeResizeFromBuffer = async (originalBuffer, options = {}) => {
             withoutEnlargement: options.withoutEnlargement ?? true
         })
         // CASE: Automatically remove metadata and rotate based on the orientation.
-        .rotate()
-        .jpeg({mozjpeg: true});
+        .rotate();
+
+    if (options.format === 'jpeg' || options.format === 'jpg') {
+        s.jpeg({mozjpeg: true}); // results in slower generation but slightly smaller files
+    }
 
     const resizedBuffer = await s.toBuffer();
     return options.format || resizedBuffer.length < originalBuffer.length ? resizedBuffer : originalBuffer;
