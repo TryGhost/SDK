@@ -2998,6 +2998,14 @@
     lodash "^4.17.21"
     uuid "^9.0.0"
 
+"@tryghost/errors@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.3.0.tgz#273beb4c91bd7eb8a44b2e4154e57cc5321ad9dc"
+  integrity sha512-XI3Gw+6Mbua7FiCdNMY+0bVQ0pP6YDY5UpIAd9YIb1PWtISmiqEA2St1bvBk08Blfks3+lFPigh/YUxjuTKjRw==
+  dependencies:
+    "@stdlib/utils-copy" "^0.0.7"
+    uuid "^9.0.0"
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.9.tgz#df4907fc07a886922637b15e02d4cebc4c0021b2"
