@@ -2866,12 +2866,11 @@
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
 "@tryghost/errors@^1.2.26":
-  version "1.2.27"
-  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.2.27.tgz#3d552c007b5b7ce3e72cbb727c42076446a24638"
-  integrity sha512-5m4IH7S5bCIFX+qwTgaMsnPK7ZnPu1mw8kiIFiBQEGs/996GkKGo/876mbrjmkh8ScWNynL6O179753bmMRmCQ==
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.3.0.tgz#273beb4c91bd7eb8a44b2e4154e57cc5321ad9dc"
+  integrity sha512-XI3Gw+6Mbua7FiCdNMY+0bVQ0pP6YDY5UpIAd9YIb1PWtISmiqEA2St1bvBk08Blfks3+lFPigh/YUxjuTKjRw==
   dependencies:
     "@stdlib/utils-copy" "^0.0.7"
-    lodash "^4.17.21"
     uuid "^9.0.0"
 
 "@tufjs/canonical-json@1.0.0":
