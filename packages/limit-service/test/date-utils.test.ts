@@ -3,7 +3,6 @@
 import 'should';
 import './utils';
 
-import {DateTime} from 'luxon';
 import sinon, {SinonFakeTimers} from 'sinon';
 import {lastPeriodStart} from '../src/date-utils';
 
@@ -18,8 +17,10 @@ describe('Date Utils', function () {
         });
 
         it('returns same date if current date is less than a period away from current date', async function () {
-            const weekAgoDate = DateTime.now().toUTC().plus({weeks: -1});
-            const weekAgoISO = weekAgoDate.toISO() || '';
+            clock = sinon.useFakeTimers(new Date('2021-08-18T19:00:52Z').getTime());
+
+            const weekAgoDate = new Date('2021-08-11T19:00:52Z');
+            const weekAgoISO = weekAgoDate.toISOString();
 
             const lastPeriodStartDate = lastPeriodStart(weekAgoISO, 'month') || '';
 
@@ -27,11 +28,13 @@ describe('Date Utils', function () {
         });
 
         it('returns beginning of last month\'s period', async function () {
-            const weekAgoDate = DateTime.now().toUTC().plus({weeks: -1});
-            const weekAgoISO = weekAgoDate.toISO();
+            clock = sinon.useFakeTimers(new Date('2021-08-18T19:00:52Z').getTime());
 
-            const weekAndAMonthAgo = weekAgoDate.plus({months: -1});
-            const weekAndAMonthAgoISO = weekAndAMonthAgo.toISO() || '';
+            const weekAgoDate = new Date('2021-08-11T19:00:52Z');
+            const weekAgoISO = weekAgoDate.toISOString();
+
+            const weekAndAMonthAgo = new Date('2021-07-11T19:00:52Z');
+            const weekAndAMonthAgoISO = weekAndAMonthAgo.toISOString() || '';
 
             const lastPeriodStartDate = lastPeriodStart(weekAndAMonthAgoISO, 'month') || '';
 
