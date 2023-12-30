@@ -43,7 +43,7 @@ describe('Slugify', function () {
     });
 
     it('should remove control characters', function () {
-        var result = slugify('control:\x07notcontrol:\xB5');
+        var result = slugify('control:\x07notcontrol:\u00B5');
         result.should.equal('control-notcontrol-u');
     });
 
