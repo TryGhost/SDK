@@ -26,6 +26,6 @@
     "sinon": "17.0.1"
   },
   "dependencies": {
-    "unidecode": "^0.1.8"
+    "unidecode": "^1.0.0"
   }
 }
