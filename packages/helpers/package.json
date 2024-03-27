@@ -35,7 +35,7 @@
     "@babel/polyfill": "7.12.1",
     "c8": "9.1.0",
     "istanbul": "0.4.5",
-    "mocha": "10.3.0",
+    "mocha": "10.4.0",
     "rollup": "2.79.1",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
