@@ -33,7 +33,7 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "11.1.6",
     "mocha": "10.4.0",
-    "rollup": "2.79.1",
+    "rollup": "4.13.2",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
     "rollup-plugin-replace": "2.2.0",
