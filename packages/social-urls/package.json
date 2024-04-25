@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/social-urls",
-  "version": "0.1.42",
+  "version": "0.1.43",
   "repository": "https://github.com/TryGhost/SDK/tree/main/packages/social-urls",
   "author": "Ghost Foundation",
   "license": "MIT",

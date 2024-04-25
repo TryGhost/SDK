@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/helpers",
-  "version": "1.1.89",
+  "version": "1.1.90",
   "repository": "https://github.com/TryGhost/SDK/tree/main/packages/helpers",
   "author": "Ghost Foundation",
   "license": "MIT",
