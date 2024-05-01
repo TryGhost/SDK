@@ -1,3 +1,15 @@
+export type ResourceMap = {
+    authors: Author;
+    newsletters: Newsletter;
+    offers: Offer;
+    pages: Page;
+    posts: Post;
+    recommendations: Recommendation;
+    settings: Settings;
+    tags: Tag;
+    tiers: Tier;
+};
+
 export type Tag = {
     id?: string;
     name?: string;
@@ -277,4 +289,34 @@ export type Params = {
     order?: string;
     /** @description Paginate through collections of resources. By default, the first 15 records are returned. */
     page?: string;
+};
+
+export type ParamsWithKey = (Params & { key: string }) | undefined;
+
+export type BrowseParams = Pick<
+    Params,
+    'limit' | 'page' | 'fields' | 'filter' | 'order' | 'include'
+>;
+
+export type ReadParams = Pick<Params, 'fields' | 'include'>;
+
+export type IdOrSlug =
+    | { id: string; slug?: never }
+    | { id?: never; slug: string };
+
+export type UserInputs = {
+    url: string;
+    key: string;
+    acceptVersionHeader?: string;
+    userAgent?: string | boolean;
+    ghostPath?: string;
+    makeRequest?: ({
+        url,
+        method,
+        options,
+        headers
+    }: RequestInit & {
+        url: string;
+        options?: Partial<Params>;
+    }) => Promise<Response>;
 };

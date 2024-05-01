@@ -18,7 +18,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "echo 'No dev script defined'",
     "pretest": "yarn build",
     "test": "vitest test/**/*.ts --bail --verbose --timeout 10000 --coverage --reporter dot --reporter-options verbose=true",
     "build": "vite build",
