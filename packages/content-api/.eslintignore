@@ -1,4 +1,2 @@
 coverage
-cjs/*
-umd/*
-es/*
+dist

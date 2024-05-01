@@ -4,25 +4,25 @@
   "repository": "https://github.com/TryGhost/SDK/tree/main/packages/content-api",
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "cjs/content-api.js",
-  "umd:main": "umd/content-api.min.js",
-  "unpkg": "umd/content-api.min.js",
-  "module": "es/content-api.js",
-  "source": "lib/content-api.js",
+  "main": "dist/content-api.umd.js",
+  "types": "dist/content-api.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/content-api.es.js",
+      "require": "./dist/content-api.umd.js"
+    }
+  },
   "files": [
     "LICENSE",
     "README.md",
-    "cjs/",
-    "lib/",
-    "umd/",
-    "es/"
+    "dist"
   ],
   "scripts": {
-    "dev": "echo \"Implement me!\"",
+    "dev": "vite",
     "pretest": "yarn build",
-    "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha './test/**/*.test.js'",
-    "build": "rollup -c",
-    "lint": "eslint . --ext .js --cache",
+    "test": "vitest test/**/*.ts --bail --verbose --timeout 10000 --coverage --reporter dot --reporter-options verbose=true",
+    "build": "vite build",
+    "lint": "eslint . --ext .ts --cache",
     "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
   },
@@ -30,25 +30,11 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/core": "7.24.5",
-    "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.24.5",
-    "@rollup/plugin-json": "6.1.0",
-    "c8": "9.1.0",
-    "core-js": "3.37.0",
     "eslint-plugin-ghost": "3.4.0",
-    "mocha": "10.4.0",
-    "rollup": "2.79.1",
-    "rollup-plugin-babel": "4.4.0",
-    "rollup-plugin-commonjs": "10.1.0",
-    "rollup-plugin-node-resolve": "5.2.0",
-    "rollup-plugin-polyfill-node": "0.12.0",
-    "rollup-plugin-replace": "2.2.0",
-    "rollup-plugin-terser": "7.0.2",
-    "should": "13.2.3",
-    "sinon": "17.0.1"
+    "msw": "^2.2.14",
+    "vite": "^5.2.10",
+    "vite-plugin-dts": "^3.9.0",
+    "vitest": "^1.5.3"
   },
-  "dependencies": {
-    "axios": "^1.0.0"
-  }
+  "type": "module"
 }
