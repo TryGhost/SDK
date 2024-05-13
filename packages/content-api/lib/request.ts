@@ -1,4 +1,5 @@
 import {Params, ParamsWithKey, IdOrSlug} from './types';
+import {name} from './validate';
 
 // __version__ is replaced at compile time by the package version from package.json
 declare const __version__: string;
@@ -38,7 +39,7 @@ export async function makeApiRequest({
     makeRequest
 }: MakeApiRequestParams): Promise<Response> {
     if (!membersToken && !key) {
-        return Promise.reject(new Error(`Config missing: 'key' is required.`));
+        return Promise.reject(new Error(`[${name}]: Config missing. The "key" parameter is required (e.g., "64dbaf71a0a7069d8fd8de58f1").`));
     }
 
     if (options) {
@@ -89,11 +90,25 @@ export async function makeApiRequest({
 
         return res;
     } catch (err: unknown) {
-        if (err instanceof Error) {
-            throw new Error(err.message);
-        } else {
-            throw new Error('An unknown error occurred');
+        if (err instanceof APIError) {
+            throw err;
         }
+        if (err instanceof Error) {
+            err.message = `[${name}]: ${err.message}`;
+            throw err;
+        } else {
+            throw new Error(`[${name}]: An unknown error occurred.`);
+        }
+    }
+}
+
+class APIError extends Error {
+    response: Response;
+
+    constructor(message: string, type: string, response: Response) {
+        super(message);
+        this.name = type;
+        this.response = response;
     }
 }
 
@@ -115,14 +130,29 @@ export async function defaultMakeRequest({
     try {
         const res = await fetch(urlObj, {method, headers});
         if (!res.ok) {
-            throw new Error(res.statusText); // Ghost error?
+            const errorPayload = await res.json();
+
+            if (errorPayload.errors) {
+                const props = errorPayload.errors[0];
+
+                const toThrow = new APIError(props.message, props.type, res);
+                
+                const keys = Object.keys(props);
+                for (const key of keys) {
+                    toThrow[key as keyof Error] = props[key];
+                };
+
+                throw toThrow;
+            } else {
+                throw new Error(`${res.status} - ${res.statusText}`);
+            };
         }
         return res;
     } catch (err: unknown) {
         if (err instanceof Error) {
-            throw new Error(err.message);
+            throw err;
         } else {
-            throw new Error('An unknown error occurred');
+            throw new Error(`An unknown error occurred: ${(err as Error).toString()}`);
         }
     }
 }

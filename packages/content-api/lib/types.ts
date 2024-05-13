@@ -278,7 +278,7 @@ export type Params = {
     /** @description Filter the result set to only include resources that match the provided criteria */
     filter?: string;
     /** @description Tells the API to return additional data related to the resource you have requested. Doesn't work well with `fields` */
-    include?: string;
+    include?: string | string[];
     /** @description Select fields to return. Doesn't work well with `include` */
     fields?: string;
     /** @description Return `HTML` or `plaintext` */

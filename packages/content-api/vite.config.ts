@@ -21,6 +21,7 @@ export default defineConfig({
         dts({rollupTypes: true})
     ],
     test: {
+        include: ['test/*.ts'],
         coverage: {
             provider: 'v8'
         }

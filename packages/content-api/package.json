@@ -9,7 +9,8 @@
   "exports": {
     ".": {
       "import": "./dist/content-api.es.js",
-      "require": "./dist/content-api.umd.js"
+      "require": "./dist/content-api.umd.js",
+      "types": "./dist/content-api.d.ts"
     }
   },
   "files": [
@@ -20,7 +21,8 @@
   "scripts": {
     "dev": "echo 'No dev script defined'",
     "pretest": "yarn build",
-    "test": "vitest test/**/*.ts --bail --verbose --timeout 10000 --coverage --reporter dot --reporter-options verbose=true",
+    "test": "USE_MOCK_API=true vitest --coverage",
+    "test:real": "USE_MOCK_API=false vitest --coverage",
     "build": "vite build",
     "lint": "eslint . --ext .ts --cache",
     "prepare": "NODE_ENV=production yarn build",
@@ -30,11 +32,13 @@
     "access": "public"
   },
   "devDependencies": {
+    "@types/node": "^20.12.11",
+    "@vitest/coverage-v8": "^1.6.0",
     "eslint-plugin-ghost": "3.4.0",
-    "msw": "^2.2.14",
-    "vite": "^5.2.10",
-    "vite-plugin-dts": "^3.9.0",
-    "vitest": "^1.5.3"
+    "msw": "^2.3.0",
+    "vite": "^5.2.11",
+    "vite-plugin-dts": "^3.9.1",
+    "vitest": "^1.6.0"
   },
   "type": "module"
 }

@@ -1,17 +1,24 @@
-const url = require('url');
-const http = require('http');
+import url from 'node:url';
+import http from 'node:http';
+import {AddressInfo} from 'net';
 
-const getInstance = (config, cb) => {
+type Config = {
+    returnError: boolean;
+};
+
+export const getInstance = (config: Config, cb: (urlStr: string) => void): http.Server => {
     const server = http.createServer();
 
     server.on('listening', () => {
-        const {address, port} = server.address();
-        const serverURL = `http://${address}:${port}`;
-
+        const addressInfo = server.address() as AddressInfo;
+        const serverURL = `http://${addressInfo.address}:${addressInfo.port}`;
         cb(serverURL);
     });
 
     server.on('request', (req, res) => {
+        if (!req.url) {
+            throw Error('No URL');
+        }
         const parsedUrl = url.parse(req.url, true);
         server.emit('method', req.method);
         server.emit('url', parsedUrl);
@@ -43,6 +50,10 @@ const getInstance = (config, cb) => {
 
         let data;
 
+        if (!parsedUrl.pathname) {
+            throw Error('No pathname');
+        }
+
         const browseMatch = parsedUrl.pathname.match(/\/([a-z]+)\/$/);
         if (browseMatch) {
             data = {
@@ -71,5 +82,3 @@ const getInstance = (config, cb) => {
 
     return server;
 };
-
-module.exports.getInstance = getInstance;
