@@ -16,6 +16,11 @@
         "ref": {
           "type": ["string", "null"],
           "maxLength": 2000
+        },
+        "status": {
+          "type": "string",
+          "enum": ["new", "edited"],
+          "default": "new"
         }
       }
     }
