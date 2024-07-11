@@ -31,7 +31,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/core": "7.24.7",
+    "@babel/core": "7.24.8",
     "@babel/polyfill": "7.12.1",
     "c8": "10.1.2",
     "istanbul": "0.4.5",
