@@ -31,8 +31,8 @@
     "lodash": "^4.17.21",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
-    "remark": "^11.0.2",
-    "remark-footnotes": "^1.0.0",
+    "remark": "^15.0.0",
+    "remark-footnotes": "^4.0.0",
     "unist-util-visit": "^2.0.0"
   }
 }
