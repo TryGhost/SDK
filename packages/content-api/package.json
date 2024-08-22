@@ -32,7 +32,7 @@
   "devDependencies": {
     "@babel/core": "7.25.2",
     "@babel/polyfill": "7.12.1",
-    "@babel/preset-env": "7.25.3",
+    "@babel/preset-env": "7.25.4",
     "@rollup/plugin-json": "6.1.0",
     "c8": "10.1.2",
     "core-js": "3.38.1",
