@@ -44,6 +44,6 @@
   },
   "dependencies": {
     "@types/color": "3.0.6",
-    "color": "^3.2.1"
+    "color": "^4.0.0"
   }
 }
