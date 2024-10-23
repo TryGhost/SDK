@@ -5469,17 +5469,16 @@ gatsby-core-utils@^3.25.0:
     tmp "^0.2.1"
     xdg-basedir "^4.0.0"
 
-gatsby-link@4.17.0:
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/gatsby-link/-/gatsby-link-4.17.0.tgz#cfccc7c8d702da9592a4c6172de03857af6e39fb"
-  integrity sha512-hDh+9OFMHNQ/5YdDdTcpSMB8xAYSP4OMkRuwmgPKH1jtOuov3pzwFAo19RR34CsOqzKd3LSQbCjIovOksjlAeA==
+gatsby-link@4.25.0:
+  version "4.25.0"
+  resolved "https://registry.yarnpkg.com/gatsby-link/-/gatsby-link-4.25.0.tgz#f7bd0b1e8c74be14e67cd649de1c4aa25f145237"
+  integrity sha512-Fpwk45sUMPvFUAZehNE8SLb3vQyVSxt9YxU++ZZECyukK4A/3Wxk3eIzoNvwfpMfWu6pnAkqcBhIO6KAfvbPGQ==
   dependencies:
-    "@babel/runtime" "^7.15.4"
     "@types/reach__router" "^1.3.10"
-    gatsby-page-utils "^2.17.0"
+    gatsby-page-utils "^2.25.0"
     prop-types "^15.8.1"
 
-gatsby-page-utils@^2.17.0:
+gatsby-page-utils@^2.25.0:
   version "2.25.0"
   resolved "https://registry.yarnpkg.com/gatsby-page-utils/-/gatsby-page-utils-2.25.0.tgz#1bd878b1a1a8b51822437bf8cbe2d5b38bfcee3e"
   integrity sha512-TlwS149JCeb3xGANeV8HdcQi9Q8J9hYwlO9jdxLGVIXVGbWIMWFrDuwx382jOOsISGQ3jfByToNulUzO6fiqig==
