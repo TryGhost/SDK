@@ -37,7 +37,7 @@
     "c8": "10.1.2",
     "core-js": "3.38.1",
     "eslint-plugin-ghost": "3.4.0",
-    "mocha": "10.8.1",
+    "mocha": "10.8.2",
     "rollup": "2.79.2",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
