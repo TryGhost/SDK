@@ -28,6 +28,6 @@
   "dependencies": {
     "@tryghost/errors": "^1.2.26",
     "lodash": "^4.17.21",
-    "luxon": "^1.26.0"
+    "luxon": "^3.0.0"
   }
 }
