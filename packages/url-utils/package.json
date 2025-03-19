@@ -24,7 +24,7 @@
     "mocha": "11.1.0",
     "rewire": "7.0.0",
     "should": "13.2.3",
-    "sinon": "19.0.2"
+    "sinon": "19.0.4"
   },
   "dependencies": {
     "cheerio": "^0.22.0",
