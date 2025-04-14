@@ -13,6 +13,10 @@ describe('lib/social: urls', function () {
         should.exist(social.facebook);
     });
 
+    it('should have a threads url function', function () {
+        should.exist(social.threads);
+    });
+
     describe('twitter', function () {
         it('should return a correct concatenated URL', function () {
             social.twitter('myusername').should.eql('https://twitter.com/myusername');
@@ -34,6 +38,16 @@ describe('lib/social: urls', function () {
 
         it('should return a correct concatenated URL for usernames which start with a slash', function () {
             social.facebook('/page/xxx/123').should.eql('https://www.facebook.com/page/xxx/123');
+        });
+    });
+
+    describe('threads', function () {
+        it('should return a correct concatenated URL', function () {
+            social.threads('myusername').should.eql('https://www.threads.net/@myusername');
+        });
+
+        it('should return a url without an @ sign if one is provided', function () {
+            social.threads('@myusername').should.eql('https://www.threads.net/@myusername');
         });
     });
 });
