@@ -40,33 +40,8 @@ module.exports.bluesky = function bluesky(username) {
  * @returns {string}
  */
 module.exports.mastodon = function mastodon(username) {
-    // Remove any leading @ symbols from the username
-    username = username.replace(/^@+/, '');
-
-    // Check if the input is in @username@instance format
-    if (username.includes('@') && !username.includes('/')) {
-        const [user, instance] = username.split('@');
-        return `https://${instance}/@${user}`;
-    }
-
-    // Check if the input is in instance/@username format
-    if (username.includes('/@')) {
-        return `https://${username}`;
-    }
-
-    // Check if the input is in hostInstance/@username@userInstance format
-    if (username.includes('/@') && username.includes('@', username.indexOf('/@') + 1)) {
-        return `https://${username}`;
-    }
-
-    // If we have a simple instance/username format
-    if (username.includes('/')) {
-        const [instance, user] = username.split('/');
-        return `https://${instance}/@${user}`;
-    }
-
-    // Default case: assume it's a local handle on the instance
-    return `https://${username}`;
+    // Mastodon stores full URL without https://, just prepend protocol
+    return 'https://' + username;
 };
 
 /**

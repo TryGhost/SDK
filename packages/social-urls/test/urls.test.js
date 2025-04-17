@@ -99,31 +99,6 @@ describe('lib/social: urls', function () {
         it('should handle subdomains in instance URLs', function () {
             social.mastodon('eu.mastodon.green/@eco').should.eql('https://eu.mastodon.green/@eco');
         });
-
-        // New test cases for different URL formats
-        it('should handle @username@instance format', function () {
-            social.mastodon('@example@indieweb.social').should.eql('https://indieweb.social/@example');
-        });
-
-        it('should handle instance/@username format', function () {
-            social.mastodon('mastodon.social/@example').should.eql('https://mastodon.social/@example');
-        });
-
-        it('should handle hostInstance/@username@userInstance format', function () {
-            social.mastodon('mastodon.xyz/@Flipboard@flipboard.social').should.eql('https://mastodon.xyz/@Flipboard@flipboard.social');
-        });
-
-        it('should handle same instance format with @username@instance', function () {
-            social.mastodon('@user@mastodon.social').should.eql('https://mastodon.social/@user');
-        });
-
-        it('should handle same instance format with instance/@username', function () {
-            social.mastodon('mastodon.social/@user').should.eql('https://mastodon.social/@user');
-        });
-
-        it('should handle different instances format', function () {
-            social.mastodon('mastodon.social/@user@other.social').should.eql('https://mastodon.social/@user@other.social');
-        });
     });
 
     describe('tiktok', function () {
