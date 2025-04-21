@@ -7,6 +7,9 @@ module.exports.twitter = function twitter(username) {
     return 'https://x.com/' + username.replace(/^@/, '');
 };
 
+// Alias for twitter to support X
+module.exports.x = module.exports.twitter;
+
 /**
  * @param {string} username
  * @returns {string}

@@ -11,6 +11,10 @@ describe('lib/social: urls', function () {
         should.exist(social.twitter);
     });
 
+    it('should have a x url function', function () {
+        should.exist(social.x);
+    });
+
     it('should have a facebook url function', function () {
         should.exist(social.facebook);
     });
@@ -50,6 +54,16 @@ describe('lib/social: urls', function () {
 
         it('should return a url without an @ sign if one is provided', function () {
             social.twitter('myusername').should.eql('https://x.com/myusername');
+        });
+    });
+
+    describe('x', function () {
+        it('should return a correct concatenated URL', function () {
+            social.x('@myusername').should.eql('https://x.com/myusername');
+        });
+
+        it('should return a url without an @ sign if one is provided', function () {
+            social.x('myusername').should.eql('https://x.com/myusername');
         });
     });
 
