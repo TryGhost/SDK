@@ -2,6 +2,18 @@ import should from 'should';
 import { expect, describe, it } from 'vitest';
 import { parse, ReferrerParser, ReferrerData } from '../index';
 
+// Helper function to safely assert on properties that might be null
+function assertPropertyEquals(obj: any, property: string, expectedValue: any) {
+    should.exist(obj);
+    
+    if (expectedValue === null) {
+        should.equal(obj[property], null);
+    } else {
+        should.exist(obj[property]);
+        obj[property].should.equal(expectedValue);
+    }
+}
+
 describe('referrer-parser', () => {
     describe('exports', () => {
         it('exports parse function', () => {
@@ -21,9 +33,9 @@ describe('referrer-parser', () => {
             const result: ReferrerData = parse('https://www.google.com/search?q=ghost+cms');
             should.exist(result);
             result.should.have.properties(['referrerSource', 'referrerMedium', 'referrerUrl']);
-            result.referrerSource!.should.equal('Google');
-            result.referrerMedium!.should.equal('search');
-            result.referrerUrl!.should.equal('www.google.com');
+            assertPropertyEquals(result, 'referrerSource', 'Google');
+            assertPropertyEquals(result, 'referrerMedium', 'search');
+            assertPropertyEquals(result, 'referrerUrl', 'www.google.com');
         });
 
         it('accepts configuration options', () => {
@@ -32,23 +44,39 @@ describe('referrer-parser', () => {
             });
             should.exist(result);
             result.should.have.properties(['referrerSource', 'referrerMedium', 'referrerUrl']);
-            result.referrerSource!.should.equal('Direct');
-            should.equal(result.referrerMedium, null);
-            should.equal(result.referrerUrl, null);
+            assertPropertyEquals(result, 'referrerSource', null);
+            assertPropertyEquals(result, 'referrerMedium', null);
+            assertPropertyEquals(result, 'referrerUrl', null);
         });
 
         it('handles null and invalid URLs', () => {
             const result: ReferrerData = parse(null as unknown as string);
             should.exist(result);
-            result.referrerSource!.should.equal('Direct');
-            should.equal(result.referrerMedium, null);
-            should.equal(result.referrerUrl, null);
+            assertPropertyEquals(result, 'referrerSource', null);
+            assertPropertyEquals(result, 'referrerMedium', null);
+            assertPropertyEquals(result, 'referrerUrl', null);
 
             const invalidResult: ReferrerData = parse('not-a-url');
             should.exist(invalidResult);
-            invalidResult.referrerSource!.should.equal('Direct');
-            should.equal(invalidResult.referrerMedium, null);
-            should.equal(invalidResult.referrerUrl, null);
+            assertPropertyEquals(invalidResult, 'referrerSource', null);
+            assertPropertyEquals(invalidResult, 'referrerMedium', null);
+            assertPropertyEquals(invalidResult, 'referrerUrl', null);
+        });
+
+        it('uses provided source and medium parameters', () => {
+            const result: ReferrerData = parse('https://example.com', {}, 'newsletter', 'email');
+            should.exist(result);
+            assertPropertyEquals(result, 'referrerSource', 'newsletter');
+            assertPropertyEquals(result, 'referrerMedium', 'email');
+            assertPropertyEquals(result, 'referrerUrl', 'example.com');
+        });
+
+        it('recognizes Ghost Newsletter sources', () => {
+            const result: ReferrerData = parse('https://example.com', {}, 'site-newsletter');
+            should.exist(result);
+            assertPropertyEquals(result, 'referrerSource', 'site newsletter');
+            assertPropertyEquals(result, 'referrerMedium', 'Email');
+            assertPropertyEquals(result, 'referrerUrl', 'example.com');
         });
     });
 }); 
