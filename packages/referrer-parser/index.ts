@@ -6,6 +6,8 @@ import type { ReferrerData, ParserOptions } from './lib/ReferrerParser';
  * 
  * @param referrerUrl - URL of the referrer to parse
  * @param options - Configuration options
+ * @param referrerSource - Optional source to override URL parameters
+ * @param referrerMedium - Optional medium to override URL parameters
  * @returns Parsed referrer data with source, medium and URL
  * 
  * @example
@@ -18,10 +20,19 @@ import type { ReferrerData, ParserOptions } from './lib/ReferrerParser';
  * const result = parse('https://example.com/blog?utm_source=newsletter', {
  *   siteUrl: 'https://example.com'
  * });
+ * 
+ * @example
+ * // With explicit source and medium
+ * const result = parse('https://example.com', {}, 'newsletter', 'email');
  */
-function parse(referrerUrl: string, options: ParserOptions = {}): ReferrerData {
+function parse(
+    referrerUrl: string, 
+    options: ParserOptions = {}, 
+    referrerSource?: string, 
+    referrerMedium?: string
+): ReferrerData {
     const parser = new ReferrerParser(options);
-    return parser.parse(referrerUrl);
+    return parser.parse(referrerUrl, referrerSource, referrerMedium);
 }
 
 export {
