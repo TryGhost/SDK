@@ -54,7 +54,7 @@ export class ReferrerParser {
      * @param referrerUrlStr - URL of the referrer
      * @param referrerSource - Source of the referrer
      * @param referrerMedium - Medium of the referrer
-     * @returns Parsed referrer data with source, medium and URL
+     * @returns Parsed referrer data with source, medium and URL. Internal referrers return null values.
      */
     parse(referrerUrlStr: string, referrerSource?: string, referrerMedium?: string): ReferrerData {
         const referrerUrl = this.getUrlFromStr(referrerUrlStr);
