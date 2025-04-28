@@ -52,41 +52,14 @@ export class ReferrerParser {
      * Parse a referrer URL to get source, medium and hostname
      * 
      * @param referrerUrlStr - URL of the referrer
+     * @param referrerSource - Source of the referrer
+     * @param referrerMedium - Medium of the referrer
      * @returns Parsed referrer data with source, medium and URL
      */
-    parse(referrerUrlStr: string): ReferrerData {
-        if (!referrerUrlStr) {
-            return {
-                referrerSource: 'Direct',
-                referrerMedium: null,
-                referrerUrl: null
-            };
-        }
-
+    parse(referrerUrlStr: string, referrerSource?: string, referrerMedium?: string): ReferrerData {
         const referrerUrl = this.getUrlFromStr(referrerUrlStr);
-        if (!referrerUrl) {
-            return {
-                referrerSource: 'Direct',
-                referrerMedium: null,
-                referrerUrl: null
-            };
-        }
 
-        // Skip Stripe checkout URLs
-        if (referrerUrl.hostname === 'checkout.stripe.com') {
-            return {
-                referrerSource: 'Direct',
-                referrerMedium: null,
-                referrerUrl: null
-            };
-        }
-
-        // Check for source/medium in query parameters
-        const urlParams = new URLSearchParams(referrerUrl.search);
-        const referrerSource = urlParams.get('utm_source') || urlParams.get('source') || null;
-        const referrerMedium = urlParams.get('utm_medium') || urlParams.get('medium') || null;
-
-        // If referrer is Ghost Explore
+        // Ghost-specific cases
         if (this.isGhostExploreRef({referrerUrl, referrerSource})) {
             return {
                 referrerSource: 'Ghost Explore',
@@ -100,14 +73,14 @@ export class ReferrerParser {
             return {
                 referrerSource: 'Ghost.org',
                 referrerMedium: 'Ghost Network',
-                referrerUrl: referrerUrl?.hostname
+                referrerUrl: referrerUrl?.hostname ?? null
             };
         }
 
         // Check for Ghost Newsletter
-        if (this.isGhostNewsletter({referrerSource})) {
+        if (referrerSource && this.isGhostNewsletter({referrerSource})) {
             return {
-                referrerSource: referrerSource!.replace(/-newsletter$/, ' newsletter'),
+                referrerSource: referrerSource.replace(/-/g, ' '),
                 referrerMedium: 'Email',
                 referrerUrl: referrerUrl?.hostname ?? null
             };
@@ -148,10 +121,10 @@ export class ReferrerParser {
         }
 
         return {
-            referrerSource: 'Direct',
+            referrerSource: null,
             referrerMedium: null,
             referrerUrl: null
-        };
+        }
     }
 
     /**
@@ -259,7 +232,6 @@ export class ReferrerParser {
      * @returns True if the referrer is from Ghost Explore
      */
     isGhostExploreRef({referrerUrl, referrerSource}: {referrerUrl: URL | null, referrerSource?: string | null}): boolean {
-        // Always check for ghost-explore source param
         if (referrerSource === 'ghost-explore') {
             return true;
         }
@@ -268,12 +240,14 @@ export class ReferrerParser {
             return false;
         }
 
-        // Check domain for explore.ghost.io and try.ghost.org/explore
-        if (referrerUrl.hostname === 'explore.ghost.io') {
+        if (referrerUrl?.hostname
+            && this.adminUrl?.hostname === referrerUrl?.hostname
+            && referrerUrl?.pathname?.startsWith(this.adminUrl?.pathname)
+        ) {
             return true;
         }
 
-        if (referrerUrl.hostname === 'try.ghost.org' && referrerUrl.pathname.startsWith('/explore')) {
+        if (referrerUrl.hostname === 'ghost.org' && referrerUrl.pathname.startsWith('/explore')) {
             return true;
         }
 
