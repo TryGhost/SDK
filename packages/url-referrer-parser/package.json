@@ -1,0 +1,70 @@
+{
+  "name": "@tryghost/referrer-parser",
+  "version": "0.0.1",
+  "description": "Simple library for parsing referrer URLs",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "lib/referrers.json"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint *.ts lib/ test/ --ext .ts",
+    "lint:fix": "eslint *.ts lib/ test/ --ext .ts --fix"
+  },
+  "keywords": [
+    "ghost",
+    "referrer",
+    "attribution",
+    "source",
+    "medium"
+  ],
+  "author": "Ghost Foundation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/Ghost.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TryGhost/Ghost/issues"
+  },
+  "homepage": "https://ghost.org",
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/should": "^13.0.0",
+    "@types/sinon": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "@vitest/coverage-v8": "^1.6.1",
+    "eslint": "^8.52.0",
+    "should": "13.2.3",
+    "sinon": "15.2.0",
+    "typescript": "5.4.3",
+    "vite": "^5.4.18",
+    "vite-plugin-dts": "^3.9.1",
+    "vitest": "^1.6.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
