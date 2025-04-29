@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Simple library for parsing referrer URLs",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
