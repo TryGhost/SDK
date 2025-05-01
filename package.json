@@ -23,7 +23,7 @@
     "eslint-plugin-ghost": "3.4.0",
     "eslint-plugin-react": "7.37.5",
     "lerna": "6.6.2",
-    "mocha": "11.1.0",
+    "mocha": "11.2.2",
     "should": "13.2.3",
     "sinon": "20.0.0"
   }
