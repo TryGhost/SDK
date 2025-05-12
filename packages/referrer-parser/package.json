@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/referrer-parser",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Simple library for parsing referrer URLs",
   "type": "module",
   "main": "./dist/index.cjs",
