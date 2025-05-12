@@ -9,6 +9,9 @@
     "index.js",
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test:unit": "NODE_ENV=testing c8 --all --check-coverage --reporter text --reporter cobertura -- mocha --reporter dot './test/**/*.test.js'",
