@@ -69,3 +69,5 @@ typings/
 .DS_Store
 
 # Ghost SDK Custom
+build
+tsconfig.tsbuildinfo
