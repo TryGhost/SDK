@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/html-to-plaintext",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "repository": "https://github.com/TryGhost/Ghost/tree/main/packages/html-to-plaintext",
   "author": "Ghost Foundation",
   "private": false,

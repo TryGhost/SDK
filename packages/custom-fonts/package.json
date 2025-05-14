@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/custom-fonts",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "repository": "https://github.com/TryGhost/Ghost/tree/main/packages/custom-fonts",
   "author": "Ghost Foundation",
   "publishConfig": {
@@ -41,6 +41,5 @@
     "sinon": "19.0.5",
     "ts-node": "10.9.2",
     "typescript": "5.8.3"
-  },
-  "dependencies": {}
+  }
 }
