@@ -40,10 +40,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TryGhost/Ghost.git"
+    "url": "git+https://github.com/TryGhost/SDK.git"
   },
   "bugs": {
-    "url": "https://github.com/TryGhost/Ghost/issues"
+    "url": "https://github.com/TryGhost/SDK/issues"
   },
   "homepage": "https://ghost.org",
   "devDependencies": {
