@@ -1,7 +1,11 @@
 {
   "name": "@tryghost/helpers-gatsby",
   "version": "2.0.24",
-  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/helpers-gatsby",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/helpers-gatsby"
+  },
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "./lib/index.js",

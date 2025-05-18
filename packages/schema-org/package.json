@@ -1,7 +1,11 @@
 {
   "name": "@tryghost/schema-org",
   "version": "0.1.43",
-  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/schema-org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/schema-org"
+  },
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "index.js",

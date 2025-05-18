@@ -1,7 +1,11 @@
 {
   "name": "@tryghost/custom-fonts",
   "version": "1.0.0",
-  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/custom-fonts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/custom-fonts"
+  },
   "author": "Ghost Foundation",
   "publishConfig": {
     "access": "public"

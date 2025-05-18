@@ -1,7 +1,11 @@
 {
   "name": "@tryghost/url-utils",
   "version": "4.4.11",
-  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/url-utils",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/url-utils"
+  },
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "index.js",

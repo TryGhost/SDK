@@ -1,7 +1,11 @@
 {
   "name": "@tryghost/helpers",
   "version": "1.1.93",
-  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/helpers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/helpers"
+  },
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "cjs/helpers.js",

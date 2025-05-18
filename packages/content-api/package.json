@@ -1,7 +1,11 @@
 {
   "name": "@tryghost/content-api",
   "version": "1.11.24",
-  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/content-api",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/content-api"
+  },
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "cjs/content-api.js",

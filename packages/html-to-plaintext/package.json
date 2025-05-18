@@ -1,7 +1,11 @@
 {
   "name": "@tryghost/html-to-plaintext",
   "version": "1.0.3",
-  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/html-to-plaintext",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/html-to-plaintext"
+  },
   "author": "Ghost Foundation",
   "private": false,
   "main": "index.js",

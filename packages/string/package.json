@@ -1,7 +1,11 @@
 {
   "name": "@tryghost/string",
   "version": "0.2.15",
-  "repository": "https://github.com/TryGhost/SDK/tree/main/packages/string",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/string"
+  },
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "lib",
