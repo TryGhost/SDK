@@ -42,7 +42,7 @@
     "core-js": "3.42.0",
     "eslint-plugin-ghost": "3.4.0",
     "mocha": "11.2.2",
-    "rollup": "2.79.2",
+    "rollup": "4.41.1",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
