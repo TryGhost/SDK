@@ -3124,9 +3124,9 @@
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
 "@tryghost/errors@^1.2.26":
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.3.7.tgz#70098602944709d24c749b781ea2300d810c8edb"
-  integrity sha512-VYWtDDxMZHDMgtWb5oSQcLfOTC/p+yLmqXBG172yVf+OgaBvgYm6Y/1B1buDv5ySC/icCs5KUImefv8MjBqsTg==
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.3.8.tgz#d4212b52e876360b4fa8e303ae13ef86f3e95846"
+  integrity sha512-2+4ExAAWM0rFWC7FlzxQMzIvIEQKt/vQLxLyqJqCmAcJa4i2uqUPJHqd/X5BBRuSTuftgca7EAo7adESbHEkZw==
   dependencies:
     "@stdlib/utils-copy" "^0.2.0"
     uuid "^9.0.0"
