@@ -186,12 +186,29 @@ export class ReferrerParser {
                 return false;
             }
 
-            if (this.siteUrl.hostname === url.hostname) {
+            // Handle subdomain variations (www.example.com vs example.com)
+            const siteHostname = this.siteUrl.hostname;
+            const urlHostname = url.hostname;
+            
+            // Check for exact match first
+            if (siteHostname === urlHostname) {
                 if (url.pathname.startsWith(this.siteUrl.pathname)) {
                     return true;
                 }
                 return false;
             }
+            
+            // Check for www subdomain variations
+            const siteWithoutWww = siteHostname.replace(/^www\./, '');
+            const urlWithoutWww = urlHostname.replace(/^www\./, '');
+            
+            if (siteWithoutWww === urlWithoutWww) {
+                if (url.pathname.startsWith(this.siteUrl.pathname)) {
+                    return true;
+                }
+                return false;
+            }
+            
             return false;
         } catch (e) {
             return false;
