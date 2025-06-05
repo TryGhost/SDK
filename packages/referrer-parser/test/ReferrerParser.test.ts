@@ -227,6 +227,20 @@ describe('ReferrerParser', () => {
             assertPropertyEquals(result, 'referrerMedium', null);
             assertPropertyEquals(result, 'referrerUrl', null);
         });
+
+        it('identifies internal traffic for subdomain variations (regression test for levernews.com)', () => {
+            // Test case: site configured as www.levernews.com, referrer is levernews.com
+            // This should return null values (internal traffic) instead of showing levernews.com as referrerSource
+            const leverParser = new ReferrerParser({
+                siteUrl: 'https://www.levernews.com'
+            });
+            
+            const result = leverParser.parse('https://levernews.com/article');
+            should.exist(result);
+            assertPropertyEquals(result, 'referrerSource', null);
+            assertPropertyEquals(result, 'referrerMedium', null);
+            assertPropertyEquals(result, 'referrerUrl', null);
+        });
     });
 
     describe('getDataFromUrl', () => {
@@ -343,6 +357,40 @@ describe('ReferrerParser', () => {
             // Force an error by passing an invalid URL object
             const result = parser.isSiteDomain({} as URL);
             should.equal(result, false);
+        });
+
+        it('handles www subdomain variations', () => {
+            // Test www.example.com configured, levernews.com referrer
+            const parser1 = new ReferrerParser({
+                siteUrl: 'https://www.levernews.com'
+            });
+            const url1 = new URL('https://levernews.com/article');
+            const result1 = parser1.isSiteDomain(url1);
+            should.equal(result1, true);
+
+            // Test levernews.com configured, www.levernews.com referrer
+            const parser2 = new ReferrerParser({
+                siteUrl: 'https://levernews.com'
+            });
+            const url2 = new URL('https://www.levernews.com/article');
+            const result2 = parser2.isSiteDomain(url2);
+            should.equal(result2, true);
+
+            // Test both with www
+            const parser3 = new ReferrerParser({
+                siteUrl: 'https://www.levernews.com'
+            });
+            const url3 = new URL('https://www.levernews.com/article');
+            const result3 = parser3.isSiteDomain(url3);
+            should.equal(result3, true);
+
+            // Test both without www
+            const parser4 = new ReferrerParser({
+                siteUrl: 'https://levernews.com'
+            });
+            const url4 = new URL('https://levernews.com/article');
+            const result4 = parser4.isSiteDomain(url4);
+            should.equal(result4, true);
         });
     });
 
