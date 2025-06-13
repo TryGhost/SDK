@@ -27,7 +27,7 @@
     "jsdom": "26.1.0",
     "mocha": "11.2.2",
     "should": "13.2.3",
-    "sinon": "20.0.0"
+    "sinon": "21.0.0"
   },
   "dependencies": {
     "unidecode": "^0.1.8"
