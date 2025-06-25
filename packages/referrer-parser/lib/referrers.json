@@ -9474,5 +9474,53 @@
     "search.brave.com": {
         "medium": "search",
         "source": "Brave Search"
+    },
+    "x.com": {
+        "medium": "social",
+        "source": "Twitter"
+    },
+    "com.twitter.android": {
+        "medium": "social",
+        "source": "Twitter"
+    },
+    "l.threads.com": {
+        "medium": "social",
+        "source": "Threads"
+    },
+    "r.search.yahoo.com": {
+        "medium": "search",
+        "source": "Yahoo!"
+    },
+    "buffer": {
+        "medium": "social",
+        "source": "Buffer"
+    },
+    "phanpy.social": {
+        "medium": "social",
+        "source": "Mastodon"
+    },
+    "dev.phanpy.social": {
+        "medium": "social",
+        "source": "Mastodon"
+    },
+    "www.memeorandum.com": {
+        "medium": "referral",
+        "source": "Memeorandum"
+    },
+    "memeorandum.com": {
+        "medium": "referral",
+        "source": "Memeorandum"
+    },
+    "ground.news": {
+        "medium": "referral",
+        "source": "Ground News"
+    },
+    "apple.news": {
+        "medium": "referral",
+        "source": "Apple News"
+    },
+    "www.smartnews.com": {
+        "medium": "referral",
+        "source": "SmartNews"
     }
 }
