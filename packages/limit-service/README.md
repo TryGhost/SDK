@@ -26,7 +26,7 @@ const limitService = new LimitService();
 
 // setup limit configuration
 // currently supported limit keys are: staff, members, customThemes, customIntegrations, uploads,
-// limit_stripeConnect, limit_analytics, and limit_activityPub
+// limitStripeConnect, limitAnalytics, and limitActivityPub
 // all limit configs support custom "error" configuration that is a template string
 const limits = {
     // staff and member are "max" type of limits accepting "max" configuration
@@ -67,9 +67,9 @@ const limits = {
         // formatting of the {{ max }} vairable is in MB, e.g: 5MB
         error: 'Your plan supports uploads of max size up to {{max}}. Please upgrade to reenable uploading.'
     },
-    limit_stripeConnect: {},
-    limit_analytics: {},
-    limit_activityPub: {}
+    limitStripeConnect: {},
+    limitAnalytics: {},
+    limitActivityPub: {}
 };
 
 // This information is needed for the limit service to work with "max periodic" limits
