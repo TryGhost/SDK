@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/content-api",
-  "version": "1.11.26",
+  "version": "1.11.27",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",

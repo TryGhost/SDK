@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/admin-api",
-  "version": "1.13.16",
+  "version": "1.13.17",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
