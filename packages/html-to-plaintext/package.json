@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "c8": "10.1.3",
-    "mocha": "11.2.2"
+    "mocha": "11.7.1"
   },
   "dependencies": {
     "html-to-text": "8.2.1",
