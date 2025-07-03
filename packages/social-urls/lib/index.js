@@ -80,6 +80,10 @@ module.exports.instagram = function instagram(username) {
  * @returns {string}
  */
 module.exports.linkedin = function linkedin(username) {
-    // LinkedIn URLs use /in/, stored without @
-    return 'https://www.linkedin.com/in/' + username;
+    // LinkedIn URLs use in/, company/, school/, or pub/ stored as-is
+    const pathTypes = ['in/', 'company/', 'school/', 'pub/'];
+    // If username doesn't start with one of those, default to in/
+    const endOfUrl = pathTypes.some(pathType => username.startsWith(pathType)) ? username : 'in/' + username;
+
+    return 'https://www.linkedin.com/' + endOfUrl;
 };
