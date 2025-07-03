@@ -154,12 +154,28 @@ describe('lib/social: urls', function () {
     });
 
     describe('linkedin', function () {
-        it('should return a correct concatenated URL', function () {
-            social.linkedin('myusername').should.eql('https://www.linkedin.com/in/myusername');
+        it('should return a correct concatenated URL for personal profile', function () {
+            social.linkedin('in/myusername').should.eql('https://www.linkedin.com/in/myusername');
         });
 
-        it('should handle usernames with periods, hyphens, and underscores', function () {
-            social.linkedin('john.smith-123').should.eql('https://www.linkedin.com/in/john.smith-123');
+        it('should return a correct concatenated URL for company profile', function () {
+            social.linkedin('company/mycompany').should.eql('https://www.linkedin.com/company/mycompany');
+        });
+
+        it('should return a correct concatenated URL for school profile', function () {
+            social.linkedin('school/myschool').should.eql('https://www.linkedin.com/school/myschool');
+        });
+
+        it('should return a correct concatenated URL for a legacy pub profile', function () {
+            social.linkedin('pub/johnsmith/12/34/567').should.eql('https://www.linkedin.com/pub/johnsmith/12/34/567');
+        });
+
+        it('should handle usernames with hyphens', function () {
+            social.linkedin('in/john-smith-123').should.eql('https://www.linkedin.com/in/john-smith-123');
+        });
+
+        it('should default to in/ when username does not start with in/, company/, school/, or pub/', function () {
+            social.linkedin('myusername').should.eql('https://www.linkedin.com/in/myusername');
         });
     });
 });
