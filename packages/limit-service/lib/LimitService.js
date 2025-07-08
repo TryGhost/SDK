@@ -70,6 +70,28 @@ class LimitService {
     }
 
     /**
+    * Check if a limit is disabled
+    * @throws {IncorrectUsageError} if limit does not support disabled flag
+    */
+    isDisabled(limitName) {
+        if (!this.isLimited(limitName)) {
+            throw new IncorrectUsageError({
+                message: `Limit ${limitName} is not configured`
+            });
+        }
+
+        const limit = this.limits[camelCase(limitName)];
+
+        if (typeof limit.isDisabled !== 'function') {
+            throw new IncorrectUsageError({
+                message: `Limit ${limitName} does not support .isDisabled()`
+            });
+        }
+
+        return limit.isDisabled();
+    }
+
+    /**
      *
      * @param {String} limitName - name of the configured limit
      * @param {Object} [options] - limit parameters
