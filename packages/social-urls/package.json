@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/social-urls",
-  "version": "0.1.52",
+  "version": "0.1.53",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
