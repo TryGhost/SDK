@@ -70,14 +70,13 @@ class LimitService {
     }
 
     /**
-    * Check if a limit is disabled
+    * Check if a limit is disabled, applicable only to limits that support the disabled flag (e.g. FlagLimit)
+    * @returns {boolean|undefined} undefined if limit is not configured
     * @throws {IncorrectUsageError} if limit does not support disabled flag
     */
     isDisabled(limitName) {
         if (!this.isLimited(limitName)) {
-            throw new IncorrectUsageError({
-                message: `Limit ${limitName} is not configured`
-            });
+            return;
         }
 
         const limit = this.limits[camelCase(limitName)];

@@ -547,15 +547,10 @@ describe('Limit Service', function () {
     });
 
     describe('isDisabled', function () {
-        it('throws an error if limit is not configured', function () {
+        it('returns undefined if limit is not configured', function () {
             const limitService = new LimitService();
 
-            try {
-                limitService.isDisabled('test');
-                assert.fail('Should have thrown an error');
-            } catch (err) {
-                assert.equal(err.message, `Limit test is not configured`);
-            }
+            assert.equal(limitService.isDisabled('test'), undefined);
         });
 
         it('throws if the limit does not implement .isDisabled()', function () {

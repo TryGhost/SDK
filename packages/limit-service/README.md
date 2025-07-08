@@ -138,18 +138,14 @@ if (limitService.isLimited('uploads')) {
     await limitService.errorIfIsOverLimit('uploads', {currentCount: frame.file.size});
 }
 
-// Limits also expose an async `checkWouldGoOverLimit` method, if we're only interesting in checking if we would exceed the limit, but not throwing any errors
-if (limitService.isLimited('members')) {
-    if (await limitService.checkWouldGoOverLimit('members')) {
-        console.log('Members limit has acceded!');
-    }
+// Limits expose an async `checkWouldGoOverLimit` method, which can be used to check whether a limit has been reached, but not throw an error:
+if (await limitService.checkWouldGoOverLimit('members')) {
+    console.log('Members limit has been reached!');
 }
 
-// Flag limits additionally expose a `isDisabled` sync check, which can be used instead of the async `checkWouldGoOverLimit`
-if (limitService.isLimited('limitSocialWeb')) {
-    if (limitService.isDisabled('limitSocialWeb')) {
-        console.log('Social web is disabled by config!'));
-    }
+// Flag limits additionally expose a `isDisabled` sync check, which can be used instead of the async `checkWouldGoOverLimit`:
+if (limitService.isDisabled('limitSocialWeb')) {
+    console.log('Social web is disabled by config!'));
 }
 
 // check if any of the limits are acceding
