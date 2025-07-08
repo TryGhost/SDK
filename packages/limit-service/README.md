@@ -68,8 +68,12 @@ const limits = {
         error: 'Your plan supports uploads of max size up to {{max}}. Please upgrade to reenable uploading.'
     },
     limitStripeConnect: {},
-    limitAnalytics: {},
-    limitSocialWeb: {}
+    limitAnalytics: {
+        disabled: false
+    },
+    limitSocialWeb: {
+        disabled: true
+    }
 };
 
 // This information is needed for the limit service to work with "max periodic" limits
@@ -132,6 +136,20 @@ if (limitService.isLimited('members')) {
 if (limitService.isLimited('uploads')) {
     // for the uploads limit we HAVE TO pass in the "currentCount" parameter and use bytes as a base unit
     await limitService.errorIfIsOverLimit('uploads', {currentCount: frame.file.size});
+}
+
+// Limits also expose an async `checkWouldGoOverLimit` method, if we're only interesting in checking if we would exceed the limit, but not throwing any errors
+if (limitService.isLimited('members')) {
+    if (await limitService.checkWouldGoOverLimit('members')) {
+        console.log('Members limit has acceded!');
+    }
+}
+
+// Flag limits additionally expose a `isDisabled` sync check, which can be used instead of the async `checkWouldGoOverLimit`
+if (limitService.isLimited('limitSocialWeb')) {
+    if (limitService.isDisabled('limitSocialWeb')) {
+        console.log('Social web is disabled by config!'));
+    }
 }
 
 // check if any of the limits are acceding
