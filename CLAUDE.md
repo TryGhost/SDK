@@ -150,7 +150,7 @@ Different packages use different build systems:
 - Support for transactions via `options.transacting`
 
 ### API Versioning
-- API packages support multiple versions (v2, v3, v4, v5, canary)
+- API packages support multiple versions (v2, v3, v4, v5, v6, canary)
 - Version-specific tests in `test/<package>-test/v*.test.js`
 
 ## Development Tips
