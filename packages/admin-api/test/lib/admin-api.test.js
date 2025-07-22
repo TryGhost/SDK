@@ -14,7 +14,7 @@ describe('GhostAdminAPI general', function () {
         key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0'
     };
 
-    it('Requires a config object with host, version and key', function () {
+    it('Requires a config object with url and key', function () {
         should.throws(
             () => new GhostAdminAPI(),
             Error,
@@ -32,10 +32,9 @@ describe('GhostAdminAPI general', function () {
             'Missing config.url property'
         );
 
-        should.throws(
+        should.doesNotThrow(
             () => new GhostAdminAPI({url: config.url, key: config.key}),
-            Error,
-            'Missing config.version property'
+            'Version is now optional'
         );
 
         should.doesNotThrow(
@@ -239,7 +238,7 @@ describe('GhostAdminAPI general', function () {
             await api.config.read();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/canary/admin/');
@@ -285,7 +284,7 @@ describe('GhostAdminAPI general', function () {
             await api.config.read();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
@@ -309,7 +308,7 @@ describe('GhostAdminAPI general', function () {
             await api.config.read();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], undefined);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
@@ -333,8 +332,41 @@ describe('GhostAdminAPI general', function () {
             await api.config.read();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], 'Custom Value');
+            should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
+            should.equal(generateTokenSpy.args[0][1], '/admin/');
+        });
+
+        it('throws error when v6 is specified as version', function () {
+            should.throws(
+                () => new GhostAdminAPI({
+                    version: 'v6',
+                    url: `http://ghost.local`,
+                    key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0'
+                }),
+                Error,
+                /Config Invalid: 'version' v6 is not supported/
+            );
+        });
+
+        it('handles optional version parameter and uses /admin/ path by default', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                config: {}
+            }));
+            const generateTokenSpy = sinon.spy();
+
+            const api = new GhostAdminAPI({
+                url: `http://ghost.local`,
+                key: '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0',
+                makeRequest: makeRequestStub,
+                generateToken: generateTokenSpy
+            });
+
+            await api.config.read();
+
+            makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], undefined);
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
         });
