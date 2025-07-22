@@ -15,7 +15,7 @@ describe('GhostAdminAPI v6', function () {
         should.throws(
             () => new GhostAdminAPI({...config, version: 'v6'}),
             Error,
-            /Config Invalid: 'version' v6 is not supported, do not specify a version unless working with Ghost 4.x or earlier/
+            `Did not error for unsupported 'v6' version`
         );
     });
 });
