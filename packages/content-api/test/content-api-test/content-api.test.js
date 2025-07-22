@@ -102,7 +102,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/canary/content/settings/');
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
 
@@ -211,7 +211,7 @@ describe('GhostContentApi', function () {
             await api.settings.browse();
 
             makeRequestStub.calledOnce.should.be.true();
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostContentSDK/${packageVersion}`);
         });
 
@@ -234,7 +234,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/canary/content/settings/');
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], undefined);
         });
 
@@ -257,7 +257,7 @@ describe('GhostContentApi', function () {
 
             makeRequestStub.calledOnce.should.be.true();
             should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/canary/content/settings/');
-            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
+            should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], 'I_LOVE_CUSTOM_THINGS');
         });
     });

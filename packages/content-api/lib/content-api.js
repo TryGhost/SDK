@@ -6,8 +6,8 @@ const USER_AGENT_DEFAULT = true;
 
 const packageVersion = packageInfo.version;
 
-const defaultAcceptVersionHeader = 'v5.0';
-const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
+const defaultAcceptVersionHeader = 'v6.0';
+const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'v6', 'canary'];
 const name = '@tryghost/content-api';
 
 /**
@@ -20,14 +20,15 @@ const name = '@tryghost/content-api';
 const resolveAPIPrefix = (version) => {
     let prefix;
 
-    // NOTE: the "version.match(/^v5\.\d+/)" expression should be changed to "version.match(/^v\d+\.\d+/)" once Ghost v5 is out
-    if (version === 'v5' || version === undefined || version.match(/^v5\.\d+/)) {
-        prefix = `/content/`;
-    } else if (version.match(/^v\d+\.\d+/)) {
-        const versionPrefix = /^(v\d+)\.\d+/.exec(version)[1];
+    // Only v2, v3, v4, and canary need version prefixes in the URL
+    if (version === 'v2' || version === 'v3' || version === 'v4' || version === 'canary') {
+        prefix = `/${version}/content/`;
+    } else if (version && version.match(/^v[2-4]\.\d+/)) {
+        const versionPrefix = /^(v[2-4])\.\d+/.exec(version)[1];
         prefix = `/${versionPrefix}/content/`;
     } else {
-        prefix = `/${version}/content/`;
+        // Default for v5, v6, undefined, etc. - no version prefix
+        prefix = `/content/`;
     }
 
     return prefix;
