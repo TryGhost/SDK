@@ -7,9 +7,9 @@ const token = require('./token');
 const packageInfo = require('../package.json');
 const packageVersion = packageInfo.version;
 
-// NOTE: bump this default when Ghost v5 is released
-const defaultAcceptVersionHeader = 'v5.0';
-const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'canary'];
+// NOTE: bump this default when major versions are released
+const defaultAcceptVersionHeader = 'v6.0';
+const supportedVersions = ['v2', 'v3', 'v4', 'v5', 'v6', 'canary'];
 const packageName = '@tryghost/admin-api';
 
 /**
@@ -22,14 +22,15 @@ const packageName = '@tryghost/admin-api';
 const resolveAPIPrefix = (version) => {
     let prefix;
 
-    // NOTE: the "version.match(/^v5\.\d+/)" expression should be changed to "version.match(/^v\d+\.\d+/)" once Ghost v5 is out
-    if (version === 'v5' || version === undefined || version.match(/^v5\.\d+/)) {
-        prefix = `/admin/`;
-    } else if (version.match(/^v\d+\.\d+/)) {
-        const versionPrefix = /^(v\d+)\.\d+/.exec(version)[1];
+    // Only v2, v3, v4, and canary need version prefixes in the URL
+    if (version === 'v2' || version === 'v3' || version === 'v4' || version === 'canary') {
+        prefix = `/${version}/admin/`;
+    } else if (version && version.match(/^v[2-4]\.\d+/)) {
+        const versionPrefix = /^(v[2-4])\.\d+/.exec(version)[1];
         prefix = `/${versionPrefix}/admin/`;
     } else {
-        prefix = `/${version}/admin/`;
+        // Default for v5+, v6, undefined, etc. - no version prefix
+        prefix = `/admin/`;
     }
 
     return prefix;
