@@ -280,7 +280,7 @@ interface TimezoneDataWithOffset {
     offsetValue: number;
 }
 
-const getGMTOffsetString = (timeZone: string): GMTOffsetData => {
+const getGMTOffset = (timeZone: string): GMTOffsetData => {
     const options: Intl.DateTimeFormatOptions = {
         timeZone,
         timeZoneName: 'shortOffset'
@@ -316,7 +316,7 @@ const labelWithGMTOffset = (label: string, offsetString: string): string => {
 export const timezoneDataWithGMTOffset = (): TimezoneDataWithOffset[] => {
     return timezoneData
         .map(({name, label}) => {
-            const {offsetString, offsetMinutes} = getGMTOffsetString(name);
+            const {offsetString, offsetMinutes} = getGMTOffset(name);
             return {
                 name,
                 label: offsetString ? labelWithGMTOffset(label, offsetString) : label,
