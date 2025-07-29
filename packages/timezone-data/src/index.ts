@@ -13,7 +13,7 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'America/Mazatlan',
-        label: '(GMT -8:00) La Paz, Mazatlan'
+        label: '(GMT -7:00) La Paz, Mazatlan'
     }, 
     {
         name: 'America/Los_Angeles',
@@ -30,7 +30,7 @@ const timezoneData: {name: string; label: string}[] = [
     {
         name: 'America/Chihuahua',
         label: '(GMT -6:00) Chihuahua'
-    }
+    },
     {
         name: 'America/Costa_Rica',
         label: '(GMT -6:00) Central America'
