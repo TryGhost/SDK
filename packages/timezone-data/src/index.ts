@@ -12,13 +12,13 @@ const timezoneData: {name: string; label: string}[] = [
         label: '(GMT -9:00) Alaska'
     },
     {
-        name: 'America/Mazatlan',
-        label: '(GMT -7:00) La Paz, Mazatlan'
-    }, 
-    {
         name: 'America/Los_Angeles',
         label: '(GMT -8:00) Pacific Time (US & Canada); Tijuana'
     },
+    {
+        name: 'America/Mazatlan',
+        label: '(GMT -7:00) La Paz, Mazatlan'
+    }, 
     {
         name: 'America/Phoenix',
         label: '(GMT -7:00) Arizona'
