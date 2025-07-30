@@ -280,10 +280,10 @@ interface TimezoneDataWithOffset {
     offsetValue: number;
 }
 
-const getGMTOffset = (timeZone: string): GMTOffsetData => {
+export const getGMTOffset = (timeZone: string): GMTOffsetData => {
     const options: Intl.DateTimeFormatOptions = {
         timeZone,
-        timeZoneName: 'shortOffset'
+        timeZoneName: 'longOffset'
     };
     
     const formatter = new Intl.DateTimeFormat('en-GB', options);
@@ -294,15 +294,16 @@ const getGMTOffset = (timeZone: string): GMTOffsetData => {
         return {offsetString: null, offsetMinutes: 0};
     }
 
-    const match = offsetPart.match(/^GMT([+-])(\d{1,2})(?::(\d{2}))?$/);
+    // Expecting formats like "GMT+05:30" or "GMT-08:00"
+    const match = offsetPart.match(/^GMT([+-])(\d{2}):(\d{2})$/);
     
     if (!match) {
         return {offsetString: offsetPart, offsetMinutes: 0};
     }
 
-    const sign = match[1];
-    const hour = parseInt(match[2], 10);
-    const minute = parseInt(match[3] ?? '0', 10);
+    const [, sign, hourStr, minuteStr] = match;
+    const hour = parseInt(hourStr, 10);
+    const minute = parseInt(minuteStr, 10);
     const totalMinutes = sign === '+' ? (hour * 60 + minute) : -(hour * 60 + minute);
     const offsetString = `GMT ${sign}${hour}:${minute.toString().padStart(2, '0')}`;
     
