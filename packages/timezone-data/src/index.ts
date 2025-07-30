@@ -201,7 +201,7 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'Asia/Kathmandu',
-        label: '(GMT +5:45) Katmandu'
+        label: '(GMT +5:45) Kathmandu'
     },
     
     {
