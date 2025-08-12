@@ -1,5 +1,4 @@
-require('should');
-const sinon = require('sinon');
+require('./utils');
 const {getGMTOffset, timezoneDataWithGMTOffset} = require('../');
 const timezoneData = require('../').default;
 
