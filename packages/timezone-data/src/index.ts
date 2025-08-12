@@ -277,7 +277,7 @@ interface GMTOffsetData {
 interface TimezoneDataWithOffset {
     name: string;
     label: string;
-    offsetValue: number;
+    offsetMinutes: number;
 }
 
 export const getGMTOffset = (timeZone: string): GMTOffsetData => {
@@ -286,32 +286,36 @@ export const getGMTOffset = (timeZone: string): GMTOffsetData => {
         timeZoneName: 'longOffset'
     };
     
-    const formatter = new Intl.DateTimeFormat('en-GB', options);
-    const parts = formatter.formatToParts(new Date());
-    const offsetPart = parts.find(part => part.type === 'timeZoneName')?.value;
+    try {
+        const formatter = new Intl.DateTimeFormat('en-GB', options);
+        const parts = formatter.formatToParts(new Date());
+        const offsetPart = parts.find(part => part.type === 'timeZoneName')?.value;
 
-    if (!offsetPart) {
+        if (!offsetPart) {
+            return {offsetString: null, offsetMinutes: 0};
+        }
+
+        // Expecting formats like "GMT+05:30" or "GMT-08:00"
+        const match = offsetPart.match(/^GMT([+-])(\d{2}):(\d{2})$/);
+        
+        if (!match) {
+            return {offsetString: offsetPart, offsetMinutes: 0};
+        }
+
+        const [, sign, hourStr, minuteStr] = match;
+        const hour = parseInt(hourStr, 10);
+        const minute = parseInt(minuteStr, 10);
+        const totalMinutes = sign === '+' ? (hour * 60 + minute) : -(hour * 60 + minute);
+        const offsetString = `GMT ${sign}${hour}:${minute.toString().padStart(2, '0')}`;
+        
+        return {offsetString, offsetMinutes: totalMinutes};
+    } catch (error) {
         return {offsetString: null, offsetMinutes: 0};
     }
-
-    // Expecting formats like "GMT+05:30" or "GMT-08:00"
-    const match = offsetPart.match(/^GMT([+-])(\d{2}):(\d{2})$/);
-    
-    if (!match) {
-        return {offsetString: offsetPart, offsetMinutes: 0};
-    }
-
-    const [, sign, hourStr, minuteStr] = match;
-    const hour = parseInt(hourStr, 10);
-    const minute = parseInt(minuteStr, 10);
-    const totalMinutes = sign === '+' ? (hour * 60 + minute) : -(hour * 60 + minute);
-    const offsetString = `GMT ${sign}${hour}:${minute.toString().padStart(2, '0')}`;
-    
-    return {offsetString, offsetMinutes: totalMinutes};
 };
 
 const labelWithGMTOffset = (label: string, offsetString: string): string => {
-    return '(' + offsetString + ') ' + label;
+    return `(${offsetString}) ${label}`;
 };
 
 export const timezoneDataWithGMTOffset = (): TimezoneDataWithOffset[] => {
@@ -321,10 +325,10 @@ export const timezoneDataWithGMTOffset = (): TimezoneDataWithOffset[] => {
             return {
                 name,
                 label: offsetString ? labelWithGMTOffset(label, offsetString) : label,
-                offsetValue: offsetMinutes
+                offsetMinutes
             };
         })
-        .sort((a, b) => a.offsetValue - b.offsetValue);
+        .sort((a, b) => a.offsetMinutes - b.offsetMinutes);
 };
 
 export default timezoneData;
