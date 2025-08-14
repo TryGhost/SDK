@@ -36,10 +36,7 @@ The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript pac
 - **Publish packages**: `yarn ship` (alias for `lerna publish`)
   - Publishes all packages which have changed
   - Updates any packages which depend on changed packages
-  - Use `yarn ship --git-remote upstream` when origin is a fork
-
-### Development
-- **Dev mode**: `yarn dev` (currently not implemented - placeholder exists)
+  - Use `yarn ship --git-remote upstream` when `origin` points to a fork and `upstream` points to the original TryGhost/SDK repo
 
 ## Package Structure
 
@@ -136,7 +133,7 @@ Different packages use different build systems:
 
 ## Git Configuration
 
-- Default branch for PRs: `master`
+- Default branch for PRs: `main`
 - Publishing allowed from: `main` branch
 - Commit message for version updates: "Published new versions"
 
