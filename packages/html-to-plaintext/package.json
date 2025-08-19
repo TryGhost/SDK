@@ -29,7 +29,7 @@
     "mocha": "11.2.2"
   },
   "dependencies": {
-    "html-to-text": "8.2.1",
+    "html-to-text": "9.0.5",
     "lodash": "4.17.21"
   }
 }
