@@ -9,7 +9,7 @@ describe('Strip Invisible Chars', function () {
     });
 
     it('should remove control characters', function () {
-        var result = stripInvisibleChars('control:\x07notcontrol:\xB5');
+        var result = stripInvisibleChars('control:\x07notcontrol:\u00B5');
         result.should.equal('control:notcontrol:µ');
     });
 
