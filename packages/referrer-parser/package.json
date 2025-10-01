@@ -57,7 +57,7 @@
     "eslint": "^8.52.0",
     "should": "13.2.3",
     "sinon": "21.0.0",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "vite": "^7.0.0",
     "vite-plugin-dts": "^4.0.0",
     "vitest": "^3.0.0"
