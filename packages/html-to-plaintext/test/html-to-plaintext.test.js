@@ -88,6 +88,36 @@ describe('Html to Plaintext', function () {
         });
     });
 
+    describe('New lines and format headers', function () {
+        it('Strips excessive new lines and formats headers', function () {
+            const html = '<p>Some ordinary text</p>\n\n\n\n<p>Should not be way far apart from earlier text.</p>';
+            const expected = 'Some ordinary text\n\nShould not be way far apart from earlier text.';
+            const {email} = getEmailandExcert(html);
+            assert.equal(email, expected);
+        });
+
+        it('Check header formatting', function () {
+            const html = '<h1>Header One</h1>\n<p>What should I even write about?</p><p>And more</p><h2>With Header Two</h2><p>What about code?<h3>And Header Three</h3><p>Good bye</p>';
+            const expected = '\n**********\nHeader One\n**********\n\nWhat should I even write about?\n\nAnd more\n\n---------------\nWith Header Two\n---------------\n\nWhat about code?\n\nAnd Header Three\n----------------\n\nGood bye';
+            const {email} = getEmailandExcert(html);
+            assert.equal(email, expected);
+        });
+
+        it('Empty headers return nothing', function () {
+            const html = '<h1></h1>';
+            const expected = '';
+            const {email} = getEmailandExcert(html);
+            assert.equal(email, expected);
+        });
+
+        it('Non-text header contents don’t appear', function () {
+            const html = '<h1>Hello<!--Test-->world</h1>';
+            const expected = '\n**********\nHelloworld\n**********';
+            const {email} = getEmailandExcert(html);
+            assert.equal(email, expected);
+        });
+    });
+
     describe('commentSnippet converter', function () {
         function testConverter({input, expected}) {
             return () => {
