@@ -61,12 +61,77 @@ const loadConverters = () => {
     });
 
     const emailSettings = mergeSettings({
+        preserveNewlines: false,
         selectors: [
             // equiv hideLinkHrefIfSameAsText: true
             {selector: 'a', options: {hideLinkHrefIfSameAsText: true}},
             // Don't include html .preheader in email
-            {selector: '.preheader', format: 'skip'}
-        ]
+            {selector: '.preheader', format: 'skip'},
+            {selector: 'p', options: {leadingLineBreaks: 2, trailingLineBreaks: 1}},
+            {selector: 'h1', format: 'customHeader'},
+            {selector: 'h2', format: 'customHeader'},
+            {selector: 'h3', format: 'customHeader'},
+            {selector: 'h4', format: 'customHeader'},
+            {selector: 'h5', options: {uppercase: false, leadingLineBreaks: 2, trailingLineBreaks: 1}},
+            {selector: 'h6', options: {uppercase: false, leadingLineBreaks: 2, trailingLineBreaks: 1}}
+        ],
+        formatters: {
+            customHeader: function (elem, walk, builder) {
+                function extractText(element) {
+                    if (element.type === 'text') {
+                        return element.data;
+                    }
+                    if (element.children) {
+                        return element.children.map(extractText).join('');
+                    }
+                    return '';
+                }
+
+                const text = extractText(elem).trim();
+                // Early return if header is empty
+                if (!text) {
+                    return;
+                }
+
+                const tagName = elem.name.toLowerCase();
+                const stars = '*'.repeat(text.length);
+                const dashes = '-'.repeat(text.length);
+
+                switch (tagName) {
+                case 'h1':
+                    builder.addLineBreak();
+                    builder.addLineBreak();
+                    builder.addInline(`${stars}`);
+                    builder.addLineBreak();
+                    builder.addInline(`${text}`);
+                    builder.addLineBreak();
+                    builder.addInline(`${stars}`);
+                    builder.addLineBreak();
+                    break;
+
+                case 'h2':
+                    builder.addLineBreak();
+                    builder.addLineBreak();
+                    builder.addInline(`${dashes}`);
+                    builder.addLineBreak();
+                    builder.addInline(`${text}`);
+                    builder.addLineBreak();
+                    builder.addInline(`${dashes}`);
+                    builder.addLineBreak();
+                    break;
+
+                case 'h3':
+                case 'h4':
+                    builder.addLineBreak();
+                    builder.addLineBreak();
+                    builder.addInline(`${text}`);
+                    builder.addLineBreak();
+                    builder.addInline(`${dashes}`);
+                    builder.addLineBreak();
+                    break;
+                }
+            }
+        }
     });
 
     const commentSettings = mergeSettings({
