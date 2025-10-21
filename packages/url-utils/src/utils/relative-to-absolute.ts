@@ -1,7 +1,9 @@
-export {};
-// require the whatwg compatible URL library (same behaviour in node and browser)
-const {URL} = require('url');
-const urlJoin = require('./url-join');
+import {URL} from 'url';
+import urlJoin from './url-join';
+import type {SecureOptions, SecureOptionsInput} from './types';
+
+export type RelativeToAbsoluteOptions = SecureOptions;
+export type RelativeToAbsoluteOptionsInput = SecureOptionsInput;
 
 // NOTE: Ghost's relative->absolute handling is a little strange when the rootUrl
 // includes a subdirectory. Root-relative paths such as /content/image.jpg are
@@ -22,24 +24,29 @@ const urlJoin = require('./url-join');
  * @param {object} options
  * @returns {string} The passed in url or an absolute URL using
  */
-const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, _options) {
+const relativeToAbsolute = function relativeToAbsolute(path: string, rootUrl: string, itemPath?: string | RelativeToAbsoluteOptionsInput | null, _options?: RelativeToAbsoluteOptionsInput): string {
+    let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+    let resolvedOptions: RelativeToAbsoluteOptionsInput | undefined = _options;
+
     // itemPath is optional, if it's an object it may be the options param instead
-    if (typeof itemPath === 'object' && !_options) {
-        _options = itemPath;
-        itemPath = null;
+    if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+        resolvedOptions = itemPath;
     }
 
     // itemPath could be sent as a full url in which case, extract the pathname
-    if (itemPath && itemPath.match(/^http/)) {
-        const itemUrl = new URL(itemPath);
-        itemPath = itemUrl.pathname;
+    if (resolvedItemPath && resolvedItemPath.match(/^http/)) {
+        const itemUrl = new URL(resolvedItemPath);
+        resolvedItemPath = itemUrl.pathname;
     }
 
-    const defaultOptions = {
+    const defaultOptions: RelativeToAbsoluteOptions = {
         assetsOnly: false,
         staticImageUrlPrefix: 'content/images'
     };
-    const options = Object.assign({}, defaultOptions, _options);
+    const options: RelativeToAbsoluteOptions = {
+        ...defaultOptions,
+        ...resolvedOptions
+    };
 
     // return the path as-is if it's not an asset path and we're only modifying assets
     if (options.assetsOnly) {
@@ -71,7 +78,7 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
     }
 
     // return the path as-is if it's not root-relative and we have no itemPath
-    if (!itemPath && !path.match(/^\//)) {
+    if (!resolvedItemPath && !path.match(/^\//)) {
         return path;
     }
 
@@ -81,7 +88,7 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
     }
 
     const parsedRootUrl = new URL(rootUrl);
-    const basePath = path.startsWith('/') ? '' : itemPath;
+    const basePath = path.startsWith('/') ? '' : (resolvedItemPath ?? '');
     const fullPath = urlJoin([parsedRootUrl.pathname, basePath, path], {rootUrl});
     const absoluteUrl = new URL(fullPath, rootUrl);
 
@@ -92,4 +99,4 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
     return absoluteUrl.toString();
 };
 
-module.exports = relativeToAbsolute;
+export default relativeToAbsolute;

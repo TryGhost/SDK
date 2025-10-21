@@ -1,7 +1,14 @@
-export {};
-// require the whatwg compatible URL library (same behaviour in node and browser)
-const {URL} = require('url');
-const stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
+import {URL} from 'url';
+import stripSubdirectoryFromPath from './strip-subdirectory-from-path';
+
+export interface AbsoluteToRelativeOptions {
+    ignoreProtocol: boolean;
+    withoutSubdirectory: boolean;
+    assetsOnly: boolean;
+    staticImageUrlPrefix: string;
+}
+
+export type AbsoluteToRelativeOptionsInput = Partial<AbsoluteToRelativeOptions>;
 
 /**
  * Convert an absolute URL to a root-relative path if it matches the supplied root domain.
@@ -13,14 +20,17 @@ const stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
  * @param {boolean} [options.withoutSubdirectory=false] Strip the root subdirectory from the returned path
  * @returns {string} The passed-in url or a relative path
  */
-const absoluteToRelative = function absoluteToRelative(url, rootUrl, _options = {}) {
-    const defaultOptions = {
+const absoluteToRelative = function absoluteToRelative(url: string, rootUrl?: string, _options: AbsoluteToRelativeOptionsInput = {}): string {
+    const defaultOptions: AbsoluteToRelativeOptions = {
         ignoreProtocol: true,
         withoutSubdirectory: false,
         assetsOnly: false,
         staticImageUrlPrefix: 'content/images'
     };
-    const options = Object.assign({}, defaultOptions, _options);
+    const options: AbsoluteToRelativeOptions = {
+        ...defaultOptions,
+        ..._options
+    };
 
     if (options.assetsOnly) {
         const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
@@ -44,6 +54,10 @@ const absoluteToRelative = function absoluteToRelative(url, rootUrl, _options = 
         return url;
     }
 
+    if (!parsedRoot) {
+        return url;
+    }
+
     const matchesHost = parsedUrl.host === parsedRoot.host;
     const matchesProtocol = parsedUrl.protocol === parsedRoot.protocol;
     const matchesPath = parsedUrl.pathname.indexOf(parsedRoot.pathname) === 0;
@@ -61,4 +75,4 @@ const absoluteToRelative = function absoluteToRelative(url, rootUrl, _options = 
     return url;
 };
 
-module.exports = absoluteToRelative;
+export default absoluteToRelative;

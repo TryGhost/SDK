@@ -1,24 +1,35 @@
-export {};
-const relativeToAbsolute = require('./relative-to-absolute');
+import relativeToAbsolute from './relative-to-absolute';
+import type {
+    TransformReadyReplacementOptions,
+    TransformReadyReplacementOptionsInput
+} from './types';
 
-const relativeToTransformReady = function (url, root, itemPath, _options) {
-    // itemPath is optional, if it's an object may be the options param instead
-    if (typeof itemPath === 'object' && !_options) {
-        _options = itemPath;
-        itemPath = null;
+export interface RelativeToTransformReadyOptions extends TransformReadyReplacementOptions {
+    staticImageUrlPrefix: string;
+    secure: boolean;
+}
+
+export type RelativeToTransformReadyOptionsInput = Partial<RelativeToTransformReadyOptions>;
+
+const relativeToTransformReady = function (url: string, root: string, itemPath?: string | RelativeToTransformReadyOptionsInput | null, _options?: RelativeToTransformReadyOptionsInput): string {
+    let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+    let resolvedOptions: RelativeToTransformReadyOptionsInput | undefined = _options;
+
+    if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+        resolvedOptions = itemPath;
     }
 
-    const defaultOptions = {
+    const options: RelativeToTransformReadyOptions = {
         replacementStr: '__GHOST_URL__',
-        staticImageUrlPrefix: 'content/images'
+        staticImageUrlPrefix: 'content/images',
+        secure: false,
+        ...resolvedOptions
     };
-    const overrideOptions = {
-        secure: false
-    };
-    const options = Object.assign({}, defaultOptions, _options, overrideOptions);
+
+    options.secure = false;
 
     // convert to absolute
-    const absoluteUrl = relativeToAbsolute(url, root, itemPath, options);
+    const absoluteUrl = relativeToAbsolute(url, root, resolvedItemPath, options);
 
     if (absoluteUrl === url) {
         return url;
@@ -40,4 +51,4 @@ const relativeToTransformReady = function (url, root, itemPath, _options) {
     return url;
 };
 
-module.exports = relativeToTransformReady;
+export default relativeToTransformReady;

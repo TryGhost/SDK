@@ -1,14 +1,23 @@
-export {};
-const relativeToAbsolute = require('./relative-to-absolute');
-const absoluteToTransformReady = require('./absolute-to-transform-ready');
+import absoluteToTransformReady, {type AbsoluteToTransformReadyOptionsInput} from './absolute-to-transform-ready';
+import relativeToAbsolute, {type RelativeToAbsoluteOptionsInput} from './relative-to-absolute';
 
-function toTransformReady(url, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+export type ToTransformReadyOptions = RelativeToAbsoluteOptionsInput & AbsoluteToTransformReadyOptionsInput;
+
+function toTransformReady(
+    url: string,
+    siteUrl: string,
+    itemPath?: string | ToTransformReadyOptions | null,
+    options?: ToTransformReadyOptions
+): string {
+    let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+    let resolvedOptions: ToTransformReadyOptions | undefined = options;
+
+    if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+        resolvedOptions = itemPath;
     }
-    const absoluteUrl = relativeToAbsolute(url, siteUrl, itemPath, options);
-    return absoluteToTransformReady(absoluteUrl, siteUrl, options);
+
+    const absoluteUrl = relativeToAbsolute(url, siteUrl, resolvedItemPath, resolvedOptions);
+    return absoluteToTransformReady(absoluteUrl, siteUrl, resolvedOptions);
 }
 
-module.exports = toTransformReady;
+export default toTransformReady;

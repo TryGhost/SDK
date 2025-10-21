@@ -1,17 +1,32 @@
-export {};
-const absoluteToTransformReady = require('./absolute-to-transform-ready');
-const lexicalTransform = require('./lexical-transform');
+import absoluteToTransformReady, {type AbsoluteToTransformReadyOptionsInput} from './absolute-to-transform-ready';
+import lexicalTransform from './lexical-transform';
+import type {LexicalTransformOptionsInput} from './types';
 
-function lexicalAbsoluteToRelative(serializedLexical, siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
-    const overrideOptions = {siteUrl, transformType: 'toTransformReady'};
-    const options = Object.assign({}, defaultOptions, _options, overrideOptions);
+export type LexicalAbsoluteToTransformReadyOptions = LexicalTransformOptionsInput & AbsoluteToTransformReadyOptionsInput;
 
-    const transformFunction = function (_url, _siteUrl, _itemPath, __options) {
+function lexicalAbsoluteToTransformReady(
+    serializedLexical: string,
+    siteUrl: string,
+    _options: LexicalAbsoluteToTransformReadyOptions = {}
+): string {
+    const overrideOptions: LexicalAbsoluteToTransformReadyOptions = {
+        siteUrl,
+        transformType: 'toTransformReady'
+    };
+    const options: LexicalAbsoluteToTransformReadyOptions = {
+        assetsOnly: false,
+        secure: false,
+        nodes: [],
+        transformMap: {},
+        ..._options,
+        ...overrideOptions
+    };
+
+    const transformFunction = function (_url: string, _siteUrl: string, _itemPath: string | null, __options?: AbsoluteToTransformReadyOptionsInput): string {
         return absoluteToTransformReady(_url, _siteUrl, __options);
     };
 
-    return lexicalTransform(serializedLexical, siteUrl, transformFunction, '', options);
+    return lexicalTransform(serializedLexical, siteUrl, transformFunction, null, options);
 }
 
-module.exports = lexicalAbsoluteToRelative;
+export default lexicalAbsoluteToTransformReady;

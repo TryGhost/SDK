@@ -1,15 +1,36 @@
-export {};
-const markdownTransform = require('./markdown-transform');
-const htmlRelativeToTransformReady = require('./html-relative-to-transform-ready');
-const relativeToTransformReady = require('./relative-to-transform-ready');
+import htmlRelativeToTransformReady from './html-relative-to-transform-ready';
+import markdownTransformDefault from './markdown-transform';
+import relativeToTransformReady from './relative-to-transform-ready';
+import type {MarkdownTransformOptions, MarkdownTransformOptionsInput} from './types';
 
-function markdownRelativeToTransformReady(markdown = '', siteUrl, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false};
-    const options: any = Object.assign({}, defaultOptions, _options);
+const markdownTransform = markdownTransformDefault;
+
+export type MarkdownRelativeToTransformReadyOptions = MarkdownTransformOptions;
+export type MarkdownRelativeToTransformReadyOptionsInput = MarkdownTransformOptionsInput;
+
+function markdownRelativeToTransformReady(
+    markdown: string = '',
+    siteUrl: string,
+    itemPath?: string | MarkdownRelativeToTransformReadyOptionsInput | null,
+    _options: MarkdownRelativeToTransformReadyOptionsInput = {}
+): string {
+    let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+    let resolvedOptions: MarkdownRelativeToTransformReadyOptionsInput = _options;
+
+    if (typeof itemPath === 'object' && itemPath !== null) {
+        resolvedOptions = itemPath;
+        resolvedItemPath = null;
+    }
+
+    const options: MarkdownRelativeToTransformReadyOptions = {
+        assetsOnly: false,
+        ignoreProtocol: true,
+        ...resolvedOptions
+    };
 
     options.earlyExitMatchStr = '\\]\\([^\\s\\)]|href=|src=|srcset=';
     if (options.assetsOnly) {
-        options.earlyExitMatchStr = options.staticImageUrlPrefix;
+        options.earlyExitMatchStr = options.staticImageUrlPrefix ?? 'content/images';
     }
 
     const transformFunctions = {
@@ -17,7 +38,7 @@ function markdownRelativeToTransformReady(markdown = '', siteUrl, itemPath, _opt
         url: relativeToTransformReady
     };
 
-    return markdownTransform(markdown, siteUrl, transformFunctions, itemPath, options);
+    return markdownTransform(markdown, siteUrl, transformFunctions, resolvedItemPath, options);
 }
 
-module.exports = markdownRelativeToTransformReady;
+export default markdownRelativeToTransformReady;

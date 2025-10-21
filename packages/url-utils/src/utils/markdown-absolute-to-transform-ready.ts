@@ -1,21 +1,29 @@
-export {};
-const markdownTransform = require('./markdown-transform');
-const absoluteToTransformReady = require('./absolute-to-transform-ready');
-const htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
+import absoluteToTransformReady, {type AbsoluteToTransformReadyOptionsInput} from './absolute-to-transform-ready';
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
+import markdownTransformDefault from './markdown-transform';
+import type {MarkdownTransformOptions, MarkdownTransformOptionsInput} from './types';
 
-function markdownAbsoluteToTransformReady(markdown = '', siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
-    const options: any = Object.assign({}, defaultOptions, _options);
+const markdownTransform = markdownTransformDefault;
+
+export type MarkdownAbsoluteToTransformReadyOptions = MarkdownTransformOptions;
+export type MarkdownAbsoluteToTransformReadyOptionsInput = MarkdownTransformOptionsInput & AbsoluteToTransformReadyOptionsInput;
+
+function markdownAbsoluteToTransformReady(markdown: string = '', siteUrl: string, _options: MarkdownAbsoluteToTransformReadyOptionsInput = {}): string {
+    const options: MarkdownAbsoluteToTransformReadyOptions = {
+        assetsOnly: false,
+        ignoreProtocol: true,
+        ..._options
+    };
 
     options.earlyExitMatchStr = options.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
     options.earlyExitMatchStr = options.earlyExitMatchStr.replace(/\/$/, '');
 
-    // need to ignore itemPath because absoluteToTransformReady functions doen't take that option
+    // need to ignore itemPath because absoluteToTransformReady functions don't take that option
     const transformFunctions = {
-        html(_url, _siteUrl, _itemPath, __options) {
+        html(_url: string, _siteUrl: string, _itemPath: string | null, __options?: AbsoluteToTransformReadyOptionsInput) {
             return htmlAbsoluteToTransformReady(_url, _siteUrl, __options);
         },
-        url(_url, _siteUrl, _itemPath, __options) {
+        url(_url: string, _siteUrl: string, _itemPath: string | null, __options?: AbsoluteToTransformReadyOptionsInput) {
             return absoluteToTransformReady(_url, _siteUrl, __options);
         }
     };
@@ -23,4 +31,4 @@ function markdownAbsoluteToTransformReady(markdown = '', siteUrl, _options = {})
     return markdownTransform(markdown, siteUrl, transformFunctions, '', options);
 }
 
-module.exports = markdownAbsoluteToTransformReady;
+export default markdownAbsoluteToTransformReady;

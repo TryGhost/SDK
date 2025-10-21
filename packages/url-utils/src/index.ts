@@ -1,2 +1,6 @@
 export {};
-module.exports = require('./UrlUtils');
+import UrlUtils from './UrlUtils';
+
+export default UrlUtils;
+export {UrlUtils};
+export * from './UrlUtils';

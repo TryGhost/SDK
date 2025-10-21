@@ -1,13 +1,30 @@
-export {};
-const relativeToAbsolute = require('./relative-to-absolute');
-const lexicalTransform = require('./lexical-transform');
+import lexicalTransform from './lexical-transform';
+import relativeToAbsolute, {type RelativeToAbsoluteOptionsInput} from './relative-to-absolute';
+import type {LexicalTransformOptionsInput} from './types';
 
-function lexicalRelativeToAbsolute(serializedLexical, siteUrl, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
-    const overrideOptions = {siteUrl, itemPath, transformType: 'relativeToAbsolute'};
-    const options = Object.assign({}, defaultOptions, _options, overrideOptions);
+export type LexicalRelativeToAbsoluteOptions = LexicalTransformOptionsInput & RelativeToAbsoluteOptionsInput;
+
+function lexicalRelativeToAbsolute(
+    serializedLexical: string,
+    siteUrl: string,
+    itemPath: string | null,
+    _options: LexicalRelativeToAbsoluteOptions = {}
+): string {
+    const overrideOptions: LexicalRelativeToAbsoluteOptions = {
+        siteUrl,
+        itemPath,
+        transformType: 'relativeToAbsolute'
+    };
+    const options: LexicalRelativeToAbsoluteOptions = {
+        assetsOnly: false,
+        secure: false,
+        nodes: [],
+        transformMap: {},
+        ..._options,
+        ...overrideOptions
+    };
 
     return lexicalTransform(serializedLexical, siteUrl, relativeToAbsolute, itemPath, options);
 }
 
-module.exports = lexicalRelativeToAbsolute;
+export default lexicalRelativeToAbsolute;

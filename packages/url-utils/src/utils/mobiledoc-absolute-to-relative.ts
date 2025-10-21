@@ -1,17 +1,31 @@
-export {};
-const absoluteToRelative = require('./absolute-to-relative');
-const mobiledocTransform = require('./mobiledoc-transform');
+import absoluteToRelative, {type AbsoluteToRelativeOptionsInput} from './absolute-to-relative';
+import mobiledocTransform from './mobiledoc-transform';
+import type {MobiledocTransformOptionsInput} from './types';
 
-function mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false, cardTransformers: []};
-    const overrideOptions = {siteUrl, transformType: 'absoluteToRelative'};
-    const options = Object.assign({}, defaultOptions, _options, overrideOptions);
+export type MobiledocAbsoluteToRelativeOptions = MobiledocTransformOptionsInput & AbsoluteToRelativeOptionsInput;
 
-    const transformFunction = function (_url, _siteUrl, _itemPath, __options) {
+function mobiledocAbsoluteToRelative(
+    serializedMobiledoc: string,
+    siteUrl: string,
+    _options: MobiledocAbsoluteToRelativeOptions = {}
+): string {
+    const overrideOptions: MobiledocAbsoluteToRelativeOptions = {
+        siteUrl,
+        transformType: 'absoluteToRelative'
+    };
+    const options: MobiledocAbsoluteToRelativeOptions = {
+        assetsOnly: false,
+        secure: false,
+        cardTransformers: [],
+        ..._options,
+        ...overrideOptions
+    };
+
+    const transformFunction = function (_url: string, _siteUrl: string, _itemPath: string | null, __options?: AbsoluteToRelativeOptionsInput): string {
         return absoluteToRelative(_url, _siteUrl, __options);
     };
 
     return mobiledocTransform(serializedMobiledoc, siteUrl, transformFunction, '', options);
 }
 
-module.exports = mobiledocAbsoluteToRelative;
+export default mobiledocAbsoluteToRelative;

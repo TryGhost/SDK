@@ -6,8 +6,8 @@ const sinon = require('sinon');
 const rewire = require('rewire');
 
 const cheerio = require('cheerio');
-const htmlTransform = rewire('../../../lib/utils/html-transform');
-const htmlRelativeToAbsolute = require('../../../lib/utils/html-relative-to-absolute');
+const htmlTransformModule = rewire('../../../lib/utils/html-transform');
+const htmlRelativeToAbsolute = require('../../../lib/utils/html-relative-to-absolute').default;
 
 describe('utils: htmlRelativeToAbsolute()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
@@ -247,7 +247,7 @@ describe('utils: htmlRelativeToAbsolute()', function () {
 
         beforeEach(function () {
             cheerioLoadSpy = sinon.spy(cheerio, 'load');
-            rewireRestore = htmlTransform.__set__('cheerio', cheerio);
+            rewireRestore = htmlTransformModule.__set__('cheerio', cheerio);
         });
 
         afterEach(function () {

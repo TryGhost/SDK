@@ -1,13 +1,17 @@
-export {};
-const absoluteToTransformReady = require('./absolute-to-transform-ready');
+import absoluteToTransformReady, {type AbsoluteToTransformReadyOptionsInput} from './absolute-to-transform-ready';
 
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformReady(plaintext, rootUrl, itemPath, options) {
+const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformReady(
+    plaintext: string,
+    rootUrl: string,
+    itemPath?: string | AbsoluteToTransformReadyOptionsInput | null,
+    options?: AbsoluteToTransformReadyOptionsInput
+): string {
     // itemPath is optional, if it's an object may be the options param instead
-    if (typeof itemPath === 'object' && !options) {
+    if (typeof itemPath === 'object' && itemPath !== null && !options) {
         options = itemPath;
         itemPath = null;
     }
@@ -24,4 +28,4 @@ const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformR
     });
 };
 
-module.exports = plaintextAbsoluteToTransformReady;
+export default plaintextAbsoluteToTransformReady;

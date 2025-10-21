@@ -1,13 +1,17 @@
-export {};
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+import type {TransformReadyReplacementOptions, TransformReadyReplacementOptionsInput} from './types';
+
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const transformReadyToAbsolute = function (str = '', root, _options = {}) {
-    const defaultOptions = {
+const transformReadyToAbsolute = function (str: string = '', root: string, _options: TransformReadyReplacementOptionsInput = {}): string {
+    const defaultOptions: TransformReadyReplacementOptions = {
         replacementStr: '__GHOST_URL__'
     };
-    const options = Object.assign({}, defaultOptions, _options);
+    const options: TransformReadyReplacementOptions = {
+        ...defaultOptions,
+        ..._options
+    };
 
     if (!str || str.indexOf(options.replacementStr) === -1) {
         return str;
@@ -18,4 +22,4 @@ const transformReadyToAbsolute = function (str = '', root, _options = {}) {
     return str.replace(replacementRegex, root.replace(/\/$/, ''));
 };
 
-module.exports = transformReadyToAbsolute;
+export default transformReadyToAbsolute;

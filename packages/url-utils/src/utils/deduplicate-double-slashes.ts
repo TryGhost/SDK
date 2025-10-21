@@ -1,6 +1,5 @@
-export {};
-function deduplicateDoubleSlashes(url) {
+function deduplicateDoubleSlashes(url: string): string {
     return url.replace(/\/\//g, '/');
 }
 
-module.exports = deduplicateDoubleSlashes;
+export default deduplicateDoubleSlashes;

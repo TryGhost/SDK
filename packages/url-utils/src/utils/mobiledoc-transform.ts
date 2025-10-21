@@ -1,20 +1,60 @@
-export {};
-function mobiledocTransform(serializedMobiledoc, siteUrl, transformFunction, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false, cardTransformers: []};
-    const options: any = Object.assign({}, defaultOptions, _options, {siteUrl, itemPath});
+import type {
+    CardTransformer,
+    MobiledocCardTransformer,
+    MobiledocTransformOptions,
+    MobiledocTransformOptionsInput
+} from './types';
 
-    // options.cardTransformers has an object for each card that has a name and multiple
-    // transformer functions. By collecting the functions we need into a named object it
-    // reduces the need to loop through and find the transformer for each card later on
-    const cardTransformers: Record<string, any> = {};
-    options.cardTransformers.forEach((cardTransformer) => {
-        cardTransformers[cardTransformer.name] = cardTransformer[options.transformType];
+type MobiledocMarkup = [string, string[] | undefined];
+type MobiledocCard = [string, unknown];
+
+interface MobiledocDocument {
+    markups?: MobiledocMarkup[];
+    cards?: MobiledocCard[];
+}
+
+type MobiledocTransformFunction = (
+    value: string,
+    siteUrl: string,
+    itemPath: string | null,
+    options: MobiledocTransformOptions
+) => string | undefined;
+
+function mobiledocTransform(
+    serializedMobiledoc: string,
+    siteUrl: string,
+    transformFunction: MobiledocTransformFunction,
+    itemPath: string | null,
+    _options: MobiledocTransformOptionsInput = {}
+): string {
+    const defaultOptions: MobiledocTransformOptions = {
+        assetsOnly: false,
+        secure: false,
+        cardTransformers: [],
+        siteUrl,
+        itemPath,
+        transformType: 'relativeToAbsolute'
+    };
+
+    const options: MobiledocTransformOptions = {
+        ...defaultOptions,
+        ..._options,
+        siteUrl,
+        itemPath
+    };
+
+    const transformerMap = new Map<string, CardTransformer>();
+    options.cardTransformers.forEach((cardTransformer: MobiledocCardTransformer) => {
+        const transformer = cardTransformer[options.transformType];
+        if (transformer) {
+            transformerMap.set(cardTransformer.name, transformer);
+        }
     });
-    delete options.cardTransformers;
+    delete (options as unknown as Record<string, unknown>).cardTransformers;
 
     // function only accepts serialized mobiledoc so there's no chance of accidentally
     // modifying pass-by-reference objects
-    const mobiledoc = JSON.parse(serializedMobiledoc);
+    const mobiledoc = JSON.parse(serializedMobiledoc) as MobiledocDocument;
 
     // any mobiledoc links will have an 'a' markup with an 'href' attribute
     (mobiledoc.markups || []).forEach((markup) => {
@@ -43,9 +83,10 @@ function mobiledocTransform(serializedMobiledoc, siteUrl, transformFunction, ite
     // are passed in as options from the consuming application.
     (mobiledoc.cards || []).forEach((card) => {
         const [name, payload] = card;
-        if (cardTransformers[name]) {
+        const transformer = transformerMap.get(name);
+        if (transformer) {
             // transformers take a payload and return a transformed payload
-            const transformedPayload = cardTransformers[name](payload, options);
+            const transformedPayload = transformer(payload, options);
             card[1] = transformedPayload;
         }
     });
@@ -53,4 +94,4 @@ function mobiledocTransform(serializedMobiledoc, siteUrl, transformFunction, ite
     return JSON.stringify(mobiledoc);
 }
 
-module.exports = mobiledocTransform;
+export default mobiledocTransform;

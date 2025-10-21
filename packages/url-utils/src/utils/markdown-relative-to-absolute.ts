@@ -1,15 +1,36 @@
-export {};
-const markdownTransform = require('./markdown-transform');
-const htmlRelativeToAbsolute = require('./html-relative-to-absolute');
-const relativeToAbsolute = require('./relative-to-absolute');
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
+import markdownTransformDefault from './markdown-transform';
+import relativeToAbsolute from './relative-to-absolute';
+import type {MarkdownTransformOptions, MarkdownTransformOptionsInput} from './types';
 
-function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false};
-    const options: any = Object.assign({}, defaultOptions, _options);
+const markdownTransform = markdownTransformDefault;
+
+export type MarkdownRelativeToAbsoluteOptions = MarkdownTransformOptions;
+export type MarkdownRelativeToAbsoluteOptionsInput = MarkdownTransformOptionsInput;
+
+function markdownRelativeToAbsolute(
+    markdown: string = '',
+    siteUrl: string,
+    itemPath?: string | MarkdownRelativeToAbsoluteOptionsInput | null,
+    _options: MarkdownRelativeToAbsoluteOptionsInput = {}
+): string {
+    let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+    let resolvedOptions: MarkdownRelativeToAbsoluteOptionsInput = _options;
+
+    if (typeof itemPath === 'object' && itemPath !== null) {
+        resolvedOptions = itemPath;
+        resolvedItemPath = null;
+    }
+
+    const options: MarkdownRelativeToAbsoluteOptions = {
+        assetsOnly: false,
+        ignoreProtocol: true,
+        ...resolvedOptions
+    };
 
     options.earlyExitMatchStr = '\\]\\([^\\s\\)]|href=|src=|srcset=';
     if (options.assetsOnly) {
-        options.earlyExitMatchStr = options.staticImageUrlPrefix;
+        options.earlyExitMatchStr = options.staticImageUrlPrefix ?? 'content/images';
     }
 
     const transformFunctions = {
@@ -17,7 +38,7 @@ function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options =
         url: relativeToAbsolute
     };
 
-    return markdownTransform(markdown, siteUrl, transformFunctions, itemPath, options);
+    return markdownTransform(markdown, siteUrl, transformFunctions, resolvedItemPath, options);
 }
 
-module.exports = markdownRelativeToAbsolute;
+export default markdownRelativeToAbsolute;

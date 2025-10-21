@@ -1,12 +1,27 @@
-export {};
-const absoluteToRelative = require('./absolute-to-relative');
+import absoluteToRelative, {type AbsoluteToRelativeOptionsInput} from './absolute-to-relative';
+import type {TransformReadyReplacementOptions, TransformReadyReplacementOptionsInput} from './types';
 
-const absoluteToTransformReady = function (url, root, _options) {
-    const defaultOptions = {
+export interface AbsoluteToTransformReadyOptions extends TransformReadyReplacementOptions {
+    withoutSubdirectory: boolean;
+    ignoreProtocol: boolean;
+    assetsOnly: boolean;
+    staticImageUrlPrefix: string;
+}
+
+export type AbsoluteToTransformReadyOptionsInput = Partial<AbsoluteToTransformReadyOptions>;
+
+const absoluteToTransformReady = function (url: string, root: string, _options?: AbsoluteToTransformReadyOptionsInput): string {
+    const defaultOptions: AbsoluteToTransformReadyOptions = {
         replacementStr: '__GHOST_URL__',
-        withoutSubdirectory: true
+        withoutSubdirectory: true,
+        ignoreProtocol: true,
+        assetsOnly: false,
+        staticImageUrlPrefix: 'content/images'
     };
-    const options = Object.assign({}, defaultOptions, _options);
+    const options: AbsoluteToTransformReadyOptions = {
+        ...defaultOptions,
+        ..._options
+    };
 
     // return relative urls as-is
     try {
@@ -21,7 +36,12 @@ const absoluteToTransformReady = function (url, root, _options) {
 
     // convert to relative with stripped subdir
     // always returns root-relative starting with forward slash
-    const relativeUrl = absoluteToRelative(url, root, options);
+    const relativeUrl = absoluteToRelative(url, root, {
+        ignoreProtocol: options.ignoreProtocol,
+        withoutSubdirectory: options.withoutSubdirectory,
+        assetsOnly: options.assetsOnly,
+        staticImageUrlPrefix: options.staticImageUrlPrefix
+    } satisfies AbsoluteToRelativeOptionsInput);
 
     // return still absolute urls as-is (eg. external site, mailto, etc)
     try {
@@ -37,4 +57,4 @@ const absoluteToTransformReady = function (url, root, _options) {
     return `${options.replacementStr}${relativeUrl}`;
 };
 
-module.exports = absoluteToTransformReady;
+export default absoluteToTransformReady;

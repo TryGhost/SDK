@@ -1,37 +1,102 @@
-export {};
-// Contains all path information to be used throughout the codebase.
-const _ = require('lodash');
-const utils = require('./utils');
+import _ from 'lodash';
+import utils from './utils';
+import type {AbsoluteToRelativeOptionsInput} from './utils/absolute-to-relative';
+import type {AbsoluteToTransformReadyOptionsInput} from './utils/absolute-to-transform-ready';
+import type {RelativeToAbsoluteOptionsInput} from './utils/relative-to-absolute';
+import type {RelativeToTransformReadyOptionsInput} from './utils/relative-to-transform-ready';
+import type {HtmlRelativeToAbsoluteOptionsInput} from './utils/html-relative-to-absolute';
+import type {HtmlRelativeToTransformReadyOptionsInput} from './utils/html-relative-to-transform-ready';
+import type {HtmlAbsoluteToRelativeOptionsInput} from './utils/html-absolute-to-relative';
+import type {HtmlAbsoluteToTransformReadyOptionsInput} from './utils/html-absolute-to-transform-ready';
+import type {MarkdownRelativeToAbsoluteOptionsInput} from './utils/markdown-relative-to-absolute';
+import type {MarkdownRelativeToTransformReadyOptionsInput} from './utils/markdown-relative-to-transform-ready';
+import type {MarkdownAbsoluteToRelativeOptionsInput} from './utils/markdown-absolute-to-relative';
+import type {MarkdownAbsoluteToTransformReadyOptionsInput} from './utils/markdown-absolute-to-transform-ready';
+import type {MarkdownToTransformReadyOptions} from './utils/markdown-to-transform-ready';
+import type {MobiledocRelativeToAbsoluteOptions} from './utils/mobiledoc-relative-to-absolute';
+import type {MobiledocRelativeToTransformReadyOptions} from './utils/mobiledoc-relative-to-transform-ready';
+import type {MobiledocAbsoluteToRelativeOptions} from './utils/mobiledoc-absolute-to-relative';
+import type {MobiledocAbsoluteToTransformReadyOptions} from './utils/mobiledoc-absolute-to-transform-ready';
+import type {MobiledocToTransformReadyOptions} from './utils/mobiledoc-to-transform-ready';
+import type {LexicalRelativeToAbsoluteOptions} from './utils/lexical-relative-to-absolute';
+import type {LexicalRelativeToTransformReadyOptions} from './utils/lexical-relative-to-transform-ready';
+import type {LexicalAbsoluteToRelativeOptions} from './utils/lexical-absolute-to-relative';
+import type {LexicalAbsoluteToTransformReadyOptions} from './utils/lexical-absolute-to-transform-ready';
+import type {LexicalToTransformReadyOptions} from './utils/lexical-to-transform-ready';
+import type {PlaintextToTransformReadyOptions} from './utils/plaintext-to-transform-ready';
+import type {TransformReadyReplacementOptionsInput, MobiledocCardTransformer} from './utils/types';
+import type {ToTransformReadyOptions} from './utils/to-transform-ready';
 
-// similar to Object.assign but will not override defaults if a source value is undefined
-function assignOptions(target, ...sources) {
-    const options = sources.map((x) => {
-        return Object.entries(x)
-            .filter(([, value]) => value !== undefined)
-            .reduce((obj, [key, value]) => (obj[key] = value, obj), {});
-    });
-    return Object.assign(target, ...options);
+const KNOWN_PATHS: Record<string, string> = {
+    home: '/',
+    sitemap_xsl: '/sitemap.xsl'
+};
+
+type UrlGetter = () => string;
+
+interface UrlUtilsConfig extends Record<string, unknown> {
+    slugs: string[] | null;
+    redirectCacheMaxAge: number | null;
+    baseApiPath: string;
+    defaultApiType: 'content' | 'admin';
+    staticImageUrlPrefix: string;
+    cardTransformers?: MobiledocCardTransformer[];
 }
-module.exports = class UrlUtils {
-    _config: any;
-    getSubdir: () => string;
-    getSiteUrl: () => string;
-    getAdminUrl: () => string;
 
-    /**
-     * Initialization method to pass in URL configurations
-     * @param {Object} options
-     * @param {Function} options.getSubdir
-     * @param {Function} options.getSiteUrl
-     * @param {Function} options.getAdminUrl Ghost instance admin URL
-    * @param {String} [options.baseApiPath='/ghost/api'] static prefix for serving API. Should not te passed in, unless the API is being run under custom URL
-    * @param {('content' | 'admin')} [options.defaultApiType='content'] default API type to be used
-     * @param {Object} [options.slugs] object with 2 properties reserved and protected containing arrays of special case slugs
-     * @param {Number} [options.redirectCacheMaxAge]
-     * @param {String} [options.staticImageUrlPrefix='content/images'] static prefix for serving images. Should not be passed in, unless customizing ghost instance image storage
-     */
-    constructor(options: any = {}) {
-        const defaultOptions = {
+interface UrlUtilsOptions extends Partial<UrlUtilsConfig> {
+    getSubdir?: UrlGetter;
+    getSiteUrl?: UrlGetter;
+    getAdminUrl?: UrlGetter;
+}
+
+interface RedirectResponse {
+    set(headers: Record<string, string>): unknown;
+    redirect(status: number, url: string): unknown;
+    redirect(url: string): unknown;
+}
+
+type UrlForContext = string | Record<string, unknown>;
+
+interface UrlForNav {
+    url: string;
+}
+
+interface UrlForData {
+    image?: string;
+    nav?: UrlForNav;
+    type?: 'admin' | 'content';
+    trailingSlash?: boolean;
+    [key: string]: unknown;
+}
+
+function assignOptions<T extends Record<string, unknown>>(target: T, ...sources: Array<Partial<T> | undefined | null>): T {
+    for (const source of sources) {
+        if (!source) {
+            continue;
+        }
+
+        for (const [key, value] of Object.entries(source) as Array<[keyof T, T[keyof T]]>) {
+            if (value !== undefined) {
+                target[key] = value;
+            }
+        }
+    }
+
+    return target;
+}
+
+function sanitizedMerge<T extends Record<string, unknown>>(defaults: T, overrides?: Partial<T>): T {
+    return assignOptions({...defaults}, overrides);
+}
+
+export default class UrlUtils {
+    private _config: UrlUtilsConfig;
+    public getSubdir: UrlGetter;
+    public getSiteUrl: UrlGetter;
+    public getAdminUrl: UrlGetter;
+
+    constructor(options: UrlUtilsOptions = {}) {
+        const defaultOptions: UrlUtilsConfig = {
             slugs: null,
             redirectCacheMaxAge: null,
             baseApiPath: '/ghost/api',
@@ -39,246 +104,219 @@ module.exports = class UrlUtils {
             staticImageUrlPrefix: 'content/images'
         };
 
-        this._config = assignOptions({}, defaultOptions, options);
+        const configOverrides: Partial<UrlUtilsConfig> = {
+            slugs: options.slugs,
+            redirectCacheMaxAge: options.redirectCacheMaxAge,
+            baseApiPath: options.baseApiPath,
+            defaultApiType: options.defaultApiType,
+            staticImageUrlPrefix: options.staticImageUrlPrefix,
+            cardTransformers: options.cardTransformers
+        };
 
-        this.getSubdir = options.getSubdir || (() => '');
-        this.getSiteUrl = options.getSiteUrl || (() => '');
-        this.getAdminUrl = options.getAdminUrl || (() => '');
+        this._config = sanitizedMerge(defaultOptions, configOverrides);
+
+        this.getSubdir = options.getSubdir ?? (() => '');
+        this.getSiteUrl = options.getSiteUrl ?? (() => '');
+        this.getAdminUrl = options.getAdminUrl ?? (() => '');
     }
 
-    getProtectedSlugs() {
-        let subDir = this.getSubdir();
+    getProtectedSlugs(): string[] | null {
+        const subDir = this.getSubdir();
 
         if (this._config.slugs && !_.isEmpty(subDir)) {
-            return this._config.slugs.concat([subDir.split('/').pop()]);
-        } else {
-            return this._config.slugs;
+            const parts = subDir.split('/');
+            const lastPart = parts[parts.length - 1];
+            return this._config.slugs.concat(lastPart ? [lastPart] : []);
         }
+
+        return this._config.slugs;
     }
 
-    /** urlJoin
-     * Returns a URL/path for internal use in Ghost.
-     * @param {string} arguments takes arguments and concats those to a valid path/URL.
-     * @return {string} URL concatinated URL/path of arguments.
-     */
-    urlJoin(...parts: any[]) {
+    urlJoin(...parts: string[]): string {
         return utils.urlJoin(parts, {rootUrl: this.getSiteUrl()});
     }
 
-    // ## createUrl
-    // Simple url creation from a given path
-    // Ensures that our urls contain the subdirectory if there is one
-    // And are correctly formatted as either relative or absolute
-    // Usage:
-    // createUrl('/', true) -> http://my-ghost-blog.com/
-    // E.g. /blog/ subdir
-    // createUrl('/welcome-to-ghost/') -> /blog/welcome-to-ghost/
-    // Parameters:
-    // - urlPath - string which must start and end with a slash
-    // - absolute (optional, default:false) - boolean whether or not the url should be absolute
-    // Returns:
-    //  - a URL which always ends with a slash
-    createUrl(urlPath = '/', absolute = false, trailingSlash?: boolean) {
-        let base;
+    createUrl(urlPath: string = '/', absolute = false, trailingSlash?: boolean): string {
+        let base: string;
 
-        // create base of url, always ends without a slash
         if (absolute) {
             base = this.getSiteUrl();
         } else {
             base = this.getSubdir();
         }
 
+        let finalPath = urlPath;
         if (trailingSlash) {
-            if (!urlPath.match(/\/$/)) {
-                urlPath += '/';
+            if (!finalPath.endsWith('/')) {
+                finalPath += '/';
             }
         }
 
-        return this.urlJoin(base, urlPath);
+        return this.urlJoin(base, finalPath);
     }
 
-    // ## urlFor
-    // Synchronous url creation for a given context
-    // Can generate a url for a named path and given path.
-    // Determines what sort of context it has been given, and delegates to the correct generation method,
-    // Finally passing to createUrl, to ensure any subdirectory is honoured, and the url is absolute if needed
-    // Usage:
-    // urlFor('home', true) -> http://my-ghost-blog.com/
-    // E.g. /blog/ subdir
-    // urlFor({relativeUrl: '/my-static-page/'}) -> /blog/my-static-page/
-    // Parameters:
-    // - context - a string, or json object describing the context for which you need a url
-    // - data (optional) - a json object containing data needed to generate a url
-    // - absolute (optional, default:false) - boolean whether or not the url should be absolute
-    // This is probably not the right place for this, but it's the best place for now
-    // @TODO: rewrite, very hard to read, create private functions!
-    urlFor(context: any, data?: any, absolute?: boolean) {
+    urlFor(context: UrlForContext, data?: UrlForData | boolean, absolute?: boolean): string {
         let urlPath = '/';
-        let imagePathRe;
-        let knownObjects = ['image', 'nav'];
-        let baseUrl;
-        let hostname;
+        const knownObjects = ['image', 'nav'];
+        let absoluteFlag = Boolean(absolute);
+        let dataObj: UrlForData | undefined;
 
-        // this will become really big
-        let knownPaths = {
-            home: '/',
-            sitemap_xsl: '/sitemap.xsl'
-        };
-
-        // Make data properly optional
-        if (_.isBoolean(data)) {
-            absolute = data;
-            data = null;
+        if (typeof data === 'boolean') {
+            absoluteFlag = data;
+            dataObj = undefined;
+        } else if (data && typeof data === 'object') {
+            dataObj = data;
         }
 
-        if (_.isObject(context) && context.relativeUrl) {
-            urlPath = context.relativeUrl;
-        } else if (_.isString(context) && _.indexOf(knownObjects, context) !== -1) {
-            if (context === 'image' && data.image) {
-                urlPath = data.image;
-                imagePathRe = new RegExp('^' + this.getSubdir() + '/' + this._config.staticImageUrlPrefix);
-                absolute = imagePathRe.test(data.image) ? absolute : false;
+        if (typeof context === 'object' && context !== null) {
+            const relativeUrl = (context as {relativeUrl?: unknown}).relativeUrl;
+            if (typeof relativeUrl === 'string' && relativeUrl) {
+                urlPath = relativeUrl;
+            }
+        } else if (typeof context === 'string' && knownObjects.includes(context)) {
+            if (context === 'image' && dataObj?.image) {
+                urlPath = dataObj.image;
+                const imagePathRe = new RegExp('^' + this.getSubdir() + '/' + this._config.staticImageUrlPrefix);
+                absoluteFlag = imagePathRe.test(dataObj.image) ? absoluteFlag : false;
 
-                if (absolute) {
-                    // Remove the sub-directory from the URL because ghostConfig will add it back.
+                if (absoluteFlag) {
                     urlPath = urlPath.replace(new RegExp('^' + this.getSubdir()), '');
-                    baseUrl = this.getSiteUrl().replace(/\/$/, '');
+                    const baseUrl = this.getSiteUrl().replace(/\/$/, '');
                     urlPath = baseUrl + urlPath;
                 }
 
                 return urlPath;
-            } else if (context === 'nav' && data.nav) {
-                urlPath = data.nav.url;
-                baseUrl = this.getSiteUrl();
-                hostname = baseUrl.split('//')[1];
+            }
 
-                // If the hostname is present in the url
-                if (urlPath.indexOf(hostname) > -1
-                    // do no not apply, if there is a subdomain, or a mailto link
-                    && !urlPath.split(hostname)[0].match(/\.|mailto:/)
-                    // do not apply, if there is a port after the hostname
-                    && urlPath.split(hostname)[1].substring(0, 1) !== ':') {
-                    // make link relative to account for possible mismatch in http/https etc, force absolute
-                    urlPath = urlPath.split(hostname)[1];
-                    urlPath = this.urlJoin('/', urlPath);
-                    absolute = true;
+            if (context === 'nav' && dataObj?.nav) {
+                urlPath = dataObj.nav.url;
+                const baseUrl = this.getSiteUrl();
+                const hostname = baseUrl.split('//')[1];
+
+                if (hostname) {
+                    const prefix = urlPath.split(hostname)[0];
+                    const suffix = urlPath.split(hostname)[1] ?? '';
+                    const isSubdomain = prefix.match(/\.|mailto:/);
+                    const hasPort = suffix.startsWith(':');
+
+                    if (urlPath.includes(hostname) && !isSubdomain && !hasPort) {
+                        const stripped = urlPath.split(hostname)[1];
+                        urlPath = this.urlJoin('/', stripped);
+                        absoluteFlag = true;
+                    }
                 }
             }
-        } else if (context === 'home' && absolute) {
+        } else if (context === 'home' && absoluteFlag) {
             urlPath = this.getSiteUrl();
 
-            // CASE: there are cases where urlFor('home') needs to be returned without trailing
-            // slash e. g. the `{{@site.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
-            if (data && data.trailingSlash === false) {
+            if (dataObj && dataObj.trailingSlash === false) {
                 urlPath = urlPath.replace(/\/$/, '');
             }
         } else if (context === 'admin') {
-            let adminUrl = this.getAdminUrl() || this.getSiteUrl();
-            let adminPath = '/ghost/';
+            const adminUrl = this.getAdminUrl() || this.getSiteUrl();
+            const adminPath = '/ghost/';
 
-            if (absolute) {
+            if (absoluteFlag) {
                 urlPath = this.urlJoin(adminUrl, adminPath);
             } else {
                 urlPath = adminPath;
             }
         } else if (context === 'api') {
-            let adminUrl = this.getAdminUrl() || this.getSiteUrl();
-            let apiPath = this._config.baseApiPath + '/';
+            const adminUrl = this.getAdminUrl() || this.getSiteUrl();
+            let apiPath = `${this._config.baseApiPath}/`;
 
-            if (data.type && ['admin', 'content'].includes(data.type)) {
-                apiPath += data.type;
+            if (dataObj?.type && ['admin', 'content'].includes(dataObj.type)) {
+                apiPath += dataObj.type;
             } else {
                 apiPath += this._config.defaultApiType;
             }
 
-            // Ensure we end with a trailing slash
             apiPath += '/';
 
-            if (absolute) {
+            if (absoluteFlag) {
                 urlPath = this.urlJoin(adminUrl, apiPath);
             } else {
                 urlPath = apiPath;
             }
-        } else if (_.isString(context) && _.indexOf(_.keys(knownPaths), context) !== -1) {
-            // trying to create a url for a named path
-            urlPath = knownPaths[context];
+        } else if (typeof context === 'string' && Object.prototype.hasOwnProperty.call(KNOWN_PATHS, context)) {
+            urlPath = KNOWN_PATHS[context];
         }
 
-        // This url already has a protocol so is likely an external url to be returned
-        // or it is an alternative scheme, protocol-less, or an anchor-only path
-        if (urlPath && (urlPath.indexOf('://') !== -1 || urlPath.match(/^(\/\/|#|[a-zA-Z0-9-]+:)/))) {
+        const hasProtocol = urlPath.includes('://');
+        const isSpecial = /^(\/\/|#|[a-zA-Z0-9-]+:)/.test(urlPath);
+        if (urlPath && (hasProtocol || isSpecial)) {
             return urlPath;
         }
 
-        return this.createUrl(urlPath, absolute);
+        return this.createUrl(urlPath, absoluteFlag);
     }
 
-    redirect301(res: any, redirectUrl: string) {
-        res.set({'Cache-Control': 'public, max-age=' + this._config.redirectCacheMaxAge});
+    redirect301(res: RedirectResponse, redirectUrl: string) {
+        if (this._config.redirectCacheMaxAge !== null) {
+            res.set({
+                'Cache-Control': `public, max-age=${this._config.redirectCacheMaxAge}`
+            });
+        }
+
         return res.redirect(301, redirectUrl);
     }
 
-    redirectToAdmin(status: number, res: any, adminPath: string) {
-        let redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
+    redirectToAdmin(status: number, res: RedirectResponse, adminPath: string) {
+        const redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
 
         if (status === 301) {
             return this.redirect301(res, redirectUrl);
         }
-        return res.redirect(redirectUrl);
+
+        return typeof res.redirect === 'function' ? res.redirect(redirectUrl) : undefined;
     }
 
-    absoluteToRelative(url: string, options?: any) {
+    absoluteToRelative(url: string, options?: AbsoluteToRelativeOptionsInput): string {
         return utils.absoluteToRelative(url, this.getSiteUrl(), options);
     }
 
-    relativeToAbsolute(url: string, options?: any) {
+    relativeToAbsolute(url: string, options?: RelativeToAbsoluteOptionsInput): string {
         return utils.relativeToAbsolute(url, this.getSiteUrl(), options);
     }
 
-    toTransformReady(url: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
+    toTransformReady(url: string, itemPath?: string | ToTransformReadyOptions, options?: ToTransformReadyOptions): string {
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
             options = itemPath;
             itemPath = null;
         }
-        return utils.toTransformReady(url, this.getSiteUrl(), itemPath, options);
+        return utils.toTransformReady(url, this.getSiteUrl(), itemPath ?? null, options);
     }
 
-    absoluteToTransformReady(url: string, options?: any) {
+    absoluteToTransformReady(url: string, options?: AbsoluteToTransformReadyOptionsInput): string {
         return utils.absoluteToTransformReady(url, this.getSiteUrl(), options);
     }
 
-    relativeToTransformReady(url: string, options?: any) {
-        return utils.relativeToTransformReady(url, this.getSiteUrl(), options);
+    relativeToTransformReady(url: string, options?: RelativeToTransformReadyOptionsInput): string {
+        const defaultOptions: RelativeToTransformReadyOptionsInput = {
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const mergedOptions = sanitizedMerge(defaultOptions, options ?? undefined);
+        return utils.relativeToTransformReady(url, this.getSiteUrl(), mergedOptions);
     }
 
-    transformReadyToAbsolute(url: string, options?: any) {
+    transformReadyToAbsolute(url: string, options?: TransformReadyReplacementOptionsInput): string {
         return utils.transformReadyToAbsolute(url, this.getSiteUrl(), options);
     }
 
-    transformReadyToRelative(url: string, options?: any) {
+    transformReadyToRelative(url: string, options?: TransformReadyReplacementOptionsInput): string {
         return utils.transformReadyToRelative(url, this.getSiteUrl(), options);
     }
 
-    htmlToTransformReady(html: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
+    htmlToTransformReady(html: string, itemPath?: string | HtmlRelativeToTransformReadyOptionsInput, options?: HtmlRelativeToTransformReadyOptionsInput): string {
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
             options = itemPath;
             itemPath = null;
         }
-        return utils.htmlToTransformReady(html, this.getSiteUrl(), itemPath, options);
+        return utils.htmlToTransformReady(html, this.getSiteUrl(), itemPath ?? null, options);
     }
 
-    /**
-     * Convert relative URLs in html into absolute URLs
-     * @param {string} html
-     * @param {string} itemPath (path of current context)
-     * @param {Object} options
-     * @returns {object} htmlContent
-     * @description Takes html, blog url and item path and converts relative url into
-     * absolute urls. Returns an object. The html string can be accessed by calling `html()` on
-     * the variable that takes the result of this function
-     */
-    htmlRelativeToAbsolute(html: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
+    htmlRelativeToAbsolute(html: string, itemPath?: string | HtmlRelativeToAbsoluteOptionsInput, options?: HtmlRelativeToAbsoluteOptionsInput): string {
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
             options = itemPath;
             itemPath = null;
         }
@@ -286,12 +324,12 @@ module.exports = class UrlUtils {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath, _options);
+        const mergedOptions = sanitizedMerge(defaultOptions, options ?? undefined);
+        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath ?? null, mergedOptions);
     }
 
-    htmlRelativeToTransformReady(html: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
+    htmlRelativeToTransformReady(html: string, itemPath?: string | HtmlRelativeToTransformReadyOptionsInput, options?: HtmlRelativeToTransformReadyOptionsInput): string {
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
             options = itemPath;
             itemPath = null;
         }
@@ -299,51 +337,38 @@ module.exports = class UrlUtils {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.htmlRelativeToTransformReady(html, this.getSiteUrl(), itemPath, _options);
+        const mergedOptions = sanitizedMerge(defaultOptions, options ?? undefined);
+        return utils.htmlRelativeToTransformReady(html, this.getSiteUrl(), itemPath ?? null, mergedOptions);
     }
 
-    htmlAbsoluteToRelative(html: string, options: any = {}) {
+    htmlAbsoluteToRelative(html: string, options: HtmlAbsoluteToRelativeOptionsInput = {}): string {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), mergedOptions);
     }
 
-    htmlAbsoluteToTransformReady(html: string, options: any = {}) {
+    htmlAbsoluteToTransformReady(html: string, options: HtmlAbsoluteToTransformReadyOptionsInput = {}): string {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.htmlAbsoluteToTransformReady(html, this.getSiteUrl(), _options);
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.htmlAbsoluteToTransformReady(html, this.getSiteUrl(), mergedOptions);
     }
 
-    markdownToTransformReady(markdown: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
+    markdownToTransformReady(markdown: string, itemPath?: string | MarkdownToTransformReadyOptions, options?: MarkdownToTransformReadyOptions): string {
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
             options = itemPath;
             itemPath = null;
         }
-        return utils.markdownToTransformReady(markdown, this.getSiteUrl(), itemPath, options);
+        return utils.markdownToTransformReady(markdown, this.getSiteUrl(), itemPath ?? null, options);
     }
 
-    markdownRelativeToAbsolute(markdown: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
-        }
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath, _options);
-    }
-
-    markdownRelativeToTransformReady(markdown: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
+    markdownRelativeToAbsolute(markdown: string, itemPath?: string | MarkdownRelativeToAbsoluteOptionsInput, options?: MarkdownRelativeToAbsoluteOptionsInput): string {
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
             options = itemPath;
             itemPath = null;
         }
@@ -351,169 +376,203 @@ module.exports = class UrlUtils {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPath, _options);
+        const mergedOptions = sanitizedMerge(defaultOptions, options ?? undefined);
+        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath ?? null, mergedOptions);
     }
 
-    markdownAbsoluteToRelative(markdown: string, options: any = {}) {
+    markdownRelativeToTransformReady(markdown: string, itemPath?: string | MarkdownRelativeToTransformReadyOptionsInput, options?: MarkdownRelativeToTransformReadyOptionsInput): string {
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            options = itemPath;
+            itemPath = null;
+        }
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
+        const mergedOptions = sanitizedMerge(defaultOptions, options ?? undefined);
+        return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPath ?? null, mergedOptions);
     }
 
-    markdownAbsoluteToTransformReady(markdown: string, options: any) {
+    markdownAbsoluteToRelative(markdown: string, options: MarkdownAbsoluteToRelativeOptionsInput = {}): string {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.markdownAbsoluteToTransformReady(markdown, this.getSiteUrl(), _options);
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), mergedOptions);
     }
 
-    mobiledocToTransformReady(serializedMobiledoc: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
-        }
-        const defaultOptions = {
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.mobiledocToTransformReady(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
-    }
-
-    mobiledocRelativeToAbsolute(serializedMobiledoc: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
-        }
+    markdownAbsoluteToTransformReady(markdown: string, options: MarkdownAbsoluteToTransformReadyOptionsInput = {}): string {
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
-    }
-
-    mobiledocRelativeToTransformReady(serializedMobiledoc: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
-        }
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.mobiledocRelativeToTransformReady(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
-    }
-
-    mobiledocAbsoluteToRelative(serializedMobiledoc: string, options: any = {}) {
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.mobiledocAbsoluteToRelative(serializedMobiledoc, this.getSiteUrl(), _options);
-    }
-
-    mobiledocAbsoluteToTransformReady(serializedMobiledoc: string, options: any = {}) {
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.mobiledocAbsoluteToTransformReady(serializedMobiledoc, this.getSiteUrl(), _options);
-    }
-
-    lexicalToTransformReady(serializedLexical: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
-        }
-        const defaultOptions = {
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.lexicalToTransformReady(serializedLexical, this.getSiteUrl(), itemPath, _options);
-    }
-
-    lexicalRelativeToAbsolute(serializedLexical: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
-        }
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), itemPath, _options);
-    }
-
-    lexicalRelativeToTransformReady(serializedLexical: string, itemPath?: any, options?: any) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
-        }
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), itemPath, _options);
-    }
-
-    lexicalAbsoluteToRelative(serializedLexical: string, options: any = {}) {
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.lexicalAbsoluteToRelative(serializedLexical, this.getSiteUrl(), _options);
-    }
-
-    lexicalAbsoluteToTransformReady(serializedLexical: string, options: any = {}) {
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.lexicalAbsoluteToTransformReady(serializedLexical, this.getSiteUrl(), _options);
-    }
-
-    plaintextToTransformReady(plaintext: string, options: any = {}) {
-        const defaultOptions = {
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
-        const _options = assignOptions({}, defaultOptions, options);
-        return utils.plaintextToTransformReady(plaintext, this.getSiteUrl(), _options);
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.markdownAbsoluteToTransformReady(markdown, this.getSiteUrl(), mergedOptions);
     }
 
-    /**
-     * Return whether the provided URL is part of the site (checks if same domain and within subdirectory)
-     * @param {URL} url
-     * @param {string} [context] describing the context for which you need to check a url
-     * @returns {boolean}
-     */
-    isSiteUrl(url: URL, context: string = 'home') {
+    mobiledocToTransformReady(serializedMobiledoc: string, itemPath?: string | MobiledocToTransformReadyOptions, options?: MobiledocToTransformReadyOptions): string {
+        let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+        let resolvedOptions = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+            resolvedOptions = itemPath;
+        }
+        const defaultOptions: MobiledocToTransformReadyOptions = {};
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, resolvedOptions ?? undefined);
+        return utils.mobiledocToTransformReady(serializedMobiledoc, this.getSiteUrl(), resolvedItemPath, mergedOptions);
+    }
+
+    mobiledocRelativeToAbsolute(serializedMobiledoc: string, itemPath?: string | MobiledocRelativeToAbsoluteOptions, options?: MobiledocRelativeToAbsoluteOptions): string {
+        let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+        let resolvedOptions = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+            resolvedOptions = itemPath;
+        }
+        const defaultOptions: MobiledocRelativeToAbsoluteOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, resolvedOptions ?? undefined);
+        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), resolvedItemPath, mergedOptions);
+    }
+
+    mobiledocRelativeToTransformReady(serializedMobiledoc: string, itemPath?: string | MobiledocRelativeToTransformReadyOptions, options?: MobiledocRelativeToTransformReadyOptions): string {
+        let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+        let resolvedOptions = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+            resolvedOptions = itemPath;
+        }
+        const defaultOptions: MobiledocRelativeToTransformReadyOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, resolvedOptions ?? undefined);
+        return utils.mobiledocRelativeToTransformReady(serializedMobiledoc, this.getSiteUrl(), resolvedItemPath, mergedOptions);
+    }
+
+    mobiledocAbsoluteToRelative(serializedMobiledoc: string, options: MobiledocAbsoluteToRelativeOptions = {}): string {
+        const defaultOptions: MobiledocAbsoluteToRelativeOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.mobiledocAbsoluteToRelative(serializedMobiledoc, this.getSiteUrl(), mergedOptions);
+    }
+
+    mobiledocAbsoluteToTransformReady(serializedMobiledoc: string, options: MobiledocAbsoluteToTransformReadyOptions = {}): string {
+        const defaultOptions: MobiledocAbsoluteToTransformReadyOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.mobiledocAbsoluteToTransformReady(serializedMobiledoc, this.getSiteUrl(), mergedOptions);
+    }
+
+    lexicalToTransformReady(serializedLexical: string, itemPath?: string | LexicalToTransformReadyOptions, options?: LexicalToTransformReadyOptions): string {
+        let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+        let resolvedOptions = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+            resolvedOptions = itemPath;
+        }
+        const defaultOptions: LexicalToTransformReadyOptions = {};
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, resolvedOptions ?? undefined);
+        return utils.lexicalToTransformReady(serializedLexical, this.getSiteUrl(), resolvedItemPath, mergedOptions);
+    }
+
+    lexicalRelativeToAbsolute(serializedLexical: string, itemPath?: string | LexicalRelativeToAbsoluteOptions, options?: LexicalRelativeToAbsoluteOptions): string {
+        let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+        let resolvedOptions = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+            resolvedOptions = itemPath;
+        }
+        const defaultOptions: LexicalRelativeToAbsoluteOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, resolvedOptions ?? undefined);
+        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), resolvedItemPath, mergedOptions);
+    }
+
+    lexicalRelativeToTransformReady(serializedLexical: string, itemPath?: string | LexicalRelativeToTransformReadyOptions, options?: LexicalRelativeToTransformReadyOptions): string {
+        let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+        let resolvedOptions = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+            resolvedOptions = itemPath;
+        }
+        const defaultOptions: LexicalRelativeToTransformReadyOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, resolvedOptions ?? undefined);
+        return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), resolvedItemPath, mergedOptions);
+    }
+
+    lexicalAbsoluteToRelative(serializedLexical: string, options: LexicalAbsoluteToRelativeOptions = {}): string {
+        const defaultOptions: LexicalAbsoluteToRelativeOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.lexicalAbsoluteToRelative(serializedLexical, this.getSiteUrl(), mergedOptions);
+    }
+
+    lexicalAbsoluteToTransformReady(serializedLexical: string, options: LexicalAbsoluteToTransformReadyOptions = {}): string {
+        const defaultOptions: LexicalAbsoluteToTransformReadyOptions = {
+            assetsOnly: false,
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        if (this._config.cardTransformers) {
+            defaultOptions.cardTransformers = this._config.cardTransformers;
+        }
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.lexicalAbsoluteToTransformReady(serializedLexical, this.getSiteUrl(), mergedOptions);
+    }
+
+    plaintextToTransformReady(plaintext: string, options: PlaintextToTransformReadyOptions = {}): string {
+        const defaultOptions: PlaintextToTransformReadyOptions = {
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+        };
+        const mergedOptions = sanitizedMerge(defaultOptions, options);
+        return utils.plaintextToTransformReady(plaintext, this.getSiteUrl(), mergedOptions);
+    }
+
+    isSiteUrl(url: URL, context: string = 'home'): boolean {
         const siteUrl = new URL(this.urlFor(context, true));
         if (siteUrl.host === url.host) {
-            if (url.pathname.startsWith(siteUrl.pathname)) {
-                return true;
-            }
-            return false;
+            return url.pathname.startsWith(siteUrl.pathname);
         }
         return false;
     }
@@ -530,21 +589,13 @@ module.exports = class UrlUtils {
         return utils.deduplicateDoubleSlashes;
     }
 
-    /**
-     * If you request **any** image in Ghost, it get's served via
-     * http://your-blog.com/content/images/2017/01/02/author.png
-     *
-     * /content/images/ is a static prefix for serving images!
-     *
-     * But internally the image is located for example in your custom content path:
-     * my-content/another-dir/images/2017/01/02/author.png
-     */
-    get STATIC_IMAGE_URL_PREFIX() {
+    get STATIC_IMAGE_URL_PREFIX(): string {
         return this._config.staticImageUrlPrefix;
     }
 
-    // expose underlying functions to ease testing
     get _utils() {
         return utils;
     }
-};
+}
+
+export type {UrlUtilsOptions, UrlUtilsConfig};

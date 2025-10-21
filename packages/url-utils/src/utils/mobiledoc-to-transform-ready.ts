@@ -1,14 +1,23 @@
-export {};
-const mobiledocRelativeToAbsolute = require('./mobiledoc-relative-to-absolute');
-const mobiledocAbsoluteToTransformReady = require('./mobiledoc-absolute-to-transform-ready');
+import mobiledocAbsoluteToTransformReady, {type MobiledocAbsoluteToTransformReadyOptions} from './mobiledoc-absolute-to-transform-ready';
+import mobiledocRelativeToAbsolute, {type MobiledocRelativeToAbsoluteOptions} from './mobiledoc-relative-to-absolute';
 
-function mobiledocToTransformReady(mobiledoc, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+export type MobiledocToTransformReadyOptions = MobiledocRelativeToAbsoluteOptions & MobiledocAbsoluteToTransformReadyOptions;
+
+function mobiledocToTransformReady(
+    mobiledoc: string,
+    siteUrl: string,
+    itemPath?: string | MobiledocToTransformReadyOptions | null,
+    options?: MobiledocToTransformReadyOptions
+): string {
+    let resolvedItemPath: string | null = typeof itemPath === 'string' ? itemPath : null;
+    let resolvedOptions: MobiledocToTransformReadyOptions | undefined = options;
+
+    if (typeof itemPath === 'object' && itemPath !== null && !resolvedOptions) {
+        resolvedOptions = itemPath;
     }
-    const absolute = mobiledocRelativeToAbsolute(mobiledoc, siteUrl, itemPath, options);
-    return mobiledocAbsoluteToTransformReady(absolute, siteUrl, options);
+
+    const absolute = mobiledocRelativeToAbsolute(mobiledoc, siteUrl, resolvedItemPath, resolvedOptions);
+    return mobiledocAbsoluteToTransformReady(absolute, siteUrl, resolvedOptions);
 }
 
-module.exports = mobiledocToTransformReady;
+export default mobiledocToTransformReady;
