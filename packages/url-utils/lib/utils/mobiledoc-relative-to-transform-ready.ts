@@ -1,5 +1,5 @@
 import relativeToTransformReady from './relative-to-transform-ready';
-import mobiledocTransform = require('./mobiledoc-transform');
+import mobiledocTransform from './mobiledoc-transform';
 
 interface MobiledocRelativeToTransformReadyOptions {
     assetsOnly?: boolean;
@@ -15,4 +15,4 @@ function mobiledocRelativeToTransformReady(serializedMobiledoc: string, siteUrl:
     return mobiledocTransform(serializedMobiledoc, siteUrl, relativeToTransformReady, itemPath, options);
 }
 
-export = mobiledocRelativeToTransformReady;
+export default mobiledocRelativeToTransformReady;

@@ -1,5 +1,5 @@
-import mobiledocRelativeToAbsolute = require('./mobiledoc-relative-to-absolute');
-import mobiledocAbsoluteToTransformReady = require('./mobiledoc-absolute-to-transform-ready');
+import mobiledocRelativeToAbsolute from './mobiledoc-relative-to-absolute';
+import mobiledocAbsoluteToTransformReady from './mobiledoc-absolute-to-transform-ready';
 
 interface MobiledocToTransformReadyOptions {
     assetsOnly?: boolean;
@@ -21,4 +21,4 @@ function mobiledocToTransformReady(mobiledoc: string, siteUrl: string, itemPath?
     return mobiledocAbsoluteToTransformReady(absolute, siteUrl, actualOptions);
 }
 
-export = mobiledocToTransformReady;
+export default mobiledocToTransformReady;

@@ -114,4 +114,4 @@ function markdownTransform(markdown = '', siteUrl: string, transformFunctions: T
     return result;
 }
 
-export = markdownTransform;
+export default markdownTransform;

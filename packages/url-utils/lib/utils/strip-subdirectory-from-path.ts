@@ -33,4 +33,4 @@ const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path = '', 
     return path;
 };
 
-export = stripSubdirectoryFromPath;
+export default stripSubdirectoryFromPath;

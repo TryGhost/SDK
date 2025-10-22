@@ -1,5 +1,5 @@
-import markdownTransform = require('./markdown-transform');
-import htmlRelativeToAbsolute = require('./html-relative-to-absolute');
+import markdownTransform from './markdown-transform';
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
 import relativeToAbsolute from './relative-to-absolute';
 
 interface MarkdownRelativeToAbsoluteOptions {
@@ -25,4 +25,4 @@ function markdownRelativeToAbsolute(markdown = '', siteUrl: string, itemPath: st
     return markdownTransform(markdown, siteUrl, transformFunctions, itemPath as string | null, options);
 }
 
-export = markdownRelativeToAbsolute;
+export default markdownRelativeToAbsolute;

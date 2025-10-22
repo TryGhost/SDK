@@ -1,3 +1,3 @@
-import UrlUtils = require('./lib/UrlUtils');
+import UrlUtils from './lib/UrlUtils';
 
-export = UrlUtils;
+export default UrlUtils;

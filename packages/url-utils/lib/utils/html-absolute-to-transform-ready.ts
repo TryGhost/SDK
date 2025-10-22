@@ -1,4 +1,4 @@
-import htmlTransform = require('./html-transform');
+import htmlTransform from './html-transform';
 import absoluteToTransformReady from './absolute-to-transform-ready';
 
 export interface HtmlAbsoluteToTransformReadyOptions {

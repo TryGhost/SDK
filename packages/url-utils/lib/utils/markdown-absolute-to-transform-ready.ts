@@ -1,4 +1,4 @@
-import markdownTransform = require('./markdown-transform');
+import markdownTransform from './markdown-transform';
 import absoluteToTransformReady from './absolute-to-transform-ready';
 import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
 
@@ -29,4 +29,4 @@ function markdownAbsoluteToTransformReady(markdown = '', siteUrl: string, _optio
     return markdownTransform(markdown, siteUrl, transformFunctions, '', options);
 }
 
-export = markdownAbsoluteToTransformReady;
+export default markdownAbsoluteToTransformReady;

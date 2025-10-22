@@ -1,4 +1,4 @@
-import deduplicateSubdirectory = require('./deduplicate-subdirectory');
+import deduplicateSubdirectory from './deduplicate-subdirectory';
 
 interface UrlJoinOptions {
     rootUrl: string;
@@ -38,4 +38,4 @@ function urlJoin(parts: string[], options: UrlJoinOptions): string {
     return deduplicateSubdirectory(url, options.rootUrl);
 }
 
-export = urlJoin;
+export default urlJoin;

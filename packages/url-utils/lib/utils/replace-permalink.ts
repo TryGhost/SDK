@@ -1,4 +1,4 @@
-import moment = require('moment-timezone');
+import moment from 'moment-timezone';
 
 interface Resource {
     published_at?: string | Date;
@@ -56,4 +56,4 @@ function replacePermalink(permalink: string, resource: Resource, timezone = 'UTC
     });
 }
 
-export = replacePermalink;
+export default replacePermalink;

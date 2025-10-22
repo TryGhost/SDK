@@ -1,4 +1,4 @@
-import htmlTransform = require('./html-transform');
+import htmlTransform from './html-transform';
 import relativeToTransformReady from './relative-to-transform-ready';
 
 export interface HtmlRelativeToTransformReadyOptions {

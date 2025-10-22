@@ -1,6 +1,6 @@
 // Contains all path information to be used throughout the codebase.
 import * as _ from 'lodash';
-const utils = require('./utils');
+import utils from './utils';
 
 interface UrlUtilsConfig {
     slugs: string[] | null;
@@ -343,7 +343,7 @@ class UrlUtils {
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPathOrOptions, _options);
+        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPathOrOptions || null, _options);
     }
 
     htmlRelativeToTransformReady(html: string, options?: TransformOptions): string;
@@ -404,7 +404,7 @@ class UrlUtils {
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPathOrOptions, _options);
+        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPathOrOptions || null, _options);
     }
 
     markdownRelativeToTransformReady(markdown: string, options?: TransformOptions): string;
@@ -421,7 +421,7 @@ class UrlUtils {
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPathOrOptions, _options);
+        return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPathOrOptions || null, _options);
     }
 
     markdownAbsoluteToRelative(markdown: string, options: TransformOptions = {}): string {
@@ -545,7 +545,7 @@ class UrlUtils {
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), itemPathOrOptions, _options);
+        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), itemPathOrOptions || null, _options);
     }
 
     lexicalRelativeToTransformReady(serializedLexical: string, options?: TransformOptions): string;
@@ -563,7 +563,7 @@ class UrlUtils {
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
-        return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), itemPathOrOptions, _options);
+        return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), itemPathOrOptions || null, _options);
     }
 
     lexicalAbsoluteToRelative(serializedLexical: string, options: TransformOptions = {}): string {
@@ -642,4 +642,4 @@ class UrlUtils {
     }
 }
 
-export = UrlUtils;
+export default UrlUtils;

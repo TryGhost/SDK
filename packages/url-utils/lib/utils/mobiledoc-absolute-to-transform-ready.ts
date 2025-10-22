@@ -1,5 +1,5 @@
 import absoluteToTransformReady from './absolute-to-transform-ready';
-import mobiledocTransform = require('./mobiledoc-transform');
+import mobiledocTransform from './mobiledoc-transform';
 
 interface MobiledocAbsoluteToTransformReadyOptions {
     assetsOnly?: boolean;
@@ -19,4 +19,4 @@ function mobiledocAbsoluteToTransformReady(serializedMobiledoc: string, siteUrl:
     return mobiledocTransform(serializedMobiledoc, siteUrl, transformFunction, null, options);
 }
 
-export = mobiledocAbsoluteToTransformReady;
+export default mobiledocAbsoluteToTransformReady;

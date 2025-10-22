@@ -91,4 +91,4 @@ function lexicalTransform(serializedLexical: string, siteUrl: string, transformF
     return JSON.stringify(lexical);
 }
 
-export = lexicalTransform;
+export default lexicalTransform;

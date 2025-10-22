@@ -1,4 +1,4 @@
-import htmlRelativeToAbsolute = require('./html-relative-to-absolute');
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
 import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
 
 interface HtmlToTransformReadyOptions {
@@ -17,4 +17,4 @@ function htmlToTransformReady(html: string, siteUrl: string, itemPath?: string |
     return htmlAbsoluteToTransformReady(absolute, siteUrl, options);
 }
 
-export = htmlToTransformReady;
+export default htmlToTransformReady;

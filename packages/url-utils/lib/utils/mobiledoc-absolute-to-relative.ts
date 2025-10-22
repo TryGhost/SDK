@@ -1,5 +1,5 @@
 import absoluteToRelative from './absolute-to-relative';
-import mobiledocTransform = require('./mobiledoc-transform');
+import mobiledocTransform from './mobiledoc-transform';
 
 interface MobiledocAbsoluteToRelativeOptions {
     assetsOnly?: boolean;
@@ -19,4 +19,4 @@ function mobiledocAbsoluteToRelative(serializedMobiledoc: string, siteUrl: strin
     return mobiledocTransform(serializedMobiledoc, siteUrl, transformFunction, null, options);
 }
 
-export = mobiledocAbsoluteToRelative;
+export default mobiledocAbsoluteToRelative;

@@ -66,4 +66,4 @@ function mobiledocTransform(serializedMobiledoc: string, siteUrl: string, transf
     return JSON.stringify(mobiledoc);
 }
 
-export = mobiledocTransform;
+export default mobiledocTransform;

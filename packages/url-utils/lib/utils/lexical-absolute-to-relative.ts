@@ -1,5 +1,5 @@
 import absoluteToRelative from './absolute-to-relative';
-import lexicalTransform = require('./lexical-transform');
+import lexicalTransform from './lexical-transform';
 
 interface LexicalAbsoluteToRelativeOptions {
     assetsOnly?: boolean;
@@ -20,4 +20,4 @@ function lexicalAbsoluteToRelative(serializedLexical: string, siteUrl: string, _
     return lexicalTransform(serializedLexical, siteUrl, transformFunction, null, options);
 }
 
-export = lexicalAbsoluteToRelative;
+export default lexicalAbsoluteToRelative;

@@ -1,5 +1,5 @@
 import relativeToTransformReady from './relative-to-transform-ready';
-import lexicalTransform = require('./lexical-transform');
+import lexicalTransform from './lexical-transform';
 
 interface LexicalRelativeToTransformReadyOptions {
     assetsOnly?: boolean;
@@ -16,4 +16,4 @@ function lexicalRelativeToTransformReady(serializedLexical: string, siteUrl: str
     return lexicalTransform(serializedLexical, siteUrl, relativeToTransformReady, itemPath, options);
 }
 
-export = lexicalRelativeToTransformReady;
+export default lexicalRelativeToTransformReady;

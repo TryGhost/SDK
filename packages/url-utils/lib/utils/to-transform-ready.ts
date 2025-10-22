@@ -18,4 +18,4 @@ function toTransformReady(url: string, siteUrl: string, itemPath?: string | ToTr
     return absoluteToTransformReady(absoluteUrl, siteUrl, options);
 }
 
-export = toTransformReady;
+export default toTransformReady;

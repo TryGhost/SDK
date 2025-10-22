@@ -1,4 +1,4 @@
-import markdownTransform = require('./markdown-transform');
+import markdownTransform from './markdown-transform';
 import htmlRelativeToTransformReady from './html-relative-to-transform-ready';
 import relativeToTransformReady from './relative-to-transform-ready';
 
@@ -25,4 +25,4 @@ function markdownRelativeToTransformReady(markdown = '', siteUrl: string, itemPa
     return markdownTransform(markdown, siteUrl, transformFunctions, itemPath as string | null, options);
 }
 
-export = markdownRelativeToTransformReady;
+export default markdownRelativeToTransformReady;

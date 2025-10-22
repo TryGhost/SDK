@@ -1,5 +1,5 @@
-import lexicalRelativeToAbsolute = require('./lexical-relative-to-absolute');
-import lexicalAbsoluteToTransformReady = require('./lexical-absolute-to-transform-ready');
+import lexicalRelativeToAbsolute from './lexical-relative-to-absolute';
+import lexicalAbsoluteToTransformReady from './lexical-absolute-to-transform-ready';
 
 interface LexicalToTransformReadyOptions {
     assetsOnly?: boolean;
@@ -18,4 +18,4 @@ function lexicalToTransformReady(lexical: string, siteUrl: string, itemPath?: st
     return lexicalAbsoluteToTransformReady(absolute, siteUrl, options);
 }
 
-export = lexicalToTransformReady;
+export default lexicalToTransformReady;

@@ -28,4 +28,4 @@ const deduplicateSubdirectory = function deduplicateSubdirectory(url: string, ro
     return url.replace(subdirRegex, `$1${subdir}/`);
 };
 
-export = deduplicateSubdirectory;
+export default deduplicateSubdirectory;

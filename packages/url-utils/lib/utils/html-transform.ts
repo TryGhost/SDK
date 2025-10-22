@@ -155,4 +155,4 @@ function htmlTransform(html = '', siteUrl: string, transformFunction: TransformF
     return html;
 }
 
-export = htmlTransform;
+export default htmlTransform;

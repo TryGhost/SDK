@@ -6,4 +6,4 @@ function isSSL(urlToParse: string): boolean {
     return protocol === 'https:';
 }
 
-export = isSSL;
+export default isSSL;

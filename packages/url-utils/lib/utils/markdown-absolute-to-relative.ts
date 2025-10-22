@@ -1,6 +1,6 @@
-import markdownTransform = require('./markdown-transform');
+import markdownTransform from './markdown-transform';
 import absoluteToRelative from './absolute-to-relative';
-import htmlAbsoluteToRelative = require('./html-absolute-to-relative');
+import htmlAbsoluteToRelative from './html-absolute-to-relative';
 
 interface MarkdownAbsoluteToRelativeOptions {
     assetsOnly?: boolean;
@@ -29,4 +29,4 @@ function markdownAbsoluteToRelative(markdown = '', siteUrl: string, _options: Ma
     return markdownTransform(markdown, siteUrl, transformFunctions, '', options);
 }
 
-export = markdownAbsoluteToRelative;
+export default markdownAbsoluteToRelative;

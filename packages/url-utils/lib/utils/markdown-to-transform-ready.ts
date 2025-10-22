@@ -1,5 +1,5 @@
-import markdownRelativeToAbsolute = require('./markdown-relative-to-absolute');
-import markdownAbsoluteToTransformReady = require('./markdown-absolute-to-transform-ready');
+import markdownRelativeToAbsolute from './markdown-relative-to-absolute';
+import markdownAbsoluteToTransformReady from './markdown-absolute-to-transform-ready';
 
 interface MarkdownToTransformReadyOptions {
     assetsOnly?: boolean;
@@ -16,4 +16,4 @@ function markdownToTransformReady(markdown: string, siteUrl: string, itemPath?: 
     return markdownAbsoluteToTransformReady(absolute, siteUrl, options);
 }
 
-export = markdownToTransformReady;
+export default markdownToTransformReady;

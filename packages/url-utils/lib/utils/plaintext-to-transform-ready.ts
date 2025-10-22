@@ -19,4 +19,4 @@ function plaintextToTransformReady(plaintext: string, siteUrl: string, itemPath?
     return plaintextAbsoluteToTransformReady(relativeTransformed, siteUrl, options);
 }
 
-export = plaintextToTransformReady;
+export default plaintextToTransformReady;

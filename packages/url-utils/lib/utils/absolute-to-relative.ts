@@ -1,6 +1,6 @@
 // require the whatwg compatible URL library (same behaviour in node and browser)
 import {URL} from 'url';
-import stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
+import stripSubdirectoryFromPath from './strip-subdirectory-from-path';
 
 export interface AbsoluteToRelativeOptions {
     ignoreProtocol?: boolean;

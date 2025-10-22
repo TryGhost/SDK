@@ -1,5 +1,5 @@
 import absoluteToTransformReady from './absolute-to-transform-ready';
-import lexicalTransform = require('./lexical-transform');
+import lexicalTransform from './lexical-transform';
 
 interface LexicalAbsoluteToTransformReadyOptions {
     assetsOnly?: boolean;
@@ -20,4 +20,4 @@ function lexicalAbsoluteToTransformReady(serializedLexical: string, siteUrl: str
     return lexicalTransform(serializedLexical, siteUrl, transformFunction, null, options);
 }
 
-export = lexicalAbsoluteToTransformReady;
+export default lexicalAbsoluteToTransformReady;
