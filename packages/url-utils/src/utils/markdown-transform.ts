@@ -18,12 +18,13 @@ interface MarkdownReplacement {
     end: number;
 }
 
-type RemarkNode = Node & {
+type RemarkNode = {
+    type?: string;
     value?: string;
     url?: string;
     position?: {
-        start?: {offset?: number} & Record<string, unknown>;
-        end?: {offset?: number} & Record<string, unknown>;
+        start?: {offset?: number; line?: number; column?: number};
+        end?: {offset?: number; line?: number; column?: number};
     };
 };
 

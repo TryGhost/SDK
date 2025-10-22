@@ -79,7 +79,7 @@ function htmlTransform(
     ['href', 'src', 'srcset', 'style'].forEach((attributeName) => {
         htmlContent('[' + attributeName + ']').each((ix, el) => {
             // ignore <stream> elems and html inside of <code> elements
-            if (el.name === 'stream' || htmlContent(el).closest('code').length) {
+            if (('name' in el && el.name === 'stream') || htmlContent(el).closest('code').length) {
                 addReplacement({
                     name: attributeName,
                     originalValue: htmlContent(el).attr(attributeName) ?? '',
