@@ -1,6 +1,6 @@
 import markdownTransform = require('./markdown-transform');
-import htmlRelativeToTransformReady = require('./html-relative-to-transform-ready');
-import relativeToTransformReady = require('./relative-to-transform-ready');
+import htmlRelativeToTransformReady from './html-relative-to-transform-ready';
+import relativeToTransformReady from './relative-to-transform-ready';
 
 interface MarkdownRelativeToTransformReadyOptions {
     assetsOnly?: boolean;

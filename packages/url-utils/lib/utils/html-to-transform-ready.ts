@@ -1,5 +1,5 @@
 import htmlRelativeToAbsolute = require('./html-relative-to-absolute');
-import htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
 
 interface HtmlToTransformReadyOptions {
     assetsOnly?: boolean;
@@ -8,11 +8,12 @@ interface HtmlToTransformReadyOptions {
 }
 
 function htmlToTransformReady(html: string, siteUrl: string, itemPath?: string | HtmlToTransformReadyOptions | null, options?: HtmlToTransformReadyOptions): string {
+    let actualItemPath: string | null | undefined = itemPath as string | null | undefined;
     if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+        options = itemPath as HtmlToTransformReadyOptions;
+        actualItemPath = null;
     }
-    const absolute = htmlRelativeToAbsolute(html, siteUrl, itemPath || null, options);
+    const absolute = htmlRelativeToAbsolute(html, siteUrl, actualItemPath || null, options);
     return htmlAbsoluteToTransformReady(absolute, siteUrl, options);
 }
 

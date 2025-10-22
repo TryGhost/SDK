@@ -1,18 +1,19 @@
 import {URL} from 'url';
-import relativeToAbsolute = require('./relative-to-absolute');
+import relativeToAbsolute from './relative-to-absolute';
 
-interface RelativeToTransformReadyOptions {
+export interface RelativeToTransformReadyOptions {
     replacementStr?: string;
     staticImageUrlPrefix?: string;
     assetsOnly?: boolean;
     secure?: boolean;
 }
 
-const relativeToTransformReady = function (url: string, root: string, itemPath?: string | RelativeToTransformReadyOptions | null, _options?: RelativeToTransformReadyOptions): string {
+export const relativeToTransformReady = function (url: string, root: string, itemPath?: string | RelativeToTransformReadyOptions | null, _options?: RelativeToTransformReadyOptions): string {
     // itemPath is optional, if it's an object may be the options param instead
+    let actualItemPath: string | null | undefined = itemPath as string | null | undefined;
     if (typeof itemPath === 'object' && !_options) {
-        _options = itemPath;
-        itemPath = null;
+        _options = itemPath as RelativeToTransformReadyOptions;
+        actualItemPath = null;
     }
 
     const defaultOptions: RelativeToTransformReadyOptions = {
@@ -25,7 +26,7 @@ const relativeToTransformReady = function (url: string, root: string, itemPath?:
     const options = Object.assign({}, defaultOptions, _options, overrideOptions);
 
     // convert to absolute
-    const absoluteUrl = relativeToAbsolute(url, root, itemPath || null, options);
+    const absoluteUrl = relativeToAbsolute(url, root, actualItemPath || null, options);
 
     if (absoluteUrl === url) {
         return url;
@@ -47,4 +48,4 @@ const relativeToTransformReady = function (url: string, root: string, itemPath?:
     return url;
 };
 
-export = relativeToTransformReady;
+export default relativeToTransformReady;

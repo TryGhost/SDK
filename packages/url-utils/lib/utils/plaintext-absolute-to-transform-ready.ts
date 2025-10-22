@@ -1,7 +1,7 @@
 import {URL} from 'url';
-import absoluteToTransformReady = require('./absolute-to-transform-ready');
+import absoluteToTransformReady from './absolute-to-transform-ready';
 
-interface PlaintextAbsoluteToTransformReadyOptions {
+export interface PlaintextAbsoluteToTransformReadyOptions {
     replacementStr?: string;
     withoutSubdirectory?: boolean;
     assetsOnly?: boolean;
@@ -12,7 +12,7 @@ function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformReady(plaintext: string, rootUrl: string, itemPath?: string | PlaintextAbsoluteToTransformReadyOptions, options?: PlaintextAbsoluteToTransformReadyOptions): string {
+export const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformReady(plaintext: string, rootUrl: string, itemPath?: string | PlaintextAbsoluteToTransformReadyOptions, options?: PlaintextAbsoluteToTransformReadyOptions): string {
     // itemPath is optional, if it's an object may be the options param instead
     if (typeof itemPath === 'object' && !options) {
         options = itemPath;
@@ -31,4 +31,4 @@ const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformR
     });
 };
 
-export = plaintextAbsoluteToTransformReady;
+export default plaintextAbsoluteToTransformReady;

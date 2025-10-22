@@ -1,5 +1,5 @@
-import relativeToAbsolute = require('./relative-to-absolute');
-import absoluteToTransformReady = require('./absolute-to-transform-ready');
+import relativeToAbsolute from './relative-to-absolute';
+import absoluteToTransformReady from './absolute-to-transform-ready';
 
 interface ToTransformReadyOptions {
     replacementStr?: string;
@@ -9,11 +9,12 @@ interface ToTransformReadyOptions {
 }
 
 function toTransformReady(url: string, siteUrl: string, itemPath?: string | ToTransformReadyOptions | null, options?: ToTransformReadyOptions): string {
+    let actualItemPath: string | null | undefined = itemPath as string | null | undefined;
     if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+        options = itemPath as ToTransformReadyOptions;
+        actualItemPath = null;
     }
-    const absoluteUrl = relativeToAbsolute(url, siteUrl, itemPath || null, options);
+    const absoluteUrl = relativeToAbsolute(url, siteUrl, actualItemPath || null, options);
     return absoluteToTransformReady(absoluteUrl, siteUrl, options);
 }
 

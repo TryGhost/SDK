@@ -3356,6 +3356,13 @@
   dependencies:
     "@types/deep-eql" "*"
 
+"@types/cheerio@^0.22.35":
+  version "0.22.35"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.35.tgz#0d16dc1f24d426231c181b9c31847f673867595f"
+  integrity sha512-yD57BchKRvTV+JD53UZ6PD8KWY5g5rvvMLRnZR3EQBCZXiDT/HR+pKpMzFGlWNhFrXlo7VPZXtKvIEwZkAWOIA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/color-convert@*":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@types/color-convert/-/color-convert-2.0.4.tgz#843398ae71e951dc5415d202dfd5e43108823eeb"
@@ -3407,6 +3414,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/lodash@^4.17.13":
+  version "4.17.20"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.20.tgz#1ca77361d7363432d29f5e55950d9ec1e1c6ea93"
+  integrity sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==
+
 "@types/minimatch@^3.0.3":
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.5.tgz#1001cc5e6a3704b83c236027e77f2f58ea010f40"
@@ -3433,6 +3445,13 @@
   version "22.18.11"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.18.11.tgz#aa8a8ccae8cc828512df642f0d82606b89450d71"
   integrity sha512-Gd33J2XIrXurb+eT2ktze3rJAfAp9ZNjlBdh4SVgyrKEOADwCbdUDaK7QgJno8Ue4kcajscsKqu6n8OBG3hhCQ==
+  dependencies:
+    undici-types "~6.21.0"
+
+"@types/node@^22.10.2":
+  version "22.18.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.18.12.tgz#e165d87bc25d7bf6d3657035c914db7485de84fb"
+  integrity sha512-BICHQ67iqxQGFSzfCFTT7MRQ5XcBjG5aeKh5Ok38UBbPe5fxTyE+aHFxwVrGyr8GNlqFMLKD1D3P2K/1ks8tog==
   dependencies:
     undici-types "~6.21.0"
 
@@ -12214,7 +12233,7 @@ typescript@5.8.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.8.2.tgz#8170b3702f74b79db2e5a96207c15e65807999e4"
   integrity sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==
 
-typescript@5.9.3:
+typescript@5.9.3, typescript@^5.7.2:
   version "5.9.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.3.tgz#5b4f59e15310ab17a216f5d6cf53ee476ede670f"
   integrity sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==

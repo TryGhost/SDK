@@ -1,5 +1,5 @@
 import htmlTransform = require('./html-transform');
-import relativeToAbsolute = require('./relative-to-absolute');
+import relativeToAbsolute from './relative-to-absolute';
 
 interface HtmlRelativeToAbsoluteOptions {
     assetsOnly?: boolean;

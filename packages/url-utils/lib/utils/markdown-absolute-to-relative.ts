@@ -1,5 +1,5 @@
 import markdownTransform = require('./markdown-transform');
-import absoluteToRelative = require('./absolute-to-relative');
+import absoluteToRelative from './absolute-to-relative';
 import htmlAbsoluteToRelative = require('./html-absolute-to-relative');
 
 interface MarkdownAbsoluteToRelativeOptions {

@@ -4,11 +4,11 @@ function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-interface TransformReadyToRelativeOptions {
+export interface TransformReadyToRelativeOptions {
     replacementStr?: string;
 }
 
-const transformReadyToRelative = function (str = '', root: string, _options: TransformReadyToRelativeOptions = {}): string {
+export const transformReadyToRelative = function (str = '', root: string, _options: TransformReadyToRelativeOptions = {}): string {
     const defaultOptions: TransformReadyToRelativeOptions = {
         replacementStr: '__GHOST_URL__'
     };
@@ -27,4 +27,4 @@ const transformReadyToRelative = function (str = '', root: string, _options: Tra
     return str.replace(replacementRegex, subdir);
 };
 
-export = transformReadyToRelative;
+export default transformReadyToRelative;

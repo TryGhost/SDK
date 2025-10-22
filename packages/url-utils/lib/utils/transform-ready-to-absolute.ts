@@ -2,11 +2,11 @@ function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-interface TransformReadyToAbsoluteOptions {
+export interface TransformReadyToAbsoluteOptions {
     replacementStr?: string;
 }
 
-const transformReadyToAbsolute = function (str = '', root: string, _options: TransformReadyToAbsoluteOptions = {}): string {
+export const transformReadyToAbsolute = function (str = '', root: string, _options: TransformReadyToAbsoluteOptions = {}): string {
     const defaultOptions: TransformReadyToAbsoluteOptions = {
         replacementStr: '__GHOST_URL__'
     };
@@ -21,4 +21,4 @@ const transformReadyToAbsolute = function (str = '', root: string, _options: Tra
     return str.replace(replacementRegex, root.replace(/\/$/, ''));
 };
 
-export = transformReadyToAbsolute;
+export default transformReadyToAbsolute;

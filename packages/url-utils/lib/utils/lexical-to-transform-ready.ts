@@ -9,11 +9,12 @@ interface LexicalToTransformReadyOptions {
 }
 
 function lexicalToTransformReady(lexical: string, siteUrl: string, itemPath?: string | LexicalToTransformReadyOptions | null, options?: LexicalToTransformReadyOptions): string {
+    let actualItemPath: string | null | undefined = itemPath as string | null | undefined;
     if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+        options = itemPath as LexicalToTransformReadyOptions;
+        actualItemPath = null;
     }
-    const absolute = lexicalRelativeToAbsolute(lexical, siteUrl, itemPath as string | null, options);
+    const absolute = lexicalRelativeToAbsolute(lexical, siteUrl, actualItemPath as string | null, options);
     return lexicalAbsoluteToTransformReady(absolute, siteUrl, options);
 }
 

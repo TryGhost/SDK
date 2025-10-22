@@ -1,4 +1,4 @@
-import absoluteToTransformReady = require('./absolute-to-transform-ready');
+import absoluteToTransformReady from './absolute-to-transform-ready';
 import lexicalTransform = require('./lexical-transform');
 
 interface LexicalAbsoluteToTransformReadyOptions {

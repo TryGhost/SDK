@@ -1,4 +1,4 @@
-import absoluteToRelative = require('./absolute-to-relative');
+import absoluteToRelative from './absolute-to-relative';
 import lexicalTransform = require('./lexical-transform');
 
 interface LexicalAbsoluteToRelativeOptions {

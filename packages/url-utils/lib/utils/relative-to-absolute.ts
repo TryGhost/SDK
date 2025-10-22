@@ -11,7 +11,7 @@ import urlJoin = require('./url-join');
 // this when all root-relative paths are treated as subdir-relative we have to
 // rely on subdirectory deduplication.
 
-interface RelativeToAbsoluteOptions {
+export interface RelativeToAbsoluteOptions {
     assetsOnly?: boolean;
     staticImageUrlPrefix?: string;
     secure?: boolean;
@@ -27,17 +27,18 @@ interface RelativeToAbsoluteOptions {
  * @param {object} options
  * @returns {string} The passed in url or an absolute URL using
  */
-const relativeToAbsolute = function relativeToAbsolute(path: string, rootUrl: string, itemPath?: string | RelativeToAbsoluteOptions | null, _options?: RelativeToAbsoluteOptions): string {
+export const relativeToAbsolute = function relativeToAbsolute(path: string, rootUrl: string, itemPath?: string | RelativeToAbsoluteOptions | null, _options?: RelativeToAbsoluteOptions): string {
     // itemPath is optional, if it's an object it may be the options param instead
+    let actualItemPath: string | null | undefined = itemPath as string | null | undefined;
     if (typeof itemPath === 'object' && !_options) {
-        _options = itemPath;
-        itemPath = null;
+        _options = itemPath as RelativeToAbsoluteOptions;
+        actualItemPath = null;
     }
 
     // itemPath could be sent as a full url in which case, extract the pathname
-    if (itemPath && itemPath.match(/^http/)) {
-        const itemUrl = new URL(itemPath);
-        itemPath = itemUrl.pathname;
+    if (actualItemPath && actualItemPath.match(/^http/)) {
+        const itemUrl = new URL(actualItemPath);
+        actualItemPath = itemUrl.pathname;
     }
 
     const defaultOptions: RelativeToAbsoluteOptions = {
@@ -76,7 +77,7 @@ const relativeToAbsolute = function relativeToAbsolute(path: string, rootUrl: st
     }
 
     // return the path as-is if it's not root-relative and we have no itemPath
-    if (!itemPath && !path.match(/^\//)) {
+    if (!actualItemPath && !path.match(/^\//)) {
         return path;
     }
 
@@ -86,7 +87,7 @@ const relativeToAbsolute = function relativeToAbsolute(path: string, rootUrl: st
     }
 
     const parsedRootUrl = new URL(rootUrl);
-    const basePath = path.startsWith('/') ? '' : itemPath || '';
+    const basePath = path.startsWith('/') ? '' : actualItemPath || '';
     const fullPath = urlJoin([parsedRootUrl.pathname, basePath, path], {rootUrl});
     const absoluteUrl = new URL(fullPath, rootUrl);
 
@@ -97,4 +98,4 @@ const relativeToAbsolute = function relativeToAbsolute(path: string, rootUrl: st
     return absoluteUrl.toString();
 };
 
-export = relativeToAbsolute;
+export default relativeToAbsolute;

@@ -1,6 +1,6 @@
 // Contains all path information to be used throughout the codebase.
 import * as _ from 'lodash';
-import * as utils from './utils';
+const utils = require('./utils');
 
 interface UrlUtilsConfig {
     slugs: string[] | null;
@@ -339,7 +339,7 @@ class UrlUtils {
 
         if (typeof itemPathOrOptions === 'object' || itemPathOrOptions === null) {
             const _options = assignOptions({}, defaultOptions, itemPathOrOptions || {});
-            return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), null, _options);
+            return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPathOrOptions as string | null, _options);
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -400,7 +400,7 @@ class UrlUtils {
 
         if (typeof itemPathOrOptions === 'object' || itemPathOrOptions === null) {
             const _options = assignOptions({}, defaultOptions, itemPathOrOptions || {});
-            return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), null, _options);
+            return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPathOrOptions as string | null, _options);
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -417,7 +417,7 @@ class UrlUtils {
 
         if (typeof itemPathOrOptions === 'object' || itemPathOrOptions === null) {
             const _options = assignOptions({}, defaultOptions, itemPathOrOptions || {});
-            return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), null, _options);
+            return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPathOrOptions as string | null, _options);
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -433,7 +433,7 @@ class UrlUtils {
         return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
     }
 
-    markdownAbsoluteToTransformReady(markdown: string, options?: TransformOptions): string {
+    markdownAbsoluteToTransformReady(markdown: string, options: TransformOptions = {}): string {
         const defaultOptions: TransformOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
@@ -541,7 +541,7 @@ class UrlUtils {
 
         if (typeof itemPathOrOptions === 'object' || itemPathOrOptions === null) {
             const _options = assignOptions({}, defaultOptions, itemPathOrOptions || {});
-            return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), null, _options);
+            return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), itemPathOrOptions as string | null, _options);
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -559,7 +559,7 @@ class UrlUtils {
 
         if (typeof itemPathOrOptions === 'object' || itemPathOrOptions === null) {
             const _options = assignOptions({}, defaultOptions, itemPathOrOptions || {});
-            return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), null, _options);
+            return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), itemPathOrOptions as string | null, _options);
         }
 
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -637,7 +637,7 @@ class UrlUtils {
     }
 
     // expose underlying functions to ease testing
-    get _utils() {
+    get _utils(): any {
         return utils;
     }
 }

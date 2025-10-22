@@ -1,6 +1,6 @@
 import {URL} from 'url';
-import plaintextRelativeToTransformReady = require('./plaintext-relative-to-transform-ready');
-import plaintextAbsoluteToTransformReady = require('./plaintext-absolute-to-transform-ready');
+import plaintextRelativeToTransformReady from './plaintext-relative-to-transform-ready';
+import plaintextAbsoluteToTransformReady from './plaintext-absolute-to-transform-ready';
 
 interface PlaintextToTransformReadyOptions {
     replacementStr?: string;

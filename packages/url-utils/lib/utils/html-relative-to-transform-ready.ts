@@ -1,7 +1,7 @@
 import htmlTransform = require('./html-transform');
-import relativeToTransformReady = require('./relative-to-transform-ready');
+import relativeToTransformReady from './relative-to-transform-ready';
 
-interface HtmlRelativeToTransformReadyOptions {
+export interface HtmlRelativeToTransformReadyOptions {
     replacementStr?: string;
     assetsOnly?: boolean;
     staticImageUrlPrefix?: string;
@@ -9,11 +9,12 @@ interface HtmlRelativeToTransformReadyOptions {
     earlyExitMatchStr?: string;
 }
 
-const htmlRelativeToTransformReady = function (html = '', root: string, itemPath?: string | HtmlRelativeToTransformReadyOptions | null, _options?: HtmlRelativeToTransformReadyOptions): string {
+export const htmlRelativeToTransformReady = function (html = '', root: string, itemPath?: string | HtmlRelativeToTransformReadyOptions | null, _options?: HtmlRelativeToTransformReadyOptions): string {
     // itemPath is optional, if it's an object may be the options param instead
+    let actualItemPath: string | null | undefined = itemPath as string | null | undefined;
     if (typeof itemPath === 'object' && !_options) {
-        _options = itemPath;
-        itemPath = null;
+        _options = itemPath as HtmlRelativeToTransformReadyOptions;
+        actualItemPath = null;
     }
 
     const defaultOptions: HtmlRelativeToTransformReadyOptions = {
@@ -30,7 +31,7 @@ const htmlRelativeToTransformReady = function (html = '', root: string, itemPath
         options.earlyExitMatchStr = options.staticImageUrlPrefix;
     }
 
-    return htmlTransform(html, root, relativeToTransformReady, itemPath as string | null, options);
+    return htmlTransform(html, root, relativeToTransformReady, actualItemPath as string | null, options);
 };
 
-export = htmlRelativeToTransformReady;
+export default htmlRelativeToTransformReady;

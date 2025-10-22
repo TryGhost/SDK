@@ -1,6 +1,6 @@
 import markdownTransform = require('./markdown-transform');
-import absoluteToTransformReady = require('./absolute-to-transform-ready');
-import htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
+import absoluteToTransformReady from './absolute-to-transform-ready';
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
 
 interface MarkdownAbsoluteToTransformReadyOptions {
     assetsOnly?: boolean;

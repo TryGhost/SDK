@@ -1,4 +1,4 @@
-import relativeToTransformReady = require('./relative-to-transform-ready');
+import relativeToTransformReady from './relative-to-transform-ready';
 import lexicalTransform = require('./lexical-transform');
 
 interface LexicalRelativeToTransformReadyOptions {

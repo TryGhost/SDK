@@ -1,14 +1,14 @@
 import {URL} from 'url';
-import absoluteToRelative = require('./absolute-to-relative');
+import absoluteToRelative from './absolute-to-relative';
 
-interface AbsoluteToTransformReadyOptions {
+export interface AbsoluteToTransformReadyOptions {
     replacementStr?: string;
     withoutSubdirectory?: boolean;
     assetsOnly?: boolean;
     staticImageUrlPrefix?: string;
 }
 
-const absoluteToTransformReady = function (url: string, root: string, _options?: AbsoluteToTransformReadyOptions): string {
+export const absoluteToTransformReady = function (url: string, root: string, _options?: AbsoluteToTransformReadyOptions): string {
     const defaultOptions: AbsoluteToTransformReadyOptions = {
         replacementStr: '__GHOST_URL__',
         withoutSubdirectory: true
@@ -44,4 +44,4 @@ const absoluteToTransformReady = function (url: string, root: string, _options?:
     return `${options.replacementStr}${relativeUrl}`;
 };
 
-export = absoluteToTransformReady;
+export default absoluteToTransformReady;

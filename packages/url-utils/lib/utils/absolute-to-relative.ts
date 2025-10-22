@@ -2,7 +2,7 @@
 import {URL} from 'url';
 import stripSubdirectoryFromPath = require('./strip-subdirectory-from-path');
 
-interface AbsoluteToRelativeOptions {
+export interface AbsoluteToRelativeOptions {
     ignoreProtocol?: boolean;
     withoutSubdirectory?: boolean;
     assetsOnly?: boolean;
@@ -19,7 +19,7 @@ interface AbsoluteToRelativeOptions {
  * @param {boolean} [options.withoutSubdirectory=false] Strip the root subdirectory from the returned path
  * @returns {string} The passed-in url or a relative path
  */
-const absoluteToRelative = function absoluteToRelative(url: string, rootUrl: string, _options: AbsoluteToRelativeOptions = {}): string {
+export const absoluteToRelative = function absoluteToRelative(url: string, rootUrl: string, _options: AbsoluteToRelativeOptions = {}): string {
     const defaultOptions: AbsoluteToRelativeOptions = {
         ignoreProtocol: true,
         withoutSubdirectory: false,
@@ -67,4 +67,4 @@ const absoluteToRelative = function absoluteToRelative(url: string, rootUrl: str
     return url;
 };
 
-export = absoluteToRelative;
+export default absoluteToRelative;

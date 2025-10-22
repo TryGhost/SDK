@@ -1,14 +1,14 @@
 import {URL} from 'url';
-import relativeToTransformReady = require('./relative-to-transform-ready');
+import relativeToTransformReady from './relative-to-transform-ready';
 
-interface PlaintextRelativeToTransformReadyOptions {
+export interface PlaintextRelativeToTransformReadyOptions {
     replacementStr?: string;
     staticImageUrlPrefix?: string;
     assetsOnly?: boolean;
     secure?: boolean;
 }
 
-const plaintextRelativeToTransformReady = function plaintextRelativeToTransformReady(plaintext: string, rootUrl: string, itemPath?: string | PlaintextRelativeToTransformReadyOptions, options?: PlaintextRelativeToTransformReadyOptions): string {
+export const plaintextRelativeToTransformReady = function plaintextRelativeToTransformReady(plaintext: string, rootUrl: string, itemPath?: string | PlaintextRelativeToTransformReadyOptions, options?: PlaintextRelativeToTransformReadyOptions): string {
     // itemPath is optional, if it's an object may be the options param instead
     if (typeof itemPath === 'object' && !options) {
         options = itemPath;
@@ -23,4 +23,4 @@ const plaintextRelativeToTransformReady = function plaintextRelativeToTransformR
     });
 };
 
-export = plaintextRelativeToTransformReady;
+export default plaintextRelativeToTransformReady;

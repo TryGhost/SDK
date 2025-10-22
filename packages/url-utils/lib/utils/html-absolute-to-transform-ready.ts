@@ -1,14 +1,14 @@
 import htmlTransform = require('./html-transform');
-import absoluteToTransformReady = require('./absolute-to-transform-ready');
+import absoluteToTransformReady from './absolute-to-transform-ready';
 
-interface HtmlAbsoluteToTransformReadyOptions {
+export interface HtmlAbsoluteToTransformReadyOptions {
     assetsOnly?: boolean;
     ignoreProtocol?: boolean;
     staticImageUrlPrefix?: string;
     earlyExitMatchStr?: string;
 }
 
-const htmlAbsoluteToTransformReady = function (html = '', siteUrl: string, _options?: HtmlAbsoluteToTransformReadyOptions): string {
+export const htmlAbsoluteToTransformReady = function (html = '', siteUrl: string, _options?: HtmlAbsoluteToTransformReadyOptions): string {
     const defaultOptions: HtmlAbsoluteToTransformReadyOptions = {assetsOnly: false, ignoreProtocol: true};
     const options = Object.assign({}, defaultOptions, _options || {});
 
@@ -24,4 +24,4 @@ const htmlAbsoluteToTransformReady = function (html = '', siteUrl: string, _opti
     return htmlTransform(html, siteUrl, transformFunction, '', options);
 };
 
-export = htmlAbsoluteToTransformReady;
+export default htmlAbsoluteToTransformReady;
