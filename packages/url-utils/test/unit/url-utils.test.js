@@ -558,7 +558,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
 
@@ -577,7 +580,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -596,7 +602,10 @@ describe('UrlUtils', function () {
                 assetsOnly: false,
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
-                staticMediaUrlPrefix: 'content/media'
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -617,7 +626,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
 
@@ -636,7 +648,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -655,7 +670,10 @@ describe('UrlUtils', function () {
                 assetsOnly: true,
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
-                staticMediaUrlPrefix: 'content/media'
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -677,7 +695,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                cards
+                cards,
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
 
@@ -698,7 +719,10 @@ describe('UrlUtils', function () {
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 secure: true,
-                cards
+                cards,
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -719,7 +743,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                cards
+                cards,
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -739,7 +766,10 @@ describe('UrlUtils', function () {
                 assetsOnly: true,
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
-                staticMediaUrlPrefix: 'content/media'
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
 
@@ -758,7 +788,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -777,7 +810,10 @@ describe('UrlUtils', function () {
                 assetsOnly: true,
                 staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
-                staticMediaUrlPrefix: 'content/media'
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: 'http://my-ghost-blog.com',
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });

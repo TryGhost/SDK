@@ -6,6 +6,20 @@ const STATIC_IMAGE_URL_PREFIX = 'content/images';
 const STATIC_FILES_URL_PREFIX = 'content/files';
 const STATIC_MEDIA_URL_PREFIX = 'content/media';
 
+/**
+ * @typedef {Object} AssetBaseUrls
+ * @property {string} [image] Absolute base URL for images
+ * @property {string} [files] Absolute base URL for files
+ * @property {string} [media] Absolute base URL for media
+ */
+
+function trimTrailingSlash(url) {
+    if (!url) {
+        return url;
+    }
+    return url.replace(/\/+$/, '');
+}
+
 // similar to Object.assign but will not override defaults if a source value is undefined
 function assignOptions(target, ...sources) {
     const options = sources.map((x) => {
@@ -26,6 +40,7 @@ module.exports = class UrlUtils {
     * @param {('content' | 'admin')} [options.defaultApiType='content'] default API type to be used
      * @param {Object} [options.slugs] object with 2 properties reserved and protected containing arrays of special case slugs
      * @param {Number} [options.redirectCacheMaxAge]
+     * @param {AssetBaseUrls} [options.assetBaseUrls] asset CDN base URLs
     */
     constructor(options = {}) {
         const defaultOptions = {
@@ -40,9 +55,32 @@ module.exports = class UrlUtils {
         this._config.staticFilesUrlPrefix = STATIC_FILES_URL_PREFIX;
         this._config.staticMediaUrlPrefix = STATIC_MEDIA_URL_PREFIX;
 
+        const assetBaseUrls = options.assetBaseUrls || {};
+        this._assetBaseUrls = {
+            image: trimTrailingSlash(assetBaseUrls.image || null),
+            files: trimTrailingSlash(assetBaseUrls.files || null),
+            media: trimTrailingSlash(assetBaseUrls.media || null)
+        };
+
         this.getSubdir = options.getSubdir;
         this.getSiteUrl = options.getSiteUrl;
         this.getAdminUrl = options.getAdminUrl;
+    }
+
+    _assetOptionDefaults() {
+        const siteBase = trimTrailingSlash(this.getSiteUrl ? this.getSiteUrl() : null);
+        return {
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
+            imageBaseUrl: this._assetBaseUrls.image || siteBase,
+            filesBaseUrl: this._assetBaseUrls.files || null,
+            mediaBaseUrl: this._assetBaseUrls.media || null
+        };
+    }
+
+    _buildAssetOptions(additionalDefaults = {}, options) {
+        return assignOptions({}, this._assetOptionDefaults(), additionalDefaults, options || {});
     }
 
     getProtectedSlugs() {
@@ -239,23 +277,28 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        return utils.toTransformReady(url, this.getSiteUrl(), itemPath, options);
+        const _options = this._buildAssetOptions({}, options);
+        return utils.toTransformReady(url, this.getSiteUrl(), itemPath, _options);
     }
 
     absoluteToTransformReady(url, options) {
-        return utils.absoluteToTransformReady(url, this.getSiteUrl(), options);
+        const _options = this._buildAssetOptions({}, options);
+        return utils.absoluteToTransformReady(url, this.getSiteUrl(), _options);
     }
 
     relativeToTransformReady(url, options) {
-        return utils.relativeToTransformReady(url, this.getSiteUrl(), options);
+        const _options = this._buildAssetOptions({}, options);
+        return utils.relativeToTransformReady(url, this.getSiteUrl(), _options);
     }
 
     transformReadyToAbsolute(url, options) {
-        return utils.transformReadyToAbsolute(url, this.getSiteUrl(), options);
+        const _options = this._buildAssetOptions({}, options);
+        return utils.transformReadyToAbsolute(url, this.getSiteUrl(), _options);
     }
 
     transformReadyToRelative(url, options) {
-        return utils.transformReadyToRelative(url, this.getSiteUrl(), options);
+        const _options = this._buildAssetOptions({}, options);
+        return utils.transformReadyToRelative(url, this.getSiteUrl(), _options);
     }
 
     htmlToTransformReady(html, itemPath, options) {
@@ -263,7 +306,8 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        return utils.htmlToTransformReady(html, this.getSiteUrl(), itemPath, options);
+        const _options = this._buildAssetOptions({}, options);
+        return utils.htmlToTransformReady(html, this.getSiteUrl(), itemPath, _options);
     }
 
     /**
@@ -281,13 +325,9 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        const _options = this._buildAssetOptions({
+            assetsOnly: false
+        }, options);
         return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath, _options);
     }
 
@@ -296,35 +336,23 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        const _options = this._buildAssetOptions({
+            assetsOnly: false
+        }, options);
         return utils.htmlRelativeToTransformReady(html, this.getSiteUrl(), itemPath, _options);
     }
 
     htmlAbsoluteToRelative(html, options = {}) {
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        const _options = this._buildAssetOptions({
+            assetsOnly: false
+        }, options);
         return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
     }
 
     htmlAbsoluteToTransformReady(html, options = {}) {
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        const _options = this._buildAssetOptions({
+            assetsOnly: false
+        }, options);
         return utils.htmlAbsoluteToTransformReady(html, this.getSiteUrl(), _options);
     }
 
@@ -333,7 +361,8 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        return utils.markdownToTransformReady(markdown, this.getSiteUrl(), itemPath, options);
+        const _options = this._buildAssetOptions({}, options);
+        return utils.markdownToTransformReady(markdown, this.getSiteUrl(), itemPath, _options);
     }
 
     markdownRelativeToAbsolute(markdown, itemPath, options) {
@@ -341,13 +370,9 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        const _options = this._buildAssetOptions({
+            assetsOnly: false
+        }, options);
         return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath, _options);
     }
 
@@ -356,35 +381,23 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        const _options = this._buildAssetOptions({
+            assetsOnly: false
+        }, options);
         return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPath, _options);
     }
 
     markdownAbsoluteToRelative(markdown, options = {}) {
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        const _options = this._buildAssetOptions({
+            assetsOnly: false
+        }, options);
         return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
     }
 
     markdownAbsoluteToTransformReady(markdown, options) {
-        const defaultOptions = {
-            assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        const _options = this._buildAssetOptions({
+            assetsOnly: false
+        }, options);
         return utils.markdownAbsoluteToTransformReady(markdown, this.getSiteUrl(), _options);
     }
 
@@ -393,10 +406,9 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        }, options);
         return utils.mobiledocToTransformReady(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
     }
 
@@ -405,14 +417,10 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        }, options);
         return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
     }
 
@@ -421,38 +429,26 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        }, options);
         return utils.mobiledocRelativeToTransformReady(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
     }
 
     mobiledocAbsoluteToRelative(serializedMobiledoc, options = {}) {
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        }, options);
         return utils.mobiledocAbsoluteToRelative(serializedMobiledoc, this.getSiteUrl(), _options);
     }
 
     mobiledocAbsoluteToTransformReady(serializedMobiledoc, options = {}) {
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        }, options);
         return utils.mobiledocAbsoluteToTransformReady(serializedMobiledoc, this.getSiteUrl(), _options);
     }
 
@@ -461,10 +457,9 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        }, options);
         return utils.lexicalToTransformReady(serializedLexical, this.getSiteUrl(), itemPath, _options);
     }
 
@@ -473,14 +468,10 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        }, options);
         return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), itemPath, _options);
     }
 
@@ -489,48 +480,31 @@ module.exports = class UrlUtils {
             options = itemPath;
             itemPath = null;
         }
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options || {});
+        }, options);
         return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), itemPath, _options);
     }
 
     lexicalAbsoluteToRelative(serializedLexical, options = {}) {
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        }, options);
         return utils.lexicalAbsoluteToRelative(serializedLexical, this.getSiteUrl(), _options);
     }
 
     lexicalAbsoluteToTransformReady(serializedLexical, options = {}) {
-        const defaultOptions = {
+        const _options = this._buildAssetOptions({
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        }, options);
         return utils.lexicalAbsoluteToTransformReady(serializedLexical, this.getSiteUrl(), _options);
     }
 
     plaintextToTransformReady(plaintext, options = {}) {
-        const defaultOptions = {
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
-        };
-        const _options = assignOptions({}, defaultOptions, options);
+        const _options = this._buildAssetOptions({}, options);
         return utils.plaintextToTransformReady(plaintext, this.getSiteUrl(), _options);
     }
 
