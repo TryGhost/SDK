@@ -119,6 +119,7 @@ describe('utils: absoluteToTransformReady()', function () {
         const siteUrl = 'https://my-blog.com';
         const mediaCdn = 'https://storage.ghost.io/c/site-uuid';
         const filesCdn = 'https://storage.ghost.io/c/site-uuid';
+        const imagesCdn = 'https://storage.ghost.io/c/site-uuid';
 
         it('converts media CDN URLs to transform-ready format', function () {
             const url = 'https://storage.ghost.io/c/site-uuid/content/media/2025/01/video.mp4';
@@ -138,6 +139,16 @@ describe('utils: absoluteToTransformReady()', function () {
             });
 
             result.should.equal('__GHOST_URL__/content/files/2025/01/document.pdf');
+        });
+
+        it('converts image CDN URLs to transform-ready format', function () {
+            const url = 'https://storage.ghost.io/c/site-uuid/content/images/2025/01/photo.jpg';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticImageUrlPrefix: 'content/images',
+                imageBaseUrl: imagesCdn
+            });
+
+            result.should.equal('__GHOST_URL__/content/images/2025/01/photo.jpg');
         });
 
         it('still converts site-hosted media when CDN base configured', function () {

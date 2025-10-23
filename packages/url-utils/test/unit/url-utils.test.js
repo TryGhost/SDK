@@ -559,7 +559,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
 
@@ -578,7 +581,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -597,7 +603,10 @@ describe('UrlUtils', function () {
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
-                staticMediaUrlPrefix: 'content/media'
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -618,7 +627,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
 
@@ -637,7 +649,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -656,7 +671,10 @@ describe('UrlUtils', function () {
                 assetsOnly: true,
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
-                staticMediaUrlPrefix: 'content/media'
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -678,7 +696,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                cards
+                cards,
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
 
@@ -699,7 +720,10 @@ describe('UrlUtils', function () {
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 secure: true,
-                cards
+                cards,
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -720,7 +744,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                cards
+                cards,
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -740,7 +767,10 @@ describe('UrlUtils', function () {
                 assetsOnly: true,
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
-                staticMediaUrlPrefix: 'content/media'
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
 
@@ -759,7 +789,10 @@ describe('UrlUtils', function () {
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
-                secure: true
+                secure: true,
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });
@@ -778,7 +811,10 @@ describe('UrlUtils', function () {
                 assetsOnly: true,
                 staticImageUrlPrefix: 'static/images',
                 staticFilesUrlPrefix: 'content/files',
-                staticMediaUrlPrefix: 'content/media'
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: null,
+                filesBaseUrl: null,
+                mediaBaseUrl: null
             });
         });
     });

@@ -1,3 +1,4 @@
+const {URL} = require('url');
 const absoluteToRelative = require('./absolute-to-relative');
 
 function isRelative(url) {
@@ -12,10 +13,16 @@ function isRelative(url) {
     return parsedInput.origin === 'http://relative';
 }
 
-const absoluteToTransformReady = function (url, root, _options) {
+const absoluteToTransformReady = function (url, root, _options = {}) {
     const defaultOptions = {
         replacementStr: '__GHOST_URL__',
-        withoutSubdirectory: true
+        withoutSubdirectory: true,
+        staticImageUrlPrefix: 'content/images',
+        staticFilesUrlPrefix: 'content/files',
+        staticMediaUrlPrefix: 'content/media',
+        imageBaseUrl: null,
+        filesBaseUrl: null,
+        mediaBaseUrl: null
     };
     const options = Object.assign({}, defaultOptions, _options);
 
@@ -25,11 +32,34 @@ const absoluteToTransformReady = function (url, root, _options) {
 
     // convert to relative with stripped subdir
     // always returns root-relative starting with forward slash
-    const relativeUrl = absoluteToRelative(url, root, options);
+    const rootRelativeUrl = absoluteToRelative(url, root, options);
 
-    // return still absolute urls as-is (eg. external site, mailto, etc)
-    if (isRelative(relativeUrl)) {
-        return `${options.replacementStr}${relativeUrl}`;
+    if (isRelative(rootRelativeUrl)) {
+        return `${options.replacementStr}${rootRelativeUrl}`;
+    }
+
+    if (options.mediaBaseUrl) {
+        const mediaRelativeUrl = absoluteToRelative(url, options.mediaBaseUrl, options);
+
+        if (isRelative(mediaRelativeUrl)) {
+            return `${options.replacementStr}${mediaRelativeUrl}`;
+        }
+    }
+
+    if (options.filesBaseUrl) {
+        const filesRelativeUrl = absoluteToRelative(url, options.filesBaseUrl, options);
+
+        if (isRelative(filesRelativeUrl)) {
+            return `${options.replacementStr}${filesRelativeUrl}`;
+        }
+    }
+
+    if (options.imageBaseUrl) {
+        const imageRelativeUrl = absoluteToRelative(url, options.imageBaseUrl, options);
+
+        if (isRelative(imageRelativeUrl)) {
+            return `${options.replacementStr}${imageRelativeUrl}`;
+        }
     }
 
     return url;
