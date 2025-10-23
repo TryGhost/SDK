@@ -23,6 +23,8 @@ module.exports = class UrlUtils {
      * @param {Object} [options.slugs] object with 2 properties reserved and protected containing arrays of special case slugs
      * @param {Number} [options.redirectCacheMaxAge]
      * @param {String} [options.staticImageUrlPrefix='content/images'] static prefix for serving images. Should not be passed in, unless customizing ghost instance image storage
+     * @param {String} [options.staticFilesUrlPrefix='content/files'] static prefix for serving files. Should not be passed in, unless customizing ghost instance file storage
+     * @param {String} [options.staticMediaUrlPrefix='content/media'] static prefix for serving media. Should not be passed in, unless customizing ghost instance media storage
      */
     constructor(options = {}) {
         const defaultOptions = {
@@ -30,7 +32,9 @@ module.exports = class UrlUtils {
             redirectCacheMaxAge: null,
             baseApiPath: '/ghost/api',
             defaultApiType: 'content',
-            staticImageUrlPrefix: 'content/images'
+            staticImageUrlPrefix: 'content/images',
+            staticFilesUrlPrefix: 'content/files',
+            staticMediaUrlPrefix: 'content/media'
         };
 
         this._config = assignOptions({}, defaultOptions, options);
@@ -278,7 +282,9 @@ module.exports = class UrlUtils {
         }
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options || {});
         return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath, _options);
@@ -291,7 +297,9 @@ module.exports = class UrlUtils {
         }
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options || {});
         return utils.htmlRelativeToTransformReady(html, this.getSiteUrl(), itemPath, _options);
@@ -300,7 +308,9 @@ module.exports = class UrlUtils {
     htmlAbsoluteToRelative(html, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
@@ -309,7 +319,9 @@ module.exports = class UrlUtils {
     htmlAbsoluteToTransformReady(html, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.htmlAbsoluteToTransformReady(html, this.getSiteUrl(), _options);
@@ -330,7 +342,9 @@ module.exports = class UrlUtils {
         }
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options || {});
         return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath, _options);
@@ -343,7 +357,9 @@ module.exports = class UrlUtils {
         }
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options || {});
         return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPath, _options);
@@ -352,7 +368,9 @@ module.exports = class UrlUtils {
     markdownAbsoluteToRelative(markdown, options = {}) {
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
@@ -361,7 +379,9 @@ module.exports = class UrlUtils {
     markdownAbsoluteToTransformReady(markdown, options) {
         const defaultOptions = {
             assetsOnly: false,
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.markdownAbsoluteToTransformReady(markdown, this.getSiteUrl(), _options);
@@ -387,6 +407,8 @@ module.exports = class UrlUtils {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -401,6 +423,8 @@ module.exports = class UrlUtils {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -411,6 +435,8 @@ module.exports = class UrlUtils {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options);
@@ -421,6 +447,8 @@ module.exports = class UrlUtils {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options);
@@ -447,6 +475,8 @@ module.exports = class UrlUtils {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -461,6 +491,8 @@ module.exports = class UrlUtils {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options || {});
@@ -471,6 +503,8 @@ module.exports = class UrlUtils {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options);
@@ -481,6 +515,8 @@ module.exports = class UrlUtils {
         const defaultOptions = {
             assetsOnly: false,
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, options);
@@ -489,7 +525,9 @@ module.exports = class UrlUtils {
 
     plaintextToTransformReady(plaintext, options = {}) {
         const defaultOptions = {
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, options);
         return utils.plaintextToTransformReady(plaintext, this.getSiteUrl(), _options);
@@ -535,6 +573,14 @@ module.exports = class UrlUtils {
      */
     get STATIC_IMAGE_URL_PREFIX() {
         return this._config.staticImageUrlPrefix;
+    }
+
+    get STATIC_FILES_URL_PREFIX() {
+        return this._config.staticFilesUrlPrefix;
+    }
+
+    get STATIC_MEDIA_URL_PREFIX() {
+        return this._config.staticMediaUrlPrefix;
     }
 
     // expose underlying functions to ease testing

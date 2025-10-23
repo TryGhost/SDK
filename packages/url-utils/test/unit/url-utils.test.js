@@ -55,6 +55,30 @@ describe('UrlUtils', function () {
         });
     });
 
+    describe('static url prefixes', function () {
+        it('exposes defaults and allows overrides', function () {
+            utils.STATIC_IMAGE_URL_PREFIX.should.eql('static/images');
+            utils.STATIC_FILES_URL_PREFIX.should.eql('content/files');
+            utils.STATIC_MEDIA_URL_PREFIX.should.eql('content/media');
+
+            const customUtils = new UrlUtils({
+                getSubdir: nconf.getSubdir,
+                getSiteUrl: nconf.getSiteUrl,
+                getAdminUrl: nconf.getAdminUrl,
+                apiVersions: {},
+                slugs: ['ghost', 'rss', 'amp'],
+                redirectCacheMaxAge: constants.ONE_YEAR_S,
+                staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'static/files',
+                staticMediaUrlPrefix: 'static/media'
+            });
+
+            customUtils.STATIC_IMAGE_URL_PREFIX.should.eql('static/images');
+            customUtils.STATIC_FILES_URL_PREFIX.should.eql('static/files');
+            customUtils.STATIC_MEDIA_URL_PREFIX.should.eql('static/media');
+        });
+    });
+
     afterEach(function () {
         sandbox.restore();
     });
@@ -533,6 +557,8 @@ describe('UrlUtils', function () {
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
                 secure: true
             });
         });
@@ -550,6 +576,8 @@ describe('UrlUtils', function () {
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
                 secure: true
             });
         });
@@ -567,7 +595,9 @@ describe('UrlUtils', function () {
             firstCall.args[1].should.eql('http://my-ghost-blog.com/');
             firstCall.args[2].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images'
+                staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media'
             });
         });
     });
@@ -586,6 +616,8 @@ describe('UrlUtils', function () {
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
                 secure: true
             });
         });
@@ -603,6 +635,8 @@ describe('UrlUtils', function () {
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
                 secure: true
             });
         });
@@ -620,7 +654,9 @@ describe('UrlUtils', function () {
             firstCall.args[1].should.eql('http://my-ghost-blog.com/');
             firstCall.args[2].should.deepEqual({
                 assetsOnly: true,
-                staticImageUrlPrefix: 'static/images'
+                staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media'
             });
         });
     });
@@ -640,6 +676,8 @@ describe('UrlUtils', function () {
             firstCall.args[3].should.deepEqual({
                 assetsOnly: true,
                 staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
                 cards
             });
         });
@@ -658,6 +696,8 @@ describe('UrlUtils', function () {
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
                 secure: true,
                 cards
             });
@@ -678,6 +718,8 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.deepEqual({
                 assetsOnly: true,
                 staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
                 cards
             });
         });
@@ -696,7 +738,9 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.eql('my-awesome-post');
             firstCall.args[3].should.deepEqual({
                 assetsOnly: true,
-                staticImageUrlPrefix: 'static/images'
+                staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media'
             });
         });
 
@@ -713,6 +757,8 @@ describe('UrlUtils', function () {
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
                 staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
                 secure: true
             });
         });
@@ -730,7 +776,9 @@ describe('UrlUtils', function () {
             firstCall.args[1].should.eql('http://my-ghost-blog.com/');
             firstCall.args[2].should.deepEqual({
                 assetsOnly: true,
-                staticImageUrlPrefix: 'static/images'
+                staticImageUrlPrefix: 'static/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media'
             });
         });
     });
