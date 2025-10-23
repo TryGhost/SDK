@@ -35,7 +35,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "12.1.4",
+    "@rollup/plugin-typescript": "12.2.0",
     "mocha": "11.7.4",
     "rollup": "2.79.2",
     "rollup-plugin-commonjs": "10.1.0",
