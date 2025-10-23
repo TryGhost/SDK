@@ -50,14 +50,13 @@ describe('UrlUtils', function () {
             getAdminUrl: nconf.getAdminUrl,
             apiVersions: {},
             slugs: ['ghost', 'rss', 'amp'],
-            redirectCacheMaxAge: constants.ONE_YEAR_S,
-            staticImageUrlPrefix: 'static/images'
+            redirectCacheMaxAge: constants.ONE_YEAR_S
         });
     });
 
     describe('static url prefixes', function () {
-        it('exposes defaults and allows overrides', function () {
-            utils.STATIC_IMAGE_URL_PREFIX.should.eql('static/images');
+        it('exposes static defaults and ignores overrides', function () {
+            utils.STATIC_IMAGE_URL_PREFIX.should.eql('content/images');
             utils.STATIC_FILES_URL_PREFIX.should.eql('content/files');
             utils.STATIC_MEDIA_URL_PREFIX.should.eql('content/media');
 
@@ -73,9 +72,9 @@ describe('UrlUtils', function () {
                 staticMediaUrlPrefix: 'static/media'
             });
 
-            customUtils.STATIC_IMAGE_URL_PREFIX.should.eql('static/images');
-            customUtils.STATIC_FILES_URL_PREFIX.should.eql('static/files');
-            customUtils.STATIC_MEDIA_URL_PREFIX.should.eql('static/media');
+            customUtils.STATIC_IMAGE_URL_PREFIX.should.eql('content/images');
+            customUtils.STATIC_FILES_URL_PREFIX.should.eql('content/files');
+            customUtils.STATIC_MEDIA_URL_PREFIX.should.eql('content/media');
         });
     });
 
@@ -229,28 +228,28 @@ describe('UrlUtils', function () {
             var testContext = 'image',
                 testData;
 
-            testData = {image: '/static/images/my-image.jpg'};
-            utils.urlFor(testContext, testData).should.equal('/static/images/my-image.jpg');
-            utils.urlFor(testContext, testData, true).should.equal('http://my-ghost-blog.com/static/images/my-image.jpg');
+            testData = {image: '/content/images/my-image.jpg'};
+            utils.urlFor(testContext, testData).should.equal('/content/images/my-image.jpg');
+            utils.urlFor(testContext, testData, true).should.equal('http://my-ghost-blog.com/content/images/my-image.jpg');
 
             testData = {image: 'http://placekitten.com/500/200'};
             utils.urlFor(testContext, testData).should.equal('http://placekitten.com/500/200');
             utils.urlFor(testContext, testData, true).should.equal('http://placekitten.com/500/200');
 
-            testData = {image: '/blog/static/images/my-image2.jpg'};
-            utils.urlFor(testContext, testData).should.equal('/blog/static/images/my-image2.jpg');
+            testData = {image: '/blog/content/images/my-image2.jpg'};
+            utils.urlFor(testContext, testData).should.equal('/blog/content/images/my-image2.jpg');
             // We don't make image urls absolute if they don't look like images relative to the image path
-            utils.urlFor(testContext, testData, true).should.equal('/blog/static/images/my-image2.jpg');
+            utils.urlFor(testContext, testData, true).should.equal('/blog/content/images/my-image2.jpg');
 
             fakeConfig.url = 'http://my-ghost-blog.com/blog/';
-            testData = {image: '/static/images/my-image3.jpg'};
-            utils.urlFor(testContext, testData).should.equal('/static/images/my-image3.jpg');
+            testData = {image: '/content/images/my-image3.jpg'};
+            utils.urlFor(testContext, testData).should.equal('/content/images/my-image3.jpg');
             // We don't make image urls absolute if they don't look like images relative to the image path
-            utils.urlFor(testContext, testData, true).should.equal('/static/images/my-image3.jpg');
+            utils.urlFor(testContext, testData, true).should.equal('/content/images/my-image3.jpg');
 
-            testData = {image: '/blog/static/images/my-image4.jpg'};
-            utils.urlFor(testContext, testData).should.equal('/blog/static/images/my-image4.jpg');
-            utils.urlFor(testContext, testData, true).should.equal('http://my-ghost-blog.com/blog/static/images/my-image4.jpg');
+            testData = {image: '/blog/content/images/my-image4.jpg'};
+            utils.urlFor(testContext, testData).should.equal('/blog/content/images/my-image4.jpg');
+            utils.urlFor(testContext, testData, true).should.equal('http://my-ghost-blog.com/blog/content/images/my-image4.jpg');
         });
 
         it('should return a url for a nav item when asked for it', function () {
@@ -556,7 +555,7 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.eql('my-awesome-post');
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 secure: true
@@ -575,7 +574,7 @@ describe('UrlUtils', function () {
             should.not.exist(firstCall.args[2]);
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 secure: true
@@ -595,7 +594,7 @@ describe('UrlUtils', function () {
             firstCall.args[1].should.eql('http://my-ghost-blog.com/');
             firstCall.args[2].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media'
             });
@@ -615,7 +614,7 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.eql('my-awesome-post');
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 secure: true
@@ -634,7 +633,7 @@ describe('UrlUtils', function () {
             should.not.exist(firstCall.args[2]);
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 secure: true
@@ -654,7 +653,7 @@ describe('UrlUtils', function () {
             firstCall.args[1].should.eql('http://my-ghost-blog.com/');
             firstCall.args[2].should.deepEqual({
                 assetsOnly: true,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media'
             });
@@ -675,7 +674,7 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.eql('my-awesome-post');
             firstCall.args[3].should.deepEqual({
                 assetsOnly: true,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 cards
@@ -695,7 +694,7 @@ describe('UrlUtils', function () {
             should.not.exist(firstCall.args[2]);
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 secure: true,
@@ -717,7 +716,7 @@ describe('UrlUtils', function () {
             firstCall.args[1].should.eql('http://my-ghost-blog.com/');
             firstCall.args[2].should.deepEqual({
                 assetsOnly: true,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 cards
@@ -738,7 +737,7 @@ describe('UrlUtils', function () {
             firstCall.args[2].should.eql('my-awesome-post');
             firstCall.args[3].should.deepEqual({
                 assetsOnly: true,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media'
             });
@@ -756,7 +755,7 @@ describe('UrlUtils', function () {
             should.not.exist(firstCall.args[2]);
             firstCall.args[3].should.deepEqual({
                 assetsOnly: false,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media',
                 secure: true
@@ -776,7 +775,7 @@ describe('UrlUtils', function () {
             firstCall.args[1].should.eql('http://my-ghost-blog.com/');
             firstCall.args[2].should.deepEqual({
                 assetsOnly: true,
-                staticImageUrlPrefix: 'static/images',
+                staticImageUrlPrefix: 'content/images',
                 staticFilesUrlPrefix: 'content/files',
                 staticMediaUrlPrefix: 'content/media'
             });

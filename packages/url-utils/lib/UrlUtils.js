@@ -2,6 +2,10 @@
 const _ = require('lodash');
 const utils = require('./utils');
 
+const STATIC_IMAGE_URL_PREFIX = 'content/images';
+const STATIC_FILES_URL_PREFIX = 'content/files';
+const STATIC_MEDIA_URL_PREFIX = 'content/media';
+
 // similar to Object.assign but will not override defaults if a source value is undefined
 function assignOptions(target, ...sources) {
     const options = sources.map((x) => {
@@ -22,22 +26,19 @@ module.exports = class UrlUtils {
     * @param {('content' | 'admin')} [options.defaultApiType='content'] default API type to be used
      * @param {Object} [options.slugs] object with 2 properties reserved and protected containing arrays of special case slugs
      * @param {Number} [options.redirectCacheMaxAge]
-     * @param {String} [options.staticImageUrlPrefix='content/images'] static prefix for serving images. Should not be passed in, unless customizing ghost instance image storage
-     * @param {String} [options.staticFilesUrlPrefix='content/files'] static prefix for serving files. Should not be passed in, unless customizing ghost instance file storage
-     * @param {String} [options.staticMediaUrlPrefix='content/media'] static prefix for serving media. Should not be passed in, unless customizing ghost instance media storage
-     */
+    */
     constructor(options = {}) {
         const defaultOptions = {
             slugs: null,
             redirectCacheMaxAge: null,
             baseApiPath: '/ghost/api',
-            defaultApiType: 'content',
-            staticImageUrlPrefix: 'content/images',
-            staticFilesUrlPrefix: 'content/files',
-            staticMediaUrlPrefix: 'content/media'
+            defaultApiType: 'content'
         };
 
         this._config = assignOptions({}, defaultOptions, options);
+        this._config.staticImageUrlPrefix = STATIC_IMAGE_URL_PREFIX;
+        this._config.staticFilesUrlPrefix = STATIC_FILES_URL_PREFIX;
+        this._config.staticMediaUrlPrefix = STATIC_MEDIA_URL_PREFIX;
 
         this.getSubdir = options.getSubdir;
         this.getSiteUrl = options.getSiteUrl;
@@ -572,15 +573,15 @@ module.exports = class UrlUtils {
      * my-content/another-dir/images/2017/01/02/author.png
      */
     get STATIC_IMAGE_URL_PREFIX() {
-        return this._config.staticImageUrlPrefix;
+        return STATIC_IMAGE_URL_PREFIX;
     }
 
     get STATIC_FILES_URL_PREFIX() {
-        return this._config.staticFilesUrlPrefix;
+        return STATIC_FILES_URL_PREFIX;
     }
 
     get STATIC_MEDIA_URL_PREFIX() {
-        return this._config.staticMediaUrlPrefix;
+        return STATIC_MEDIA_URL_PREFIX;
     }
 
     // expose underlying functions to ease testing
