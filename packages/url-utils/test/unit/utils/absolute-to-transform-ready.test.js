@@ -105,6 +105,52 @@ describe('utils: absoluteToTransformReady()', function () {
         });
     });
 
+    describe('cdn asset bases', function () {
+        const siteUrl = 'https://my-blog.com';
+        const mediaCdn = 'https://storage.ghost.io/c/site-uuid';
+        const filesCdn = 'https://storage.ghost.io/c/site-uuid';
+
+        it('converts media CDN URLs to transform-ready format', function () {
+            const url = 'https://storage.ghost.io/c/site-uuid/content/media/2025/01/video.mp4';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn
+            });
+
+            result.should.equal('__GHOST_URL__/content/media/2025/01/video.mp4');
+        });
+
+        it('converts files CDN URLs to transform-ready format', function () {
+            const url = 'https://storage.ghost.io/c/site-uuid/content/files/2025/01/document.pdf';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticFilesUrlPrefix: 'content/files',
+                filesBaseUrl: filesCdn
+            });
+
+            result.should.equal('__GHOST_URL__/content/files/2025/01/document.pdf');
+        });
+
+        it('still converts site-hosted media when CDN base configured', function () {
+            const url = 'https://my-blog.com/content/media/2025/01/video.mp4';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn
+            });
+
+            result.should.equal('__GHOST_URL__/content/media/2025/01/video.mp4');
+        });
+
+        it('returns original URL when base does not match', function () {
+            const url = 'https://other-storage.ghost.io/c/site-uuid/content/media/2025/01/video.mp4';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn
+            });
+
+            result.should.equal('https://other-storage.ghost.io/c/site-uuid/content/media/2025/01/video.mp4');
+        });
+    });
+
     describe('with no root', function () {
         it('returns relative path from url', function () {
             let url = 'https://example.com/subdir/my/file.png';

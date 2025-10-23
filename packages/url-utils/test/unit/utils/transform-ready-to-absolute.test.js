@@ -49,6 +49,39 @@ describe('utils: transformReadyToAbsolute()', function () {
         });
     });
 
+    describe('cdn asset replacement', function () {
+        const siteUrl = 'https://site-base.com';
+        const mediaCdn = 'https://media-cdn.com/ns';
+        const filesCdn = 'https://files-cdn.com/ns';
+
+        it('routes images to site and files/media to respective CDNs', function () {
+            const options = {
+                staticImageUrlPrefix: 'content/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: siteUrl,
+                filesBaseUrl: filesCdn,
+                mediaBaseUrl: mediaCdn
+            };
+
+            const imageResult = transformReadyToAbsolute('__GHOST_URL__/content/images/pic.jpg', siteUrl, options);
+            const mediaResult = transformReadyToAbsolute('__GHOST_URL__/content/media/video.mp4', siteUrl, options);
+            const filesResult = transformReadyToAbsolute('__GHOST_URL__/content/files/doc.pdf', siteUrl, options);
+
+            imageResult.should.equal('https://site-base.com/content/images/pic.jpg');
+            mediaResult.should.equal('https://media-cdn.com/ns/content/media/video.mp4');
+            filesResult.should.equal('https://files-cdn.com/ns/content/files/doc.pdf');
+        });
+
+        it('falls back to site url when CDN base is missing', function () {
+            const result = transformReadyToAbsolute('__GHOST_URL__/content/media/video.mp4', siteUrl, {
+                staticMediaUrlPrefix: 'content/media'
+            });
+
+            result.should.equal('https://site-base.com/content/media/video.mp4');
+        });
+    });
+
     describe('html', function () {
         const siteUrl = 'http://my-ghost-blog.com';
         let options;
