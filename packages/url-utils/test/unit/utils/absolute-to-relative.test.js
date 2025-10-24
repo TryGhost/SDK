@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const absoluteToRelative = require('../../../lib/utils/absolute-to-relative');
+const absoluteToRelative = require('../../../lib/utils/absolute-to-relative').default;
 
 describe('utils: absoluteToRelative()', function () {
     it('ignores relative URLs', function () {

@@ -2,8 +2,9 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const UrlUtils = require('../../../lib/UrlUtils');
-const lexicalAbsoluteToTransformReady = require('../../../lib/utils/lexical-absolute-to-transform-ready');
+const UrlUtilsModule = require('../../../lib/UrlUtils');
+const UrlUtils = UrlUtilsModule.default || UrlUtilsModule.UrlUtils;
+const lexicalAbsoluteToTransformReady = require('../../../lib/utils/lexical-absolute-to-transform-ready').default;
 
 describe('utils: lexicalAbsoluteToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
