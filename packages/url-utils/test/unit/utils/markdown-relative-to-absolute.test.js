@@ -8,8 +8,8 @@ const sinon = require('sinon');
 const rewire = require('rewire');
 
 const remark = require('remark');
-const markdownTransform = rewire('../../../lib/utils/markdown-transform');
-const markdownRelativeToAbsolute = rewire('../../../lib/utils/markdown-relative-to-absolute');
+const markdownTransform = rewire('../../../src/utils/markdown-transform');
+const markdownRelativeToAbsolute = rewire('../../../src/utils/markdown-relative-to-absolute');
 
 describe('utils: markdownRelativeToAbsolute()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
