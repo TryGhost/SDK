@@ -27,7 +27,7 @@ function mobiledocTransform(
     // options.cardTransformers has an object for each card that has a name and multiple
     // transformer functions. By collecting the functions we need into a named object it
     // reduces the need to loop through and find the transformer for each card later on
-    const cardTransformers: Record<string, (payload: any, options: MobiledocTransformOptions) => any> = {};
+    const cardTransformers: Record<string, (payload: any, transformOpts: MobiledocTransformOptions) => any> = {};
     options.cardTransformers.forEach((cardTransformer) => {
         if (options.transformType) {
             cardTransformers[cardTransformer.name] = cardTransformer[options.transformType];

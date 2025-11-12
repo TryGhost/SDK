@@ -18,10 +18,10 @@ function markdownRelativeToTransformReady(markdown: string = '', siteUrl: string
     }
 
     const transformFunctions = {
-        html: (html: string, _siteUrl: string, _itemPath: string, _options: any): string => {
+        html: (html: string, _siteUrl: string, _itemPath: string, _htmlOpts: any): string => {
             return htmlRelativeToTransformReady(html, siteUrl, itemPath, options);
         },
-        url: (url: string, _siteUrl: string, _itemPath: string, _options: any): string => {
+        url: (url: string, _siteUrl: string, _itemPath: string, _urlOpts: any): string => {
             return relativeToTransformReady(url, siteUrl, itemPath, options);
         }
     };

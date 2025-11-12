@@ -1,5 +1,7 @@
 let remark: any;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const footnotes = require('remark-footnotes');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const visit = require('unist-util-visit');
 
 interface MarkdownTransformOptions {
@@ -50,6 +52,7 @@ function markdownTransform(
     const replacements: Replacement[] = [];
 
     if (!remark) {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         remark = require('remark');
     }
 
@@ -98,8 +101,8 @@ function markdownTransform(
         // have urls at the end and we see replacements for outermost nested nodes first
         const transformed = replaceLast(replacement.old, replacement.new, original);
 
-        let before = result.slice(0, replacement.start + offsetAdjustment);
-        let after = result.slice(replacement.end + offsetAdjustment, result.length);
+        const before = result.slice(0, replacement.start + offsetAdjustment);
+        const after = result.slice(replacement.end + offsetAdjustment, result.length);
 
         result = before + transformed + after;
 

@@ -10,11 +10,11 @@ interface MarkdownRelativeToAbsoluteOptions {
 
 function markdownRelativeToAbsolute(markdown: string = '', siteUrl: string, itemPath?: string, _options: MarkdownRelativeToAbsoluteOptions = {}): string {
     const defaultOptions: Required<Pick<MarkdownRelativeToAbsoluteOptions, 'assetsOnly'>> = {assetsOnly: false};
-    const options = Object.assign({}, defaultOptions, _options);
+    const markdownOptions = Object.assign({}, defaultOptions, _options);
 
-    options.earlyExitMatchStr = '\\]\\([^\\s\\)]|href=|src=|srcset=';
-    if (options.assetsOnly) {
-        options.earlyExitMatchStr = options.staticImageUrlPrefix;
+    markdownOptions.earlyExitMatchStr = '\\]\\([^\\s\\)]|href=|src=|srcset=';
+    if (markdownOptions.assetsOnly) {
+        markdownOptions.earlyExitMatchStr = markdownOptions.staticImageUrlPrefix;
     }
 
     const transformFunctions = {
@@ -22,7 +22,7 @@ function markdownRelativeToAbsolute(markdown: string = '', siteUrl: string, item
         url: relativeToAbsolute
     };
 
-    return markdownTransform(markdown, siteUrl, transformFunctions, itemPath || '', options);
+    return markdownTransform(markdown, siteUrl, transformFunctions, itemPath || '', markdownOptions);
 }
 
 export default markdownRelativeToAbsolute;

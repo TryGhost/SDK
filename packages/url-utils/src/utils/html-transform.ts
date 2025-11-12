@@ -110,7 +110,7 @@ function htmlTransform(
 
                 urls.forEach((url, i) => {
                     if (absoluteUrls[i]) {
-                        let regex = new RegExp(escapeRegExp(url), 'g');
+                        const regex = new RegExp(escapeRegExp(url), 'g');
                         transformedValue = transformedValue.replace(regex, absoluteUrls[i]);
                     }
                 });

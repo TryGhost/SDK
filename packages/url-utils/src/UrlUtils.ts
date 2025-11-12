@@ -31,7 +31,7 @@ interface UrlUtilsOptions {
 
 // similar to Object.assign but will not override defaults if a source value is undefined
 function assignOptions<T extends Record<string, any>>(target: T, ...sources: Array<Partial<T>>): T {
-    const options = sources.map((x) => {
+    const options = sources.map((x: Partial<T>) => {
         return Object.entries(x)
             .filter(([, value]) => value !== undefined)
             .reduce((obj, [key, value]) => {
@@ -72,7 +72,7 @@ class UrlUtils {
 
         // Handle legacy format where slugs is passed as an array
         if (Array.isArray(this._config.slugs)) {
-            this._config.slugs = { protected: this._config.slugs as any };
+            this._config.slugs = {protected: this._config.slugs as any};
         }
 
         this.getSubdir = options.getSubdir;
@@ -265,7 +265,7 @@ class UrlUtils {
     }
 
     redirectToAdmin(status: number, res: any, adminPath: string): any {
-        let redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
+        const redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
 
         if (status === 301) {
             return this.redirect301(res, redirectUrl);
