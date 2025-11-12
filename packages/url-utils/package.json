@@ -28,7 +28,7 @@
     "es/",
     "umd/",
     "types/",
-    "index.js"
+    "index.ts"
   ],
   "publishConfig": {
     "access": "public"
