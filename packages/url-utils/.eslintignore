@@ -1,0 +1,9 @@
+cjs/
+es/
+umd/
+types/
+coverage/
+node_modules/
+*.min.js
+*.map
+

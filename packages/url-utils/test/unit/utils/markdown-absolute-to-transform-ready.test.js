@@ -8,8 +8,8 @@ const rewire = require('rewire');
 const sinon = require('sinon');
 
 const remark = require('remark');
-const markdownTransform = rewire('../../../lib/utils/markdown-transform');
-const markdownAbsoluteToTransformReady = rewire('../../../lib/utils/markdown-absolute-to-transform-ready');
+const markdownTransform = rewire('../../../cjs/utils/markdown-transform');
+const markdownAbsoluteToTransformReady = rewire('../../../cjs/utils/markdown-absolute-to-transform-ready');
 
 describe('utils: markdownAbsoluteToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
@@ -117,6 +117,57 @@ Testing <a href="__GHOST_URL__/link">Inline</a> with **markdown**
         result.should.equal('[![Test](__GHOST_URL__/content/images/2014/01/test.jpg)](__GHOST_URL__/content/images/2014/01/test.jpg)');
     });
 
+    it('handles default options when options is not provided', function () {
+        const markdown = 'This is a [link](http://my-ghost-blog.com/link)';
+        const result = markdownAbsoluteToTransformReady(markdown, siteUrl);
+
+        result.should.equal('This is a [link](__GHOST_URL__/link)');
+    });
+
+    it('handles ignoreProtocol option', function () {
+        const markdown = 'This is a [link](https://my-ghost-blog.com/link)';
+        const testOptions = {
+            ignoreProtocol: true
+        };
+        const result = markdownAbsoluteToTransformReady(markdown, 'http://my-ghost-blog.com', testOptions);
+
+        result.should.equal('This is a [link](__GHOST_URL__/link)');
+    });
+
+    it('handles ignoreProtocol option set to false', function () {
+        const markdown = 'This is a [link](https://my-ghost-blog.com/link)';
+        const testOptions = {
+            ignoreProtocol: false
+        };
+        const result = markdownAbsoluteToTransformReady(markdown, 'http://my-ghost-blog.com', testOptions);
+
+        result.should.equal('This is a [link](https://my-ghost-blog.com/link)');
+    });
+
+    it('handles assetsOnly option', function () {
+        const markdown = '![](http://my-ghost-blog.com/content/images/image.png) [](http://my-ghost-blog.com/not-an-asset)';
+        const testOptions = {
+            assetsOnly: true
+        };
+        const result = markdownAbsoluteToTransformReady(markdown, siteUrl, testOptions);
+
+        result.should.equal('![](__GHOST_URL__/content/images/image.png) [](http://my-ghost-blog.com/not-an-asset)');
+    });
+
+    it('handles siteUrl with trailing slash', function () {
+        const markdown = 'This is a [link](http://my-ghost-blog.com/link)';
+        const result = markdownAbsoluteToTransformReady(markdown, 'http://my-ghost-blog.com/', options);
+
+        result.should.equal('This is a [link](__GHOST_URL__/link)');
+    });
+
+    it('handles siteUrl with https protocol', function () {
+        const markdown = 'This is a [link](https://my-ghost-blog.com/link)';
+        const result = markdownAbsoluteToTransformReady(markdown, 'https://my-ghost-blog.com', options);
+
+        result.should.equal('This is a [link](__GHOST_URL__/link)');
+    });
+
     describe('AST parsing is skipped', function () {
         let remarkSpy, sandbox;
 
@@ -124,7 +175,7 @@ Testing <a href="__GHOST_URL__/link">Inline</a> with **markdown**
             sandbox = sinon.createSandbox();
             remarkSpy = sinon.spy(remark);
             markdownTransform.__set__('remark', remarkSpy);
-            markdownAbsoluteToTransformReady.__set__('markdownTransform', markdownTransform);
+            markdownAbsoluteToTransformReady.__set__('markdown_transform_1', {default: markdownTransform});
         });
 
         afterEach(function () {

@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const absoluteToTransformReady = require('../../../lib/utils/absolute-to-transform-ready');
+const absoluteToTransformReady = require('../../../cjs/utils/absolute-to-transform-ready');
 
 describe('utils: absoluteToTransformReady()', function () {
     it('ignores relative URLs', function () {
@@ -33,6 +33,16 @@ describe('utils: absoluteToTransformReady()', function () {
         let url = 'http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong';
         let root = 'https://example.com';
         absoluteToTransformReady(url, root).should.eql('http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong');
+    });
+
+    it('handles unparseable URLs that throw errors', function () {
+        // Test URLs that cause URL constructor to throw
+        let url = 'http://[invalid';
+        let root = 'https://example.com';
+        absoluteToTransformReady(url, root).should.eql('http://[invalid');
+
+        url = 'not a valid url at all!!!';
+        absoluteToTransformReady(url, root).should.eql('not a valid url at all!!!');
     });
 
     describe('with matching root', function () {

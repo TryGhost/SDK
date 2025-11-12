@@ -6,8 +6,8 @@ const rewire = require('rewire');
 const sinon = require('sinon');
 
 const cheerio = require('cheerio');
-const htmlTransform = rewire('../../../lib/utils/html-transform');
-const htmlAbsoluteToTransformReady = require('../../../lib/utils/html-absolute-to-transform-ready');
+const htmlTransform = rewire('../../../cjs/utils/html-transform');
+const htmlAbsoluteToTransformReady = require('../../../cjs/utils/html-absolute-to-transform-ready');
 
 describe('utils: htmlAbsoluteToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
