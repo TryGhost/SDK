@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const plaintextRelativeToTransformReady = require('../../../src/utils/plaintext-relative-to-transform-ready');
+const plaintextRelativeToTransformReady = require('../../../cjs/utils/plaintext-relative-to-transform-ready');
 
 describe('utils: plaintextRelativeToTransformReady', function () {
     it('works', function () {

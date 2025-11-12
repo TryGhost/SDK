@@ -1,4 +1,4 @@
-const isSSL = require('../../../src/utils/is-ssl');
+const isSSL = require('../../../cjs/utils/is-ssl');
 
 describe('isSSL', function () {
     it('detects https protocol correctly', function () {

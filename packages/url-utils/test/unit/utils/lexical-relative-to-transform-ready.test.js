@@ -2,8 +2,8 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const UrlUtils = require('../../../src/UrlUtils');
-const lexicalRelativeToTransformReady = require('../../../src/utils/lexical-relative-to-transform-ready');
+const UrlUtils = require('../../../cjs/UrlUtils');
+const lexicalRelativeToTransformReady = require('../../../cjs/utils/lexical-relative-to-transform-ready');
 
 describe('utils: lexicalRelativeToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';

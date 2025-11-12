@@ -2,8 +2,8 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const UrlUtils = require('../../../src/UrlUtils');
-const lexicalAbsoluteToTransformReady = require('../../../src/utils/lexical-absolute-to-transform-ready');
+const UrlUtils = require('../../../cjs/UrlUtils');
+const lexicalAbsoluteToTransformReady = require('../../../cjs/utils/lexical-absolute-to-transform-ready');
 
 describe('utils: lexicalAbsoluteToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
