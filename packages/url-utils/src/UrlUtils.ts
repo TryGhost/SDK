@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Contains all path information to be used throughout the codebase.
 const _ = require('lodash');
 const utils = require('./utils');
