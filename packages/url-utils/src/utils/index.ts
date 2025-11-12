@@ -1,4 +1,3 @@
-// @ts-nocheck
 import deduplicateDoubleSlashes from './deduplicate-double-slashes';
 import deduplicateSubdirectory from './deduplicate-subdirectory';
 import isSSL from './is-ssl';
@@ -36,7 +35,46 @@ import plaintextAbsoluteToTransformReady from './plaintext-absolute-to-transform
 import plaintextRelativeToTransformReady from './plaintext-relative-to-transform-ready';
 import plaintextToTransformReady from './plaintext-to-transform-ready';
 
-module.exports = {
+type Utils = {
+    absoluteToRelative: typeof absoluteToRelative;
+    absoluteToTransformReady: typeof absoluteToTransformReady;
+    deduplicateDoubleSlashes: typeof deduplicateDoubleSlashes;
+    deduplicateSubdirectory: typeof deduplicateSubdirectory;
+    htmlAbsoluteToRelative: typeof htmlAbsoluteToRelative;
+    htmlRelativeToAbsolute: typeof htmlRelativeToAbsolute;
+    htmlAbsoluteToTransformReady: typeof htmlAbsoluteToTransformReady;
+    htmlRelativeToTransformReady: typeof htmlRelativeToTransformReady;
+    htmlToTransformReady: typeof htmlToTransformReady;
+    isSSL: typeof isSSL;
+    markdownAbsoluteToRelative: typeof markdownAbsoluteToRelative;
+    markdownRelativeToAbsolute: typeof markdownRelativeToAbsolute;
+    markdownAbsoluteToTransformReady: typeof markdownAbsoluteToTransformReady;
+    markdownRelativeToTransformReady: typeof markdownRelativeToTransformReady;
+    markdownToTransformReady: typeof markdownToTransformReady;
+    mobiledocAbsoluteToRelative: typeof mobiledocAbsoluteToRelative;
+    mobiledocRelativeToAbsolute: typeof mobiledocRelativeToAbsolute;
+    mobiledocAbsoluteToTransformReady: typeof mobiledocAbsoluteToTransformReady;
+    mobiledocRelativeToTransformReady: typeof mobiledocRelativeToTransformReady;
+    mobiledocToTransformReady: typeof mobiledocToTransformReady;
+    lexicalAbsoluteToRelative: typeof lexicalAbsoluteToRelative;
+    lexicalRelativeToAbsolute: typeof lexicalRelativeToAbsolute;
+    lexicalAbsoluteToTransformReady: typeof lexicalAbsoluteToTransformReady;
+    lexicalRelativeToTransformReady: typeof lexicalRelativeToTransformReady;
+    lexicalToTransformReady: typeof lexicalToTransformReady;
+    plaintextAbsoluteToTransformReady: typeof plaintextAbsoluteToTransformReady;
+    plaintextRelativeToTransformReady: typeof plaintextRelativeToTransformReady;
+    plaintextToTransformReady: typeof plaintextToTransformReady;
+    relativeToAbsolute: typeof relativeToAbsolute;
+    relativeToTransformReady: typeof relativeToTransformReady;
+    replacePermalink: typeof replacePermalink;
+    stripSubdirectoryFromPath: typeof stripSubdirectoryFromPath;
+    toTransformReady: typeof toTransformReady;
+    transformReadyToAbsolute: typeof transformReadyToAbsolute;
+    transformReadyToRelative: typeof transformReadyToRelative;
+    urlJoin: typeof urlJoin;
+};
+
+const utils: Utils = {
     absoluteToRelative,
     absoluteToTransformReady,
     deduplicateDoubleSlashes,
@@ -74,3 +112,6 @@ module.exports = {
     transformReadyToRelative,
     urlJoin
 };
+
+export default utils;
+module.exports = utils;
