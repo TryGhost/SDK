@@ -175,7 +175,7 @@ Testing <a href="__GHOST_URL__/link">Inline</a> with **markdown**
             sandbox = sinon.createSandbox();
             remarkSpy = sinon.spy(remark);
             markdownTransform.__set__('remark', remarkSpy);
-            markdownAbsoluteToTransformReady.__set__('markdownTransform', markdownTransform);
+            markdownAbsoluteToTransformReady.__set__('markdown_transform_1', {default: markdownTransform});
         });
 
         afterEach(function () {

@@ -1,9 +1,28 @@
-// @ts-nocheck
-let remark;
+let remark: any;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const footnotes = require('remark-footnotes');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const visit = require('unist-util-visit');
 
-function replaceLast(find, replace, str) {
+interface MarkdownTransformOptions {
+    assetsOnly?: boolean;
+    ignoreProtocol?: boolean;
+    earlyExitMatchStr?: string;
+}
+
+interface TransformFunctions {
+    html: (html: string, siteUrl: string, itemPath: string, options: MarkdownTransformOptions) => string;
+    url: (url: string, siteUrl: string, itemPath: string, options: MarkdownTransformOptions) => string;
+}
+
+interface Replacement {
+    old: string;
+    new: string;
+    start: number;
+    end: number;
+}
+
+function replaceLast(find: string, replace: string, str: string): string {
     const lastIndex = str.lastIndexOf(find);
 
     if (lastIndex === -1) {
@@ -16,17 +35,24 @@ function replaceLast(find, replace, str) {
     return begin + replace + end;
 }
 
-function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
+function markdownTransform(
+    markdown: string = '',
+    siteUrl: string,
+    transformFunctions: TransformFunctions,
+    itemPath: string,
+    _options: MarkdownTransformOptions = {}
+): string {
+    const defaultOptions: Required<Pick<MarkdownTransformOptions, 'assetsOnly' | 'ignoreProtocol'>> = {assetsOnly: false, ignoreProtocol: true};
     const options = Object.assign({}, defaultOptions, _options);
 
     if (!markdown || (options.earlyExitMatchStr && !markdown.match(new RegExp(options.earlyExitMatchStr)))) {
         return markdown;
     }
 
-    const replacements = [];
+    const replacements: Replacement[] = [];
 
     if (!remark) {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         remark = require('remark');
     }
 
@@ -35,12 +61,12 @@ function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath,
         .use(footnotes, {inlineNotes: true})
         .parse(markdown);
 
-    visit(tree, ['link', 'image', 'html'], (node) => {
-        if (node.type === 'html' && node.value.match(/src|srcset|href/)) {
+    visit(tree, ['link', 'image', 'html'], (node: any) => {
+        if (node.type === 'html' && node.value && node.value.match(/src|srcset|href/)) {
             const oldValue = node.value;
             const newValue = transformFunctions.html(node.value, siteUrl, itemPath, options);
 
-            if (newValue !== oldValue) {
+            if (newValue !== oldValue && node.position) {
                 replacements.push({
                     old: oldValue,
                     new: newValue,
@@ -50,11 +76,11 @@ function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath,
             }
         }
 
-        if (node.type === 'link' || node.type === 'image') {
+        if ((node.type === 'link' || node.type === 'image') && node.url) {
             const oldValue = node.url;
             const newValue = transformFunctions.url(node.url, siteUrl, itemPath, options);
 
-            if (newValue !== oldValue) {
+            if (newValue !== oldValue && node.position) {
                 replacements.push({
                     old: oldValue,
                     new: newValue,
@@ -75,8 +101,8 @@ function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath,
         // have urls at the end and we see replacements for outermost nested nodes first
         const transformed = replaceLast(replacement.old, replacement.new, original);
 
-        let before = result.slice(0, replacement.start + offsetAdjustment);
-        let after = result.slice(replacement.end + offsetAdjustment, result.length);
+        const before = result.slice(0, replacement.start + offsetAdjustment);
+        const after = result.slice(replacement.end + offsetAdjustment, result.length);
 
         result = before + transformed + after;
 
@@ -96,4 +122,5 @@ function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath,
     return result;
 }
 
+export default markdownTransform;
 module.exports = markdownTransform;

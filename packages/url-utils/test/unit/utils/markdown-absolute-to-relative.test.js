@@ -124,7 +124,7 @@ Testing <a href="/link">Inline</a> with **markdown**
             sandbox = sinon.createSandbox();
             remarkSpy = sinon.spy(remark);
             markdownTransform.__set__('remark', remarkSpy);
-            markdownAbsoluteToRelative.__set__('markdownTransform', markdownTransform);
+            markdownAbsoluteToRelative.__set__('markdown_transform_1', {default: markdownTransform});
         });
 
         afterEach(function () {

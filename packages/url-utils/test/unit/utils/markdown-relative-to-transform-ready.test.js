@@ -172,7 +172,7 @@ Just testing
             sandbox = sinon.createSandbox();
             remarkSpy = sinon.spy(remark);
             markdownTransform.__set__('remark', remarkSpy);
-            markdownRelativeToTransformReady.__set__('markdownTransform', markdownTransform);
+            markdownRelativeToTransformReady.__set__('markdown_transform_1', {default: markdownTransform});
         });
 
         afterEach(function () {

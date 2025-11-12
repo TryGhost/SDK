@@ -1,26 +1,32 @@
-// @ts-nocheck
-const markdownTransform = require('./markdown-transform');
-const absoluteToRelative = require('./absolute-to-relative');
-const htmlAbsoluteToRelative = require('./html-absolute-to-relative');
+import markdownTransform from './markdown-transform';
+import absoluteToRelative from './absolute-to-relative';
+import htmlAbsoluteToRelative from './html-absolute-to-relative';
 
-function markdownAbsoluteToRelative(markdown = '', siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
-    const options = Object.assign({}, defaultOptions, _options);
+interface MarkdownAbsoluteToRelativeOptions {
+    assetsOnly?: boolean;
+    ignoreProtocol?: boolean;
+    earlyExitMatchStr?: string;
+}
 
-    options.earlyExitMatchStr = options.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
-    options.earlyExitMatchStr = options.earlyExitMatchStr.replace(/\/$/, '');
+function markdownAbsoluteToRelative(markdown: string = '', siteUrl: string, _options: MarkdownAbsoluteToRelativeOptions = {}): string {
+    const defaultOptions: Required<Pick<MarkdownAbsoluteToRelativeOptions, 'assetsOnly' | 'ignoreProtocol'>> = {assetsOnly: false, ignoreProtocol: true};
+    const markdownOptions = Object.assign({}, defaultOptions, _options);
+
+    markdownOptions.earlyExitMatchStr = markdownOptions.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
+    markdownOptions.earlyExitMatchStr = markdownOptions.earlyExitMatchStr.replace(/\/$/, '');
 
     // need to ignore itemPath because absoluteToRelative functions doen't take that option
     const transformFunctions = {
-        html(_url, _siteUrl, _itemPath, __options) {
-            return htmlAbsoluteToRelative(_url, _siteUrl, __options);
+        html(_url: string, _siteUrl: string, _itemPath: string, htmlOpts: any): string {
+            return htmlAbsoluteToRelative(_url, _siteUrl, htmlOpts);
         },
-        url(_url, _siteUrl, _itemPath, __options) {
-            return absoluteToRelative(_url, _siteUrl, __options);
+        url(_url: string, _siteUrl: string, _itemPath: string, urlOpts: any): string {
+            return absoluteToRelative(_url, _siteUrl, urlOpts);
         }
     };
 
-    return markdownTransform(markdown, siteUrl, transformFunctions, '', options);
+    return markdownTransform(markdown, siteUrl, transformFunctions, '', markdownOptions);
 }
 
+export default markdownAbsoluteToRelative;
 module.exports = markdownAbsoluteToRelative;
