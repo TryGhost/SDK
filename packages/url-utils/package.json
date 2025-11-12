@@ -8,7 +8,11 @@
   },
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "index.js",
+  "main": "cjs/UrlUtils.js",
+  "module": "es/UrlUtils.js",
+  "umd:main": "umd/url-utils.min.js",
+  "types": "types/src/UrlUtils.d.ts",
+  "source": "src/UrlUtils.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "pretest": "yarn build",
@@ -24,7 +28,7 @@
     "es/",
     "umd/",
     "types/",
-    "index.js"
+    "index.ts"
   ],
   "publishConfig": {
     "access": "public"
