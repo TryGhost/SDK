@@ -1,10 +1,15 @@
-// @ts-nocheck
-const markdownTransform = require('./markdown-transform');
-const absoluteToTransformReady = require('./absolute-to-transform-ready');
-const htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
+import markdownTransform from './markdown-transform';
+import absoluteToTransformReady from './absolute-to-transform-ready';
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
 
-function markdownAbsoluteToTransformReady(markdown = '', siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
+interface MarkdownAbsoluteToTransformReadyOptions {
+    assetsOnly?: boolean;
+    ignoreProtocol?: boolean;
+    earlyExitMatchStr?: string;
+}
+
+function markdownAbsoluteToTransformReady(markdown: string = '', siteUrl: string, _options: MarkdownAbsoluteToTransformReadyOptions = {}): string {
+    const defaultOptions: Required<Pick<MarkdownAbsoluteToTransformReadyOptions, 'assetsOnly' | 'ignoreProtocol'>> = {assetsOnly: false, ignoreProtocol: true};
     const options = Object.assign({}, defaultOptions, _options);
 
     options.earlyExitMatchStr = options.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
@@ -12,10 +17,10 @@ function markdownAbsoluteToTransformReady(markdown = '', siteUrl, _options = {})
 
     // need to ignore itemPath because absoluteToTransformReady functions doen't take that option
     const transformFunctions = {
-        html(_url, _siteUrl, _itemPath, __options) {
+        html(_url: string, _siteUrl: string, _itemPath: string, __options: any): string {
             return htmlAbsoluteToTransformReady(_url, _siteUrl, __options);
         },
-        url(_url, _siteUrl, _itemPath, __options) {
+        url(_url: string, _siteUrl: string, _itemPath: string, __options: any): string {
             return absoluteToTransformReady(_url, _siteUrl, __options);
         }
     };
@@ -23,4 +28,4 @@ function markdownAbsoluteToTransformReady(markdown = '', siteUrl, _options = {})
     return markdownTransform(markdown, siteUrl, transformFunctions, '', options);
 }
 
-module.exports = markdownAbsoluteToTransformReady;
+export default markdownAbsoluteToTransformReady;

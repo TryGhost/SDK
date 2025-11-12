@@ -1,4 +1,3 @@
-// @ts-nocheck
 const _ = require('lodash');
 
 // options.transformMap = {
@@ -9,8 +8,31 @@ const _ = require('lodash');
 // }
 // options.transformType = 'relativeToAbsolute'
 
-function lexicalTransform(serializedLexical, siteUrl, transformFunction, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
+interface LexicalNode {
+    getType: () => string;
+    urlTransformMap?: Record<string, string>;
+}
+
+interface LexicalTransformOptions {
+    assetsOnly?: boolean;
+    secure?: boolean;
+    nodes?: LexicalNode[];
+    transformMap?: Record<string, Record<string, (value: string) => string>>;
+    transformType?: string;
+    siteUrl?: string;
+    itemPath?: string;
+}
+
+type LexicalTransformFunction = (url: string, siteUrl: string, itemPath: string, options: LexicalTransformOptions) => string;
+
+function lexicalTransform(
+    serializedLexical: string,
+    siteUrl: string,
+    transformFunction: LexicalTransformFunction,
+    itemPath: string,
+    _options: LexicalTransformOptions = {}
+): string {
+    const defaultOptions: Required<Pick<LexicalTransformOptions, 'assetsOnly' | 'secure' | 'nodes' | 'transformMap'>> = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
     const options = Object.assign({}, defaultOptions, _options, {siteUrl, itemPath});
 
     if (!serializedLexical) {
@@ -27,39 +49,47 @@ function lexicalTransform(serializedLexical, siteUrl, transformFunction, itemPat
 
     // create a map of node types to urlTransformMap objects
     // e.g. {'image': {src: 'url', caption: 'html'}
-    const nodeMap = new Map();
+    const nodeMap = new Map<string, Record<string, string>>();
     options.nodes.forEach(node => node.urlTransformMap && nodeMap.set(node.getType(), node.urlTransformMap));
 
-    const transformProperty = function (obj, propertyPath, transform) {
+    const transformProperty = function (obj: any, propertyPath: string, transform: string | Record<string, string>): void {
         const propertyValue = _.get(obj, propertyPath);
 
         if (Array.isArray(propertyValue)) {
             propertyValue.forEach((item) => {
                 // arrays of objects need to be defined as a nested object in the urlTransformMap
                 // so the `transform` value is that nested object
-                Object.entries(transform).forEach(([itemPropertyPath, itemTransform]) => {
-                    transformProperty(item, itemPropertyPath, itemTransform);
-                });
+                if (typeof transform === 'object') {
+                    Object.entries(transform).forEach(([itemPropertyPath, itemTransform]) => {
+                        transformProperty(item, itemPropertyPath, itemTransform);
+                    });
+                }
             });
 
             return;
         }
 
-        if (propertyValue) {
-            _.set(obj, propertyPath, options.transformMap[options.transformType][transform](propertyValue));
+        if (propertyValue && typeof transform === 'string' && options.transformMap && options.transformType) {
+            const transformMap = options.transformMap[options.transformType];
+            if (transformMap && transformMap[transform]) {
+                _.set(obj, propertyPath, transformMap[transform](propertyValue));
+            }
         }
     };
 
     // recursively walk the Lexical node tree transforming any card data properties and links
-    const transformChildren = function (children) {
+    const transformChildren = function (children: any[]): void {
         for (const child of children) {
             const isCard = child.type && nodeMap.has(child.type);
             const isLink = !!child.url;
 
             if (isCard) {
-                Object.entries(nodeMap.get(child.type)).forEach(([propertyPath, transform]) => {
-                    transformProperty(child, propertyPath, transform);
-                });
+                const urlTransformMap = nodeMap.get(child.type);
+                if (urlTransformMap) {
+                    Object.entries(urlTransformMap).forEach(([propertyPath, transform]) => {
+                        transformProperty(child, propertyPath, transform);
+                    });
+                }
             } else if (isLink) {
                 child.url = transformFunction(child.url, siteUrl, itemPath, options);
             }
@@ -75,4 +105,4 @@ function lexicalTransform(serializedLexical, siteUrl, transformFunction, itemPat
     return JSON.stringify(lexical);
 }
 
-module.exports = lexicalTransform;
+export default lexicalTransform;

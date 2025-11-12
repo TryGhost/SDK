@@ -1,14 +1,31 @@
-// @ts-nocheck
-const plaintextRelativeToTransformReady = require('./plaintext-relative-to-transform-ready');
-const plaintextAbsoluteToTransformReady = require('./plaintext-absolute-to-transform-ready');
+import plaintextRelativeToTransformReady from './plaintext-relative-to-transform-ready';
+import plaintextAbsoluteToTransformReady from './plaintext-absolute-to-transform-ready';
 
-function plaintextToTransformReady(plaintext, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
-    }
-    const relativeTransformed = plaintextRelativeToTransformReady(plaintext, siteUrl, itemPath, options);
-    return plaintextAbsoluteToTransformReady(relativeTransformed, siteUrl, options);
+interface PlaintextToTransformReadyOptions {
+    replacementStr?: string;
+    withoutSubdirectory?: boolean;
+    staticImageUrlPrefix?: string;
+    secure?: boolean;
 }
 
-module.exports = plaintextToTransformReady;
+function plaintextToTransformReady(
+    plaintext: string,
+    siteUrl: string,
+    itemPath?: string | PlaintextToTransformReadyOptions | null,
+    options?: PlaintextToTransformReadyOptions
+): string {
+    let actualItemPath: string | null = null;
+    let actualOptions: PlaintextToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
+    }
+    const relativeTransformed = plaintextRelativeToTransformReady(plaintext, siteUrl, actualItemPath, actualOptions);
+    return plaintextAbsoluteToTransformReady(relativeTransformed, siteUrl, actualItemPath, actualOptions);
+}
+
+export default plaintextToTransformReady;

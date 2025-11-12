@@ -1,10 +1,15 @@
-// @ts-nocheck
-const markdownTransform = require('./markdown-transform');
-const htmlRelativeToAbsolute = require('./html-relative-to-absolute');
-const relativeToAbsolute = require('./relative-to-absolute');
+import markdownTransform from './markdown-transform';
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
+import relativeToAbsolute from './relative-to-absolute';
 
-function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false};
+interface MarkdownRelativeToAbsoluteOptions {
+    assetsOnly?: boolean;
+    staticImageUrlPrefix?: string;
+    earlyExitMatchStr?: string;
+}
+
+function markdownRelativeToAbsolute(markdown: string = '', siteUrl: string, itemPath: string, _options: MarkdownRelativeToAbsoluteOptions = {}): string {
+    const defaultOptions: Required<Pick<MarkdownRelativeToAbsoluteOptions, 'assetsOnly'>> = {assetsOnly: false};
     const options = Object.assign({}, defaultOptions, _options);
 
     options.earlyExitMatchStr = '\\]\\([^\\s\\)]|href=|src=|srcset=';
@@ -20,4 +25,4 @@ function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options =
     return markdownTransform(markdown, siteUrl, transformFunctions, itemPath, options);
 }
 
-module.exports = markdownRelativeToAbsolute;
+export default markdownRelativeToAbsolute;

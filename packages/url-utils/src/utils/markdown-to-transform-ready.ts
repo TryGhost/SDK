@@ -1,14 +1,30 @@
-// @ts-nocheck
-const markdownRelativeToAbsolute = require('./markdown-relative-to-absolute');
-const markdownAbsoluteToTransformReady = require('./markdown-absolute-to-transform-ready');
+import markdownRelativeToAbsolute from './markdown-relative-to-absolute';
+import markdownAbsoluteToTransformReady from './markdown-absolute-to-transform-ready';
 
-function markdownToTransformReady(markdown, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
-    }
-    const absolute = markdownRelativeToAbsolute(markdown, siteUrl, itemPath, options);
-    return markdownAbsoluteToTransformReady(absolute, siteUrl, options);
+interface MarkdownToTransformReadyOptions {
+    assetsOnly?: boolean;
+    ignoreProtocol?: boolean;
+    staticImageUrlPrefix?: string;
 }
 
-module.exports = markdownToTransformReady;
+function markdownToTransformReady(
+    markdown: string,
+    siteUrl: string,
+    itemPath?: string | MarkdownToTransformReadyOptions | null,
+    options?: MarkdownToTransformReadyOptions
+): string {
+    let actualItemPath: string | null = null;
+    let actualOptions: MarkdownToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
+    }
+    const absolute = markdownRelativeToAbsolute(markdown, siteUrl, actualItemPath || '', actualOptions);
+    return markdownAbsoluteToTransformReady(absolute, siteUrl, actualOptions);
+}
+
+export default markdownToTransformReady;

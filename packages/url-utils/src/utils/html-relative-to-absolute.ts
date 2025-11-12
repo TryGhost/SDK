@@ -1,9 +1,15 @@
-// @ts-nocheck
-const htmlTransform = require('./html-transform');
-const relativeToAbsolute = require('./relative-to-absolute');
+import htmlTransform from './html-transform';
+import relativeToAbsolute from './relative-to-absolute';
 
-function htmlRelativeToAbsolute(html = '', siteUrl, itemPath, _options) {
-    const defaultOptions = {assetsOnly: false, secure: false};
+interface HtmlRelativeToAbsoluteOptions {
+    assetsOnly?: boolean;
+    secure?: boolean;
+    staticImageUrlPrefix?: string;
+    earlyExitMatchStr?: string;
+}
+
+function htmlRelativeToAbsolute(html: string = '', siteUrl: string, itemPath: string, _options: HtmlRelativeToAbsoluteOptions = {}): string {
+    const defaultOptions: Required<Pick<HtmlRelativeToAbsoluteOptions, 'assetsOnly' | 'secure'>> = {assetsOnly: false, secure: false};
     const options = Object.assign({}, defaultOptions, _options || {});
 
     // exit early and avoid parsing if the content does not contain an attribute we might transform
@@ -15,4 +21,4 @@ function htmlRelativeToAbsolute(html = '', siteUrl, itemPath, _options) {
     return htmlTransform(html, siteUrl, relativeToAbsolute, itemPath, options);
 }
 
-module.exports = htmlRelativeToAbsolute;
+export default htmlRelativeToAbsolute;

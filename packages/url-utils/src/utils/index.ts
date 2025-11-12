@@ -12,36 +12,59 @@ import relativeToTransformReady from './relative-to-transform-ready';
 import toTransformReady from './to-transform-ready';
 import transformReadyToAbsolute from './transform-ready-to-absolute';
 import transformReadyToRelative from './transform-ready-to-relative';
+import htmlAbsoluteToRelative from './html-absolute-to-relative';
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
+import htmlRelativeToTransformReady from './html-relative-to-transform-ready';
+import htmlToTransformReady from './html-to-transform-ready';
+import markdownAbsoluteToRelative from './markdown-absolute-to-relative';
+import markdownRelativeToAbsolute from './markdown-relative-to-absolute';
+import markdownAbsoluteToTransformReady from './markdown-absolute-to-transform-ready';
+import markdownRelativeToTransformReady from './markdown-relative-to-transform-ready';
+import markdownToTransformReady from './markdown-to-transform-ready';
+import mobiledocAbsoluteToRelative from './mobiledoc-absolute-to-relative';
+import mobiledocRelativeToAbsolute from './mobiledoc-relative-to-absolute';
+import mobiledocAbsoluteToTransformReady from './mobiledoc-absolute-to-transform-ready';
+import mobiledocRelativeToTransformReady from './mobiledoc-relative-to-transform-ready';
+import mobiledocToTransformReady from './mobiledoc-to-transform-ready';
+import lexicalAbsoluteToRelative from './lexical-absolute-to-relative';
+import lexicalRelativeToAbsolute from './lexical-relative-to-absolute';
+import lexicalAbsoluteToTransformReady from './lexical-absolute-to-transform-ready';
+import lexicalRelativeToTransformReady from './lexical-relative-to-transform-ready';
+import lexicalToTransformReady from './lexical-to-transform-ready';
+import plaintextAbsoluteToTransformReady from './plaintext-absolute-to-transform-ready';
+import plaintextRelativeToTransformReady from './plaintext-relative-to-transform-ready';
+import plaintextToTransformReady from './plaintext-to-transform-ready';
 
 module.exports = {
     absoluteToRelative,
     absoluteToTransformReady,
     deduplicateDoubleSlashes,
     deduplicateSubdirectory,
-    htmlAbsoluteToRelative: require('./html-absolute-to-relative'),
-    htmlRelativeToAbsolute: require('./html-relative-to-absolute'),
-    htmlAbsoluteToTransformReady: require('./html-absolute-to-transform-ready'),
-    htmlRelativeToTransformReady: require('./html-relative-to-transform-ready'),
-    htmlToTransformReady: require('./html-to-transform-ready'),
+    htmlAbsoluteToRelative,
+    htmlRelativeToAbsolute,
+    htmlAbsoluteToTransformReady,
+    htmlRelativeToTransformReady,
+    htmlToTransformReady,
     isSSL,
-    markdownAbsoluteToRelative: require('./markdown-absolute-to-relative'),
-    markdownRelativeToAbsolute: require('./markdown-relative-to-absolute'),
-    markdownAbsoluteToTransformReady: require('./markdown-absolute-to-transform-ready'),
-    markdownRelativeToTransformReady: require('./markdown-relative-to-transform-ready'),
-    markdownToTransformReady: require('./markdown-to-transform-ready'),
-    mobiledocAbsoluteToRelative: require('./mobiledoc-absolute-to-relative'),
-    mobiledocRelativeToAbsolute: require('./mobiledoc-relative-to-absolute'),
-    mobiledocAbsoluteToTransformReady: require('./mobiledoc-absolute-to-transform-ready'),
-    mobiledocRelativeToTransformReady: require('./mobiledoc-relative-to-transform-ready'),
-    mobiledocToTransformReady: require('./mobiledoc-to-transform-ready'),
-    lexicalAbsoluteToRelative: require('./lexical-absolute-to-relative'),
-    lexicalRelativeToAbsolute: require('./lexical-relative-to-absolute'),
-    lexicalAbsoluteToTransformReady: require('./lexical-absolute-to-transform-ready'),
-    lexicalRelativeToTransformReady: require('./lexical-relative-to-transform-ready'),
-    lexicalToTransformReady: require('./lexical-to-transform-ready'),
-    plaintextAbsoluteToTransformReady: require('./plaintext-absolute-to-transform-ready'),
-    plaintextRelativeToTransformReady: require('./plaintext-relative-to-transform-ready'),
-    plaintextToTransformReady: require('./plaintext-to-transform-ready'),
+    markdownAbsoluteToRelative,
+    markdownRelativeToAbsolute,
+    markdownAbsoluteToTransformReady,
+    markdownRelativeToTransformReady,
+    markdownToTransformReady,
+    mobiledocAbsoluteToRelative,
+    mobiledocRelativeToAbsolute,
+    mobiledocAbsoluteToTransformReady,
+    mobiledocRelativeToTransformReady,
+    mobiledocToTransformReady,
+    lexicalAbsoluteToRelative,
+    lexicalRelativeToAbsolute,
+    lexicalAbsoluteToTransformReady,
+    lexicalRelativeToTransformReady,
+    lexicalToTransformReady,
+    plaintextAbsoluteToTransformReady,
+    plaintextRelativeToTransformReady,
+    plaintextToTransformReady,
     relativeToAbsolute,
     relativeToTransformReady,
     replacePermalink,

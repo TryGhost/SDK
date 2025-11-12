@@ -1,10 +1,15 @@
-// @ts-nocheck
-const markdownTransform = require('./markdown-transform');
-const htmlRelativeToTransformReady = require('./html-relative-to-transform-ready');
-const relativeToTransformReady = require('./relative-to-transform-ready');
+import markdownTransform from './markdown-transform';
+import htmlRelativeToTransformReady from './html-relative-to-transform-ready';
+import relativeToTransformReady from './relative-to-transform-ready';
 
-function markdownRelativeToTransformReady(markdown = '', siteUrl, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false};
+interface MarkdownRelativeToTransformReadyOptions {
+    assetsOnly?: boolean;
+    staticImageUrlPrefix?: string;
+    earlyExitMatchStr?: string;
+}
+
+function markdownRelativeToTransformReady(markdown: string = '', siteUrl: string, itemPath: string, _options: MarkdownRelativeToTransformReadyOptions = {}): string {
+    const defaultOptions: Required<Pick<MarkdownRelativeToTransformReadyOptions, 'assetsOnly'>> = {assetsOnly: false};
     const options = Object.assign({}, defaultOptions, _options);
 
     options.earlyExitMatchStr = '\\]\\([^\\s\\)]|href=|src=|srcset=';
@@ -13,11 +18,15 @@ function markdownRelativeToTransformReady(markdown = '', siteUrl, itemPath, _opt
     }
 
     const transformFunctions = {
-        html: htmlRelativeToTransformReady,
-        url: relativeToTransformReady
+        html: (html: string, _siteUrl: string, _itemPath: string, _options: any): string => {
+            return htmlRelativeToTransformReady(html, siteUrl, itemPath, options);
+        },
+        url: (url: string, _siteUrl: string, _itemPath: string, _options: any): string => {
+            return relativeToTransformReady(url, siteUrl, itemPath, options);
+        }
     };
 
     return markdownTransform(markdown, siteUrl, transformFunctions, itemPath, options);
 }
 
-module.exports = markdownRelativeToTransformReady;
+export default markdownRelativeToTransformReady;

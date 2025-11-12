@@ -1,17 +1,22 @@
-// @ts-nocheck
-const absoluteToRelative = require('./absolute-to-relative');
-const mobiledocTransform = require('./mobiledoc-transform');
+import absoluteToRelative from './absolute-to-relative';
+import mobiledocTransform from './mobiledoc-transform';
 
-function mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false, cardTransformers: []};
+interface MobiledocAbsoluteToRelativeOptions {
+    assetsOnly?: boolean;
+    secure?: boolean;
+    cardTransformers?: any[];
+}
+
+function mobiledocAbsoluteToRelative(serializedMobiledoc: string, siteUrl: string, _options: MobiledocAbsoluteToRelativeOptions = {}): string {
+    const defaultOptions: Required<Pick<MobiledocAbsoluteToRelativeOptions, 'assetsOnly' | 'secure' | 'cardTransformers'>> = {assetsOnly: false, secure: false, cardTransformers: []};
     const overrideOptions = {siteUrl, transformType: 'absoluteToRelative'};
     const options = Object.assign({}, defaultOptions, _options, overrideOptions);
 
-    const transformFunction = function (_url, _siteUrl, _itemPath, __options) {
+    const transformFunction = function (_url: string, _siteUrl: string, _itemPath: string, __options: any): string {
         return absoluteToRelative(_url, _siteUrl, __options);
     };
 
     return mobiledocTransform(serializedMobiledoc, siteUrl, transformFunction, '', options);
 }
 
-module.exports = mobiledocAbsoluteToRelative;
+export default mobiledocAbsoluteToRelative;

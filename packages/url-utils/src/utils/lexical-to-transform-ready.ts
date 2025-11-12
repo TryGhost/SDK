@@ -1,14 +1,31 @@
-// @ts-nocheck
-const lexicalRelativeToAbsolute = require('./lexical-relative-to-absolute');
-const lexicalAbsoluteToTransformReady = require('./lexical-absolute-to-transform-ready');
+import lexicalRelativeToAbsolute from './lexical-relative-to-absolute';
+import lexicalAbsoluteToTransformReady from './lexical-absolute-to-transform-ready';
 
-function lexicalToTransformReady(lexical, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
-    }
-    const absolute = lexicalRelativeToAbsolute(lexical, siteUrl, itemPath, options);
-    return lexicalAbsoluteToTransformReady(absolute, siteUrl, options);
+interface LexicalToTransformReadyOptions {
+    assetsOnly?: boolean;
+    secure?: boolean;
+    nodes?: any[];
+    transformMap?: Record<string, Record<string, (value: string) => string>>;
 }
 
-module.exports = lexicalToTransformReady;
+function lexicalToTransformReady(
+    lexical: string,
+    siteUrl: string,
+    itemPath?: string | LexicalToTransformReadyOptions | null,
+    options?: LexicalToTransformReadyOptions
+): string {
+    let actualItemPath: string | null = null;
+    let actualOptions: LexicalToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
+    }
+    const absolute = lexicalRelativeToAbsolute(lexical, siteUrl, actualItemPath || '', actualOptions);
+    return lexicalAbsoluteToTransformReady(absolute, siteUrl, actualOptions);
+}
+
+export default lexicalToTransformReady;

@@ -1,15 +1,28 @@
-// @ts-nocheck
-const absoluteToTransformReady = require('./absolute-to-transform-ready');
+import {URL} from 'url';
+import absoluteToTransformReady from './absolute-to-transform-ready';
 
-function escapeRegExp(string) {
+function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformReady(plaintext, rootUrl, itemPath, options) {
+interface PlaintextAbsoluteToTransformReadyOptions {
+    replacementStr?: string;
+    withoutSubdirectory?: boolean;
+}
+
+const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformReady(
+    plaintext: string,
+    rootUrl: string,
+    itemPath?: string | PlaintextAbsoluteToTransformReadyOptions | null,
+    options?: PlaintextAbsoluteToTransformReadyOptions
+): string {
     // itemPath is optional, if it's an object may be the options param instead
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+    let actualOptions: PlaintextAbsoluteToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !options) {
+        actualOptions = itemPath;
+    } else {
+        actualOptions = options || {};
     }
 
     // plaintext links look like "Link title [url]"
@@ -18,10 +31,10 @@ const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformR
     const escapedRootUrl = escapeRegExp(`${rootURL.hostname}${rootURL.pathname.replace(/\/$/, '')}`);
     const linkRegex = new RegExp(` \\[(https?://${escapedRootUrl}.*?)\\]`, 'g');
 
-    return plaintext.replace(linkRegex, function (fullMatch, url) {
-        const newUrl = absoluteToTransformReady(`${url}`, rootUrl, options);
+    return plaintext.replace(linkRegex, function (_fullMatch: string, url: string): string {
+        const newUrl = absoluteToTransformReady(`${url}`, rootUrl, actualOptions);
         return ` [${newUrl}]`;
     });
 };
 
-module.exports = plaintextAbsoluteToTransformReady;
+export default plaintextAbsoluteToTransformReady;

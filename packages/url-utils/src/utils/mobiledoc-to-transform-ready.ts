@@ -1,14 +1,30 @@
-// @ts-nocheck
-const mobiledocRelativeToAbsolute = require('./mobiledoc-relative-to-absolute');
-const mobiledocAbsoluteToTransformReady = require('./mobiledoc-absolute-to-transform-ready');
+import mobiledocRelativeToAbsolute from './mobiledoc-relative-to-absolute';
+import mobiledocAbsoluteToTransformReady from './mobiledoc-absolute-to-transform-ready';
 
-function mobiledocToTransformReady(mobiledoc, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
-    }
-    const absolute = mobiledocRelativeToAbsolute(mobiledoc, siteUrl, itemPath, options);
-    return mobiledocAbsoluteToTransformReady(absolute, siteUrl, options);
+interface MobiledocToTransformReadyOptions {
+    assetsOnly?: boolean;
+    secure?: boolean;
+    cardTransformers?: any[];
 }
 
-module.exports = mobiledocToTransformReady;
+function mobiledocToTransformReady(
+    mobiledoc: string,
+    siteUrl: string,
+    itemPath?: string | MobiledocToTransformReadyOptions | null,
+    options?: MobiledocToTransformReadyOptions
+): string {
+    let actualItemPath: string | null = null;
+    let actualOptions: MobiledocToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
+    }
+    const absolute = mobiledocRelativeToAbsolute(mobiledoc, siteUrl, actualItemPath || '', actualOptions);
+    return mobiledocAbsoluteToTransformReady(absolute, siteUrl, actualOptions);
+}
+
+export default mobiledocToTransformReady;

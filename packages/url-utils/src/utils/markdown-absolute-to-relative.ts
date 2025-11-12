@@ -1,10 +1,15 @@
-// @ts-nocheck
-const markdownTransform = require('./markdown-transform');
-const absoluteToRelative = require('./absolute-to-relative');
-const htmlAbsoluteToRelative = require('./html-absolute-to-relative');
+import markdownTransform from './markdown-transform';
+import absoluteToRelative from './absolute-to-relative';
+import htmlAbsoluteToRelative from './html-absolute-to-relative';
 
-function markdownAbsoluteToRelative(markdown = '', siteUrl, _options = {}) {
-    const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
+interface MarkdownAbsoluteToRelativeOptions {
+    assetsOnly?: boolean;
+    ignoreProtocol?: boolean;
+    earlyExitMatchStr?: string;
+}
+
+function markdownAbsoluteToRelative(markdown: string = '', siteUrl: string, _options: MarkdownAbsoluteToRelativeOptions = {}): string {
+    const defaultOptions: Required<Pick<MarkdownAbsoluteToRelativeOptions, 'assetsOnly' | 'ignoreProtocol'>> = {assetsOnly: false, ignoreProtocol: true};
     const options = Object.assign({}, defaultOptions, _options);
 
     options.earlyExitMatchStr = options.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
@@ -12,10 +17,10 @@ function markdownAbsoluteToRelative(markdown = '', siteUrl, _options = {}) {
 
     // need to ignore itemPath because absoluteToRelative functions doen't take that option
     const transformFunctions = {
-        html(_url, _siteUrl, _itemPath, __options) {
+        html(_url: string, _siteUrl: string, _itemPath: string, __options: any): string {
             return htmlAbsoluteToRelative(_url, _siteUrl, __options);
         },
-        url(_url, _siteUrl, _itemPath, __options) {
+        url(_url: string, _siteUrl: string, _itemPath: string, __options: any): string {
             return absoluteToRelative(_url, _siteUrl, __options);
         }
     };
@@ -23,4 +28,4 @@ function markdownAbsoluteToRelative(markdown = '', siteUrl, _options = {}) {
     return markdownTransform(markdown, siteUrl, transformFunctions, '', options);
 }
 
-module.exports = markdownAbsoluteToRelative;
+export default markdownAbsoluteToRelative;

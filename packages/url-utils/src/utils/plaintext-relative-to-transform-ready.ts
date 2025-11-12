@@ -1,19 +1,35 @@
-// @ts-nocheck
-const relativeToTransformReady = require('./relative-to-transform-ready');
+import relativeToTransformReady from './relative-to-transform-ready';
 
-const plaintextRelativeToTransformReady = function plaintextRelativeToTransformReady(plaintext, rootUrl, itemPath, options) {
+interface PlaintextRelativeToTransformReadyOptions {
+    replacementStr?: string;
+    staticImageUrlPrefix?: string;
+    secure?: boolean;
+}
+
+const plaintextRelativeToTransformReady = function plaintextRelativeToTransformReady(
+    plaintext: string,
+    rootUrl: string,
+    itemPath?: string | PlaintextRelativeToTransformReadyOptions | null,
+    options?: PlaintextRelativeToTransformReadyOptions
+): string {
     // itemPath is optional, if it's an object may be the options param instead
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+    let actualItemPath: string | null = null;
+    let actualOptions: PlaintextRelativeToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
     }
 
     // plaintext links look like "Link title [url]"
     // those are all we care about so we can do a fast regex here
-    return plaintext.replace(/ \[(\/.*?)\]/g, function (fullMatch, path) {
-        const newPath = relativeToTransformReady(`${path}`, rootUrl, itemPath, options);
+    return plaintext.replace(/ \[(\/.*?)\]/g, function (_fullMatch: string, path: string): string {
+        const newPath = relativeToTransformReady(`${path}`, rootUrl, actualItemPath, actualOptions);
         return ` [${newPath}]`;
     });
 };
 
-module.exports = plaintextRelativeToTransformReady;
+export default plaintextRelativeToTransformReady;

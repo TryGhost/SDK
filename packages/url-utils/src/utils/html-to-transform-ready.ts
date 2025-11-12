@@ -1,14 +1,31 @@
-// @ts-nocheck
-const htmlRelativeToAbsolute = require('./html-relative-to-absolute');
-const htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
 
-function htmlToTransformReady(html, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
-    }
-    const absolute = htmlRelativeToAbsolute(html, siteUrl, itemPath, options);
-    return htmlAbsoluteToTransformReady(absolute, siteUrl, options);
+interface HtmlToTransformReadyOptions {
+    assetsOnly?: boolean;
+    secure?: boolean;
+    ignoreProtocol?: boolean;
+    staticImageUrlPrefix?: string;
 }
 
-module.exports = htmlToTransformReady;
+function htmlToTransformReady(
+    html: string,
+    siteUrl: string,
+    itemPath?: string | HtmlToTransformReadyOptions | null,
+    options?: HtmlToTransformReadyOptions
+): string {
+    let actualItemPath: string | null = null;
+    let actualOptions: HtmlToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
+    }
+    const absolute = htmlRelativeToAbsolute(html, siteUrl, actualItemPath || '', actualOptions);
+    return htmlAbsoluteToTransformReady(absolute, siteUrl, actualOptions);
+}
+
+export default htmlToTransformReady;

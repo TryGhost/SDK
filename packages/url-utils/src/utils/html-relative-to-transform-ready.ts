@@ -1,21 +1,39 @@
-// @ts-nocheck
-const htmlTransform = require('./html-transform');
-const relativeToTransformReady = require('./relative-to-transform-ready');
+import htmlTransform from './html-transform';
+import relativeToTransformReady from './relative-to-transform-ready';
 
-const htmlRelativeToTransformReady = function (html = '', root, itemPath, _options) {
+interface HtmlRelativeToTransformReadyOptions {
+    replacementStr?: string;
+    secure?: boolean;
+    assetsOnly?: boolean;
+    staticImageUrlPrefix?: string;
+    earlyExitMatchStr?: string;
+}
+
+const htmlRelativeToTransformReady = function (
+    html: string = '',
+    root: string,
+    itemPath?: string | HtmlRelativeToTransformReadyOptions | null,
+    _options?: HtmlRelativeToTransformReadyOptions
+): string {
     // itemPath is optional, if it's an object may be the options param instead
-    if (typeof itemPath === 'object' && !_options) {
-        _options = itemPath;
-        itemPath = null;
+    let actualItemPath: string | null = null;
+    let actualOptions: HtmlRelativeToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !_options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = _options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
     }
 
-    const defaultOptions = {
+    const defaultOptions: Required<Pick<HtmlRelativeToTransformReadyOptions, 'replacementStr'>> = {
         replacementStr: '__GHOST_URL__'
     };
     const overrideOptions = {
         secure: false
     };
-    const options = Object.assign({}, defaultOptions, _options, overrideOptions);
+    const options = Object.assign({}, defaultOptions, actualOptions, overrideOptions);
 
     // exit early and avoid parsing if the content does not contain an attribute we might transform
     options.earlyExitMatchStr = 'href=|src=|srcset=';
@@ -23,7 +41,7 @@ const htmlRelativeToTransformReady = function (html = '', root, itemPath, _optio
         options.earlyExitMatchStr = options.staticImageUrlPrefix;
     }
 
-    return htmlTransform(html, root, relativeToTransformReady, itemPath, options);
+    return htmlTransform(html, root, relativeToTransformReady, actualItemPath || '', options);
 };
 
-module.exports = htmlRelativeToTransformReady;
+export default htmlRelativeToTransformReady;
