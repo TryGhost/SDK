@@ -1,7 +1,7 @@
 // @ts-nocheck
 // require the whatwg compatible URL library (same behaviour in node and browser)
 const {URL} = require('url');
-const urlJoin = require('./url-join');
+import urlJoin from './url-join';
 
 // NOTE: Ghost's relative->absolute handling is a little strange when the rootUrl
 // includes a subdirectory. Root-relative paths such as /content/image.jpg are
