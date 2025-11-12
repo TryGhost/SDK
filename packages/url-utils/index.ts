@@ -1,2 +1,4 @@
-// @ts-nocheck
-module.exports = require('./src/UrlUtils');
+import UrlUtils from './src/UrlUtils';
+
+export default UrlUtils;
+module.exports = UrlUtils;
