@@ -1,10 +1,15 @@
-// @ts-nocheck
-function escapeRegExp(string) {
+import {URL} from 'url';
+
+function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const transformReadyToRelative = function (str = '', root, _options = {}) {
-    const defaultOptions = {
+interface TransformReadyToRelativeOptions {
+    replacementStr?: string;
+}
+
+const transformReadyToRelative = function (str: string = '', root: string, _options: TransformReadyToRelativeOptions = {}): string {
+    const defaultOptions: Required<TransformReadyToRelativeOptions> = {
         replacementStr: '__GHOST_URL__'
     };
     const options = Object.assign({}, defaultOptions, _options);
@@ -22,4 +27,4 @@ const transformReadyToRelative = function (str = '', root, _options = {}) {
     return str.replace(replacementRegex, subdir);
 };
 
-module.exports = transformReadyToRelative;
+export default transformReadyToRelative;

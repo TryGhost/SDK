@@ -1,10 +1,13 @@
-// @ts-nocheck
-function escapeRegExp(string) {
+function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const transformReadyToAbsolute = function (str = '', root, _options = {}) {
-    const defaultOptions = {
+interface TransformReadyToAbsoluteOptions {
+    replacementStr?: string;
+}
+
+const transformReadyToAbsolute = function (str: string = '', root: string, _options: TransformReadyToAbsoluteOptions = {}): string {
+    const defaultOptions: Required<TransformReadyToAbsoluteOptions> = {
         replacementStr: '__GHOST_URL__'
     };
     const options = Object.assign({}, defaultOptions, _options);
@@ -18,4 +21,4 @@ const transformReadyToAbsolute = function (str = '', root, _options = {}) {
     return str.replace(replacementRegex, root.replace(/\/$/, ''));
 };
 
-module.exports = transformReadyToAbsolute;
+export default transformReadyToAbsolute;

@@ -1,24 +1,42 @@
-// @ts-nocheck
-const relativeToAbsolute = require('./relative-to-absolute');
+import {URL} from 'url';
+import relativeToAbsolute from './relative-to-absolute';
 
-const relativeToTransformReady = function (url, root, itemPath, _options) {
+interface RelativeToTransformReadyOptions {
+    replacementStr?: string;
+    staticImageUrlPrefix?: string;
+    secure?: boolean;
+}
+
+const relativeToTransformReady = function (
+    url: string,
+    root: string,
+    itemPath?: string | RelativeToTransformReadyOptions | null,
+    _options?: RelativeToTransformReadyOptions
+): string {
     // itemPath is optional, if it's an object may be the options param instead
-    if (typeof itemPath === 'object' && !_options) {
-        _options = itemPath;
-        itemPath = null;
+    let actualItemPath: string | null = null;
+    let actualOptions: RelativeToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !_options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = _options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
     }
 
-    const defaultOptions = {
+    const defaultOptions: Required<RelativeToTransformReadyOptions> = {
         replacementStr: '__GHOST_URL__',
-        staticImageUrlPrefix: 'content/images'
+        staticImageUrlPrefix: 'content/images',
+        secure: false
     };
     const overrideOptions = {
         secure: false
     };
-    const options = Object.assign({}, defaultOptions, _options, overrideOptions);
+    const options = Object.assign({}, defaultOptions, actualOptions, overrideOptions);
 
     // convert to absolute
-    const absoluteUrl = relativeToAbsolute(url, root, itemPath, options);
+    const absoluteUrl = relativeToAbsolute(url, root, actualItemPath, options);
 
     if (absoluteUrl === url) {
         return url;
@@ -40,4 +58,4 @@ const relativeToTransformReady = function (url, root, itemPath, _options) {
     return url;
 };
 
-module.exports = relativeToTransformReady;
+export default relativeToTransformReady;

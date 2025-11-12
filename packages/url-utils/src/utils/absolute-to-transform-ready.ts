@@ -1,8 +1,12 @@
-// @ts-nocheck
-const absoluteToRelative = require('./absolute-to-relative');
+import absoluteToRelative from './absolute-to-relative';
 
-const absoluteToTransformReady = function (url, root, _options) {
-    const defaultOptions = {
+interface AbsoluteToTransformReadyOptions {
+    replacementStr?: string;
+    withoutSubdirectory?: boolean;
+}
+
+const absoluteToTransformReady = function (url: string, root: string, _options: AbsoluteToTransformReadyOptions = {}): string {
+    const defaultOptions: Required<AbsoluteToTransformReadyOptions> = {
         replacementStr: '__GHOST_URL__',
         withoutSubdirectory: true
     };
@@ -37,4 +41,4 @@ const absoluteToTransformReady = function (url, root, _options) {
     return `${options.replacementStr}${relativeUrl}`;
 };
 
-module.exports = absoluteToTransformReady;
+export default absoluteToTransformReady;

@@ -1,14 +1,32 @@
-// @ts-nocheck
-const relativeToAbsolute = require('./relative-to-absolute');
-const absoluteToTransformReady = require('./absolute-to-transform-ready');
+import relativeToAbsolute from './relative-to-absolute';
+import absoluteToTransformReady from './absolute-to-transform-ready';
 
-function toTransformReady(url, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
-    }
-    const absoluteUrl = relativeToAbsolute(url, siteUrl, itemPath, options);
-    return absoluteToTransformReady(absoluteUrl, siteUrl, options);
+interface ToTransformReadyOptions {
+    replacementStr?: string;
+    withoutSubdirectory?: boolean;
+    assetsOnly?: boolean;
+    staticImageUrlPrefix?: string;
+    secure?: boolean;
 }
 
-module.exports = toTransformReady;
+function toTransformReady(
+    url: string,
+    siteUrl: string,
+    itemPath?: string | ToTransformReadyOptions | null,
+    options?: ToTransformReadyOptions
+): string {
+    let actualItemPath: string | null = null;
+    let actualOptions: ToTransformReadyOptions;
+    
+    if (itemPath && typeof itemPath === 'object' && !options) {
+        actualOptions = itemPath;
+        actualItemPath = null;
+    } else {
+        actualOptions = options || {};
+        actualItemPath = typeof itemPath === 'string' ? itemPath : null;
+    }
+    const absoluteUrl = relativeToAbsolute(url, siteUrl, actualItemPath, actualOptions);
+    return absoluteToTransformReady(absoluteUrl, siteUrl, actualOptions);
+}
+
+export default toTransformReady;
