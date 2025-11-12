@@ -28,3 +28,4 @@ function mobiledocToTransformReady(
 }
 
 export default mobiledocToTransformReady;
+module.exports = mobiledocToTransformReady;

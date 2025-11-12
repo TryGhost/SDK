@@ -28,3 +28,4 @@ function markdownToTransformReady(
 }
 
 export default markdownToTransformReady;
+module.exports = markdownToTransformReady;

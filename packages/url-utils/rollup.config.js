@@ -2,6 +2,7 @@
 import typescript from '@rollup/plugin-typescript';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
+import json from '@rollup/plugin-json';
 import {terser} from 'rollup-plugin-terser';
 
 export default [
@@ -36,6 +37,7 @@ export default [
             resolve({
                 browser: true
             }),
+            json(),
             typescript(),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']
@@ -58,6 +60,7 @@ export default [
             resolve({
                 browser: true
             }),
+            json(),
             typescript(),
             commonjs({
                 include: ['node_modules/**', '../../node_modules/**']

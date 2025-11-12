@@ -106,3 +106,4 @@ function lexicalTransform(
 }
 
 export default lexicalTransform;
+module.exports = lexicalTransform;

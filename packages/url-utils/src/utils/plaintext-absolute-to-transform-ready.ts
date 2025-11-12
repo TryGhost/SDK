@@ -38,3 +38,4 @@ const plaintextAbsoluteToTransformReady = function plaintextAbsoluteToTransformR
 };
 
 export default plaintextAbsoluteToTransformReady;
+module.exports = plaintextAbsoluteToTransformReady;

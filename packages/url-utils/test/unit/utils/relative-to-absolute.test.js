@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const relativeToAbsolute = require('../../../src/utils/relative-to-absolute');
+const relativeToAbsolute = require('../../../cjs/utils/relative-to-absolute');
 
 describe('utils: relativeToAbsolute()', function () {
     it('ignores absolute URLs', function () {

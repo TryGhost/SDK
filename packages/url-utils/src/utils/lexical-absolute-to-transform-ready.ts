@@ -21,3 +21,4 @@ function lexicalAbsoluteToTransformReady(serializedLexical: string, siteUrl: str
 }
 
 export default lexicalAbsoluteToTransformReady;
+module.exports = lexicalAbsoluteToTransformReady;

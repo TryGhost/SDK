@@ -28,3 +28,4 @@ const transformReadyToRelative = function (str: string = '', root: string, _opti
 };
 
 export default transformReadyToRelative;
+module.exports = transformReadyToRelative;

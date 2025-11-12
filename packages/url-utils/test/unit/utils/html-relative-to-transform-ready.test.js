@@ -5,7 +5,7 @@ require('../../utils');
 const sinon = require('sinon');
 
 const cheerio = require('cheerio');
-const htmlRelativeToTransformReady = require('../../../src/utils/html-relative-to-transform-ready');
+const htmlRelativeToTransformReady = require('../../../cjs/utils/html-relative-to-transform-ready');
 
 describe('utils: htmlRelativeToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';

@@ -51,10 +51,13 @@ function replacePermalink(permalink: string, resource: PermalinkResource, timezo
     return output.replace(/(:[a-z_]+)/g, function (match: string): string {
         const key = match.substr(1);
         if (permalinkKeys.includes(key)) {
+            // Known route segment - use the lookup function
             return permalinkLookUp[key]();
         }
-        return match;
+        // Unknown route segment - return 'undefined' string
+        return 'undefined';
     });
 }
 
 export default replacePermalink;
+module.exports = replacePermalink;

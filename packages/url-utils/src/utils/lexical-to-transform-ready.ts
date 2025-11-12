@@ -29,3 +29,4 @@ function lexicalToTransformReady(
 }
 
 export default lexicalToTransformReady;
+module.exports = lexicalToTransformReady;

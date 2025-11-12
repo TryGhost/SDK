@@ -70,6 +70,11 @@ class UrlUtils {
 
         this._config = assignOptions(defaultOptions, options);
 
+        // Handle legacy format where slugs is passed as an array
+        if (Array.isArray(this._config.slugs)) {
+            this._config.slugs = { protected: this._config.slugs as any };
+        }
+
         this.getSubdir = options.getSubdir;
         this.getSiteUrl = options.getSiteUrl;
         this.getAdminUrl = options.getAdminUrl;
@@ -343,7 +348,7 @@ class UrlUtils {
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, actualOptions || {});
-        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), actualItemPath || '', _options);
+        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), actualItemPath || undefined, _options);
     }
 
     htmlRelativeToTransformReady(html: string, itemPath?: string | any | null, options?: any): string {
@@ -410,7 +415,7 @@ class UrlUtils {
             staticImageUrlPrefix: this._config.staticImageUrlPrefix
         };
         const _options = assignOptions({}, defaultOptions, actualOptions || {});
-        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), actualItemPath || '', _options);
+        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), actualItemPath || undefined, _options);
     }
 
     markdownRelativeToTransformReady(markdown: string, itemPath?: string | any | null, options?: any): string {
@@ -482,7 +487,7 @@ class UrlUtils {
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, actualOptions || {});
-        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), actualItemPath || '', _options);
+        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), actualItemPath || undefined, _options);
     }
 
     mobiledocRelativeToTransformReady(serializedMobiledoc: string, itemPath?: string | any | null, options?: any): string {
@@ -557,7 +562,7 @@ class UrlUtils {
             cardTransformers: this._config.cardTransformers
         };
         const _options = assignOptions({}, defaultOptions, actualOptions || {});
-        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), actualItemPath || '', _options);
+        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), actualItemPath || undefined, _options);
     }
 
     lexicalRelativeToTransformReady(serializedLexical: string, itemPath?: string | any | null, options?: any): string {

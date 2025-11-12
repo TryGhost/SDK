@@ -2,8 +2,8 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const UrlUtils = require('../../../src/UrlUtils');
-const lexicalAbsoluteToRelative = require('../../../src/utils/lexical-absolute-to-relative');
+const UrlUtils = require('../../../cjs/UrlUtils');
+const lexicalAbsoluteToRelative = require('../../../cjs/utils/lexical-absolute-to-relative');
 
 describe('utils: lexicalAbsoluteToRelative()', function () {
     const siteUrl = 'http://my-ghost-blog.com';

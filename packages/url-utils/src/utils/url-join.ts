@@ -39,3 +39,4 @@ function urlJoin(parts: string[], options: UrlJoinOptions): string {
 }
 
 export default urlJoin;
+module.exports = urlJoin;

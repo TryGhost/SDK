@@ -20,3 +20,4 @@ function mobiledocAbsoluteToTransformReady(serializedMobiledoc: string, siteUrl:
 }
 
 export default mobiledocAbsoluteToTransformReady;
+module.exports = mobiledocAbsoluteToTransformReady;

@@ -29,3 +29,4 @@ function plaintextToTransformReady(
 }
 
 export default plaintextToTransformReady;
+module.exports = plaintextToTransformReady;

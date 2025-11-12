@@ -29,3 +29,4 @@ function markdownAbsoluteToRelative(markdown: string = '', siteUrl: string, _opt
 }
 
 export default markdownAbsoluteToRelative;
+module.exports = markdownAbsoluteToRelative;

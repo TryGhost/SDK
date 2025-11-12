@@ -17,7 +17,7 @@
     "dev": "echo \"Implement me!\"",
     "pretest": "yarn build",
     "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
-    "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
+    "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types && tsc --module commonjs --outDir ./cjs/utils --rootDir ./src/utils --target es2016 --esModuleInterop true --skipLibCheck true src/utils/*.ts",
     "lint": "eslint . --ext .js --cache",
     "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
@@ -34,6 +34,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "@rollup/plugin-json": "6.1.0",
     "@rollup/plugin-typescript": "12.3.0",
     "@tryghost/config-url-helpers": "^1.0.17",
     "@types/cheerio": "^0.22.31",

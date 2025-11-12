@@ -7,3 +7,4 @@ function isSSL(urlToParse: string): boolean {
 }
 
 export default isSSL;
+module.exports = isSSL;

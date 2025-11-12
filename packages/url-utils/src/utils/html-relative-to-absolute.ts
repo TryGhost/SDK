@@ -8,7 +8,7 @@ interface HtmlRelativeToAbsoluteOptions {
     earlyExitMatchStr?: string;
 }
 
-function htmlRelativeToAbsolute(html: string = '', siteUrl: string, itemPath: string, _options: HtmlRelativeToAbsoluteOptions = {}): string {
+function htmlRelativeToAbsolute(html: string = '', siteUrl: string, itemPath?: string, _options: HtmlRelativeToAbsoluteOptions = {}): string {
     const defaultOptions: Required<Pick<HtmlRelativeToAbsoluteOptions, 'assetsOnly' | 'secure'>> = {assetsOnly: false, secure: false};
     const options = Object.assign({}, defaultOptions, _options || {});
 
@@ -18,7 +18,8 @@ function htmlRelativeToAbsolute(html: string = '', siteUrl: string, itemPath: st
         options.earlyExitMatchStr = options.staticImageUrlPrefix;
     }
 
-    return htmlTransform(html, siteUrl, relativeToAbsolute, itemPath, options);
+    return htmlTransform(html, siteUrl, relativeToAbsolute, itemPath || '', options);
 }
 
 export default htmlRelativeToAbsolute;
+module.exports = htmlRelativeToAbsolute;

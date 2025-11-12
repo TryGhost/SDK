@@ -24,3 +24,4 @@ function htmlAbsoluteToRelative(html: string = '', siteUrl: string, _options: Ht
 }
 
 export default htmlAbsoluteToRelative;
+module.exports = htmlAbsoluteToRelative;

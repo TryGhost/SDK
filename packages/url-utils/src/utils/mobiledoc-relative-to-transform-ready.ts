@@ -16,3 +16,4 @@ function mobiledocRelativeToTransformReady(serializedMobiledoc: string, siteUrl:
 }
 
 export default mobiledocRelativeToTransformReady;
+module.exports = mobiledocRelativeToTransformReady;

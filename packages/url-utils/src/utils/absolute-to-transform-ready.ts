@@ -42,3 +42,4 @@ const absoluteToTransformReady = function (url: string, root: string, _options: 
 };
 
 export default absoluteToTransformReady;
+module.exports = absoluteToTransformReady;

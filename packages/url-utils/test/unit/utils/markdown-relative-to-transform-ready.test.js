@@ -8,8 +8,8 @@ const sinon = require('sinon');
 const rewire = require('rewire');
 
 const remark = require('remark');
-const markdownTransform = rewire('../../../src/utils/markdown-transform');
-const markdownRelativeToTransformReady = rewire('../../../src/utils/markdown-relative-to-transform-ready');
+const markdownTransform = rewire('../../../cjs/utils/markdown-transform');
+const markdownRelativeToTransformReady = rewire('../../../cjs/utils/markdown-relative-to-transform-ready');
 
 describe('utils: markdownRelativeToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
@@ -172,7 +172,7 @@ Just testing
             sandbox = sinon.createSandbox();
             remarkSpy = sinon.spy(remark);
             markdownTransform.__set__('remark', remarkSpy);
-            markdownRelativeToTransformReady.__set__('markdownTransform', markdownTransform);
+            markdownRelativeToTransformReady.__set__('markdown_transform_1', {default: markdownTransform});
         });
 
         afterEach(function () {

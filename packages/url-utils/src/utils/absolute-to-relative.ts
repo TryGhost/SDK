@@ -72,3 +72,4 @@ const absoluteToRelative = function absoluteToRelative(url: string, rootUrl: str
 };
 
 export default absoluteToRelative;
+module.exports = absoluteToRelative;

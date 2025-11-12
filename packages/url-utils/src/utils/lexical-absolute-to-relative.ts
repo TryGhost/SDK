@@ -21,3 +21,4 @@ function lexicalAbsoluteToRelative(serializedLexical: string, siteUrl: string, _
 }
 
 export default lexicalAbsoluteToRelative;
+module.exports = lexicalAbsoluteToRelative;

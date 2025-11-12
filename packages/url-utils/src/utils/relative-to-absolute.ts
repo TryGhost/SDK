@@ -110,3 +110,4 @@ const relativeToAbsolute = function relativeToAbsolute(
 };
 
 export default relativeToAbsolute;
+module.exports = relativeToAbsolute;

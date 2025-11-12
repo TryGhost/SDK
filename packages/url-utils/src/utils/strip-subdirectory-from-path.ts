@@ -34,3 +34,4 @@ const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path: strin
 };
 
 export default stripSubdirectoryFromPath;
+module.exports = stripSubdirectoryFromPath;

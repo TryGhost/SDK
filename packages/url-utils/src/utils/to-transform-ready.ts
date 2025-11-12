@@ -30,3 +30,4 @@ function toTransformReady(
 }
 
 export default toTransformReady;
+module.exports = toTransformReady;

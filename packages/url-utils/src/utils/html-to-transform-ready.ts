@@ -29,3 +29,4 @@ function htmlToTransformReady(
 }
 
 export default htmlToTransformReady;
+module.exports = htmlToTransformReady;

@@ -8,7 +8,7 @@ interface MarkdownRelativeToAbsoluteOptions {
     earlyExitMatchStr?: string;
 }
 
-function markdownRelativeToAbsolute(markdown: string = '', siteUrl: string, itemPath: string, _options: MarkdownRelativeToAbsoluteOptions = {}): string {
+function markdownRelativeToAbsolute(markdown: string = '', siteUrl: string, itemPath?: string, _options: MarkdownRelativeToAbsoluteOptions = {}): string {
     const defaultOptions: Required<Pick<MarkdownRelativeToAbsoluteOptions, 'assetsOnly'>> = {assetsOnly: false};
     const options = Object.assign({}, defaultOptions, _options);
 
@@ -22,7 +22,8 @@ function markdownRelativeToAbsolute(markdown: string = '', siteUrl: string, item
         url: relativeToAbsolute
     };
 
-    return markdownTransform(markdown, siteUrl, transformFunctions, itemPath, options);
+    return markdownTransform(markdown, siteUrl, transformFunctions, itemPath || '', options);
 }
 
 export default markdownRelativeToAbsolute;
+module.exports = markdownRelativeToAbsolute;

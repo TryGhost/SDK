@@ -169,3 +169,4 @@ function htmlTransform(
 }
 
 export default htmlTransform;
+module.exports = htmlTransform;

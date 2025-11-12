@@ -3,3 +3,4 @@ function deduplicateDoubleSlashes(url: string): string {
 }
 
 export default deduplicateDoubleSlashes;
+module.exports = deduplicateDoubleSlashes;

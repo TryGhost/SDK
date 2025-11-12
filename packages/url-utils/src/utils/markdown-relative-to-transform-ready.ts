@@ -30,3 +30,4 @@ function markdownRelativeToTransformReady(markdown: string = '', siteUrl: string
 }
 
 export default markdownRelativeToTransformReady;
+module.exports = markdownRelativeToTransformReady;

@@ -24,3 +24,4 @@ const htmlAbsoluteToTransformReady = function (html: string = '', siteUrl: strin
 };
 
 export default htmlAbsoluteToTransformReady;
+module.exports = htmlAbsoluteToTransformReady;

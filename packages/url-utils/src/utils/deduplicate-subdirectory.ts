@@ -29,3 +29,4 @@ const deduplicateSubdirectory = function deduplicateSubdirectory(url: string, ro
 };
 
 export default deduplicateSubdirectory;
+module.exports = deduplicateSubdirectory;

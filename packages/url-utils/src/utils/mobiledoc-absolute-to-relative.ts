@@ -20,3 +20,4 @@ function mobiledocAbsoluteToRelative(serializedMobiledoc: string, siteUrl: strin
 }
 
 export default mobiledocAbsoluteToRelative;
+module.exports = mobiledocAbsoluteToRelative;

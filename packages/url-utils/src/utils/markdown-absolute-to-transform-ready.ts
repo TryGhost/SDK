@@ -29,3 +29,4 @@ function markdownAbsoluteToTransformReady(markdown: string = '', siteUrl: string
 }
 
 export default markdownAbsoluteToTransformReady;
+module.exports = markdownAbsoluteToTransformReady;

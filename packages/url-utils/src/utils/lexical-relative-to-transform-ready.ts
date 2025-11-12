@@ -17,3 +17,4 @@ function lexicalRelativeToTransformReady(serializedLexical: string, siteUrl: str
 }
 
 export default lexicalRelativeToTransformReady;
+module.exports = lexicalRelativeToTransformReady;

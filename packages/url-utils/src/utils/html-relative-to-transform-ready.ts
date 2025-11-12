@@ -45,3 +45,4 @@ const htmlRelativeToTransformReady = function (
 };
 
 export default htmlRelativeToTransformReady;
+module.exports = htmlRelativeToTransformReady;

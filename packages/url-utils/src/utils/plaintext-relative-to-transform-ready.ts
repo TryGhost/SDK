@@ -33,3 +33,4 @@ const plaintextRelativeToTransformReady = function plaintextRelativeToTransformR
 };
 
 export default plaintextRelativeToTransformReady;
+module.exports = plaintextRelativeToTransformReady;

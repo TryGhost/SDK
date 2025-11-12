@@ -22,3 +22,4 @@ const transformReadyToAbsolute = function (str: string = '', root: string, _opti
 };
 
 export default transformReadyToAbsolute;
+module.exports = transformReadyToAbsolute;

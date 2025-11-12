@@ -59,3 +59,4 @@ const relativeToTransformReady = function (
 };
 
 export default relativeToTransformReady;
+module.exports = relativeToTransformReady;
