@@ -8,15 +8,22 @@
   },
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "index.js",
+  "main": "cjs/UrlUtils.js",
+  "types": "types/src/UrlUtils.d.ts",
+  "source": "src/UrlUtils.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
-    "lint": "eslint . --ext .js --cache",
+    "pretest": "yarn build",
+    "test": "NODE_ENV=testing TS_NODE_PROJECT=tsconfig.test.json c8 --src src --all --reporter text --reporter cobertura --reporter html mocha -r ts-node/register './test/**/*.test.js'",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint . --ext .js,.ts --cache",
+    "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
   },
   "files": [
-    "lib/",
+    "src/",
+    "cjs/",
+    "types/",
     "index.js"
   ],
   "publishConfig": {
