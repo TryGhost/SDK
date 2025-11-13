@@ -20,4 +20,26 @@ describe('utils: plaintextToTransformReady', function () {
         plaintextToTransformReady(plaintext, siteUrl)
             .should.equal('Relative Link [__GHOST_URL__/first-link], Absolute Link [__GHOST_URL__/second-link], and Root-relative [http://my-ghost-blog-com/other/]');
     });
+
+    it('handles options when itemPath is an object', function () {
+        const siteUrl = 'http://my-ghost-blog.com';
+        const plaintext = 'Relative link [/first-link]';
+        const optionsAsItemPath = {
+            staticImageUrlPrefix: 'content/images'
+        };
+        const result = plaintextToTransformReady(plaintext, siteUrl, optionsAsItemPath);
+
+        result.should.equal('Relative link [__GHOST_URL__/first-link]');
+    });
+
+    it('handles options when itemPath is an object and options is null', function () {
+        const siteUrl = 'http://my-ghost-blog.com';
+        const plaintext = 'Relative link [/first-link]';
+        const optionsAsItemPath = {
+            staticImageUrlPrefix: 'content/images'
+        };
+        const result = plaintextToTransformReady(plaintext, siteUrl, optionsAsItemPath, null);
+
+        result.should.equal('Relative link [__GHOST_URL__/first-link]');
+    });
 });

@@ -20,4 +20,38 @@ describe('utils: plaintextAbsoluteToTransformReady', function () {
         plaintextAbsoluteToTransformReady(plaintext, siteUrl)
             .should.equal('Standard Link [__GHOST_URL__/standard-link], Different Protocol [__GHOST_URL__/second-link], Root-relative [http://my-ghost-blog.com/], and Different Domain [https://ghost.org]');
     });
+
+    it('handles options when itemPath is an object', function () {
+        const siteUrl = 'http://my-ghost-blog.com';
+        const plaintext = 'Standard Link [http://my-ghost-blog.com/standard-link]';
+        const optionsAsItemPath = {
+            staticImageUrlPrefix: 'content/images'
+        };
+        const result = plaintextAbsoluteToTransformReady(plaintext, siteUrl, optionsAsItemPath);
+
+        result.should.equal('Standard Link [__GHOST_URL__/standard-link]');
+    });
+
+    it('handles options when itemPath is an object and options is null', function () {
+        const siteUrl = 'http://my-ghost-blog.com';
+        const plaintext = 'Standard Link [http://my-ghost-blog.com/standard-link]';
+        const optionsAsItemPath = {
+            staticImageUrlPrefix: 'content/images'
+        };
+        const result = plaintextAbsoluteToTransformReady(plaintext, siteUrl, optionsAsItemPath, null);
+
+        result.should.equal('Standard Link [__GHOST_URL__/standard-link]');
+    });
+
+    it('handles itemPath parameter', function () {
+        const siteUrl = 'http://my-ghost-blog.com';
+        const plaintext = 'Standard Link [http://my-ghost-blog.com/standard-link]';
+        const itemPath = '/my-post';
+        const options = {
+            staticImageUrlPrefix: 'content/images'
+        };
+        const result = plaintextAbsoluteToTransformReady(plaintext, siteUrl, itemPath, options);
+
+        result.should.equal('Standard Link [__GHOST_URL__/standard-link]');
+    });
 });
