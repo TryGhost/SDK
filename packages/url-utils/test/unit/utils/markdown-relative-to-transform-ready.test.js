@@ -137,6 +137,34 @@ Just testing
         `);
     });
 
+    it('handles default options when options is not provided', function () {
+        const markdown = 'This is a [link](/link)';
+        const result = markdownRelativeToTransformReady(markdown, siteUrl, itemPath);
+
+        result.should.equal('This is a [link](__GHOST_URL__/link)');
+    });
+
+    it('handles assetsOnly option with staticImageUrlPrefix', function () {
+        const markdown = '![](/content/images/image.png) [](/not-an-asset)';
+        const testOptions = {
+            assetsOnly: true,
+            staticImageUrlPrefix: 'content/images'
+        };
+        const result = markdownRelativeToTransformReady(markdown, siteUrl, itemPath, testOptions);
+
+        result.should.equal('![](__GHOST_URL__/content/images/image.png) [](/not-an-asset)');
+    });
+
+    it('handles assetsOnly option without staticImageUrlPrefix', function () {
+        const markdown = '![](/content/images/image.png) [](/not-an-asset)';
+        const testOptions = {
+            assetsOnly: true
+        };
+        const result = markdownRelativeToTransformReady(markdown, siteUrl, itemPath, testOptions);
+
+        result.should.equal('![](__GHOST_URL__/content/images/image.png) [](/not-an-asset)');
+    });
+
     describe('AST parsing is skipped', function () {
         let remarkSpy, sandbox;
 
