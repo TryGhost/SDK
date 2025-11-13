@@ -1,0 +1,6 @@
+{
+    "compilerOptions": {
+      "rootDir": "test",
+      "outDir": "tmp/test"
+    }
+  }
