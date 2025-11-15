@@ -4,7 +4,7 @@ require('../../utils');
 
 const fs = require('fs');
 const path = require('path');
-const transformReadyToAbsolute = require('../../../lib/utils/transform-ready-to-absolute');
+const transformReadyToAbsolute = require('../../../src/utils/transform-ready-to-absolute');
 
 describe('utils: transformReadyToAbsolute()', function () {
     describe('single url', function () {

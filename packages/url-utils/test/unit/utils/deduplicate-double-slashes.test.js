@@ -1,6 +1,6 @@
 require('../../utils');
 
-const deduplicateDoubleSlashes = require('../../../lib/utils/deduplicate-double-slashes');
+const deduplicateDoubleSlashes = require('../../../src/utils/deduplicate-double-slashes');
 
 describe('utils: deduplicateDoubleSlashes()', function () {
     it('should deduplicate double slashes in URL', function () {

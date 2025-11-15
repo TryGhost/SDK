@@ -3,7 +3,7 @@
 require('../../utils');
 
 const moment = require('moment-timezone');
-const replacePermalink = require('../../../lib/utils/replace-permalink');
+const replacePermalink = require('../../../src/utils/replace-permalink');
 
 describe('utils: replacePermalink()', function () {
     it('permalink is /:slug/, timezone is default', function () {
