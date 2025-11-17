@@ -1,5 +1,4 @@
-// @ts-nocheck
-const {URL} = require('url');
+import {URL} from 'url';
 
 /**
  * Removes the directory in the root url from the relative path
@@ -8,13 +7,13 @@ const {URL} = require('url');
  * @param {string} rootUrl Root URL (eg, 'https://mysite.com/my/subdir/)
  * @returns {string} Path relative to the rootUrl's path
  */
-const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path = '', rootUrl = '') {
+const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path: string = '', rootUrl: string = ''): string {
     // force root to always have a trailing-slash for consistent behaviour
     if (!rootUrl.endsWith('/')) {
         rootUrl = `${rootUrl}/`;
     }
 
-    let parsedRoot;
+    let parsedRoot: URL;
 
     try {
         parsedRoot = new URL(rootUrl);
@@ -34,4 +33,4 @@ const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path = '', 
     return path;
 };
 
-module.exports = stripSubdirectoryFromPath;
+export default stripSubdirectoryFromPath;

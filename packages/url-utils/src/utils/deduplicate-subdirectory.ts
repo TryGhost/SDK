@@ -1,5 +1,4 @@
-// @ts-nocheck
-const {URL} = require('url');
+import {URL} from 'url';
 
 /**
  * Remove duplicated directories from the start of a path or url's path
@@ -8,7 +7,7 @@ const {URL} = require('url');
  * @param {string} rootUrl Root URL with an optional subdirectory
  * @returns {string} URL or pathname with any duplicated subdirectory removed
  */
-const deduplicateSubdirectory = function deduplicateSubdirectory(url, rootUrl) {
+const deduplicateSubdirectory = function deduplicateSubdirectory(url: string, rootUrl: string): string {
     // force root url to always have a trailing-slash for consistent behaviour
     if (!rootUrl.endsWith('/')) {
         rootUrl = `${rootUrl}/`;
@@ -29,4 +28,4 @@ const deduplicateSubdirectory = function deduplicateSubdirectory(url, rootUrl) {
     return url.replace(subdirRegex, `$1${subdir}/`);
 };
 
-module.exports = deduplicateSubdirectory;
+export default deduplicateSubdirectory;
