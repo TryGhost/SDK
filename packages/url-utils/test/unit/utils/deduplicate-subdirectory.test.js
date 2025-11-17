@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const deduplicateSubdirectory = require('../../../src/utils/deduplicate-subdirectory');
+const deduplicateSubdirectory = require('../../../src/utils/deduplicate-subdirectory').default;
 
 describe('utils: deduplicateSubdirectory()', function () {
     describe('with url', function () {

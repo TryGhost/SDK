@@ -1,15 +1,22 @@
 // @ts-nocheck
+import deduplicateDoubleSlashes from './deduplicate-double-slashes';
+import deduplicateSubdirectory from './deduplicate-subdirectory';
+import isSSL from './is-ssl';
+import replacePermalink from './replace-permalink';
+import stripSubdirectoryFromPath from './strip-subdirectory-from-path';
+import urlJoin from './url-join';
+
 module.exports = {
     absoluteToRelative: require('./absolute-to-relative'),
     absoluteToTransformReady: require('./absolute-to-transform-ready'),
-    deduplicateDoubleSlashes: require('./deduplicate-double-slashes'),
-    deduplicateSubdirectory: require('./deduplicate-subdirectory'),
+    deduplicateDoubleSlashes,
+    deduplicateSubdirectory,
     htmlAbsoluteToRelative: require('./html-absolute-to-relative'),
     htmlRelativeToAbsolute: require('./html-relative-to-absolute'),
     htmlAbsoluteToTransformReady: require('./html-absolute-to-transform-ready'),
     htmlRelativeToTransformReady: require('./html-relative-to-transform-ready'),
     htmlToTransformReady: require('./html-to-transform-ready'),
-    isSSL: require('./is-ssl'),
+    isSSL,
     markdownAbsoluteToRelative: require('./markdown-absolute-to-relative'),
     markdownRelativeToAbsolute: require('./markdown-relative-to-absolute'),
     markdownAbsoluteToTransformReady: require('./markdown-absolute-to-transform-ready'),
@@ -30,10 +37,10 @@ module.exports = {
     plaintextToTransformReady: require('./plaintext-to-transform-ready'),
     relativeToAbsolute: require('./relative-to-absolute'),
     relativeToTransformReady: require('./relative-to-transform-ready'),
-    replacePermalink: require('./replace-permalink'),
-    stripSubdirectoryFromPath: require('./strip-subdirectory-from-path'),
+    replacePermalink,
+    stripSubdirectoryFromPath,
     toTransformReady: require('./to-transform-ready'),
     transformReadyToAbsolute: require('./transform-ready-to-absolute'),
     transformReadyToRelative: require('./transform-ready-to-relative'),
-    urlJoin: require('./url-join')
+    urlJoin
 };
