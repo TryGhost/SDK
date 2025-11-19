@@ -1,8 +1,5 @@
 const absoluteToTransformReady = require('./absolute-to-transform-ready');
-
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+const {escapeRegExp} = require('./build-early-exit-match');
 
 function buildLinkRegex(rootUrl, options = {}) {
     // Build a regex that matches links from ANY configured base URL (site + CDNs)

@@ -1,31 +1,7 @@
 const markdownTransform = require('./markdown-transform');
 const absoluteToTransformReady = require('./absolute-to-transform-ready');
 const htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
-
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function buildEarlyExitMatch(siteUrl, options) {
-    const candidates = [siteUrl, options.imageBaseUrl, options.filesBaseUrl, options.mediaBaseUrl]
-        .filter(Boolean)
-        .map((value) => {
-            let normalized = options.ignoreProtocol ? value.replace(/http:|https:/, '') : value;
-            return normalized.replace(/\/$/, '');
-        })
-        .filter(Boolean)
-        .map(escapeRegExp);
-
-    if (!candidates.length) {
-        return null;
-    }
-
-    if (candidates.length === 1) {
-        return candidates[0];
-    }
-
-    return `(?:${candidates.join('|')})`;
-}
+const {buildEarlyExitMatch} = require('./build-early-exit-match');
 
 function markdownAbsoluteToTransformReady(markdown = '', siteUrl, _options = {}) {
     const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
