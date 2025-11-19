@@ -4,6 +4,7 @@ const htmlToTransformReady = require('../../../lib/utils/html-to-transform-ready
 
 describe('utils: htmlToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
+    const imagesCdn = 'https://images-cdn.ghost.io/site-uuid';
     const mediaCdn = 'https://media-cdn.ghost.io/site-uuid';
     const filesCdn = 'https://files-cdn.ghost.io/site-uuid';
     const itemPath = '/my-awesome-post';
@@ -14,6 +15,7 @@ describe('utils: htmlToTransformReady()', function () {
             staticImageUrlPrefix: 'content/images',
             staticFilesUrlPrefix: 'content/files',
             staticMediaUrlPrefix: 'content/media',
+            imageBaseUrl: imagesCdn,
             mediaBaseUrl: mediaCdn,
             filesBaseUrl: filesCdn
         };
@@ -77,5 +79,13 @@ describe('utils: htmlToTransformReady()', function () {
         const result = htmlToTransformReady(html, siteUrl, options);
 
         result.should.equal('<div class="kg-card kg-file-card"><a href="__GHOST_URL__/content/files/2025/10/martin-1.jpg">Download</a></div>');
+    });
+
+    it('converts image CDN URLs to transform-ready format', function () {
+        const html = `<div class="kg-card kg-image-card"><img src="${imagesCdn}/content/images/2025/10/photo.jpg"></div>`;
+
+        const result = htmlToTransformReady(html, siteUrl, options);
+
+        result.should.equal('<div class="kg-card kg-image-card"><img src="__GHOST_URL__/content/images/2025/10/photo.jpg"></div>');
     });
 });

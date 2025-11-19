@@ -4,12 +4,20 @@ const markdownToTransformReady = require('../../../lib/utils/markdown-to-transfo
 
 describe('utils: markdownToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
+    const imagesCdn = 'https://cdn.ghost.io/images';
+    const mediaCdn = 'https://cdn.ghost.io/media';
+    const filesCdn = 'https://cdn.ghost.io/files';
     const itemPath = '/my-awesome-post';
     let options;
 
     beforeEach(function () {
         options = {
-            staticImageUrlPrefix: 'content/images'
+            staticImageUrlPrefix: 'content/images',
+            staticMediaUrlPrefix: 'content/media',
+            staticFilesUrlPrefix: 'content/files',
+            imageBaseUrl: imagesCdn,
+            mediaBaseUrl: mediaCdn,
+            filesBaseUrl: filesCdn
         };
     });
 
@@ -53,6 +61,27 @@ describe('utils: markdownToTransformReady()', function () {
         const result = markdownToTransformReady(markdown, url, 'blog/my-post', options);
 
         result.should.equal('This is a [link](__GHOST_URL__/link)');
+    });
+
+    it('converts image CDN URLs to transform-ready format', function () {
+        const markdown = `![Photo](${imagesCdn}/content/images/photo.jpg)`;
+        const result = markdownToTransformReady(markdown, siteUrl, itemPath, options);
+
+        result.should.equal('![Photo](__GHOST_URL__/content/images/photo.jpg)');
+    });
+
+    it('converts media CDN URLs to transform-ready format', function () {
+        const markdown = `[Video](${mediaCdn}/content/media/video.mp4)`;
+        const result = markdownToTransformReady(markdown, siteUrl, itemPath, options);
+
+        result.should.equal('[Video](__GHOST_URL__/content/media/video.mp4)');
+    });
+
+    it('converts files CDN URLs to transform-ready format', function () {
+        const markdown = `[PDF](${filesCdn}/content/files/doc.pdf)`;
+        const result = markdownToTransformReady(markdown, siteUrl, itemPath, options);
+
+        result.should.equal('[PDF](__GHOST_URL__/content/files/doc.pdf)');
     });
 
     it('handles empty markdown', function () {
