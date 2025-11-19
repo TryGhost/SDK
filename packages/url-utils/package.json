@@ -9,14 +9,18 @@
   "author": "Ghost Foundation",
   "license": "MIT",
   "main": "index.js",
+  "types": "cjs/UrlUtils.d.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
-    "lint": "eslint . --ext .js --cache",
+    "pretest": "yarn build",
+    "test": "NODE_ENV=testing c8 --src cjs --all --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint . --ext .js,.ts --cache",
+    "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
   },
   "files": [
-    "lib/",
+    "cjs/",
     "index.js"
   ],
   "publishConfig": {
