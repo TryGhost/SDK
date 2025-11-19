@@ -1,6 +1,5 @@
 const unidecode = require('unidecode');
 const stripInvisibleChars = require('./strip-invisible-chars');
-
 /**
  * Slugify
  *
@@ -15,6 +14,10 @@ module.exports = function (string, options = {}) {
     // Ensure we have a string
     string = string || '';
 
+    //fix for ㅊ
+    // this was unidecode's recommended change.  It did not work: 
+      // unidecode("ㅊ", "ch");
+    string = string.replaceAll(/\u314A/g,'ch');
     // Strip all characters that cannot be printed
     string = stripInvisibleChars(string);
 
