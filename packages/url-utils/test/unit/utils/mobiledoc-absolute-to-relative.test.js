@@ -4,7 +4,7 @@ require('../../utils');
 
 const sinon = require('sinon');
 
-const mobiledocAbsoluteToRelative = require('../../../cjs/utils/mobiledoc-absolute-to-relative');
+const mobiledocAbsoluteToRelative = require('../../../lib/utils/mobiledoc-absolute-to-relative');
 
 describe('utils: mobiledocAbsoluteToRelative()', function () {
     const siteUrl = 'http://my-ghost-blog.com';

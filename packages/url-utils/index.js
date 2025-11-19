@@ -1,2 +1,2 @@
-module.exports = require('./cjs/UrlUtils');
+module.exports = require('./lib/UrlUtils');
 

@@ -3,7 +3,7 @@
     "target": "ES2019",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "./cjs",
+    "outDir": "./lib",
     "rootDir": "./src",
     "declaration": true,
     "esModuleInterop": true,

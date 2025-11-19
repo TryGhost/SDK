@@ -4,7 +4,7 @@ require('../utils');
 const assert = require('assert/strict');
 
 const sinon = require('sinon');
-const UrlUtils = require('../../cjs/UrlUtils');
+const UrlUtils = require('../../lib/UrlUtils');
 const configUrlHelpers = require('@tryghost/config-url-helpers');
 
 const constants = {

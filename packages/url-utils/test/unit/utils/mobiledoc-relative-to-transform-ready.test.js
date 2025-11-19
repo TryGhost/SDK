@@ -4,7 +4,7 @@ require('../../utils');
 
 const sinon = require('sinon');
 
-const mobiledocRelativeToTransformReady = require('../../../cjs/utils/mobiledoc-relative-to-transform-ready');
+const mobiledocRelativeToTransformReady = require('../../../lib/utils/mobiledoc-relative-to-transform-ready');
 
 describe('utils: mobiledocRelativeToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
