@@ -1,7 +1,6 @@
 {
   "extends": [
-    "@tryghost:quietJS",
-    "@tryghost:automergeDevDependencies"
+    "@tryghost:quietJS"
   ],
   "ignorePaths": ["packages/members"],
   "packageRules": [
