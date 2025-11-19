@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const plaintextAbsoluteToTransformReady = require('../../../lib/utils/plaintext-absolute-to-transform-ready');
+const plaintextAbsoluteToTransformReady = require('../../../cjs/utils/plaintext-absolute-to-transform-ready');
 
 describe('utils: plaintextAbsoluteToTransformReady', function () {
     it('works', function () {

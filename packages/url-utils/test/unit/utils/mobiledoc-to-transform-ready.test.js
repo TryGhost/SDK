@@ -1,6 +1,6 @@
 require('../../utils');
 
-const mobiledocToTransformReady = require('../../../lib/utils/mobiledoc-to-transform-ready');
+const mobiledocToTransformReady = require('../../../cjs/utils/mobiledoc-to-transform-ready');
 
 describe('utils: mobiledocToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';

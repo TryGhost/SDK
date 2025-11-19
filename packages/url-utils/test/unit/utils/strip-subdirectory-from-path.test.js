@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const stripSubdirectoryFromPath = require('../../../lib/utils/strip-subdirectory-from-path');
+const stripSubdirectoryFromPath = require('../../../cjs/utils/strip-subdirectory-from-path');
 
 describe('utils: stripSubdomainFromPath()', function () {
     it('ignores rootUrl with no subdirectory', function () {

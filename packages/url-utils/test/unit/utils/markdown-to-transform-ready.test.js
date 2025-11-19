@@ -1,6 +1,6 @@
 require('../../utils');
 
-const markdownToTransformReady = require('../../../lib/utils/markdown-to-transform-ready');
+const markdownToTransformReady = require('../../../cjs/utils/markdown-to-transform-ready');
 
 describe('utils: markdownToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';

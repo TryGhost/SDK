@@ -1,6 +1,6 @@
 require('../../utils');
 
-const lexicalToTransformReady = require('../../../lib/utils/lexical-to-transform-ready');
+const lexicalToTransformReady = require('../../../cjs/utils/lexical-to-transform-ready');
 
 describe('utils: lexicalToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';

@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const deduplicateSubdirectory = require('../../../lib/utils/deduplicate-subdirectory');
+const deduplicateSubdirectory = require('../../../cjs/utils/deduplicate-subdirectory');
 
 describe('utils: deduplicateSubdirectory()', function () {
     describe('with url', function () {
