@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/url-utils",
-  "version": "4.5.0",
+  "version": "5.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
@@ -27,7 +27,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@tryghost/config-url-helpers": "^1.0.18",
+    "@tryghost/config-url-helpers": "^1.0.19",
     "@types/cheerio": "^0.22.31",
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.0.0",
