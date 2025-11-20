@@ -1,6 +1,6 @@
 // @ts-nocheck
 const markdownTransform = require('./markdown-transform');
-const htmlRelativeToTransformReady = require('./html-relative-to-transform-ready');
+import htmlRelativeToTransformReady from './html-relative-to-transform-ready';
 const relativeToTransformReady = require('./relative-to-transform-ready').default;
 
 function markdownRelativeToTransformReady(markdown = '', siteUrl, itemPath, _options = {}) {

@@ -1,6 +1,6 @@
 // @ts-nocheck
 const markdownTransform = require('./markdown-transform');
-const htmlRelativeToAbsolute = require('./html-relative-to-absolute');
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
 const relativeToAbsolute = require('./relative-to-absolute').default;
 
 function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options = {}) {

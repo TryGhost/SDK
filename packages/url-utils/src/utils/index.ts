@@ -3,6 +3,11 @@ import absoluteToRelative from './absolute-to-relative';
 import absoluteToTransformReady from './absolute-to-transform-ready';
 import deduplicateDoubleSlashes from './deduplicate-double-slashes';
 import deduplicateSubdirectory from './deduplicate-subdirectory';
+import htmlAbsoluteToRelative from './html-absolute-to-relative';
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
+import htmlRelativeToTransformReady from './html-relative-to-transform-ready';
+import htmlToTransformReady from './html-to-transform-ready';
 import isSSL from './is-ssl';
 import relativeToAbsolute from './relative-to-absolute';
 import relativeToTransformReady from './relative-to-transform-ready';
@@ -18,11 +23,11 @@ module.exports = {
     absoluteToTransformReady,
     deduplicateDoubleSlashes,
     deduplicateSubdirectory,
-    htmlAbsoluteToRelative: require('./html-absolute-to-relative'),
-    htmlRelativeToAbsolute: require('./html-relative-to-absolute'),
-    htmlAbsoluteToTransformReady: require('./html-absolute-to-transform-ready'),
-    htmlRelativeToTransformReady: require('./html-relative-to-transform-ready'),
-    htmlToTransformReady: require('./html-to-transform-ready'),
+    htmlAbsoluteToRelative,
+    htmlRelativeToAbsolute,
+    htmlAbsoluteToTransformReady,
+    htmlRelativeToTransformReady,
+    htmlToTransformReady,
     isSSL,
     markdownAbsoluteToRelative: require('./markdown-absolute-to-relative'),
     markdownRelativeToAbsolute: require('./markdown-relative-to-absolute'),

@@ -1,8 +1,9 @@
 // @ts-nocheck
 const markdownTransform = require('./markdown-transform');
-const absoluteToTransformReady = require('./absolute-to-transform-ready').default;
-const htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
-const {buildEarlyExitMatch} = require('./build-early-exit-match').default;
+import absoluteToTransformReady from './absolute-to-transform-ready';
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
+import buildEarlyExitMatchModule from './build-early-exit-match';
+const {buildEarlyExitMatch} = buildEarlyExitMatchModule;
 
 function markdownAbsoluteToTransformReady(markdown = '', siteUrl, _options = {}) {
     const defaultOptions = {assetsOnly: false, ignoreProtocol: true};

@@ -1,14 +1,25 @@
-// @ts-nocheck
-const htmlRelativeToAbsolute = require('./html-relative-to-absolute');
-const htmlAbsoluteToTransformReady = require('./html-absolute-to-transform-ready');
+import type {HtmlTransformOptionsInput} from './types';
+import htmlRelativeToAbsolute from './html-relative-to-absolute';
+import htmlAbsoluteToTransformReady from './html-absolute-to-transform-ready';
+import type {AbsoluteToTransformReadyOptionsInput} from './absolute-to-transform-ready';
 
-function htmlToTransformReady(html, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+function htmlToTransformReady(
+    html: string,
+    siteUrl: string,
+    itemPath: string | null | HtmlTransformOptionsInput,
+    options?: HtmlTransformOptionsInput
+): string {
+    let finalItemPath: string | null = null;
+    let finalOptions: HtmlTransformOptionsInput = options || {};
+
+    if (typeof itemPath === 'object' && itemPath !== null && !options) {
+        finalOptions = itemPath;
+        finalItemPath = null;
+    } else if (typeof itemPath === 'string') {
+        finalItemPath = itemPath;
     }
-    const absolute = htmlRelativeToAbsolute(html, siteUrl, itemPath, options);
-    return htmlAbsoluteToTransformReady(absolute, siteUrl, options);
+    const absolute = htmlRelativeToAbsolute(html, siteUrl, finalItemPath, finalOptions);
+    return htmlAbsoluteToTransformReady(absolute, siteUrl, finalOptions as AbsoluteToTransformReadyOptionsInput);
 }
 
-module.exports = htmlToTransformReady;
+export default htmlToTransformReady;
