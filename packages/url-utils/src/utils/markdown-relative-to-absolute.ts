@@ -1,11 +1,17 @@
-// @ts-nocheck
-const markdownTransform = require('./markdown-transform');
+import type {MarkdownTransformOptionsInput} from './types';
+import type {SecureOptionsInput} from './types';
+import markdownTransform from './markdown-transform';
 import htmlRelativeToAbsolute from './html-relative-to-absolute';
-const relativeToAbsolute = require('./relative-to-absolute').default;
+import relativeToAbsolute from './relative-to-absolute';
 
-function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false};
-    const options = Object.assign({}, defaultOptions, _options);
+function markdownRelativeToAbsolute(
+    markdown: string = '',
+    siteUrl: string,
+    itemPath: string | null,
+    _options: SecureOptionsInput = {}
+): string {
+    const defaultOptions: SecureOptionsInput = {assetsOnly: false};
+    const options: MarkdownTransformOptionsInput = Object.assign({}, defaultOptions, _options);
 
     options.earlyExitMatchStr = '\\]\\([^\\s\\)]|href=|src=|srcset=';
     if (options.assetsOnly) {
@@ -20,4 +26,4 @@ function markdownRelativeToAbsolute(markdown = '', siteUrl, itemPath, _options =
     return markdownTransform(markdown, siteUrl, transformFunctions, itemPath, options);
 }
 
-module.exports = markdownRelativeToAbsolute;
+export default markdownRelativeToAbsolute;

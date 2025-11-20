@@ -14,6 +14,11 @@ import lexicalAbsoluteToTransformReady from './lexical-absolute-to-transform-rea
 import lexicalRelativeToAbsolute from './lexical-relative-to-absolute';
 import lexicalRelativeToTransformReady from './lexical-relative-to-transform-ready';
 import lexicalToTransformReady from './lexical-to-transform-ready';
+import markdownAbsoluteToRelative from './markdown-absolute-to-relative';
+import markdownRelativeToAbsolute from './markdown-relative-to-absolute';
+import markdownAbsoluteToTransformReady from './markdown-absolute-to-transform-ready';
+import markdownRelativeToTransformReady from './markdown-relative-to-transform-ready';
+import markdownToTransformReady from './markdown-to-transform-ready';
 import relativeToAbsolute from './relative-to-absolute';
 import relativeToTransformReady from './relative-to-transform-ready';
 import replacePermalink from './replace-permalink';
@@ -34,11 +39,11 @@ module.exports = {
     htmlRelativeToTransformReady,
     htmlToTransformReady,
     isSSL,
-    markdownAbsoluteToRelative: require('./markdown-absolute-to-relative'),
-    markdownRelativeToAbsolute: require('./markdown-relative-to-absolute'),
-    markdownAbsoluteToTransformReady: require('./markdown-absolute-to-transform-ready'),
-    markdownRelativeToTransformReady: require('./markdown-relative-to-transform-ready'),
-    markdownToTransformReady: require('./markdown-to-transform-ready'),
+    markdownAbsoluteToRelative,
+    markdownRelativeToAbsolute,
+    markdownAbsoluteToTransformReady,
+    markdownRelativeToTransformReady,
+    markdownToTransformReady,
     mobiledocAbsoluteToRelative: require('./mobiledoc-absolute-to-relative'),
     mobiledocRelativeToAbsolute: require('./mobiledoc-relative-to-absolute'),
     mobiledocAbsoluteToTransformReady: require('./mobiledoc-absolute-to-transform-ready'),

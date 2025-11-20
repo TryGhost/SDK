@@ -67,6 +67,11 @@ export interface MarkdownTransformOptions extends AssetAwareOptions {
 
 export type MarkdownTransformOptionsInput = AssetAwareOptionsInput & {ignoreProtocol?: boolean; earlyExitMatchStr?: string};
 
+export interface MarkdownTransformFunctions {
+    html: UrlTransformFunction;
+    url: UrlTransformFunction;
+}
+
 export type CardTransformer = (payload: unknown, options: UnknownRecord) => unknown;
 
 export interface MobiledocCardTransformer {
