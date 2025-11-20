@@ -1,2 +1,2 @@
-module.exports = require('./lib/UrlUtils');
+module.exports = require('./lib/UrlUtils').default;
 
