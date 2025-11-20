@@ -1,7 +1,7 @@
 // @ts-nocheck
 // Contains all path information to be used throughout the codebase.
 const _ = require('lodash');
-const utils = require('./utils');
+const utils = require('./utils').default;
 
 // similar to Object.assign but will not override defaults if a source value is undefined
 function assignOptions(target, ...sources) {

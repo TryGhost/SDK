@@ -1,4 +1,3 @@
-// @ts-nocheck
 import absoluteToRelative from './absolute-to-relative';
 import absoluteToTransformReady from './absolute-to-transform-ready';
 import deduplicateDoubleSlashes from './deduplicate-double-slashes';
@@ -36,7 +35,7 @@ import transformReadyToAbsolute from './transform-ready-to-absolute';
 import transformReadyToRelative from './transform-ready-to-relative';
 import urlJoin from './url-join';
 
-module.exports = {
+export {
     absoluteToRelative,
     absoluteToTransformReady,
     deduplicateDoubleSlashes,
@@ -47,6 +46,11 @@ module.exports = {
     htmlRelativeToTransformReady,
     htmlToTransformReady,
     isSSL,
+    lexicalAbsoluteToRelative,
+    lexicalAbsoluteToTransformReady,
+    lexicalRelativeToAbsolute,
+    lexicalRelativeToTransformReady,
+    lexicalToTransformReady,
     markdownAbsoluteToRelative,
     markdownRelativeToAbsolute,
     markdownAbsoluteToTransformReady,
@@ -57,11 +61,6 @@ module.exports = {
     mobiledocAbsoluteToTransformReady,
     mobiledocRelativeToTransformReady,
     mobiledocToTransformReady,
-    lexicalAbsoluteToRelative,
-    lexicalRelativeToAbsolute,
-    lexicalAbsoluteToTransformReady,
-    lexicalRelativeToTransformReady,
-    lexicalToTransformReady,
     plaintextAbsoluteToTransformReady,
     plaintextRelativeToTransformReady,
     plaintextToTransformReady,
@@ -74,3 +73,44 @@ module.exports = {
     transformReadyToRelative,
     urlJoin
 };
+
+const utils = {
+    absoluteToRelative,
+    absoluteToTransformReady,
+    deduplicateDoubleSlashes,
+    deduplicateSubdirectory,
+    htmlAbsoluteToRelative,
+    htmlRelativeToAbsolute,
+    htmlAbsoluteToTransformReady,
+    htmlRelativeToTransformReady,
+    htmlToTransformReady,
+    isSSL,
+    lexicalAbsoluteToRelative,
+    lexicalRelativeToAbsolute,
+    lexicalAbsoluteToTransformReady,
+    lexicalRelativeToTransformReady,
+    lexicalToTransformReady,
+    markdownAbsoluteToRelative,
+    markdownAbsoluteToTransformReady,
+    markdownRelativeToAbsolute,
+    markdownRelativeToTransformReady,
+    markdownToTransformReady,
+    mobiledocAbsoluteToRelative,
+    mobiledocAbsoluteToTransformReady,
+    mobiledocRelativeToAbsolute,
+    mobiledocRelativeToTransformReady,
+    mobiledocToTransformReady,
+    plaintextAbsoluteToTransformReady,
+    plaintextRelativeToTransformReady,
+    plaintextToTransformReady,
+    relativeToAbsolute,
+    relativeToTransformReady,
+    replacePermalink,
+    stripSubdirectoryFromPath,
+    toTransformReady,
+    transformReadyToAbsolute,
+    transformReadyToRelative,
+    urlJoin
+};
+
+export default utils;
