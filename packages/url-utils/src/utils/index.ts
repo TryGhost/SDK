@@ -24,6 +24,9 @@ import mobiledocRelativeToAbsolute from './mobiledoc-relative-to-absolute';
 import mobiledocAbsoluteToTransformReady from './mobiledoc-absolute-to-transform-ready';
 import mobiledocRelativeToTransformReady from './mobiledoc-relative-to-transform-ready';
 import mobiledocToTransformReady from './mobiledoc-to-transform-ready';
+import plaintextAbsoluteToTransformReady from './plaintext-absolute-to-transform-ready';
+import plaintextRelativeToTransformReady from './plaintext-relative-to-transform-ready';
+import plaintextToTransformReady from './plaintext-to-transform-ready';
 import relativeToAbsolute from './relative-to-absolute';
 import relativeToTransformReady from './relative-to-transform-ready';
 import replacePermalink from './replace-permalink';
@@ -59,9 +62,9 @@ module.exports = {
     lexicalAbsoluteToTransformReady,
     lexicalRelativeToTransformReady,
     lexicalToTransformReady,
-    plaintextAbsoluteToTransformReady: require('./plaintext-absolute-to-transform-ready'),
-    plaintextRelativeToTransformReady: require('./plaintext-relative-to-transform-ready'),
-    plaintextToTransformReady: require('./plaintext-to-transform-ready'),
+    plaintextAbsoluteToTransformReady,
+    plaintextRelativeToTransformReady,
+    plaintextToTransformReady,
     relativeToAbsolute,
     relativeToTransformReady,
     replacePermalink,
