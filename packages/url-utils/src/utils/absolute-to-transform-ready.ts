@@ -1,9 +1,23 @@
-// @ts-nocheck
-const {URL} = require('url');
-const absoluteToRelative = require('./absolute-to-relative');
+import type {TransformReadyReplacementOptions} from './types';
+import absoluteToRelative, {type AbsoluteToRelativeOptionsInput} from './absolute-to-relative';
+import {URL} from 'url';
 
-function isRelative(url) {
-    let parsedInput;
+export interface AbsoluteToTransformReadyOptions extends TransformReadyReplacementOptions {
+    withoutSubdirectory: boolean;
+    ignoreProtocol: boolean;
+    assetsOnly: boolean;
+    staticImageUrlPrefix: string;
+    staticFilesUrlPrefix?: string;
+    staticMediaUrlPrefix?: string;
+    imageBaseUrl?: string | null;
+    filesBaseUrl?: string | null;
+    mediaBaseUrl?: string | null;
+}
+
+export type AbsoluteToTransformReadyOptionsInput = Partial<AbsoluteToTransformReadyOptions>;
+
+function isRelative(url: string): boolean {
+    let parsedInput: URL;
     try {
         parsedInput = new URL(url, 'http://relative');
     } catch (e) {
@@ -14,8 +28,12 @@ function isRelative(url) {
     return parsedInput.origin === 'http://relative';
 }
 
-const absoluteToTransformReady = function (url, root, _options = {}) {
-    const defaultOptions = {
+const absoluteToTransformReady = function (
+    url: string,
+    root: string,
+    _options: AbsoluteToTransformReadyOptionsInput = {}
+): string {
+    const defaultOptions: AbsoluteToTransformReadyOptions = {
         replacementStr: '__GHOST_URL__',
         withoutSubdirectory: true,
         staticImageUrlPrefix: 'content/images',
@@ -23,7 +41,9 @@ const absoluteToTransformReady = function (url, root, _options = {}) {
         staticMediaUrlPrefix: 'content/media',
         imageBaseUrl: null,
         filesBaseUrl: null,
-        mediaBaseUrl: null
+        mediaBaseUrl: null,
+        ignoreProtocol: true,
+        assetsOnly: false
     };
     const options = Object.assign({}, defaultOptions, _options);
 
@@ -33,14 +53,14 @@ const absoluteToTransformReady = function (url, root, _options = {}) {
 
     // convert to relative with stripped subdir
     // always returns root-relative starting with forward slash
-    const rootRelativeUrl = absoluteToRelative(url, root, options);
+    const rootRelativeUrl = absoluteToRelative(url, root, options as AbsoluteToRelativeOptionsInput);
 
     if (isRelative(rootRelativeUrl)) {
         return `${options.replacementStr}${rootRelativeUrl}`;
     }
 
     if (options.mediaBaseUrl) {
-        const mediaRelativeUrl = absoluteToRelative(url, options.mediaBaseUrl, options);
+        const mediaRelativeUrl = absoluteToRelative(url, options.mediaBaseUrl, options as AbsoluteToRelativeOptionsInput);
 
         if (isRelative(mediaRelativeUrl)) {
             return `${options.replacementStr}${mediaRelativeUrl}`;
@@ -48,7 +68,7 @@ const absoluteToTransformReady = function (url, root, _options = {}) {
     }
 
     if (options.filesBaseUrl) {
-        const filesRelativeUrl = absoluteToRelative(url, options.filesBaseUrl, options);
+        const filesRelativeUrl = absoluteToRelative(url, options.filesBaseUrl, options as AbsoluteToRelativeOptionsInput);
 
         if (isRelative(filesRelativeUrl)) {
             return `${options.replacementStr}${filesRelativeUrl}`;
@@ -56,7 +76,7 @@ const absoluteToTransformReady = function (url, root, _options = {}) {
     }
 
     if (options.imageBaseUrl) {
-        const imageRelativeUrl = absoluteToRelative(url, options.imageBaseUrl, options);
+        const imageRelativeUrl = absoluteToRelative(url, options.imageBaseUrl, options as AbsoluteToRelativeOptionsInput);
 
         if (isRelative(imageRelativeUrl)) {
             return `${options.replacementStr}${imageRelativeUrl}`;
@@ -66,4 +86,4 @@ const absoluteToTransformReady = function (url, root, _options = {}) {
     return url;
 };
 
-module.exports = absoluteToTransformReady;
+export default absoluteToTransformReady;
