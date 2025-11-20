@@ -9,6 +9,11 @@ import htmlRelativeToAbsolute from './html-relative-to-absolute';
 import htmlRelativeToTransformReady from './html-relative-to-transform-ready';
 import htmlToTransformReady from './html-to-transform-ready';
 import isSSL from './is-ssl';
+import lexicalAbsoluteToRelative from './lexical-absolute-to-relative';
+import lexicalAbsoluteToTransformReady from './lexical-absolute-to-transform-ready';
+import lexicalRelativeToAbsolute from './lexical-relative-to-absolute';
+import lexicalRelativeToTransformReady from './lexical-relative-to-transform-ready';
+import lexicalToTransformReady from './lexical-to-transform-ready';
 import relativeToAbsolute from './relative-to-absolute';
 import relativeToTransformReady from './relative-to-transform-ready';
 import replacePermalink from './replace-permalink';
@@ -39,11 +44,11 @@ module.exports = {
     mobiledocAbsoluteToTransformReady: require('./mobiledoc-absolute-to-transform-ready'),
     mobiledocRelativeToTransformReady: require('./mobiledoc-relative-to-transform-ready'),
     mobiledocToTransformReady: require('./mobiledoc-to-transform-ready'),
-    lexicalAbsoluteToRelative: require('./lexical-absolute-to-relative'),
-    lexicalRelativeToAbsolute: require('./lexical-relative-to-absolute'),
-    lexicalAbsoluteToTransformReady: require('./lexical-absolute-to-transform-ready'),
-    lexicalRelativeToTransformReady: require('./lexical-relative-to-transform-ready'),
-    lexicalToTransformReady: require('./lexical-to-transform-ready'),
+    lexicalAbsoluteToRelative,
+    lexicalRelativeToAbsolute,
+    lexicalAbsoluteToTransformReady,
+    lexicalRelativeToTransformReady,
+    lexicalToTransformReady,
     plaintextAbsoluteToTransformReady: require('./plaintext-absolute-to-transform-ready'),
     plaintextRelativeToTransformReady: require('./plaintext-relative-to-transform-ready'),
     plaintextToTransformReady: require('./plaintext-to-transform-ready'),

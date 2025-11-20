@@ -1,13 +1,18 @@
-// @ts-nocheck
-const relativeToTransformReady = require('./relative-to-transform-ready').default;
-const lexicalTransform = require('./lexical-transform');
+import type {LexicalTransformOptionsInput} from './types';
+import relativeToTransformReady from './relative-to-transform-ready';
+import lexicalTransform from './lexical-transform';
 
-function lexicalRelativeToTransformReady(serializedLexical, siteUrl, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
-    const overrideOptions = {siteUrl, transformType: 'toTransformReady'};
+function lexicalRelativeToTransformReady(
+    serializedLexical: string,
+    siteUrl: string,
+    itemPath: string | null,
+    _options: LexicalTransformOptionsInput = {}
+): string {
+    const defaultOptions: LexicalTransformOptionsInput = {assetsOnly: false, secure: false, nodes: [], transformMap: {}};
+    const overrideOptions: LexicalTransformOptionsInput = {siteUrl, transformType: 'toTransformReady'};
     const options = Object.assign({}, defaultOptions, _options, overrideOptions);
 
     return lexicalTransform(serializedLexical, siteUrl, relativeToTransformReady, itemPath, options);
 }
 
-module.exports = lexicalRelativeToTransformReady;
+export default lexicalRelativeToTransformReady;
