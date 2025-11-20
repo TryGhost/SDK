@@ -1,6 +1,6 @@
 // @ts-nocheck
 const htmlTransform = require('./html-transform');
-const absoluteToRelative = require('./absolute-to-relative');
+const absoluteToRelative = require('./absolute-to-relative').default;
 
 function htmlAbsoluteToRelative(html = '', siteUrl, _options) {
     const defaultOptions = {assetsOnly: false, ignoreProtocol: true};

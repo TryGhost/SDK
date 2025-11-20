@@ -1,6 +1,6 @@
 // @ts-nocheck
 const htmlTransform = require('./html-transform');
-const relativeToTransformReady = require('./relative-to-transform-ready');
+const relativeToTransformReady = require('./relative-to-transform-ready').default;
 
 const htmlRelativeToTransformReady = function (html = '', root, itemPath, _options) {
     // itemPath is optional, if it's an object may be the options param instead

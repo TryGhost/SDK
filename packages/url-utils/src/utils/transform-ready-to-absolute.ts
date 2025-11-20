@@ -1,10 +1,23 @@
-// @ts-nocheck
-function escapeRegExp(string) {
+import type {TransformReadyReplacementOptions, BaseUrlOptions} from './types';
+
+function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const transformReadyToAbsolute = function (str = '', root, _options = {}) {
-    const defaultOptions = {
+export interface TransformReadyToAbsoluteOptions extends TransformReadyReplacementOptions, BaseUrlOptions {
+    staticImageUrlPrefix: string;
+    staticFilesUrlPrefix: string;
+    staticMediaUrlPrefix: string;
+}
+
+export type TransformReadyToAbsoluteOptionsInput = Partial<TransformReadyToAbsoluteOptions>;
+
+const transformReadyToAbsolute = function (
+    str: string = '',
+    root: string,
+    _options: TransformReadyToAbsoluteOptionsInput = {}
+): string {
+    const defaultOptions: TransformReadyToAbsoluteOptions = {
         replacementStr: '__GHOST_URL__',
         staticImageUrlPrefix: 'content/images',
         staticFilesUrlPrefix: 'content/files',
@@ -21,7 +34,7 @@ const transformReadyToAbsolute = function (str = '', root, _options = {}) {
 
     const replacementRegex = new RegExp(escapeRegExp(options.replacementStr), 'g');
 
-    return str.replace(replacementRegex, (match, offset) => {
+    return str.replace(replacementRegex, (match: string, offset: number): string => {
         const remainder = str.slice(offset + match.length);
 
         if (remainder.startsWith(`/${options.staticMediaUrlPrefix}`) && options.mediaBaseUrl) {
@@ -40,4 +53,4 @@ const transformReadyToAbsolute = function (str = '', root, _options = {}) {
     });
 };
 
-module.exports = transformReadyToAbsolute;
+export default transformReadyToAbsolute;

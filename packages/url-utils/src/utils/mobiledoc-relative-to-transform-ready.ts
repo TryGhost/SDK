@@ -1,5 +1,5 @@
 // @ts-nocheck
-const relativeToTransformReady = require('./relative-to-transform-ready');
+const relativeToTransformReady = require('./relative-to-transform-ready').default;
 const mobiledocTransform = require('./mobiledoc-transform');
 
 function mobiledocRelativeToTransformReady(serializedMobiledoc, siteUrl, itemPath, _options = {}) {

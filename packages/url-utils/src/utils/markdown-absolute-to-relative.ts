@@ -1,6 +1,6 @@
 // @ts-nocheck
 const markdownTransform = require('./markdown-transform');
-const absoluteToRelative = require('./absolute-to-relative');
+const absoluteToRelative = require('./absolute-to-relative').default;
 const htmlAbsoluteToRelative = require('./html-absolute-to-relative');
 
 function markdownAbsoluteToRelative(markdown = '', siteUrl, _options = {}) {

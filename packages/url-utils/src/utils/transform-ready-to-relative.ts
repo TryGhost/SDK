@@ -1,13 +1,21 @@
-// @ts-nocheck
-function escapeRegExp(string) {
+import type {TransformReadyReplacementOptions, TransformReadyReplacementOptionsInput} from './types';
+import {URL} from 'url';
+
+function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-const transformReadyToRelative = function (str = '', root, _options = {}) {
-    const defaultOptions = {
+const transformReadyToRelative = function (
+    str: string = '',
+    root: string,
+    _options: TransformReadyReplacementOptionsInput = {}
+): string {
+    const defaultOptions: TransformReadyReplacementOptions = {
+
         replacementStr: '__GHOST_URL__'
+
     };
-    const options = Object.assign({}, defaultOptions, _options);
+    const options: TransformReadyReplacementOptions = Object.assign({}, defaultOptions, _options);
 
     if (!str || str.indexOf(options.replacementStr) === -1) {
         return str;
@@ -22,4 +30,4 @@ const transformReadyToRelative = function (str = '', root, _options = {}) {
     return str.replace(replacementRegex, subdir);
 };
 
-module.exports = transformReadyToRelative;
+export default transformReadyToRelative;

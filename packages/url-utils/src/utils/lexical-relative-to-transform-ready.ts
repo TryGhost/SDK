@@ -1,5 +1,5 @@
 // @ts-nocheck
-const relativeToTransformReady = require('./relative-to-transform-ready');
+const relativeToTransformReady = require('./relative-to-transform-ready').default;
 const lexicalTransform = require('./lexical-transform');
 
 function lexicalRelativeToTransformReady(serializedLexical, siteUrl, itemPath, _options = {}) {

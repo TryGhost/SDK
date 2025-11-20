@@ -1,7 +1,9 @@
-// @ts-nocheck
-// require the whatwg compatible URL library (same behaviour in node and browser)
-const {URL} = require('url');
-const urlJoin = require('./url-join').default;
+import type {SecureOptions, SecureOptionsInput} from './types';
+import {URL} from 'url';
+import urlJoin from './url-join';
+
+export type RelativeToAbsoluteOptions = SecureOptions;
+export type RelativeToAbsoluteOptionsInput = SecureOptionsInput;
 
 // NOTE: Ghost's relative->absolute handling is a little strange when the rootUrl
 // includes a subdirectory. Root-relative paths such as /content/image.jpg are
@@ -22,28 +24,39 @@ const urlJoin = require('./url-join').default;
  * @param {object} options
  * @returns {string} The passed in url or an absolute URL using
  */
-const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, _options) {
+const relativeToAbsolute = function relativeToAbsolute(
+    path: string,
+    rootUrl: string,
+    itemPath: string | null | RelativeToAbsoluteOptionsInput,
+    _options?: RelativeToAbsoluteOptionsInput
+): string {
     // itemPath is optional, if it's an object it may be the options param instead
-    if (typeof itemPath === 'object' && !_options) {
-        _options = itemPath;
-        itemPath = null;
+    let finalItemPath: string | null = null;
+    let finalOptions: RelativeToAbsoluteOptionsInput = _options || {};
+    
+    if (typeof itemPath === 'object' && itemPath !== null && !_options) {
+        finalOptions = itemPath;
+        finalItemPath = null;
+    } else if (typeof itemPath === 'string') {
+        finalItemPath = itemPath;
     }
 
     // itemPath could be sent as a full url in which case, extract the pathname
-    if (itemPath && itemPath.match(/^http/)) {
-        const itemUrl = new URL(itemPath);
-        itemPath = itemUrl.pathname;
+    if (finalItemPath && finalItemPath.match(/^http/)) {
+        const itemUrl = new URL(finalItemPath);
+        finalItemPath = itemUrl.pathname;
     }
 
-    const defaultOptions = {
+    const defaultOptions: RelativeToAbsoluteOptionsInput = {
         assetsOnly: false,
         staticImageUrlPrefix: 'content/images'
     };
-    const options = Object.assign({}, defaultOptions, _options);
+    const options = Object.assign({}, defaultOptions, finalOptions);
 
     // return the path as-is if it's not an asset path and we're only modifying assets
     if (options.assetsOnly) {
-        const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix);
+        // staticImageUrlPrefix is always set from defaultOptions via Object.assign
+        const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix!);
         if (!path.match(staticImageUrlPrefixRegex)) {
             return path;
         }
@@ -51,7 +64,7 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
 
     // if URL is absolute return it as-is
     try {
-        const parsed = new URL(path, 'http://relative');
+        const parsed: URL = new URL(path, 'http://relative');
 
         if (parsed.origin !== 'http://relative') {
             return path;
@@ -71,7 +84,7 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
     }
 
     // return the path as-is if it's not root-relative and we have no itemPath
-    if (!itemPath && !path.match(/^\//)) {
+    if (!finalItemPath && !path.match(/^\//)) {
         return path;
     }
 
@@ -80,8 +93,8 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
         rootUrl = `${rootUrl}/`;
     }
 
-    const parsedRootUrl = new URL(rootUrl);
-    const basePath = path.startsWith('/') ? '' : itemPath;
+    const parsedRootUrl: URL = new URL(rootUrl);
+    const basePath = path.startsWith('/') ? '' : (finalItemPath || '');
     const fullPath = urlJoin([parsedRootUrl.pathname, basePath, path], {rootUrl});
     const absoluteUrl = new URL(fullPath, rootUrl);
 
@@ -92,4 +105,4 @@ const relativeToAbsolute = function relativeToAbsolute(path, rootUrl, itemPath, 
     return absoluteUrl.toString();
 };
 
-module.exports = relativeToAbsolute;
+export default relativeToAbsolute;

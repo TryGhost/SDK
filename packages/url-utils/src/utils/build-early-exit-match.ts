@@ -1,7 +1,12 @@
-// @ts-nocheck
-function escapeRegExp(string) {
+import type {BaseUrlOptionsInput} from './types';
+
+function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
+
+type BuildEarlyExitMatchOptions = BaseUrlOptionsInput & {
+    ignoreProtocol?: boolean;
+};
 
 /**
  * Build a regex pattern that matches any of the configured base URLs (site URL + CDN URLs).
@@ -16,14 +21,14 @@ function escapeRegExp(string) {
  * @param {boolean} [options.ignoreProtocol=true] - Whether to strip protocol from URLs
  * @returns {string|null} Regex pattern matching any configured base URL, or null if none configured
  */
-function buildEarlyExitMatch(siteUrl, options = {}) {
+function buildEarlyExitMatch(siteUrl: string, options: BuildEarlyExitMatchOptions = {}): string | null {
     const candidates = [siteUrl, options.imageBaseUrl, options.filesBaseUrl, options.mediaBaseUrl]
-        .filter(Boolean)
-        .map((value) => {
+        .filter((value): value is string => Boolean(value))
+        .map((value: string) => {
             let normalized = options.ignoreProtocol ? value.replace(/http:|https:/, '') : value;
             return normalized.replace(/\/$/, '');
         })
-        .filter(Boolean)
+        .filter((value): value is string => Boolean(value))
         .map(escapeRegExp);
 
     if (!candidates.length) {
@@ -37,7 +42,7 @@ function buildEarlyExitMatch(siteUrl, options = {}) {
     return `(?:${candidates.join('|')})`;
 }
 
-module.exports = {
+export default {
     buildEarlyExitMatch,
     escapeRegExp
 };

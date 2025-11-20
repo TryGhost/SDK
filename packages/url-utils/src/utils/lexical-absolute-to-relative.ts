@@ -1,5 +1,5 @@
 // @ts-nocheck
-const absoluteToRelative = require('./absolute-to-relative');
+const absoluteToRelative = require('./absolute-to-relative').default;
 const lexicalTransform = require('./lexical-transform');
 
 function lexicalAbsoluteToRelative(serializedLexical, siteUrl, _options = {}) {

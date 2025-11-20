@@ -1,7 +1,7 @@
 // @ts-nocheck
 const htmlTransform = require('./html-transform');
-const absoluteToTransformReady = require('./absolute-to-transform-ready');
-const {buildEarlyExitMatch} = require('./build-early-exit-match');
+const absoluteToTransformReady = require('./absolute-to-transform-ready').default;
+const {buildEarlyExitMatch} = require('./build-early-exit-match').default;
 
 const htmlAbsoluteToTransformReady = function (html = '', siteUrl, _options) {
     const defaultOptions = {assetsOnly: false, ignoreProtocol: true};

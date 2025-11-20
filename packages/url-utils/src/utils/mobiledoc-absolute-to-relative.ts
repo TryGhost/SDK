@@ -1,5 +1,5 @@
 // @ts-nocheck
-const absoluteToRelative = require('./absolute-to-relative');
+const absoluteToRelative = require('./absolute-to-relative').default;
 const mobiledocTransform = require('./mobiledoc-transform');
 
 function mobiledocAbsoluteToRelative(serializedMobiledoc, siteUrl, _options = {}) {

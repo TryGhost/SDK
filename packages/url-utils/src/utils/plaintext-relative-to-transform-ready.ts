@@ -1,5 +1,5 @@
 // @ts-nocheck
-const relativeToTransformReady = require('./relative-to-transform-ready');
+const relativeToTransformReady = require('./relative-to-transform-ready').default;
 
 const plaintextRelativeToTransformReady = function plaintextRelativeToTransformReady(plaintext, rootUrl, itemPath, options) {
     // itemPath is optional, if it's an object may be the options param instead

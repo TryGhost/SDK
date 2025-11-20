@@ -4,7 +4,7 @@ require('../../utils');
 
 const fs = require('fs');
 const path = require('path');
-const transformReadyToRelative = require('../../../lib/utils/transform-ready-to-relative');
+const transformReadyToRelative = require('../../../lib/utils/transform-ready-to-relative').default;
 
 describe('utils: transformReadyToRelative()', function () {
     describe('single url', function () {

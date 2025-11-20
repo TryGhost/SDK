@@ -1,14 +1,21 @@
 // @ts-nocheck
+import absoluteToRelative from './absolute-to-relative';
+import absoluteToTransformReady from './absolute-to-transform-ready';
 import deduplicateDoubleSlashes from './deduplicate-double-slashes';
 import deduplicateSubdirectory from './deduplicate-subdirectory';
 import isSSL from './is-ssl';
+import relativeToAbsolute from './relative-to-absolute';
+import relativeToTransformReady from './relative-to-transform-ready';
 import replacePermalink from './replace-permalink';
 import stripSubdirectoryFromPath from './strip-subdirectory-from-path';
+import toTransformReady from './to-transform-ready';
+import transformReadyToAbsolute from './transform-ready-to-absolute';
+import transformReadyToRelative from './transform-ready-to-relative';
 import urlJoin from './url-join';
 
 module.exports = {
-    absoluteToRelative: require('./absolute-to-relative'),
-    absoluteToTransformReady: require('./absolute-to-transform-ready'),
+    absoluteToRelative,
+    absoluteToTransformReady,
     deduplicateDoubleSlashes,
     deduplicateSubdirectory,
     htmlAbsoluteToRelative: require('./html-absolute-to-relative'),
@@ -35,12 +42,12 @@ module.exports = {
     plaintextAbsoluteToTransformReady: require('./plaintext-absolute-to-transform-ready'),
     plaintextRelativeToTransformReady: require('./plaintext-relative-to-transform-ready'),
     plaintextToTransformReady: require('./plaintext-to-transform-ready'),
-    relativeToAbsolute: require('./relative-to-absolute'),
-    relativeToTransformReady: require('./relative-to-transform-ready'),
+    relativeToAbsolute,
+    relativeToTransformReady,
     replacePermalink,
     stripSubdirectoryFromPath,
-    toTransformReady: require('./to-transform-ready'),
-    transformReadyToAbsolute: require('./transform-ready-to-absolute'),
-    transformReadyToRelative: require('./transform-ready-to-relative'),
+    toTransformReady,
+    transformReadyToAbsolute,
+    transformReadyToRelative,
     urlJoin
 };
