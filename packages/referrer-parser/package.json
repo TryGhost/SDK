@@ -53,14 +53,14 @@
     "@types/sinon": "^21.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "@vitest/coverage-v8": "^4.0.0",
+    "@vitest/coverage-v8": "^4.0.10",
     "eslint": "^8.52.0",
     "should": "13.2.3",
     "sinon": "21.0.0",
     "typescript": "5.9.3",
     "vite": "^7.0.0",
     "vite-plugin-dts": "^4.0.0",
-    "vitest": "^4.0.0"
+    "vitest": "^4.0.10"
   },
   "engines": {
     "node": ">=16.0.0"
