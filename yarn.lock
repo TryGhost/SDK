@@ -12453,7 +12453,7 @@ vfile@^4.0.0:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
-vite-plugin-dts@^4.0.0:
+vite-plugin-dts@4.5.4:
   version "4.5.4"
   resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-4.5.4.tgz#51b60aaaa760d9cf5c2bb3676c69d81910d6b08c"
   integrity sha512-d4sOM8M/8z7vRXHHq/ebbblfaxENjogAAekcfcDCCwAyvGqnPrc7f4NZbvItS+g4WTgerW0xDwSz5qz11JT3vg==
@@ -12468,7 +12468,7 @@ vite-plugin-dts@^4.0.0:
     local-pkg "^1.0.0"
     magic-string "^0.30.17"
 
-"vite@^6.0.0 || ^7.0.0", vite@^7.0.0:
+vite@7.2.2, "vite@^6.0.0 || ^7.0.0":
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/vite/-/vite-7.2.2.tgz#17dd62eac2d0ca0fa90131c5f56e4fefb8845362"
   integrity sha512-BxAKBWmIbrDgrokdGZH1IgkIk/5mMHDreLDmCJ0qpyJaAteP8NvMhkwr/ZCQNqNH97bw/dANTE9PDzqwJghfMQ==
