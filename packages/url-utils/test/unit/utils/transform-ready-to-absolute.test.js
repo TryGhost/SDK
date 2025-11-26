@@ -47,6 +47,30 @@ describe('utils: transformReadyToAbsolute()', function () {
             transformReadyToAbsolute(url, root)
                 .should.equal('https://not-transform-ready.com/my/file.png');
         });
+
+        it('returns empty string for empty string input', function () {
+            let url = '';
+            let root = 'https://example.com';
+
+            transformReadyToAbsolute(url, root)
+                .should.equal('');
+        });
+
+        it('returns null for null input', function () {
+            let url = null;
+            let root = 'https://example.com';
+
+            const result = transformReadyToAbsolute(url, root);
+            should.equal(result, null);
+        });
+
+        it('returns empty string for undefined input', function () {
+            let url = undefined;
+            let root = 'https://example.com';
+
+            transformReadyToAbsolute(url, root)
+                .should.equal('');
+        });
     });
 
     describe('cdn asset replacement', function () {
