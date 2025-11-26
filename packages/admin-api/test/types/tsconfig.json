@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "node16",
+    "strict": true,
+    "noEmit": true,
+    "baseUrl": "../..",
+    "paths": {
+      "@tryghost/admin-api": ["index.d.ts"]
+    },
+    "types": []
+  },
+  "files": ["types.test.ts"]
+}
