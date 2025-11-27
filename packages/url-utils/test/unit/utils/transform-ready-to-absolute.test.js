@@ -80,6 +80,19 @@ describe('utils: transformReadyToAbsolute()', function () {
 
             result.should.equal('https://site-base.com/content/media/video.mp4');
         });
+
+        it('converts media url with CDN and subdirectory in site URL', function () {
+            const storageCdn = 'https://storage.ghost.io/c/test-uuid';
+            const subdirSiteUrl = 'https://mysite.com/blog';
+            const options = {
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: storageCdn
+            };
+
+            const result = transformReadyToAbsolute('__GHOST_URL__/content/media/video.mp4', subdirSiteUrl, options);
+
+            result.should.equal('https://storage.ghost.io/c/test-uuid/blog/content/media/video.mp4');
+        });
     });
 
     describe('html', function () {
