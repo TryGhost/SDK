@@ -47,6 +47,53 @@ describe('utils: transformReadyToAbsolute()', function () {
             transformReadyToAbsolute(url, root)
                 .should.equal('https://not-transform-ready.com/my/file.png');
         });
+
+        it('returns empty string for empty string input', function () {
+            let url = '';
+            let root = 'https://example.com';
+
+            transformReadyToAbsolute(url, root)
+                .should.equal('');
+        });
+
+        it('returns null for null input', function () {
+            let url = null;
+            let root = 'https://example.com';
+
+            const result = transformReadyToAbsolute(url, root);
+            should.equal(result, null);
+        });
+
+        it('returns empty string for undefined input', function () {
+            let url = undefined;
+            let root = 'https://example.com';
+
+            transformReadyToAbsolute(url, root)
+                .should.equal('');
+        });
+
+        it('handles malformed URLs gracefully', function () {
+            const root = 'https://example.com';
+            let result;
+
+            should.doesNotThrow(function () {
+                result = transformReadyToAbsolute('__GHOST_URL__/content/images/invalid%20path%20with%20spaces.jpg', root);
+            });
+
+            result.should.equal('https://example.com/content/images/invalid%20path%20with%20spaces.jpg');
+
+            should.doesNotThrow(function () {
+                result = transformReadyToAbsolute('__GHOST_URL__/content/images/../../etc/passwd', root);
+            });
+
+            result.should.equal('https://example.com/content/images/../../etc/passwd');
+
+            should.doesNotThrow(function () {
+                result = transformReadyToAbsolute('not-a-url', root);
+            });
+
+            result.should.equal('not-a-url');
+        });
     });
 
     describe('cdn asset replacement', function () {
@@ -92,6 +139,44 @@ describe('utils: transformReadyToAbsolute()', function () {
             const result = transformReadyToAbsolute('__GHOST_URL__/content/media/video.mp4', subdirSiteUrl, options);
 
             result.should.equal('https://storage.ghost.io/c/test-uuid/content/media/video.mp4');
+        });
+
+        it('uses CDN for media and site URL for files when only media CDN is configured', function () {
+            const options = {
+                staticImageUrlPrefix: 'content/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn,
+                filesBaseUrl: null,
+                imageBaseUrl: null
+            };
+
+            const mediaResult = transformReadyToAbsolute('__GHOST_URL__/content/media/video.mp4', siteUrl, options);
+            const filesResult = transformReadyToAbsolute('__GHOST_URL__/content/files/doc.pdf', siteUrl, options);
+            const imageResult = transformReadyToAbsolute('__GHOST_URL__/content/images/photo.jpg', siteUrl, options);
+
+            mediaResult.should.equal('https://media-cdn.com/ns/content/media/video.mp4');
+            filesResult.should.equal('https://site-base.com/content/files/doc.pdf');
+            imageResult.should.equal('https://site-base.com/content/images/photo.jpg');
+        });
+
+        it('uses site URL for all assets when all CDN configs are null', function () {
+            const options = {
+                staticImageUrlPrefix: 'content/images',
+                staticFilesUrlPrefix: 'content/files',
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: null,
+                filesBaseUrl: null,
+                imageBaseUrl: null
+            };
+
+            const mediaResult = transformReadyToAbsolute('__GHOST_URL__/content/media/video.mp4', siteUrl, options);
+            const filesResult = transformReadyToAbsolute('__GHOST_URL__/content/files/doc.pdf', siteUrl, options);
+            const imageResult = transformReadyToAbsolute('__GHOST_URL__/content/images/photo.jpg', siteUrl, options);
+
+            mediaResult.should.equal('https://site-base.com/content/media/video.mp4');
+            filesResult.should.equal('https://site-base.com/content/files/doc.pdf');
+            imageResult.should.equal('https://site-base.com/content/images/photo.jpg');
         });
     });
 
