@@ -91,7 +91,7 @@ describe('utils: transformReadyToAbsolute()', function () {
 
             const result = transformReadyToAbsolute('__GHOST_URL__/content/media/video.mp4', subdirSiteUrl, options);
 
-            result.should.equal('https://storage.ghost.io/c/test-uuid/blog/content/media/video.mp4');
+            result.should.equal('https://storage.ghost.io/c/test-uuid/content/media/video.mp4');
         });
     });
 
