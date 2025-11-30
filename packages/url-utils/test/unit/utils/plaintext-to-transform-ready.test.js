@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const plaintextToTransformReady = require('../../../lib/utils/plaintext-to-transform-ready');
+const plaintextToTransformReady = require('../../../lib/utils/plaintext-to-transform-ready').default;
 
 describe('utils: plaintextToTransformReady', function () {
     it('works', function () {

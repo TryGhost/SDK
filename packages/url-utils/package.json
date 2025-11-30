@@ -8,20 +8,19 @@
   },
   "author": "Ghost Foundation",
   "license": "MIT",
-  "main": "index.js",
-  "types": "lib/UrlUtils.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "pretest": "yarn build",
     "test": "NODE_ENV=testing c8 --src lib --all --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
     "build": "tsc -p tsconfig.json",
-    "lint": "eslint src test index.js --ext .js,.ts --cache",
+    "lint": "eslint src test --ext .js,.ts --cache",
     "prepare": "NODE_ENV=production yarn build",
     "posttest": "yarn lint"
   },
   "files": [
-    "lib/",
-    "index.js"
+    "lib/"
   ],
   "publishConfig": {
     "access": "public"
