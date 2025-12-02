@@ -61,11 +61,19 @@ const loadConverters = () => {
     });
 
     const emailSettings = mergeSettings({
+        preserveNewlines: false,
         selectors: [
             // equiv hideLinkHrefIfSameAsText: true
             {selector: 'a', options: {hideLinkHrefIfSameAsText: true}},
             // Don't include html .preheader in email
-            {selector: '.preheader', format: 'skip'}
+            {selector: '.preheader', format: 'skip'},
+            {selector: 'p', options: {leadingLineBreaks: 2, trailingLineBreaks: 1}},
+            {selector: 'h1', options: {leadingLineBreaks: 3, trailingLineBreaks: 1}},
+            {selector: 'h2', options: {leadingLineBreaks: 3, trailingLineBreaks: 1}},
+            {selector: 'h3', options: {leadingLineBreaks: 3, trailingLineBreaks: 1}},
+            {selector: 'h4', options: {leadingLineBreaks: 3, trailingLineBreaks: 1}},
+            {selector: 'h5', options: {leadingLineBreaks: 3, trailingLineBreaks: 1}},
+            {selector: 'h6', options: {uppercase: false, leadingLineBreaks: 3, trailingLineBreaks: 1}}
         ]
     });
 
