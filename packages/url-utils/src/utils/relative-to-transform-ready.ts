@@ -30,10 +30,12 @@ const relativeToTransformReady = function (
 
     const defaultOptions: RelativeToTransformReadyOptionsInput = {
         replacementStr: '__GHOST_URL__',
-        staticImageUrlPrefix: 'content/images',
+        staticImageUrlPrefix: 'content/images'
+    };
+    const overrideOptions: RelativeToTransformReadyOptionsInput = {
         secure: false
     };
-    const options = Object.assign({}, defaultOptions, finalOptions);
+    const options = Object.assign({}, defaultOptions, finalOptions, overrideOptions);
 
     // convert to absolute
     const absoluteUrl = relativeToAbsolute(url, root, finalItemPath, options);
@@ -53,7 +55,7 @@ const relativeToTransformReady = function (
         
         // replace root with replacement string
         const transformedUrl = absoluteUrl
-            .replace(normalizedRoot, `${options.replacementStr}`)
+            .replace(normalizedRoot, `${options.replacementStr}/`) // always have trailing slash after magic string
             .replace(/([^:])\/\//g, '$1/');
 
         return transformedUrl;

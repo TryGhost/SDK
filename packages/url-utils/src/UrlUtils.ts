@@ -108,7 +108,7 @@ export default class UrlUtils {
             staticMediaUrlPrefix: 'content/media'
         };
 
-        this._config = Object.assign({}, defaultOptions, options) as UrlUtilsConfig;
+        this._config = assignOptions({}, defaultOptions as unknown as Record<string, unknown>, options as unknown as Record<string, unknown>) as UrlUtilsConfig;
 
         const assetBaseUrls = options.assetBaseUrls || {};
         this._assetBaseUrls = {
