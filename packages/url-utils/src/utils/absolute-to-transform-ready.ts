@@ -1,12 +1,9 @@
 import type {TransformReadyReplacementOptions} from './types';
-import absoluteToRelative, {type AbsoluteToRelativeOptionsInput} from './absolute-to-relative';
+import absoluteToRelative, {type AbsoluteToRelativeOptions} from './absolute-to-relative';
 import {URL} from 'url';
 
-export interface AbsoluteToTransformReadyOptions extends TransformReadyReplacementOptions {
+export interface AbsoluteToTransformReadyOptions extends TransformReadyReplacementOptions, AbsoluteToRelativeOptions {
     withoutSubdirectory: boolean;
-    ignoreProtocol: boolean;
-    assetsOnly: boolean;
-    staticImageUrlPrefix: string;
     staticFilesUrlPrefix?: string;
     staticMediaUrlPrefix?: string;
     imageBaseUrl?: string | null;
@@ -53,14 +50,14 @@ const absoluteToTransformReady = function (
 
     // convert to relative with stripped subdir
     // always returns root-relative starting with forward slash
-    const rootRelativeUrl = absoluteToRelative(url, root, options as AbsoluteToRelativeOptionsInput);
+    const rootRelativeUrl = absoluteToRelative(url, root, options);
 
     if (isRelative(rootRelativeUrl)) {
         return `${options.replacementStr}${rootRelativeUrl}`;
     }
 
     if (options.mediaBaseUrl) {
-        const mediaRelativeUrl = absoluteToRelative(url, options.mediaBaseUrl, options as AbsoluteToRelativeOptionsInput);
+        const mediaRelativeUrl = absoluteToRelative(url, options.mediaBaseUrl, options);
 
         if (isRelative(mediaRelativeUrl)) {
             return `${options.replacementStr}${mediaRelativeUrl}`;
@@ -68,7 +65,7 @@ const absoluteToTransformReady = function (
     }
 
     if (options.filesBaseUrl) {
-        const filesRelativeUrl = absoluteToRelative(url, options.filesBaseUrl, options as AbsoluteToRelativeOptionsInput);
+        const filesRelativeUrl = absoluteToRelative(url, options.filesBaseUrl, options);
 
         if (isRelative(filesRelativeUrl)) {
             return `${options.replacementStr}${filesRelativeUrl}`;
@@ -76,7 +73,7 @@ const absoluteToTransformReady = function (
     }
 
     if (options.imageBaseUrl) {
-        const imageRelativeUrl = absoluteToRelative(url, options.imageBaseUrl, options as AbsoluteToRelativeOptionsInput);
+        const imageRelativeUrl = absoluteToRelative(url, options.imageBaseUrl, options);
 
         if (isRelative(imageRelativeUrl)) {
             return `${options.replacementStr}${imageRelativeUrl}`;

@@ -23,12 +23,12 @@ type BuildEarlyExitMatchOptions = BaseUrlOptionsInput & {
  */
 function buildEarlyExitMatch(siteUrl: string, options: BuildEarlyExitMatchOptions = {}): string | null {
     const candidates = [siteUrl, options.imageBaseUrl, options.filesBaseUrl, options.mediaBaseUrl]
-        .filter((value): value is string => Boolean(value))
+        .filter((value: string | null | undefined): value is string => typeof value === 'string' && value.length > 0)
         .map((value: string) => {
             let normalized = options.ignoreProtocol ? value.replace(/http:|https:/, '') : value;
             return normalized.replace(/\/$/, '');
         })
-        .filter((value): value is string => Boolean(value))
+        .filter((value: string): boolean => Boolean(value))
         .map(escapeRegExp);
 
     if (!candidates.length) {

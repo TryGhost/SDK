@@ -13,9 +13,7 @@ function markdownAbsoluteToRelative(
     const options: MarkdownTransformOptionsInput = Object.assign({}, defaultOptions, _options);
 
     options.earlyExitMatchStr = options.ignoreProtocol ? siteUrl.replace(/http:|https:/, '') : siteUrl;
-    if (options.earlyExitMatchStr) {
-        options.earlyExitMatchStr = options.earlyExitMatchStr.replace(/\/$/, '');
-    }
+    options.earlyExitMatchStr = options.earlyExitMatchStr.replace(/\/$/, '');
 
     // need to ignore itemPath because absoluteToRelative functions doen't take that option
     const transformFunctions = {

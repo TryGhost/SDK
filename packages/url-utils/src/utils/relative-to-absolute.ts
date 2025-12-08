@@ -55,8 +55,7 @@ const relativeToAbsolute = function relativeToAbsolute(
 
     // return the path as-is if it's not an asset path and we're only modifying assets
     if (options.assetsOnly) {
-        // staticImageUrlPrefix is always set from defaultOptions via Object.assign
-        const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix!);
+        const staticImageUrlPrefixRegex = new RegExp(options.staticImageUrlPrefix as string);
         if (!path.match(staticImageUrlPrefixRegex)) {
             return path;
         }

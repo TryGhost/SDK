@@ -29,7 +29,7 @@ function replacePermalink(permalink: string, resource: PermalinkResource, timezo
             return publishedAtMoment.format('DD');
         },
         author: function () {
-            return resource.primary_author?.slug ?? primaryTagFallback;
+            return resource.primary_author?.slug ?? 'undefined';
         },
         primary_author: function () {
             return resource.primary_author ? resource.primary_author.slug : primaryTagFallback;
@@ -41,7 +41,7 @@ function replacePermalink(permalink: string, resource: PermalinkResource, timezo
             return resource.slug;
         },
         id: function () {
-            return String(resource.id);
+            return resource.id;
         }
     };
 
