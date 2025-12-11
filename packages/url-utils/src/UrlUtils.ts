@@ -1,18 +1,84 @@
-// @ts-nocheck
 // Contains all path information to be used throughout the codebase.
-const _ = require('lodash');
-const utils = require('./utils');
+import * as _ from 'lodash';
+import utils from './utils';
+import type {
+    HtmlTransformOptionsInput,
+    MarkdownTransformOptionsInput,
+    MobiledocTransformOptionsInput,
+    LexicalTransformOptionsInput,
+    MobiledocCardTransformer,
+    BaseUrlOptionsInput
+} from './utils/types';
+import type {AbsoluteToRelativeOptionsInput} from './utils/absolute-to-relative';
+import type {RelativeToAbsoluteOptionsInput} from './utils/relative-to-absolute';
+import type {AbsoluteToTransformReadyOptionsInput as AbsoluteToTransformReadyOptionsInputType} from './utils/absolute-to-transform-ready';
+import type {RelativeToTransformReadyOptionsInput as RelativeToTransformReadyOptionsInputType} from './utils/relative-to-transform-ready';
+import type {ToTransformReadyOptions} from './utils/to-transform-ready';
+import type {TransformReadyToAbsoluteOptionsInput} from './utils/transform-ready-to-absolute';
+import type {TransformReadyReplacementOptionsInput as TransformReadyToRelativeOptionsInput} from './utils/types';
+
+interface ExpressResponse {
+    set(headers: Record<string, string>): void;
+    redirect(status: number, url: string): void;
+    redirect(url: string): void;
+}
+
+interface AssetBaseUrls {
+    image: string | null;
+    files: string | null;
+    media: string | null;
+}
+
+interface UrlUtilsConfig {
+    slugs: string[] | null;
+    redirectCacheMaxAge: number | null;
+    baseApiPath: string;
+    defaultApiType: 'content' | 'admin';
+    staticImageUrlPrefix: string;
+    staticFilesUrlPrefix: string;
+    staticMediaUrlPrefix: string;
+    cardTransformers?: MobiledocCardTransformer[];
+}
+
+interface UrlUtilsOptions {
+    getSubdir?: () => string;
+    getSiteUrl?: () => string;
+    getAdminUrl?: () => string;
+    baseApiPath?: string;
+    defaultApiType?: 'content' | 'admin';
+    slugs?: {
+        reserved?: string[];
+        protected?: string[];
+    } | null;
+    redirectCacheMaxAge?: number | null;
+    staticImageUrlPrefix?: string;
+    staticFilesUrlPrefix?: string;
+    staticMediaUrlPrefix?: string;
+    assetBaseUrls?: {
+        image?: string | null;
+        files?: string | null;
+        media?: string | null;
+    };
+    cardTransformers?: MobiledocCardTransformer[];
+}
 
 // similar to Object.assign but will not override defaults if a source value is undefined
-function assignOptions(target, ...sources) {
+function assignOptions<T extends Record<string, unknown>>(target: T, ...sources: Array<Record<string, unknown>>): T {
     const options = sources.map((x) => {
         return Object.entries(x)
             .filter(([, value]) => value !== undefined)
-            .reduce((obj, [key, value]) => (obj[key] = value, obj), {});
+            .reduce((obj, [key, value]) => (obj[key] = value, obj), {} as Record<string, unknown>);
     });
-    return Object.assign(target, ...options);
+    return Object.assign(target, ...options) as T;
 }
-module.exports = class UrlUtils {
+
+export default class UrlUtils {
+    private _config: UrlUtilsConfig;
+    private _assetBaseUrls: AssetBaseUrls;
+    public getSubdir: () => string;
+    public getSiteUrl: () => string;
+    public getAdminUrl: () => string;
+
     /**
      * Initialization method to pass in URL configurations
      * @param {Object} options
@@ -31,8 +97,8 @@ module.exports = class UrlUtils {
      * @param {string} [options.assetBaseUrls.files] files asset CDN base URL
      * @param {string} [options.assetBaseUrls.media] media asset CDN base URL
      */
-    constructor(options = {}) {
-        const defaultOptions = {
+    constructor(options: UrlUtilsOptions = {}) {
+        const defaultOptions: UrlUtilsConfig = {
             slugs: null,
             redirectCacheMaxAge: null,
             baseApiPath: '/ghost/api',
@@ -42,7 +108,7 @@ module.exports = class UrlUtils {
             staticMediaUrlPrefix: 'content/media'
         };
 
-        this._config = assignOptions({}, defaultOptions, options);
+        this._config = assignOptions({}, defaultOptions as unknown as Record<string, unknown>, options as unknown as Record<string, unknown>) as UrlUtilsConfig;
 
         const assetBaseUrls = options.assetBaseUrls || {};
         this._assetBaseUrls = {
@@ -51,12 +117,16 @@ module.exports = class UrlUtils {
             media: assetBaseUrls.media || null
         };
 
-        this.getSubdir = options.getSubdir;
-        this.getSiteUrl = options.getSiteUrl;
-        this.getAdminUrl = options.getAdminUrl;
+        this.getSubdir = options.getSubdir || (() => '');
+        this.getSiteUrl = options.getSiteUrl || (() => '');
+        this.getAdminUrl = options.getAdminUrl || (() => '');
     }
 
-    _assetOptionDefaults() {
+    private _assetOptionDefaults(): BaseUrlOptionsInput & {
+        staticImageUrlPrefix: string;
+        staticFilesUrlPrefix: string;
+        staticMediaUrlPrefix: string;
+        } {
         return {
             staticImageUrlPrefix: this._config.staticImageUrlPrefix,
             staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
@@ -67,17 +137,21 @@ module.exports = class UrlUtils {
         };
     }
 
-    _buildAssetOptions(additionalDefaults = {}, options) {
+    private _buildAssetOptions(additionalDefaults: Record<string, unknown> = {}, options?: Record<string, unknown>): Record<string, unknown> {
         return assignOptions({}, this._assetOptionDefaults(), additionalDefaults, options || {});
     }
 
-    getProtectedSlugs() {
-        let subDir = this.getSubdir();
+    getProtectedSlugs(): string[] {
+        const subDir = this.getSubdir();
 
         if (!_.isEmpty(subDir)) {
-            return this._config.slugs.concat([subDir.split('/').pop()]);
+            const lastSegment = subDir.split('/').pop();
+            if (this._config.slugs && lastSegment) {
+                return this._config.slugs.concat([lastSegment]);
+            }
+            return lastSegment ? [lastSegment] : [];
         } else {
-            return this._config.slugs;
+            return this._config.slugs || [];
         }
     }
 
@@ -86,7 +160,7 @@ module.exports = class UrlUtils {
      * @param {string} arguments takes arguments and concats those to a valid path/URL.
      * @return {string} URL concatinated URL/path of arguments.
      */
-    urlJoin(...parts) {
+    urlJoin(...parts: string[]): string {
         return utils.urlJoin(parts, {rootUrl: this.getSiteUrl()});
     }
 
@@ -103,8 +177,8 @@ module.exports = class UrlUtils {
     // - absolute (optional, default:false) - boolean whether or not the url should be absolute
     // Returns:
     //  - a URL which always ends with a slash
-    createUrl(urlPath = '/', absolute = false, trailingSlash) {
-        let base;
+    createUrl(urlPath: string = '/', absolute: boolean = false, trailingSlash?: boolean): string {
+        let base: string;
 
         // create base of url, always ends without a slash
         if (absolute) {
@@ -137,15 +211,15 @@ module.exports = class UrlUtils {
     // - absolute (optional, default:false) - boolean whether or not the url should be absolute
     // This is probably not the right place for this, but it's the best place for now
     // @TODO: rewrite, very hard to read, create private functions!
-    urlFor(context, data, absolute) {
-        let urlPath = '/';
-        let imagePathRe;
-        let knownObjects = ['image', 'nav'];
-        let baseUrl;
-        let hostname;
+    urlFor(context: string | {relativeUrl: string} | {image?: string} | {nav?: {url: string}}, data?: Record<string, unknown> | boolean | {trailingSlash?: boolean; type?: 'admin' | 'content'} | null, absolute?: boolean): string {
+        let urlPath: string = '/';
+        let imagePathRe: RegExp | undefined;
+        const knownObjects: string[] = ['image', 'nav'];
+        let baseUrl: string | undefined;
+        let hostname: string | undefined;
 
         // this will become really big
-        let knownPaths = {
+        const knownPaths: Record<string, string> = {
             home: '/',
             sitemap_xsl: '/sitemap.xsl'
         };
@@ -156,13 +230,14 @@ module.exports = class UrlUtils {
             data = null;
         }
 
-        if (_.isObject(context) && context.relativeUrl) {
-            urlPath = context.relativeUrl;
+        if (_.isObject(context) && !_.isArray(context) && 'relativeUrl' in context && typeof (context as {relativeUrl: string}).relativeUrl === 'string') {
+            const relativeUrl = (context as {relativeUrl: string}).relativeUrl;
+            urlPath = relativeUrl || '/';
         } else if (_.isString(context) && _.indexOf(knownObjects, context) !== -1) {
-            if (context === 'image' && data.image) {
-                urlPath = data.image;
+            if (context === 'image' && data && typeof data === 'object' && !_.isArray(data) && 'image' in data && typeof data.image === 'string') {
+                urlPath = data.image as string;
                 imagePathRe = new RegExp('^' + this.getSubdir() + '/' + this._config.staticImageUrlPrefix);
-                absolute = imagePathRe.test(data.image) ? absolute : false;
+                absolute = imagePathRe.test(urlPath) ? (absolute || false) : false;
 
                 if (absolute) {
                     // Remove the sub-directory from the URL because ghostConfig will add it back.
@@ -172,8 +247,8 @@ module.exports = class UrlUtils {
                 }
 
                 return urlPath;
-            } else if (context === 'nav' && data.nav) {
-                urlPath = data.nav.url;
+            } else if (context === 'nav' && data && typeof data === 'object' && !_.isArray(data) && 'nav' in data && data.nav && typeof data.nav === 'object' && !_.isArray(data.nav) && 'url' in data.nav && typeof data.nav.url === 'string') {
+                urlPath = (data.nav as {url: string}).url;
                 baseUrl = this.getSiteUrl();
                 hostname = baseUrl.split('//')[1];
 
@@ -194,11 +269,11 @@ module.exports = class UrlUtils {
 
             // CASE: there are cases where urlFor('home') needs to be returned without trailing
             // slash e. g. the `{{@site.url}}` helper. See https://github.com/TryGhost/Ghost/issues/8569
-            if (data && data.trailingSlash === false) {
+            if (data && typeof data === 'object' && !_.isArray(data) && 'trailingSlash' in data && data.trailingSlash === false) {
                 urlPath = urlPath.replace(/\/$/, '');
             }
         } else if (context === 'admin') {
-            let adminUrl = this.getAdminUrl() || this.getSiteUrl();
+            const adminUrl = this.getAdminUrl() || this.getSiteUrl();
             let adminPath = '/ghost/';
 
             if (absolute) {
@@ -207,10 +282,10 @@ module.exports = class UrlUtils {
                 urlPath = adminPath;
             }
         } else if (context === 'api') {
-            let adminUrl = this.getAdminUrl() || this.getSiteUrl();
+            const adminUrl = this.getAdminUrl() || this.getSiteUrl();
             let apiPath = this._config.baseApiPath + '/';
 
-            if (data.type && ['admin', 'content'].includes(data.type)) {
+            if (data && typeof data === 'object' && !_.isArray(data) && 'type' in data && typeof data.type === 'string' && ['admin', 'content'].includes(data.type)) {
                 apiPath += data.type;
             } else {
                 apiPath += this._config.defaultApiType;
@@ -238,64 +313,76 @@ module.exports = class UrlUtils {
         return this.createUrl(urlPath, absolute);
     }
 
-    redirect301(res, redirectUrl) {
+    redirect301(res: ExpressResponse, redirectUrl: string): void {
         res.set({'Cache-Control': 'public, max-age=' + this._config.redirectCacheMaxAge});
-        return res.redirect(301, redirectUrl);
+        res.redirect(301, redirectUrl);
     }
 
-    redirectToAdmin(status, res, adminPath) {
-        let redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
+    redirectToAdmin(status: number, res: ExpressResponse, adminPath: string): void {
+        const redirectUrl = this.urlJoin(this.urlFor('admin', true), adminPath, '/');
 
         if (status === 301) {
-            return this.redirect301(res, redirectUrl);
+            this.redirect301(res, redirectUrl);
+        } else {
+            res.redirect(redirectUrl);
         }
-        return res.redirect(redirectUrl);
     }
 
-    absoluteToRelative(url, options) {
+    absoluteToRelative(url: string, options?: AbsoluteToRelativeOptionsInput): string {
         return utils.absoluteToRelative(url, this.getSiteUrl(), options);
     }
 
-    relativeToAbsolute(url, options) {
-        return utils.relativeToAbsolute(url, this.getSiteUrl(), options);
+    relativeToAbsolute(url: string, options?: RelativeToAbsoluteOptionsInput): string {
+        // Original code passes options as third parameter (itemPath), preserving that behavior
+        return utils.relativeToAbsolute(url, this.getSiteUrl(), options || null, undefined);
     }
 
-    toTransformReady(url, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    toTransformReady(url: string, itemPath: string | null | ToTransformReadyOptions, options?: ToTransformReadyOptions): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: ToTransformReadyOptions | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath as ToTransformReadyOptions;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
-        const _options = this._buildAssetOptions({}, options);
-        return utils.toTransformReady(url, this.getSiteUrl(), itemPath, _options);
+        const _options = this._buildAssetOptions({}, finalOptions) as ToTransformReadyOptions;
+        return utils.toTransformReady(url, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    absoluteToTransformReady(url, options) {
-        const _options = this._buildAssetOptions({}, options);
+    absoluteToTransformReady(url: string, options?: AbsoluteToTransformReadyOptionsInputType): string {
+        const _options = this._buildAssetOptions({}, options) as AbsoluteToTransformReadyOptionsInputType;
         return utils.absoluteToTransformReady(url, this.getSiteUrl(), _options);
     }
 
-    relativeToTransformReady(url, options) {
-        const _options = this._buildAssetOptions({}, options);
+    relativeToTransformReady(url: string, options?: RelativeToTransformReadyOptionsInputType): string {
+        const _options = this._buildAssetOptions({}, options) as RelativeToTransformReadyOptionsInputType;
         return utils.relativeToTransformReady(url, this.getSiteUrl(), _options);
     }
 
-    transformReadyToAbsolute(url, options) {
-        const _options = this._buildAssetOptions({}, options);
+    transformReadyToAbsolute(url: string, options?: TransformReadyToAbsoluteOptionsInput): string {
+        const _options = this._buildAssetOptions({}, options) as TransformReadyToAbsoluteOptionsInput;
         return utils.transformReadyToAbsolute(url, this.getSiteUrl(), _options);
     }
 
-    transformReadyToRelative(url, options) {
-        const _options = this._buildAssetOptions({}, options);
+    transformReadyToRelative(url: string, options?: TransformReadyToRelativeOptionsInput): string {
+        const _options = this._buildAssetOptions({}, options) as TransformReadyToRelativeOptionsInput;
         return utils.transformReadyToRelative(url, this.getSiteUrl(), _options);
     }
 
-    htmlToTransformReady(html, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    htmlToTransformReady(html: string, itemPath: string | null | HtmlTransformOptionsInput, options?: HtmlTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: HtmlTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
-        const _options = this._buildAssetOptions({}, options);
-        return utils.htmlToTransformReady(html, this.getSiteUrl(), itemPath, _options);
+        const _options = this._buildAssetOptions({}, finalOptions) as HtmlTransformOptionsInput;
+        return utils.htmlToTransformReady(html, this.getSiteUrl(), finalItemPath, _options);
     }
 
     /**
@@ -308,192 +395,247 @@ module.exports = class UrlUtils {
      * absolute urls. Returns an object. The html string can be accessed by calling `html()` on
      * the variable that takes the result of this function
      */
-    htmlRelativeToAbsolute(html, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    htmlRelativeToAbsolute(html: string, itemPath: string | null | HtmlTransformOptionsInput, options?: HtmlTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: HtmlTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             assetsOnly: false
-        }, options);
-        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as HtmlTransformOptionsInput;
+        return utils.htmlRelativeToAbsolute(html, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    htmlRelativeToTransformReady(html, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    htmlRelativeToTransformReady(html: string, itemPath: string | null | RelativeToTransformReadyOptionsInputType, options?: RelativeToTransformReadyOptionsInputType): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: RelativeToTransformReadyOptionsInputType | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             assetsOnly: false
-        }, options);
-        return utils.htmlRelativeToTransformReady(html, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as RelativeToTransformReadyOptionsInputType;
+        return utils.htmlRelativeToTransformReady(html, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    htmlAbsoluteToRelative(html, options = {}) {
+    htmlAbsoluteToRelative(html: string, options: HtmlTransformOptionsInput = {}): string {
         const _options = this._buildAssetOptions({
             assetsOnly: false
-        }, options);
+        }, options) as HtmlTransformOptionsInput;
         return utils.htmlAbsoluteToRelative(html, this.getSiteUrl(), _options);
     }
 
-    htmlAbsoluteToTransformReady(html, options = {}) {
+    htmlAbsoluteToTransformReady(html: string, options: AbsoluteToTransformReadyOptionsInputType = {}): string {
         const _options = this._buildAssetOptions({
             assetsOnly: false
-        }, options);
+        }, options) as AbsoluteToTransformReadyOptionsInputType;
         return utils.htmlAbsoluteToTransformReady(html, this.getSiteUrl(), _options);
     }
 
-    markdownToTransformReady(markdown, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    markdownToTransformReady(markdown: string, itemPath: string | null | MarkdownTransformOptionsInput, options?: MarkdownTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: MarkdownTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
-        const _options = this._buildAssetOptions({}, options);
-        return utils.markdownToTransformReady(markdown, this.getSiteUrl(), itemPath, _options);
+        const _options = this._buildAssetOptions({}, finalOptions) as MarkdownTransformOptionsInput;
+        return utils.markdownToTransformReady(markdown, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    markdownRelativeToAbsolute(markdown, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    markdownRelativeToAbsolute(markdown: string, itemPath: string | null | MarkdownTransformOptionsInput, options?: MarkdownTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: MarkdownTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             assetsOnly: false
-        }, options);
-        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as MarkdownTransformOptionsInput;
+        return utils.markdownRelativeToAbsolute(markdown, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    markdownRelativeToTransformReady(markdown, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    markdownRelativeToTransformReady(markdown: string, itemPath: string | null | MarkdownTransformOptionsInput, options?: MarkdownTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: MarkdownTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             assetsOnly: false
-        }, options);
-        return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as MarkdownTransformOptionsInput;
+        return utils.markdownRelativeToTransformReady(markdown, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    markdownAbsoluteToRelative(markdown, options = {}) {
+    markdownAbsoluteToRelative(markdown: string, options: MarkdownTransformOptionsInput = {}): string {
         const _options = this._buildAssetOptions({
             assetsOnly: false
-        }, options);
+        }, options) as MarkdownTransformOptionsInput;
         return utils.markdownAbsoluteToRelative(markdown, this.getSiteUrl(), _options);
     }
 
-    markdownAbsoluteToTransformReady(markdown, options) {
+    markdownAbsoluteToTransformReady(markdown: string, options: AbsoluteToTransformReadyOptionsInputType = {}): string {
         const _options = this._buildAssetOptions({
             assetsOnly: false
-        }, options);
+        }, options) as AbsoluteToTransformReadyOptionsInputType;
         return utils.markdownAbsoluteToTransformReady(markdown, this.getSiteUrl(), _options);
     }
 
-    mobiledocToTransformReady(serializedMobiledoc, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    mobiledocToTransformReady(serializedMobiledoc: string, itemPath: string | null | MobiledocTransformOptionsInput, options?: MobiledocTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: MobiledocTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             cardTransformers: this._config.cardTransformers
-        }, options);
-        return utils.mobiledocToTransformReady(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as MobiledocTransformOptionsInput;
+        return utils.mobiledocToTransformReady(serializedMobiledoc, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    mobiledocRelativeToAbsolute(serializedMobiledoc, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    mobiledocRelativeToAbsolute(serializedMobiledoc: string, itemPath: string | null | MobiledocTransformOptionsInput, options?: MobiledocTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: MobiledocTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             assetsOnly: false,
             cardTransformers: this._config.cardTransformers
-        }, options);
-        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as MobiledocTransformOptionsInput;
+        return utils.mobiledocRelativeToAbsolute(serializedMobiledoc, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    mobiledocRelativeToTransformReady(serializedMobiledoc, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    mobiledocRelativeToTransformReady(serializedMobiledoc: string, itemPath: string | null | MobiledocTransformOptionsInput, options?: MobiledocTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: MobiledocTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             assetsOnly: false,
             cardTransformers: this._config.cardTransformers
-        }, options);
-        return utils.mobiledocRelativeToTransformReady(serializedMobiledoc, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as MobiledocTransformOptionsInput;
+        return utils.mobiledocRelativeToTransformReady(serializedMobiledoc, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    mobiledocAbsoluteToRelative(serializedMobiledoc, options = {}) {
+    mobiledocAbsoluteToRelative(serializedMobiledoc: string, options: MobiledocTransformOptionsInput = {}): string {
         const _options = this._buildAssetOptions({
             assetsOnly: false,
             cardTransformers: this._config.cardTransformers
-        }, options);
+        }, options) as MobiledocTransformOptionsInput;
         return utils.mobiledocAbsoluteToRelative(serializedMobiledoc, this.getSiteUrl(), _options);
     }
 
-    mobiledocAbsoluteToTransformReady(serializedMobiledoc, options = {}) {
+    mobiledocAbsoluteToTransformReady(serializedMobiledoc: string, options: MobiledocTransformOptionsInput = {}): string {
         const _options = this._buildAssetOptions({
             assetsOnly: false,
             cardTransformers: this._config.cardTransformers
-        }, options);
+        }, options) as MobiledocTransformOptionsInput;
         return utils.mobiledocAbsoluteToTransformReady(serializedMobiledoc, this.getSiteUrl(), _options);
     }
 
-    lexicalToTransformReady(serializedLexical, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    lexicalToTransformReady(serializedLexical: string, itemPath: string | null | LexicalTransformOptionsInput, options?: LexicalTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: LexicalTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             cardTransformers: this._config.cardTransformers
-        }, options);
-        return utils.lexicalToTransformReady(serializedLexical, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as LexicalTransformOptionsInput;
+        return utils.lexicalToTransformReady(serializedLexical, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    lexicalRelativeToAbsolute(serializedLexical, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    lexicalRelativeToAbsolute(serializedLexical: string, itemPath: string | null | LexicalTransformOptionsInput, options?: LexicalTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: LexicalTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             assetsOnly: false,
             cardTransformers: this._config.cardTransformers
-        }, options);
-        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as LexicalTransformOptionsInput;
+        return utils.lexicalRelativeToAbsolute(serializedLexical, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    lexicalRelativeToTransformReady(serializedLexical, itemPath, options) {
-        if (typeof itemPath === 'object' && !options) {
-            options = itemPath;
-            itemPath = null;
+    lexicalRelativeToTransformReady(serializedLexical: string, itemPath: string | null | LexicalTransformOptionsInput, options?: LexicalTransformOptionsInput): string {
+        let finalItemPath: string | null = null;
+        let finalOptions: LexicalTransformOptionsInput | undefined = options;
+
+        if (typeof itemPath === 'object' && itemPath !== null && !options) {
+            finalOptions = itemPath;
+            finalItemPath = null;
+        } else if (typeof itemPath === 'string') {
+            finalItemPath = itemPath;
         }
         const _options = this._buildAssetOptions({
             assetsOnly: false,
             cardTransformers: this._config.cardTransformers
-        }, options);
-        return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), itemPath, _options);
+        }, finalOptions) as LexicalTransformOptionsInput;
+        return utils.lexicalRelativeToTransformReady(serializedLexical, this.getSiteUrl(), finalItemPath, _options);
     }
 
-    lexicalAbsoluteToRelative(serializedLexical, options = {}) {
+    lexicalAbsoluteToRelative(serializedLexical: string, options: LexicalTransformOptionsInput = {}): string {
         const _options = this._buildAssetOptions({
             assetsOnly: false,
             cardTransformers: this._config.cardTransformers
-        }, options);
+        }, options) as LexicalTransformOptionsInput;
         return utils.lexicalAbsoluteToRelative(serializedLexical, this.getSiteUrl(), _options);
     }
 
-    lexicalAbsoluteToTransformReady(serializedLexical, options = {}) {
+    lexicalAbsoluteToTransformReady(serializedLexical: string, options: LexicalTransformOptionsInput = {}): string {
         const _options = this._buildAssetOptions({
             assetsOnly: false,
             cardTransformers: this._config.cardTransformers
-        }, options);
+        }, options) as LexicalTransformOptionsInput;
         return utils.lexicalAbsoluteToTransformReady(serializedLexical, this.getSiteUrl(), _options);
     }
 
-    plaintextToTransformReady(plaintext, options = {}) {
+    plaintextToTransformReady(plaintext: string, options: Record<string, unknown> = {}): string {
         const _options = this._buildAssetOptions({}, options);
-        return utils.plaintextToTransformReady(plaintext, this.getSiteUrl(), _options);
+        return utils.plaintextToTransformReady(plaintext, this.getSiteUrl(), null, _options);
     }
 
     /**
@@ -502,7 +644,7 @@ module.exports = class UrlUtils {
      * @param {string} [context] describing the context for which you need to check a url
      * @returns {boolean}
      */
-    isSiteUrl(url, context = 'home') {
+    isSiteUrl(url: URL, context: string = 'home'): boolean {
         const siteUrl = new URL(this.urlFor(context, true));
         if (siteUrl.host === url.host) {
             if (url.pathname.startsWith(siteUrl.pathname)) {
@@ -513,15 +655,15 @@ module.exports = class UrlUtils {
         return false;
     }
 
-    get isSSL() {
+    get isSSL(): typeof utils.isSSL {
         return utils.isSSL;
     }
 
-    get replacePermalink() {
+    get replacePermalink(): typeof utils.replacePermalink {
         return utils.replacePermalink;
     }
 
-    get deduplicateDoubleSlashes() {
+    get deduplicateDoubleSlashes(): typeof utils.deduplicateDoubleSlashes {
         return utils.deduplicateDoubleSlashes;
     }
 
@@ -534,20 +676,20 @@ module.exports = class UrlUtils {
      * But internally the image is located for example in your custom content path:
      * my-content/another-dir/images/2017/01/02/author.png
      */
-    get STATIC_IMAGE_URL_PREFIX() {
+    get STATIC_IMAGE_URL_PREFIX(): string {
         return this._config.staticImageUrlPrefix;
     }
 
-    get STATIC_FILES_URL_PREFIX() {
+    get STATIC_FILES_URL_PREFIX(): string {
         return this._config.staticFilesUrlPrefix;
     }
 
-    get STATIC_MEDIA_URL_PREFIX() {
+    get STATIC_MEDIA_URL_PREFIX(): string {
         return this._config.staticMediaUrlPrefix;
     }
 
     // expose underlying functions to ease testing
-    get _utils() {
+    get _utils(): typeof utils {
         return utils;
     }
 };

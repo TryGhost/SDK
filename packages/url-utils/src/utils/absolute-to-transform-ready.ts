@@ -1,9 +1,20 @@
-// @ts-nocheck
-const {URL} = require('url');
-const absoluteToRelative = require('./absolute-to-relative');
+import type {TransformReadyReplacementOptions} from './types';
+import absoluteToRelative, {type AbsoluteToRelativeOptions} from './absolute-to-relative';
+import {URL} from 'url';
 
-function isRelative(url) {
-    let parsedInput;
+export interface AbsoluteToTransformReadyOptions extends TransformReadyReplacementOptions, AbsoluteToRelativeOptions {
+    withoutSubdirectory: boolean;
+    staticFilesUrlPrefix?: string;
+    staticMediaUrlPrefix?: string;
+    imageBaseUrl?: string | null;
+    filesBaseUrl?: string | null;
+    mediaBaseUrl?: string | null;
+}
+
+export type AbsoluteToTransformReadyOptionsInput = Partial<AbsoluteToTransformReadyOptions>;
+
+function isRelative(url: string): boolean {
+    let parsedInput: URL;
     try {
         parsedInput = new URL(url, 'http://relative');
     } catch (e) {
@@ -14,8 +25,12 @@ function isRelative(url) {
     return parsedInput.origin === 'http://relative';
 }
 
-const absoluteToTransformReady = function (url, root, _options = {}) {
-    const defaultOptions = {
+const absoluteToTransformReady = function (
+    url: string,
+    root: string,
+    _options: AbsoluteToTransformReadyOptionsInput = {}
+): string {
+    const defaultOptions: AbsoluteToTransformReadyOptions = {
         replacementStr: '__GHOST_URL__',
         withoutSubdirectory: true,
         staticImageUrlPrefix: 'content/images',
@@ -23,7 +38,9 @@ const absoluteToTransformReady = function (url, root, _options = {}) {
         staticMediaUrlPrefix: 'content/media',
         imageBaseUrl: null,
         filesBaseUrl: null,
-        mediaBaseUrl: null
+        mediaBaseUrl: null,
+        ignoreProtocol: true,
+        assetsOnly: false
     };
     const options = Object.assign({}, defaultOptions, _options);
 
@@ -66,4 +83,4 @@ const absoluteToTransformReady = function (url, root, _options = {}) {
     return url;
 };
 
-module.exports = absoluteToTransformReady;
+export default absoluteToTransformReady;

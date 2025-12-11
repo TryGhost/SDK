@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const urlJoin = require('../../../lib/utils/url-join');
+const urlJoin = require('../../../lib/utils/url-join').default;
 
 describe('utils: urlJoin()', function () {
     it('should deduplicate slashes', function () {

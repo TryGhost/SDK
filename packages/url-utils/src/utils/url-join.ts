@@ -1,5 +1,8 @@
-// @ts-nocheck
-const deduplicateSubdirectory = require('./deduplicate-subdirectory');
+import deduplicateSubdirectory from './deduplicate-subdirectory';
+
+interface UrlJoinOptions {
+    rootUrl: string;
+}
 
 /** urlJoin
 * Returns a URL/path for internal use in Ghost.
@@ -8,7 +11,7 @@ const deduplicateSubdirectory = require('./deduplicate-subdirectory');
 * @param {string} options.rootUrl used for deduplicating any subdirectories
 * @return {string} URL concatinated URL/path of arguments.
 */
-function urlJoin(parts, options) {
+function urlJoin(parts: string[], options: UrlJoinOptions = {rootUrl: ''}): string {
     let prefixDoubleSlash = false;
 
     // Remove empty item at the beginning
@@ -32,7 +35,11 @@ function urlJoin(parts, options) {
         url = url.replace(/^\//, '//');
     }
 
+    if (!options.rootUrl) {
+        return url;
+    }
+
     return deduplicateSubdirectory(url, options.rootUrl);
 }
 
-module.exports = urlJoin;
+export default urlJoin;

@@ -1,6 +1,6 @@
 require('../../utils');
 
-const htmlToTransformReady = require('../../../lib/utils/html-to-transform-ready');
+const htmlToTransformReady = require('../../../lib/utils/html-to-transform-ready').default;
 
 describe('utils: htmlToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
