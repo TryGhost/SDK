@@ -1,20 +1,20 @@
-// @ts-nocheck
+import type {HtmlTransformOptions, HtmlTransformOptionsInput, UrlTransformFunction} from './types';
 const cheerio = require('cheerio');
 
-function escapeRegExp(string) {
+function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function extractSrcsetUrls(srcset = '') {
+function extractSrcsetUrls(srcset: string = ''): string[] {
     return srcset.split(',').map((part) => {
         return part.trim().split(/\s+/)[0];
     });
 }
 
-function extractStyleUrls(style = '') {
-    const urls = [];
+function extractStyleUrls(style: string = ''): string[] {
+    const urls: string[] = [];
     const regex = /url\(['|"]([^)]+)['|"]\)/g;
-    let match;
+    let match: RegExpExecArray | null;
 
     while ((match = regex.exec(style)) !== null) {
         urls.push(match[1]);
@@ -23,9 +23,18 @@ function extractStyleUrls(style = '') {
     return urls;
 }
 
-function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options) {
-    const defaultOptions = {assetsOnly: false, secure: false};
-    const options = Object.assign({}, defaultOptions, _options || {});
+function htmlTransform(
+    html: string = '',
+    siteUrl: string,
+    transformFunction: UrlTransformFunction,
+    itemPath: string | null,
+    _options: HtmlTransformOptionsInput = {}
+): string {
+    const defaultOptions: HtmlTransformOptions = {
+        assetsOnly: false,
+        secure: false
+    };
+    const options: HtmlTransformOptions = Object.assign({}, defaultOptions, _options || {});
 
     if (!html || (options.earlyExitMatchStr && !html.match(new RegExp(options.earlyExitMatchStr)))) {
         return html;
@@ -43,9 +52,15 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
     //         {name: 'href', originalValue: '/test', absoluteValue: '.../test'},
     //     ]
     // }
-    const replacements = {};
+    interface Replacement {
+        name: string;
+        originalValue: string;
+        transformedValue?: string;
+        skip?: boolean;
+    }
+    const replacements: Record<string, Replacement[]> = {};
 
-    function addReplacement(replacement) {
+    function addReplacement(replacement: Replacement): void {
         const key = `${replacement.name}="${replacement.originalValue}"`;
 
         if (!replacements[key]) {
@@ -56,10 +71,11 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
     }
 
     // find all of the relative url attributes that we care about
-    ['href', 'src', 'srcset', 'style'].forEach((attributeName) => {
-        htmlContent('[' + attributeName + ']').each((ix, el) => {
+    ['href', 'src', 'srcset', 'style'].forEach((attributeName: string) => {
+        htmlContent('[' + attributeName + ']').each((ix: number, el: cheerio.Element) => {
             // ignore <stream> elems and html inside of <code> elements
-            if (el.name === 'stream' || htmlContent(el).closest('code').length) {
+            const elementName = 'name' in el ? el.name : null;
+            if (elementName === 'stream' || htmlContent(el).closest('code').length) {
                 addReplacement({
                     name: attributeName,
                     originalValue: htmlContent(el).attr(attributeName),
@@ -68,23 +84,23 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
                 return;
             }
 
-            el = htmlContent(el);
-            const originalValue = el.attr(attributeName);
+            const elWrapper = htmlContent(el);
+            const originalValue = elWrapper.attr(attributeName);
 
             if (attributeName === 'srcset' || attributeName === 'style') {
-                let urls;
+                let urls: string[];
 
                 if (attributeName === 'srcset') {
                     urls = extractSrcsetUrls(originalValue);
                 } else {
                     urls = extractStyleUrls(originalValue);
                 }
-                const absoluteUrls = urls.map(url => transformFunction(url, siteUrl, itemPath, options));
+                const absoluteUrls = urls.map((url: string) => transformFunction(url, siteUrl, itemPath, options));
                 let transformedValue = originalValue;
 
-                urls.forEach((url, i) => {
+                urls.forEach((url: string, i: number) => {
                     if (absoluteUrls[i]) {
-                        let regex = new RegExp(escapeRegExp(url), 'g');
+                        const regex = new RegExp(escapeRegExp(url), 'g');
                         transformedValue = transformedValue.replace(regex, absoluteUrls[i]);
                     }
                 });
@@ -121,6 +137,12 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
                 return;
             }
 
+            // transformedValue is guaranteed to exist here because we only add replacements
+            // when transformedValue !== originalValue, and we've already skipped entries with skip: true
+            if (!transformedValue) {
+                return;
+            }
+
             // this regex avoids matching unrelated plain text by checking that the attribute/value pair
             // is surrounded by <> - that should be sufficient because if the plain text had that wrapper
             // it would be parsed as a tag
@@ -128,7 +150,7 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
             const regex = new RegExp(`<[a-zA-Z][^>]*?(${name}=['"](${escapeRegExp(originalValue)})['"]).*?>`, 'gs');
 
             let matchCount = 0;
-            html = html.replace(regex, (match, p1) => {
+            html = html.replace(regex, (match: string, p1: string): string => {
                 let result = match;
                 if (matchCount === skipCount) {
                     result = match.replace(p1, p1.replace(originalValue, transformedValue));
@@ -142,4 +164,4 @@ function htmlTransform(html = '', siteUrl, transformFunction, itemPath, _options
     return html;
 }
 
-module.exports = htmlTransform;
+export default htmlTransform;

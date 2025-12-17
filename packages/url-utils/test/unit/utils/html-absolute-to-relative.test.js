@@ -5,7 +5,7 @@ require('../../utils');
 const sinon = require('sinon');
 
 const cheerio = require('cheerio');
-const htmlAbsoluteToRelative = require('../../../lib/utils/html-absolute-to-relative');
+const htmlAbsoluteToRelative = require('../../../lib/utils/html-absolute-to-relative').default;
 
 describe('utils: htmlAbsoluteToRelative()', function () {
     const siteUrl = 'http://my-ghost-blog.com';

@@ -1,9 +1,9 @@
-// @ts-nocheck
-let remark;
+import type {MarkdownTransformOptions, MarkdownTransformOptionsInput, MarkdownTransformFunctions} from './types';
+let remark: typeof import('remark') | undefined;
 const footnotes = require('remark-footnotes');
 const visit = require('unist-util-visit');
 
-function replaceLast(find, replace, str) {
+function replaceLast(find: string, replace: string, str: string): string {
     const lastIndex = str.lastIndexOf(find);
 
     if (lastIndex === -1) {
@@ -16,18 +16,35 @@ function replaceLast(find, replace, str) {
     return begin + replace + end;
 }
 
-function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath, _options = {}) {
-    const defaultOptions = {assetsOnly: false, ignoreProtocol: true};
-    const options = Object.assign({}, defaultOptions, _options);
+interface Replacement {
+    old: string;
+    new: string;
+    start: number;
+    end: number;
+}
+
+function markdownTransform(
+    markdown: string = '',
+    siteUrl: string,
+    transformFunctions: MarkdownTransformFunctions,
+    itemPath: string | null,
+    _options: MarkdownTransformOptionsInput = {}
+): string {
+    const defaultOptions: MarkdownTransformOptions = {assetsOnly: false, ignoreProtocol: true};
+    const options: MarkdownTransformOptions = Object.assign({}, defaultOptions, _options);
 
     if (!markdown || (options.earlyExitMatchStr && !markdown.match(new RegExp(options.earlyExitMatchStr)))) {
         return markdown;
     }
 
-    const replacements = [];
+    const replacements: Replacement[] = [];
 
     if (!remark) {
         remark = require('remark');
+    }
+
+    if (!remark) {
+        return markdown;
     }
 
     const tree = remark()
@@ -35,10 +52,10 @@ function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath,
         .use(footnotes, {inlineNotes: true})
         .parse(markdown);
 
-    visit(tree, ['link', 'image', 'html'], (node) => {
-        if (node.type === 'html' && node.value.match(/src|srcset|href/)) {
+    visit(tree, ['link', 'image', 'html'], (node: {type: string; value?: string; url?: string; position?: {start: {offset: number}; end: {offset: number}}}) => {
+        if (node.type === 'html' && node.value && node.value.match(/src|srcset|href/) && node.position) {
             const oldValue = node.value;
-            const newValue = transformFunctions.html(node.value, siteUrl, itemPath, options);
+            const newValue = transformFunctions.html(oldValue, siteUrl, itemPath, options);
 
             if (newValue !== oldValue) {
                 replacements.push({
@@ -50,9 +67,9 @@ function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath,
             }
         }
 
-        if (node.type === 'link' || node.type === 'image') {
+        if ((node.type === 'link' || node.type === 'image') && node.url && node.position) {
             const oldValue = node.url;
-            const newValue = transformFunctions.url(node.url, siteUrl, itemPath, options);
+            const newValue = transformFunctions.url(oldValue, siteUrl, itemPath, options);
 
             if (newValue !== oldValue) {
                 replacements.push({
@@ -96,4 +113,4 @@ function markdownTransform(markdown = '', siteUrl, transformFunctions, itemPath,
     return result;
 }
 
-module.exports = markdownTransform;
+export default markdownTransform;

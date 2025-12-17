@@ -1,14 +1,25 @@
-// @ts-nocheck
-const markdownRelativeToAbsolute = require('./markdown-relative-to-absolute');
-const markdownAbsoluteToTransformReady = require('./markdown-absolute-to-transform-ready');
+import type {MarkdownTransformOptionsInput} from './types';
+import markdownRelativeToAbsolute from './markdown-relative-to-absolute';
+import markdownAbsoluteToTransformReady from './markdown-absolute-to-transform-ready';
 
-function markdownToTransformReady(markdown, siteUrl, itemPath, options) {
-    if (typeof itemPath === 'object' && !options) {
-        options = itemPath;
-        itemPath = null;
+function markdownToTransformReady(
+    markdown: string,
+    siteUrl: string,
+    itemPath: string | null | MarkdownTransformOptionsInput,
+    options?: MarkdownTransformOptionsInput
+): string {
+    let finalItemPath: string | null = null;
+    let finalOptions: MarkdownTransformOptionsInput = options || {};
+
+    if (typeof itemPath === 'object' && itemPath !== null && !options) {
+        finalOptions = itemPath;
+        finalItemPath = null;
+    } else if (typeof itemPath === 'string') {
+        finalItemPath = itemPath;
     }
-    const absolute = markdownRelativeToAbsolute(markdown, siteUrl, itemPath, options);
-    return markdownAbsoluteToTransformReady(absolute, siteUrl, options);
+
+    const absolute = markdownRelativeToAbsolute(markdown, siteUrl, finalItemPath, finalOptions);
+    return markdownAbsoluteToTransformReady(absolute, siteUrl, finalOptions);
 }
 
-module.exports = markdownToTransformReady;
+export default markdownToTransformReady;
