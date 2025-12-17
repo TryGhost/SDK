@@ -2,7 +2,15 @@ import type {HtmlTransformOptions, HtmlTransformOptionsInput, UrlTransformFuncti
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const cheerio = require('cheerio');
 
-export const transformAttributes = ['href', 'src', 'srcset', 'style'];
+export const transformAttributes = [
+    'href',
+    'src',
+    'srcset',
+    'style',
+    'data-kg-background-image',
+    'data-kg-custom-thumbnail',
+    'data-kg-thumbnail'
+];
 export const earlyExitMatchStr = transformAttributes
     .map(attr => `${attr}=`)
     .join('|');

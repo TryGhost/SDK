@@ -81,6 +81,20 @@ describe('utils: htmlRelativeToTransformReady()', function () {
         result.should.containEql('<img src="__GHOST_URL__/my-awesome-post/my-image.png">');
     });
 
+    it('converts allowlisted data-kg-* URLs', function () {
+        const html = '<figure data-kg-thumbnail="/content/images/test.jpg" data-kg-custom-thumbnail="custom.jpg" data-kg-background-image="/content/images/bg.jpg"></figure>';
+        const result = htmlRelativeToTransformReady(html, siteUrl, itemPath, options);
+
+        result.should.eql('<figure data-kg-thumbnail="__GHOST_URL__/content/images/test.jpg" data-kg-custom-thumbnail="__GHOST_URL__/my-awesome-post/custom.jpg" data-kg-background-image="__GHOST_URL__/content/images/bg.jpg"></figure>');
+    });
+
+    it('ignores allowlisted data-kg-* attributes inside <code> blocks', function () {
+        const html = '<p><figure data-kg-thumbnail="/content/images/test.jpg"></figure><code><figure data-kg-thumbnail="/content/images/test.jpg"></figure></code></p>';
+        const result = htmlRelativeToTransformReady(html, siteUrl, itemPath, options);
+
+        result.should.eql('<p><figure data-kg-thumbnail="__GHOST_URL__/content/images/test.jpg"></figure><code><figure data-kg-thumbnail="/content/images/test.jpg"></figure></code></p>');
+    });
+
     it('converts asset urls only with assetsOnly=true option', function () {
         options.assetsOnly = true;
 
