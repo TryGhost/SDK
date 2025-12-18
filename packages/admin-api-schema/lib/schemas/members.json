@@ -47,6 +47,9 @@
         },
         "newsletters": {
           "$ref": "#/definitions/member-newsletters"
+        },
+        "can_comment": {
+          "type": "boolean"
         }
       }
     },

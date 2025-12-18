@@ -50,6 +50,9 @@
           },
           "labels": {
             "$ref": "members#/definitions/member-labels"
+          },
+          "can_comment": {
+            "type": "boolean"
           }
         }
       }
