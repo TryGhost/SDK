@@ -3350,7 +3350,7 @@
     "@types/deep-eql" "*"
     assertion-error "^2.0.1"
 
-"@types/cheerio@^0.22.31":
+"@types/cheerio@0.22.35":
   version "0.22.35"
   resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.35.tgz#0d16dc1f24d426231c181b9c31847f673867595f"
   integrity sha512-yD57BchKRvTV+JD53UZ6PD8KWY5g5rvvMLRnZR3EQBCZXiDT/HR+pKpMzFGlWNhFrXlo7VPZXtKvIEwZkAWOIA==
@@ -3408,7 +3408,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash@^4.14.202":
+"@types/lodash@4.17.20":
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.20.tgz#1ca77361d7363432d29f5e55950d9ec1e1c6ea93"
   integrity sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==
@@ -3428,14 +3428,14 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-10.0.10.tgz#91f62905e8d23cbd66225312f239454a23bebfa0"
   integrity sha512-xPyYSz1cMPnJQhl0CLMH68j3gprKZaTjG3s5Vi+fDgx+uhG9NOXwbVt52eFS8ECyXhyKcjDLCBEqBExKuiZb7Q==
 
-"@types/node@*", "@types/node@^24.0.0":
+"@types/node@*", "@types/node@24.10.1":
   version "24.10.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-24.10.1.tgz#91e92182c93db8bd6224fca031e2370cef9a8f01"
   integrity sha512-GNWcUTRBgIRJD5zj+Tq0fKOJ5XZajIiBroOF0yvj2bSU1WvNdYS/dn9UxwsujGW4JX06dnHyjV2y9rRaybH0iQ==
   dependencies:
     undici-types "~7.16.0"
 
-"@types/node@^20.0.0":
+"@types/node@20.19.25":
   version "20.19.25"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.19.25.tgz#467da94a2fd966b57cc39c357247d68047611190"
   integrity sha512-ZsJzA5thDQMSQO788d7IocwwQbI8B5OPzmqNvpf3NY/+MHDAS759Wo0gd2WQeXYt5AAAQjzcrTVC6SKCuYgoCQ==
@@ -3480,14 +3480,14 @@
   dependencies:
     "@types/node" "*"
 
-"@types/should@^13.0.0":
+"@types/should@13.0.0":
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/@types/should/-/should-13.0.0.tgz#96c00117f1896177848fdecfa336313c230c879e"
   integrity sha512-Mi6YZ2ABnnGGFMuiBDP0a8s1ZDCDNHqP97UH8TyDmCWuGGavpsFMfJnAMYaaqmDlSCOCNbVLHBrSDEOpx/oLhw==
   dependencies:
     should "*"
 
-"@types/sinon@^21.0.0":
+"@types/sinon@21.0.0":
   version "21.0.0"
   resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-21.0.0.tgz#3a598a29b3aec0512a21e57ae0fd4c09aa013ca9"
   integrity sha512-+oHKZ0lTI+WVLxx1IbJDNmReQaIsQJjN2e7UUrJHEeByG7bFeKJYsv1E75JxTQ9QKJDp21bAa/0W2Xo4srsDnw==
