@@ -34,7 +34,7 @@
     "mocha": "11.7.5",
     "rewire": "9.0.1",
     "should": "13.2.3",
-    "sinon": "21.0.0",
+    "sinon": "21.0.1",
     "typescript": "5.9.3"
   },
   "dependencies": {
