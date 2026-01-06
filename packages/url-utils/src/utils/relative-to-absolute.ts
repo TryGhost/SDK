@@ -73,7 +73,7 @@ const relativeToAbsolute = function relativeToAbsolute(
         if (path.lastIndexOf('//', 0) === 0) {
             return path;
         }
-    } catch (e) {
+    } catch {
         return path;
     }
 

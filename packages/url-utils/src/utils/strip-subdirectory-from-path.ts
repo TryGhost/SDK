@@ -17,7 +17,7 @@ const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path: strin
 
     try {
         parsedRoot = new URL(rootUrl);
-    } catch (e) {
+    } catch {
         return path;
     }
 

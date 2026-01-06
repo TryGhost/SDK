@@ -1,4 +1,5 @@
 import type {HtmlTransformOptions, HtmlTransformOptionsInput, UrlTransformFunction} from './types';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const cheerio = require('cheerio');
 
 function escapeRegExp(string: string): string {

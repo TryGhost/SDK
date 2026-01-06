@@ -1,7 +1,9 @@
 import type {MarkdownTransformOptions, MarkdownTransformOptionsInput, MarkdownTransformFunctions} from './types';
+/* eslint-disable @typescript-eslint/no-require-imports */
 let remark: typeof import('remark') | undefined;
 const footnotes = require('remark-footnotes');
 const visit = require('unist-util-visit');
+/* eslint-enable @typescript-eslint/no-require-imports */
 
 function replaceLast(find: string, replace: string, str: string): string {
     const lastIndex = str.lastIndexOf(find);
@@ -40,6 +42,7 @@ function markdownTransform(
     const replacements: Replacement[] = [];
 
     if (!remark) {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         remark = require('remark');
     }
 
