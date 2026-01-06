@@ -273,9 +273,12 @@ describe('utils: htmlRelativeToAbsolute()', function () {
             htmlRelativeToAbsolute('<img srcset="/image-4x.png 4x, /image-2x.png 2x">)', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(3, 'srcset didn\'t trigger parse');
 
+            htmlRelativeToAbsolute('<div style="background-image: url(\'/image.png\')"></div>', url, itemPath, options);
+            cheerioLoadSpy.callCount.should.equal(4, 'style didn\'t trigger parse');
+
             options.assetsOnly = true;
             htmlRelativeToAbsolute('<a href="/my-post/">post</a>', url, itemPath, options);
-            cheerioLoadSpy.callCount.should.equal(3, 'href triggered parse when no url matches asset path');
+            cheerioLoadSpy.callCount.should.equal(4, 'href triggered parse when no url matches asset path');
         });
     });
 });
