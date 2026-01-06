@@ -1,5 +1,5 @@
 import type {HtmlTransformOptionsInput, SecureOptionsInput} from './types';
-import htmlTransform from './html-transform';
+import htmlTransform, {earlyExitMatchStr} from './html-transform';
 import relativeToAbsolute from './relative-to-absolute';
 
 function htmlRelativeToAbsolute(
@@ -11,8 +11,7 @@ function htmlRelativeToAbsolute(
     const defaultOptions: SecureOptionsInput = {assetsOnly: false, secure: false};
     const options: HtmlTransformOptionsInput = Object.assign({}, defaultOptions, _options || {});
 
-    // exit early and avoid parsing if the content does not contain an attribute we might transform
-    options.earlyExitMatchStr = 'href=|src=|srcset=';
+    options.earlyExitMatchStr = earlyExitMatchStr;
     if (options.assetsOnly) {
         options.earlyExitMatchStr = options.staticImageUrlPrefix;
     }

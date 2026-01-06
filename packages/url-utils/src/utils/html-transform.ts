@@ -2,6 +2,12 @@ import type {HtmlTransformOptions, HtmlTransformOptionsInput, UrlTransformFuncti
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const cheerio = require('cheerio');
 
+export const transformAttributes = ['href', 'src', 'srcset', 'style'];
+export const earlyExitMatchStr = transformAttributes
+    .filter(attr => attr !== 'style')
+    .map(attr => `${attr}=`)
+    .join('|');
+
 function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -71,8 +77,7 @@ function htmlTransform(
         replacements[key].push(replacement);
     }
 
-    // find all of the relative url attributes that we care about
-    ['href', 'src', 'srcset', 'style'].forEach((attributeName: string) => {
+    transformAttributes.forEach((attributeName: string) => {
         htmlContent('[' + attributeName + ']').each((ix: number, el: cheerio.Element) => {
             // ignore <stream> elems and html inside of <code> elements
             const elementName = 'name' in el ? el.name : null;
