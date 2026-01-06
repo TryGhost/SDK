@@ -4,7 +4,6 @@ const cheerio = require('cheerio');
 
 export const transformAttributes = ['href', 'src', 'srcset', 'style'];
 export const earlyExitMatchStr = transformAttributes
-    .filter(attr => attr !== 'style')
     .map(attr => `${attr}=`)
     .join('|');
 
