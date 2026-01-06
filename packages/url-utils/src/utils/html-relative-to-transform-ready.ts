@@ -1,5 +1,5 @@
 import type {HtmlTransformOptionsInput} from './types';
-import htmlTransform from './html-transform';
+import htmlTransform, {earlyExitMatchStr} from './html-transform';
 import relativeToTransformReady, {type RelativeToTransformReadyOptionsInput as RelativeToTransformReadyOptionsInputType} from './relative-to-transform-ready';
 
 const htmlRelativeToTransformReady = function (
@@ -27,8 +27,7 @@ const htmlRelativeToTransformReady = function (
     };
     const options: HtmlTransformOptionsInput = Object.assign({}, defaultOptions, finalOptions, overrideOptions);
 
-    // exit early and avoid parsing if the content does not contain an attribute we might transform
-    options.earlyExitMatchStr = 'href=|src=|srcset=';
+    options.earlyExitMatchStr = earlyExitMatchStr;
     if (options.assetsOnly) {
         options.earlyExitMatchStr = options.staticImageUrlPrefix;
     }
