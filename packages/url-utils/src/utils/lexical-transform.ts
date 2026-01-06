@@ -1,4 +1,5 @@
 import type {LexicalTransformOptions, LexicalTransformOptionsInput, LexicalUrlTransformMap, UrlTransformFunction} from './types';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const _ = require('lodash');
 
 // options.transformMap = {

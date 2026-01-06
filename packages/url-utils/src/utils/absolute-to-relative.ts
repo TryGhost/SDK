@@ -47,7 +47,7 @@ const absoluteToRelative = function absoluteToRelative(url: string, rootUrl?: st
         if (parsedUrl.origin === 'null' || parsedUrl.origin === 'http://relative') {
             return url;
         }
-    } catch (e) {
+    } catch {
         return url;
     }
 

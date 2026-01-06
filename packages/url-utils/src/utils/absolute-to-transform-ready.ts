@@ -17,7 +17,7 @@ function isRelative(url: string): boolean {
     let parsedInput: URL;
     try {
         parsedInput = new URL(url, 'http://relative');
-    } catch (e) {
+    } catch {
         // url was unparseable
         return false;
     }
