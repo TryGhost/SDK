@@ -29,6 +29,15 @@ describe('utils: htmlToTransformReady()', function () {
         result.should.containEql('<img src="__GHOST_URL__/content/images/test.jpg">');
     });
 
+    it('converts allowlisted data-kg-* URLs to transform-ready', function () {
+        const html = '<figure data-kg-thumbnail="/content/images/test.jpg" data-kg-custom-thumbnail="custom.jpg" data-kg-background-image="/content/images/bg.jpg"></figure>';
+        const result = htmlToTransformReady(html, siteUrl, itemPath, options);
+
+        result.should.containEql('data-kg-thumbnail="__GHOST_URL__/content/images/test.jpg"');
+        result.should.containEql('data-kg-custom-thumbnail="__GHOST_URL__/my-awesome-post/custom.jpg"');
+        result.should.containEql('data-kg-background-image="__GHOST_URL__/content/images/bg.jpg"');
+    });
+
     it('converts relative HTML with page-relative URLs', function () {
         const html = '<a href="about">Link</a>';
         const result = htmlToTransformReady(html, siteUrl, itemPath, options);

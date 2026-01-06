@@ -47,6 +47,13 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
         result.should.containEql('<a href="__GHOST_URL__/content/images">');
     });
 
+    it('converts allowlisted data-kg-* URLs', function () {
+        const html = '<figure data-kg-thumbnail="https://my-ghost-blog.com/content/images/test.jpg" data-kg-custom-thumbnail="//my-ghost-blog.com/content/images/custom.jpg" data-kg-background-image="https://my-ghost-blog.com/content/images/bg.jpg"></figure>';
+        const result = htmlAbsoluteToTransformReady(html, siteUrl, options);
+
+        result.should.eql('<figure data-kg-thumbnail="__GHOST_URL__/content/images/test.jpg" data-kg-custom-thumbnail="__GHOST_URL__/content/images/custom.jpg" data-kg-background-image="__GHOST_URL__/content/images/bg.jpg"></figure>');
+    });
+
     it('does not convert an an absolute URL on external domain', function () {
         const html = '<a href="https://external.com/about#nowhere">';
         const result = htmlAbsoluteToTransformReady(html, siteUrl, options);

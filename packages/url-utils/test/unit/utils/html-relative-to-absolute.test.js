@@ -78,6 +78,13 @@ describe('utils: htmlRelativeToAbsolute()', function () {
         result.should.match(/<img src="http:\/\/my-ghost-blog.com\/my-awesome-post\/my-image.png">/);
     });
 
+    it('converts allowlisted data-kg-* URLs', function () {
+        const html = '<figure data-kg-thumbnail="/content/images/test.jpg" data-kg-custom-thumbnail="custom.jpg" data-kg-background-image="/content/images/bg.jpg"></figure>';
+        const result = htmlRelativeToAbsolute(html, siteUrl, itemPath, options);
+
+        result.should.eql('<figure data-kg-thumbnail="http://my-ghost-blog.com/content/images/test.jpg" data-kg-custom-thumbnail="http://my-ghost-blog.com/my-awesome-post/custom.jpg" data-kg-background-image="http://my-ghost-blog.com/content/images/bg.jpg"></figure>');
+    });
+
     it('converts asset urls only with assetsOnly=true option', function () {
         options.assetsOnly = true;
 
