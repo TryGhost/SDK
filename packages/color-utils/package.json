@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/color-utils",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",

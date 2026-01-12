@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/timezone-data",
-  "version": "0.4.14",
+  "version": "0.4.15",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",

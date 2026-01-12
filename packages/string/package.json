@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/string",
-  "version": "0.2.20",
+  "version": "0.2.21",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
