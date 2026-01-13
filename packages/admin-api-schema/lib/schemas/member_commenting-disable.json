@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "member_commenting.disable",
+  "title": "member_commenting.disable",
+  "description": "Schema for member_commenting.disable",
+  "allOf": [{ "$ref": "member_commenting#/definitions/member_commenting" }]
+}
