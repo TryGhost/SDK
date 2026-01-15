@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "glob": "^9.0.0",
-    "handlebars": "^4.7.7",
-    "lodash": "^4.17.11"
+    "handlebars": "4.7.8",
+    "lodash": "4.17.21"
   }
 }
