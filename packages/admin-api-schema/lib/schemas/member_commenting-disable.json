@@ -2,6 +2,21 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "member_commenting.disable",
   "title": "member_commenting.disable",
-  "description": "Schema for member_commenting.disable",
-  "allOf": [{ "$ref": "member_commenting#/definitions/member_commenting" }]
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "hide_comments": {
+      "type": "boolean"
+    }
+  },
+  "required": ["reason"]
 }
