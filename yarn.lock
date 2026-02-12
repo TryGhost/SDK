@@ -3791,10 +3791,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@tryghost/errors@1.3.8":
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.3.8.tgz#d4212b52e876360b4fa8e303ae13ef86f3e95846"
-  integrity sha512-2+4ExAAWM0rFWC7FlzxQMzIvIEQKt/vQLxLyqJqCmAcJa4i2uqUPJHqd/X5BBRuSTuftgca7EAo7adESbHEkZw==
+"@tryghost/errors@1.3.9":
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-1.3.9.tgz#e1095f9f5b30888de70908fc54dea046b3b6959a"
+  integrity sha512-SETeT5FRtO3hV0tTkMF65a9BP+Z1n3LenwW6qmm6sWGCLk/s8sOahF3WQHGX3AnEOWAB4GjRHNxHMF7N21r0ag==
   dependencies:
     "@stdlib/utils-copy" "^0.2.0"
     uuid "^9.0.0"
