@@ -41,7 +41,7 @@
     "mocha": "11.7.5",
     "rollup": "2.79.2",
     "rollup-plugin-commonjs": "10.1.0",
-    "rollup-plugin-node-resolve": "5.2.0",
+    "@rollup/plugin-node-resolve": "6.0.0",
     "@rollup/plugin-terser": "0.1.0",
     "should": "13.2.3",
     "sinon": "21.0.1",
