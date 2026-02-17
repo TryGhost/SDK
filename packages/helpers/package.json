@@ -41,7 +41,7 @@
     "istanbul": "0.4.5",
     "mocha": "11.7.5",
     "rollup": "2.79.2",
-    "@rollup/plugin-babel": "5.3.1",
+    "@rollup/plugin-babel": "6.1.0",
     "rollup-plugin-commonjs": "10.1.0",
     "@rollup/plugin-node-resolve": "6.1.0",
     "@rollup/plugin-terser": "0.1.0",
