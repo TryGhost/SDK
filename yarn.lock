@@ -7324,12 +7324,12 @@ glob@^10.2.2, glob@^10.4.1, glob@^10.4.5:
     package-json-from-dist "^1.0.0"
     path-scurry "^1.11.1"
 
-glob@^13.0.0:
-  version "13.0.3"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-13.0.3.tgz#e5c39b3e0eb8a2e2bc35e3b28e78fd0839ff9e68"
-  integrity sha512-/g3B0mC+4x724v1TgtBlBtt2hPi/EWptsIAmXUx9Z2rvBYleQcsrmaOzd5LyL50jf/Soi83ZDJmw2+XqvH/EeA==
+glob@^13.0.3:
+  version "13.0.5"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-13.0.5.tgz#a48f760c6312b1a19d2950fcb577384221c4ec00"
+  integrity sha512-BzXxZg24Ibra1pbQ/zE7Kys4Ua1ks7Bn6pKLkVPZ9FZe4JQS6/Q7ef3LG1H+k7lUf5l4T3PLSyYyYJVYUvfgTw==
   dependencies:
-    minimatch "^10.2.0"
+    minimatch "^10.2.1"
     minipass "^7.1.2"
     path-scurry "^2.0.0"
 
@@ -9176,10 +9176,10 @@ minimatch@3.0.5:
   dependencies:
     brace-expansion "^1.1.7"
 
-minimatch@^10.1.1, minimatch@^10.2.0:
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-10.2.0.tgz#e710473e66e3e1aaf376d0aa82438375cac86e9e"
-  integrity sha512-ugkC31VaVg9cF0DFVoADH12k6061zNZkZON+aX8AWsR9GhPcErkcMBceb6znR8wLERM2AkkOxy2nWRLpT9Jq5w==
+minimatch@^10.1.1, minimatch@^10.2.1:
+  version "10.2.1"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-10.2.1.tgz#9d82835834cdc85d5084dd055e9a4685fa56e5f0"
+  integrity sha512-MClCe8IL5nRRmawL6ib/eT4oLyeKMGCghibcDWK+J0hh0Q8kqSdia6BvbRMVk6mPa6WqUa5uR2oxt6C5jd533A==
   dependencies:
     brace-expansion "^5.0.2"
 
@@ -11011,12 +11011,12 @@ rewire@9.0.1:
     eslint "^9.30"
     pirates "^4.0.7"
 
-rimraf@6.1.2:
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-6.1.2.tgz#9a0f3cea2ab853e81291127422116ecf2a86ae89"
-  integrity sha512-cFCkPslJv7BAXJsYlK1dZsbP8/ZNLkCAQ0bi1hf5EKX2QHegmDFEFA6QhuYJlk7UDdc+02JjO80YSOrWPpw06g==
+rimraf@6.1.3:
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-6.1.3.tgz#afbee236b3bd2be331d4e7ce4493bac1718981af"
+  integrity sha512-LKg+Cr2ZF61fkcaK1UdkH2yEBBKnYjTyWzTJT6KNPcSPaiT7HSdhtMXQuN5wkTX0Xu72KQ1l8S42rlmexS2hSA==
   dependencies:
-    glob "^13.0.0"
+    glob "^13.0.3"
     package-json-from-dist "^1.0.1"
 
 rimraf@^3.0.2:
