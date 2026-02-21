@@ -48,9 +48,9 @@
   },
   "homepage": "https://ghost.org",
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "@types/should": "^13.0.0",
-    "@types/sinon": "^21.0.0",
+    "@types/node": "24.10.13",
+    "@types/should": "13.0.0",
+    "@types/sinon": "21.0.0",
     "@typescript-eslint/eslint-plugin": "^8.55.0",
     "@typescript-eslint/parser": "^8.55.0",
     "@vitest/coverage-v8": "^4.0.17",
