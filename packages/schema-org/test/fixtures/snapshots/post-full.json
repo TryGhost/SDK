@@ -1,0 +1,31 @@
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Hello World",
+        "logo": "https://example.com/content/images/logo.png"
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://example.com"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Joanne Bloggs",
+        "url": "https://test.example.com/about/me",
+        "sameAs": [
+            "https://twitter.com/test",
+            "https://facebook.com/test"
+        ],
+        "image": "https://example.com/content/images/cover.jpg",
+        "description": "A person who writes things in places"
+    },
+    "headline": "An interesting article",
+    "url": "https://example.com/article/",
+    "datePublished": "2018-12-20T22:13:05.412",
+    "dateModified": "2018-12-03T09:45:12.123Z",
+    "image": "https://example.com/content/images/article.gif",
+    "keywords": "Foo, Bar, Baz",
+    "description": "You&#x27;ll never guess what happened next..."
+}

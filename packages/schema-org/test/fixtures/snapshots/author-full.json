@@ -1,0 +1,16 @@
+{
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://example.com"
+    },
+    "name": "Joanne Bloggs",
+    "url": "https://test.example.com/about/me",
+    "sameAs": [
+        "https://twitter.com/test",
+        "https://facebook.com/test"
+    ],
+    "image": "https://example.com/content/images/cover.jpg",
+    "description": "A person who writes things in places"
+}
