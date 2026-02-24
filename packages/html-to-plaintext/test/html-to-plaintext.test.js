@@ -88,6 +88,14 @@ describe('Html to Plaintext', function () {
         });
     });
 
+    describe('comment converter', function () {
+        it('converts HTML to plaintext for comments', function () {
+            const input = '<p>First paragraph.</p><p>Second paragraph.</p>';
+            const output = htmlToPlaintext.comment(input);
+            assert.equal(output, 'First paragraph.\nSecond paragraph.');
+        });
+    });
+
     describe('commentSnippet converter', function () {
         function testConverter({input, expected}) {
             return () => {

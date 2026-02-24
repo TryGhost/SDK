@@ -42,4 +42,12 @@ describe('utils: plaintextToTransformReady', function () {
 
         result.should.equal('Relative link [__GHOST_URL__/first-link]');
     });
+
+    it('handles string itemPath', function () {
+        const siteUrl = 'http://my-ghost-blog.com';
+        const plaintext = 'Page-relative link [my-page]';
+        const result = plaintextToTransformReady(plaintext, siteUrl, '/my-post/');
+
+        result.should.equal('Page-relative link [my-page]');
+    });
 });

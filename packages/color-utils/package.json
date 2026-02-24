@@ -16,7 +16,7 @@
   "types": "types/color-utils.d.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "test": "NODE_ENV=testing c8 --all --check-coverage --reporter text --reporter cobertura mocha './test/**/*.test.js'",
+    "test": "NODE_ENV=testing c8 --src cjs --reporter text --reporter cobertura mocha './test/**/*.test.js'",
     "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
     "lint": "eslint . --ext .js --cache",
     "prepare": "NODE_ENV=production yarn build",

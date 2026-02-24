@@ -53,4 +53,13 @@ describe('utils: urlJoin()', function () {
         urlJoin(['ghost.blog/blog', 'ghost/'], options).should.eql('ghost.blog/blog/ghost/');
         urlJoin(['ghost.blog', 'blog', 'ghost/'], options).should.eql('ghost.blog/blog/ghost/');
     });
+
+    it('should return joined url without deduplication when rootUrl is empty', function () {
+        urlJoin(['/', '/my/', '/blog/']).should.eql('/my/blog/');
+        urlJoin(['/blog/', '/blog/about']).should.eql('/blog/blog/about');
+    });
+
+    it('should return joined url without deduplication when rootUrl is not provided', function () {
+        urlJoin(['http://example.com', '/rss'], {}).should.eql('http://example.com/rss');
+    });
 });

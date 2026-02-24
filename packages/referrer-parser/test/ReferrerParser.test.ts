@@ -392,6 +392,15 @@ describe('ReferrerParser', () => {
             const result4 = parser4.isSiteDomain(url4);
             should.equal(result4, true);
         });
+
+        it('returns false for www subdomain match with different base path', () => {
+            const parser = new ReferrerParser({
+                siteUrl: 'https://www.example.com/blog'
+            });
+            const url = new URL('https://example.com/shop');
+            const result = parser.isSiteDomain(url);
+            should.equal(result, false);
+        });
     });
 
     describe('isGhostNewsletter', () => {
@@ -461,6 +470,26 @@ describe('ReferrerParser', () => {
                 referrerUrl: url
             });
             should.equal(result, false);
+        });
+
+        it('returns true when referrer matches admin URL', () => {
+            const parser = new ReferrerParser({
+                adminUrl: 'https://admin.example.com/ghost'
+            });
+            const url = new URL('https://admin.example.com/ghost/#/dashboard');
+            const result = parser.isGhostExploreRef({
+                referrerUrl: url
+            });
+            should.equal(result, true);
+        });
+
+        it('returns true for ghost.org/explore referrer', () => {
+            const parser = new ReferrerParser();
+            const url = new URL('https://ghost.org/explore/some-site');
+            const result = parser.isGhostExploreRef({
+                referrerUrl: url
+            });
+            should.equal(result, true);
         });
     });
 }); 

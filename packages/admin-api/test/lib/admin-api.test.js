@@ -2,8 +2,12 @@
 // const testUtils = require('./utils');
 require('../utils');
 const should = require('should');
+const assert = require('assert/strict');
+const fs = require('fs');
+const path = require('path');
 
 const GhostAdminAPI = require('../../lib/admin-api');
+const GhostAdminAPIFromIndex = require('../../index');
 const packageJSON = require('../../package.json');
 const packageVersion = packageJSON.version;
 
@@ -337,6 +341,257 @@ describe('GhostAdminAPI general', function () {
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], 'Custom Value');
             should.equal(generateTokenSpy.args[0][0], '5c73def7a21ad85eda5d4faa:d9a3e5b2d6c2a4afb094655c4dc543220be60b3561fa9622e3891213cb4357d0');
             should.equal(generateTokenSpy.args[0][1], '/admin/');
+        });
+    });
+
+    it('can be imported from the index entry point', function () {
+        assert.equal(GhostAdminAPIFromIndex, GhostAdminAPI);
+    });
+
+    describe('resource.delete', function () {
+        it('rejects with missing data', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            await assert.rejects(
+                api.posts.delete(),
+                {message: 'Missing data'}
+            );
+        });
+
+        it('rejects when data has no id or email', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            await assert.rejects(
+                api.posts.delete({name: 'test'}),
+                {message: 'Must include either data.id or data.email'}
+            );
+        });
+
+        it('makes a DELETE request with data.id', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            await api.posts.delete({id: '123'});
+
+            assert.equal(makeRequestStub.calledOnce, true);
+            assert.equal(makeRequestStub.args[0][0].method, 'DELETE');
+            assert.match(makeRequestStub.args[0][0].url, /posts\/123\/$/);
+        });
+
+        it('makes a DELETE request with data.email', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            await api.members.delete({email: 'test@example.com'});
+
+            assert.equal(makeRequestStub.calledOnce, true);
+            assert.equal(makeRequestStub.args[0][0].method, 'DELETE');
+            assert.match(makeRequestStub.args[0][0].url, /members\/email\/test@example\.com\/$/);
+        });
+    });
+
+    describe('non-webhook resource API shape', function () {
+        it('posts resource exposes read, browse, add, edit, delete', function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({posts: []}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            assert.deepEqual(Object.keys(api.posts), ['read', 'browse', 'add', 'edit', 'delete']);
+        });
+
+        it('webhooks resource only exposes add, edit, delete', function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            assert.deepEqual(Object.keys(api.webhooks), ['add', 'edit', 'delete']);
+        });
+    });
+
+    describe('upload with ref and thumbnail', function () {
+        let createReadStreamStub;
+        let fixturePath;
+
+        beforeEach(function () {
+            fixturePath = path.join(__dirname, '..', 'fixtures', 'ghost-logo.png');
+            createReadStreamStub = sinon.stub(fs, 'createReadStream').returns('mock-stream');
+        });
+
+        afterEach(function () {
+            createReadStreamStub.restore();
+        });
+
+        it('appends ref to form data when data.ref is provided', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                files: [{url: '/file/url', ref: 'my-ref'}]
+            }));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            await api.files.upload({file: fixturePath, ref: 'my-ref'});
+
+            assert.equal(makeRequestStub.calledOnce, true);
+            const formData = makeRequestStub.args[0][0].data;
+            const refField = formData._streams.find(s => typeof s === 'string' && s.includes('name="ref"'));
+            assert.ok(refField, 'form data should contain a ref field');
+        });
+
+        it('appends thumbnail to form data when data.thumbnail is provided', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                media: [{url: '/media/url'}]
+            }));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            const thumbnailPath = path.join(__dirname, '..', 'fixtures', 'ghost-logo.png');
+            await api.media.upload({file: fixturePath, thumbnail: thumbnailPath});
+
+            assert.equal(makeRequestStub.calledOnce, true);
+            const formData = makeRequestStub.args[0][0].data;
+            const thumbnailField = formData._streams.find(s => typeof s === 'string' && s.includes('name="thumbnail"'));
+            assert.ok(thumbnailField, 'form data should contain a thumbnail field');
+        });
+    });
+
+    describe('api.media.upload', function () {
+        let createReadStreamStub;
+
+        beforeEach(function () {
+            createReadStreamStub = sinon.stub(fs, 'createReadStream').returns('mock-stream');
+        });
+
+        afterEach(function () {
+            createReadStreamStub.restore();
+        });
+
+        it('makes a POST request to the media upload endpoint', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                media: [{url: '/media/url'}]
+            }));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            const fixturePath = path.join(__dirname, '..', 'fixtures', 'ghost-logo.png');
+            await api.media.upload({file: fixturePath});
+
+            assert.equal(makeRequestStub.calledOnce, true);
+            assert.match(makeRequestStub.args[0][0].url, /media\/upload\/$/);
+            assert.equal(makeRequestStub.args[0][0].method, 'POST');
+        });
+    });
+
+    describe('api.site.read', function () {
+        it('makes a GET request to the site endpoint', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({
+                site: {title: 'Test Site'}
+            }));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            const result = await api.site.read();
+
+            assert.equal(makeRequestStub.calledOnce, true);
+            assert.match(makeRequestStub.args[0][0].url, /\/site\/$/);
+            assert.deepEqual(result, {title: 'Test Site'});
+        });
+    });
+
+    describe('error handling', function () {
+        it('strips request/config/response from errors without response.data.errors', async function () {
+            const err = new Error('Network Error');
+            err.request = {some: 'request'};
+            err.config = {some: 'config'};
+            err.response = {status: 500};
+
+            const makeRequestStub = sinon.stub().rejects(err);
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            try {
+                await api.posts.browse();
+                assert.fail('should have thrown');
+            } catch (thrownErr) {
+                assert.equal(thrownErr.message, 'Network Error');
+                assert.equal(thrownErr.request, undefined);
+                assert.equal(thrownErr.config, undefined);
+                assert.equal(thrownErr.response, undefined);
+            }
+        });
+    });
+
+    describe('config validation', function () {
+        it('rejects url with trailing slash', function () {
+            assert.throws(
+                () => new GhostAdminAPI({url: 'http://ghost.local/', version: config.version, key: config.key}),
+                {message: /must not have a trailing slash/}
+            );
+        });
+
+        it('rejects url without protocol', function () {
+            assert.throws(
+                () => new GhostAdminAPI({url: 'ghost.local', version: config.version, key: config.key}),
+                {message: /requires a protocol/}
+            );
+        });
+
+        it('rejects ghostPath with leading slash', function () {
+            assert.throws(
+                () => new GhostAdminAPI({url: config.url, version: config.version, key: config.key, ghostPath: '/ghost'}),
+                {message: /must not have a leading or trailing slash/}
+            );
+        });
+
+        it('rejects ghostPath with trailing slash', function () {
+            assert.throws(
+                () => new GhostAdminAPI({url: config.url, version: config.version, key: config.key, ghostPath: 'ghost/'}),
+                {message: /must not have a leading or trailing slash/}
+            );
+        });
+
+        it('rejects unsupported version string', function () {
+            assert.throws(
+                () => new GhostAdminAPI({url: config.url, version: 'bad', key: config.key}),
+                {message: /is not supported/}
+            );
+        });
+
+        it('uses host as url when host is provided and url is not', function () {
+            const api = new GhostAdminAPI({host: config.url, version: config.version, key: config.key});
+            assert.equal(typeof api.posts.browse, 'function');
+        });
+
+        it('prefers url over host when both are provided', function () {
+            const api = new GhostAdminAPI({url: config.url, host: 'http://other.local', version: config.version, key: config.key});
+            assert.equal(typeof api.posts.browse, 'function');
+        });
+    });
+
+    describe('resource.edit', function () {
+        it('rejects when data has no id', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            await assert.rejects(
+                api.posts.edit({title: 'test'}),
+                {message: 'Must include data.id'}
+            );
+        });
+    });
+
+    describe('resource.read', function () {
+        it('rejects with missing data', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            await assert.rejects(
+                api.posts.read(),
+                {message: 'Missing data'}
+            );
+        });
+
+        it('rejects when data has no id, slug, or email', async function () {
+            const makeRequestStub = sinon.stub().returns(Promise.resolve({}));
+            const api = new GhostAdminAPI(Object.assign({}, config, {makeRequest: makeRequestStub}));
+
+            await assert.rejects(
+                api.posts.read({title: 'test'}),
+                {message: 'Must include either data.id or data.slug or data.email'}
+            );
         });
     });
 });

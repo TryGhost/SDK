@@ -2,9 +2,17 @@
 // const testUtils = require('./utils');
 require('./utils');
 
+const assert = require('assert/strict');
 const SchemaGenerator = require('../SchemaGenerator');
 
 describe('Schema Org', function () {
+    describe('index.js', function () {
+        it('exports SchemaGenerator', function () {
+            const mod = require('../index.js');
+            assert.equal(mod, SchemaGenerator);
+        });
+    });
+
     describe('Default structures (home)', function () {
         it('Defaults to home when no template provided', function () {
             const schemaGenerator = new SchemaGenerator();
