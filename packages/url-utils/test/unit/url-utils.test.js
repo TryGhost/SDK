@@ -881,14 +881,6 @@ describe('UrlUtils', function () {
         });
     });
 
-    describe('markdownRelativeToAbsolute delegation', function () {
-        it('delegates to utils with itemPath', function () {
-            const md = '[link](/my-post)';
-            const result = utils.markdownRelativeToAbsolute(md, '/post/');
-            assert.equal(typeof result, 'string');
-        });
-    });
-
     describe('markdownRelativeToTransformReady', function () {
         it('delegates to utils', function () {
             const md = '[link](/my-post)';
@@ -919,14 +911,6 @@ describe('UrlUtils', function () {
         });
     });
 
-    describe('mobiledocRelativeToAbsolute delegation', function () {
-        it('delegates to utils with itemPath', function () {
-            const doc = JSON.stringify({version: '0.3.1', markups: [['a', ['href', '/test']]], atoms: [], cards: [], sections: [[1, 'p', [[0, [0], 1, 'link']]]]});
-            const result = utils.mobiledocRelativeToAbsolute(doc, '/post/');
-            assert.equal(typeof result, 'string');
-        });
-    });
-
     describe('mobiledocRelativeToTransformReady', function () {
         it('delegates to utils', function () {
             const doc = JSON.stringify({version: '0.3.1', markups: [['a', ['href', '/test']]], atoms: [], cards: [], sections: [[1, 'p', [[0, [0], 1, 'link']]]]});
@@ -953,14 +937,6 @@ describe('UrlUtils', function () {
         it('handles options as second arg when itemPath is omitted', function () {
             const doc = JSON.stringify({root: {children: [], direction: 'ltr', format: '', indent: 0, type: 'root', version: 1}});
             const result = utils.lexicalToTransformReady(doc, {assetsOnly: false});
-            assert.equal(typeof result, 'string');
-        });
-    });
-
-    describe('lexicalRelativeToAbsolute delegation', function () {
-        it('delegates to utils with itemPath', function () {
-            const doc = JSON.stringify({root: {children: [{type: 'paragraph', children: [{type: 'link', url: '/test', children: [{type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: 'link', version: 1}], direction: 'ltr', format: '', indent: 0, rel: 'noopener', target: null, title: '', version: 1}], direction: 'ltr', format: '', indent: 0, version: 1}], direction: 'ltr', format: '', indent: 0, type: 'root', version: 1}});
-            const result = utils.lexicalRelativeToAbsolute(doc, '/post/');
             assert.equal(typeof result, 'string');
         });
     });

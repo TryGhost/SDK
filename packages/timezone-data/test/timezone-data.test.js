@@ -22,7 +22,7 @@ describe('timezone-data', function () {
 
     it('all names are valid IANA-style timezone identifiers', function () {
         for (const tz of timezoneData) {
-            assert.match(tz.name, /^[A-Za-z]+\/[A-Za-z_]+/);
+            assert.match(tz.name, /^[A-Za-z]+(?:\/[A-Za-z_]+)+$/);
         }
     });
 
@@ -38,6 +38,8 @@ describe('timezone-data', function () {
         assert.equal(unique.length, names.length);
     });
 
+    // Intentional snapshot: the array is ordered by GMT offset and these
+    // boundary entries should only change if the dataset is deliberately edited.
     it('starts with Pacific/Pago_Pago (most negative offset)', function () {
         assert.equal(timezoneData[0].name, 'Pacific/Pago_Pago');
     });
