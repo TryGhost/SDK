@@ -1,3 +1,4 @@
+const assert = require('assert/strict');
 const should = require('should');
 const sinon = require('sinon');
 
@@ -44,6 +45,36 @@ describe('GhostContentApi', function () {
 
             new GhostContentApi({host: config.url, key: config.key, version: config.version});
             new GhostContentApi(config);
+        });
+
+        it('Throws for unsupported version format', function () {
+            assert.throws(() => {
+                new GhostContentApi({url: 'https://ghost.local', version: 'bad', key: '0123456789abcdef0123456789'});
+            }, /Config Invalid: 'version' bad is not supported/);
+        });
+
+        it('Throws when url lacks a protocol', function () {
+            assert.throws(() => {
+                new GhostContentApi({url: 'ghost.local', version: 'v5.0', key: '0123456789abcdef0123456789'});
+            }, /Config Invalid: 'url' ghost\.local requires a protocol/);
+        });
+
+        it('Throws when url has a trailing slash', function () {
+            assert.throws(() => {
+                new GhostContentApi({url: 'https://ghost.local/', version: 'v5.0', key: '0123456789abcdef0123456789'});
+            }, /Config Invalid: 'url' .* must not have a trailing slash/);
+        });
+
+        it('Throws when ghostPath has a leading or trailing slash', function () {
+            assert.throws(() => {
+                new GhostContentApi({url: 'https://ghost.local', version: 'v5.0', key: '0123456789abcdef0123456789', ghostPath: '/ghost'});
+            }, /Config Invalid: 'ghostPath' .* must not have a leading or trailing slash/);
+        });
+
+        it('Throws when key has an invalid format', function () {
+            assert.throws(() => {
+                new GhostContentApi({url: 'https://ghost.local', version: 'v5.0', key: 'invalid-key'});
+            }, /Config Invalid: 'key' invalid-key must have 26 hex characters/);
         });
 
         it('Returns an "api" object with posts, tags, authors, pages, settings, and tiers properties', function () {
@@ -259,6 +290,43 @@ describe('GhostContentApi', function () {
             should.equal(makeRequestStub.args[0][0].url, 'http://ghost.local/ghost/api/canary/content/settings/');
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v6.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], 'I_LOVE_CUSTOM_THINGS');
+        });
+
+        it('Rejects with missing key error when no key and no membersToken are provided', async function () {
+            const api = new GhostContentApi({
+                version: 'v5.0',
+                url: 'https://ghost.local',
+                makeRequest: sinon.stub()
+            });
+
+            await assert.rejects(
+                api.posts.browse(),
+                (err) => {
+                    assert.equal(err.message, '@tryghost/content-api Config Missing: \'key\' is required.');
+                    return true;
+                }
+            );
+        });
+
+        it('Rethrows errors that do not have a response with error details', async function () {
+            const networkError = new Error('Network failure');
+            const makeRequestStub = sinon.stub().rejects(networkError);
+
+            const api = new GhostContentApi({
+                version: 'v5.0',
+                url: 'https://ghost.local',
+                key: '0123456789abcdef0123456789',
+                makeRequest: makeRequestStub
+            });
+
+            await assert.rejects(
+                api.posts.browse(),
+                (err) => {
+                    assert.equal(err, networkError);
+                    assert.equal(err.message, 'Network failure');
+                    return true;
+                }
+            );
         });
     });
 });

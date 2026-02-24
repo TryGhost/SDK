@@ -464,6 +464,76 @@ describe('UrlUtils', function () {
         });
     });
 
+    describe('createUrl', function () {
+        it('adds trailing slash when trailingSlash is true and path lacks one', function () {
+            const result = utils.createUrl('/my-path', true, true);
+            assert.ok(result.endsWith('/'));
+            assert.ok(result.includes('my-path/'));
+        });
+    });
+
+    describe('urlFor home with trailingSlash:false', function () {
+        it('returns home url without trailing slash', function () {
+            const result = utils.urlFor('home', {trailingSlash: false}, true);
+            assert.equal(result, 'http://my-ghost-blog.com');
+        });
+    });
+
+    describe('toTransformReady', function () {
+        it('handles options as second arg when itemPath is omitted', function () {
+            const result = utils.toTransformReady('/test', {assetsOnly: false});
+            assert.equal(typeof result, 'string');
+        });
+
+        it('handles string itemPath', function () {
+            const result = utils.toTransformReady('/test', '/post/');
+            assert.equal(typeof result, 'string');
+        });
+    });
+
+    describe('absoluteToTransformReady', function () {
+        it('delegates to utils', function () {
+            const result = utils.absoluteToTransformReady('http://my-ghost-blog.com/test');
+            assert.equal(result, '__GHOST_URL__/test');
+        });
+    });
+
+    describe('relativeToTransformReady', function () {
+        it('delegates to utils', function () {
+            const result = utils.relativeToTransformReady('/test');
+            assert.equal(result, '__GHOST_URL__/test');
+        });
+    });
+
+    describe('transformReadyToAbsolute', function () {
+        it('delegates to utils', function () {
+            const result = utils.transformReadyToAbsolute('__GHOST_URL__/test');
+            assert.equal(result, 'http://my-ghost-blog.com/test');
+        });
+    });
+
+    describe('transformReadyToRelative', function () {
+        it('delegates to utils', function () {
+            const result = utils.transformReadyToRelative('__GHOST_URL__/test');
+            assert.equal(result, '/test');
+        });
+    });
+
+    describe('htmlToTransformReady', function () {
+        it('handles options as second arg when itemPath is omitted', function () {
+            const html = '<a href="/test">Test</a>';
+            const result = utils.htmlToTransformReady(html, {assetsOnly: false});
+            assert.equal(typeof result, 'string');
+        });
+
+        it('handles string itemPath', function () {
+            const html = '<a href="/test">Test</a>';
+            const result = utils.htmlToTransformReady(html, '/post/');
+            assert.equal(typeof result, 'string');
+            assert.ok(result.includes('__GHOST_URL__'));
+        });
+    });
+
     describe('replacePermalink', function () {
         it('calls outs to utils/replace-permalink', function () {
             const spy = sandbox.spy(utils._utils, 'replacePermalink');
@@ -663,6 +733,20 @@ describe('UrlUtils', function () {
                 mediaBaseUrl: null
             });
         });
+
+        it('transforms inline HTML and markdown link URLs', function () {
+            const md = 'some text <a href="/post">click</a> more text\n\n[link](/other)';
+            const result = utils.markdownRelativeToAbsolute(md, '/my-post/');
+            assert.ok(result.includes('href="http://my-ghost-blog.com/post"'));
+            assert.ok(result.includes('[link](http://my-ghost-blog.com/other)'));
+        });
+
+        it('uses assetsOnly early exit when assetsOnly is true', function () {
+            const md = '![](/static/images/photo.png) [link](/not-asset)';
+            const result = utils.markdownRelativeToAbsolute(md, '/post/', {assetsOnly: true});
+            assert.ok(result.includes('http://my-ghost-blog.com/static/images/photo.png'));
+            assert.ok(!result.includes('http://my-ghost-blog.com/not-asset'));
+        });
     });
 
     describe('markdownAbsoluteToRelative', function () {
@@ -684,6 +768,13 @@ describe('UrlUtils', function () {
                 filesBaseUrl: null,
                 mediaBaseUrl: null
             });
+        });
+
+        it('transforms inline HTML links and markdown URLs', function () {
+            const md = 'some text <a href="http://my-ghost-blog.com/post">click</a> more text\n\n[link](http://my-ghost-blog.com/other)';
+            const result = utils.markdownAbsoluteToRelative(md);
+            assert.ok(result.includes('href="/post"'));
+            assert.ok(result.includes('[link](/other)'));
         });
     });
 
@@ -887,6 +978,19 @@ describe('UrlUtils', function () {
             const result = utils.markdownRelativeToTransformReady(md, '/post/');
             assert.equal(typeof result, 'string');
         });
+
+        it('handles options as second arg when itemPath is omitted', function () {
+            const md = '[link](/my-post)';
+            const result = utils.markdownRelativeToTransformReady(md, {assetsOnly: false});
+            assert.equal(typeof result, 'string');
+        });
+
+        it('uses assetsOnly early exit when assetsOnly is true', function () {
+            const md = '![](/static/images/photo.png) [link](/not-asset)';
+            const result = utils.markdownRelativeToTransformReady(md, '/post/', {assetsOnly: true});
+            assert.equal(typeof result, 'string');
+            assert.ok(result.includes('__GHOST_URL__/static/images/photo.png'));
+        });
     });
 
     describe('markdownAbsoluteToTransformReady', function () {
@@ -915,6 +1019,12 @@ describe('UrlUtils', function () {
         it('delegates to utils', function () {
             const doc = JSON.stringify({version: '0.3.1', markups: [['a', ['href', '/test']]], atoms: [], cards: [], sections: [[1, 'p', [[0, [0], 1, 'link']]]]});
             const result = utils.mobiledocRelativeToTransformReady(doc, '/post/');
+            assert.equal(typeof result, 'string');
+        });
+
+        it('handles options as second arg when itemPath is omitted', function () {
+            const doc = JSON.stringify({version: '0.3.1', markups: [['a', ['href', '/test']]], atoms: [], cards: [], sections: [[1, 'p', [[0, [0], 1, 'link']]]]});
+            const result = utils.mobiledocRelativeToTransformReady(doc, {assetsOnly: false});
             assert.equal(typeof result, 'string');
         });
     });
@@ -946,6 +1056,22 @@ describe('UrlUtils', function () {
             const doc = JSON.stringify({root: {children: [{type: 'paragraph', children: [{type: 'link', url: '/test', children: [{type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: 'link', version: 1}], direction: 'ltr', format: '', indent: 0, rel: 'noopener', target: null, title: '', version: 1}], direction: 'ltr', format: '', indent: 0, version: 1}], direction: 'ltr', format: '', indent: 0, type: 'root', version: 1}});
             const result = utils.lexicalRelativeToTransformReady(doc, '/post/');
             assert.equal(typeof result, 'string');
+        });
+
+        it('handles options as second arg when itemPath is omitted', function () {
+            const doc = JSON.stringify({root: {children: [{type: 'paragraph', children: [{type: 'link', url: '/test', children: [{type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: 'link', version: 1}], direction: 'ltr', format: '', indent: 0, version: 1}], direction: 'ltr', format: '', indent: 0, version: 1}], direction: 'ltr', format: '', indent: 0, type: 'root', version: 1}});
+            const result = utils.lexicalRelativeToTransformReady(doc, {assetsOnly: false});
+            assert.equal(typeof result, 'string');
+        });
+    });
+
+    describe('lexicalAbsoluteToTransformReady', function () {
+        it('delegates to utils', function () {
+            const doc = JSON.stringify({root: {children: [{type: 'paragraph', children: [{type: 'link', url: 'http://my-ghost-blog.com/test', children: [{type: 'text', detail: 0, format: 0, mode: 'normal', style: '', text: 'link', version: 1}], direction: 'ltr', format: '', indent: 0, version: 1}], direction: 'ltr', format: '', indent: 0, version: 1}], direction: 'ltr', format: '', indent: 0, type: 'root', version: 1}});
+            const result = utils.lexicalAbsoluteToTransformReady(doc);
+            assert.equal(typeof result, 'string');
+            const parsed = JSON.parse(result);
+            assert.equal(parsed.root.children[0].children[0].url, '__GHOST_URL__/test');
         });
     });
 
