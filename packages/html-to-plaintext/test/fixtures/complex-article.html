@@ -1,0 +1,38 @@
+<h1>The Complete Guide to Modern Web Development</h1>
+<p>Welcome to our <strong>comprehensive guide</strong> on modern web development. This article covers <em>everything</em> you need to know about building websites in 2024.</p>
+<p>For more details, visit <a href="https://example.com/docs">our documentation</a> or contact us at <a href="mailto:hello@example.com">hello@example.com</a>.</p>
+<h2>Getting Started</h2>
+<p>Before diving in, make sure you have the following tools installed:</p>
+<ul>
+<li><strong>Node.js</strong> (v18 or higher) &mdash; the JavaScript runtime</li>
+<li><em>npm</em> or <strong>yarn</strong> &mdash; package managers</li>
+<li>A code editor like <a href="https://code.visualstudio.com">VS Code</a></li>
+</ul>
+<blockquote><p>Pro tip: Always use a version manager like <code>nvm</code> to handle multiple Node.js versions on your machine.</p></blockquote>
+<h3>Project Structure</h3>
+<p>Here&apos;s what a typical project looks like:</p>
+<pre><code>project/
+├── src/
+│   ├── index.js
+│   ├── components/
+│   └── utils/
+├── test/
+├── package.json
+└── README.md</code></pre>
+<h2>Working with APIs</h2>
+<p>Modern apps rely heavily on APIs. Here&apos;s a simple fetch example:</p>
+<pre><code class="language-javascript">const response = await fetch('https://api.example.com/data');
+const data = await response.json();
+console.log(data);</code></pre>
+<p>The response will contain fields like <code>id</code>, <code>name</code>, and <code>created_at</code>.</p>
+<figure class="kg-card kg-image-card kg-width-wide kg-card-hascaption"><img src="https://example.com/api-diagram.png" class="kg-image" alt="API Architecture" loading="lazy" width="1200" height="800"><figcaption>Figure 1: RESTful API Architecture Overview</figcaption></figure>
+<h2>Deployment &amp; Hosting</h2>
+<p>There are several options for deploying your application:</p>
+<ol>
+<li>Traditional hosting with <strong>Apache</strong> or <strong>Nginx</strong></li>
+<li>Platform-as-a-Service like <a href="https://heroku.com">Heroku</a> or <a href="https://render.com">Render</a></li>
+<li>Serverless with <a href="https://aws.amazon.com/lambda/">AWS Lambda</a></li>
+</ol>
+<hr>
+<p>That&apos;s all for now! Stay tuned for part 2 where we&apos;ll cover <strong>testing</strong>, <em>CI/CD</em>, and monitoring.</p>
+<p>Special characters test: &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &amp; more &copy; 2024</p>

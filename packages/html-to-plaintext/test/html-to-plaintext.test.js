@@ -1,4 +1,6 @@
 const assert = require('assert/strict');
+const fs = require('fs');
+const path = require('path');
 const htmlToPlaintext = require('../');
 
 describe('Html to Plaintext', function () {
@@ -94,6 +96,27 @@ describe('Html to Plaintext', function () {
             const output = htmlToPlaintext.comment(input);
             assert.equal(output, 'First paragraph.\nSecond paragraph.');
         });
+    });
+
+    describe('snapshot/golden-file tests', function () {
+        const fixturesDir = path.join(__dirname, 'fixtures');
+        const fixtures = ['complex-article', 'tables-and-lists', 'email-specific'];
+        const modes = ['email', 'excerpt', 'comment'];
+
+        function readFixture(name) {
+            return fs.readFileSync(path.join(fixturesDir, name), 'utf8');
+        }
+
+        for (const fixture of fixtures) {
+            for (const mode of modes) {
+                it(`${fixture} — ${mode}()`, function () {
+                    const html = readFixture(`${fixture}.html`);
+                    const expected = readFixture(`${fixture}.${mode}.txt`);
+                    const actual = htmlToPlaintext[mode](html);
+                    assert.strictEqual(actual, expected);
+                });
+            }
+        }
     });
 
     describe('commentSnippet converter', function () {
