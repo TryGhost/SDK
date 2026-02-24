@@ -3,6 +3,14 @@ const fs = require('fs');
 const path = require('path');
 const htmlToPlaintext = require('../');
 
+const snapshotFixturesDir = path.join(__dirname, 'fixtures');
+const snapshotFixtures = ['complex-article', 'tables-and-lists', 'email-specific'];
+const snapshotModes = ['email', 'excerpt', 'comment'];
+
+function readSnapshotFixture(name) {
+    return fs.readFileSync(path.join(snapshotFixturesDir, name), 'utf8');
+}
+
 describe('Html to Plaintext', function () {
     function getEmailandExcert(input) {
         const excerpt = htmlToPlaintext.excerpt(input);
@@ -99,21 +107,13 @@ describe('Html to Plaintext', function () {
     });
 
     describe('snapshot/golden-file tests', function () {
-        const fixturesDir = path.join(__dirname, 'fixtures');
-        const fixtures = ['complex-article', 'tables-and-lists', 'email-specific'];
-        const modes = ['email', 'excerpt', 'comment'];
-
-        function readFixture(name) {
-            return fs.readFileSync(path.join(fixturesDir, name), 'utf8');
-        }
-
-        for (const fixture of fixtures) {
-            for (const mode of modes) {
+        for (const fixture of snapshotFixtures) {
+            for (const mode of snapshotModes) {
                 it(`${fixture} — ${mode}()`, function () {
-                    const html = readFixture(`${fixture}.html`);
-                    const expected = readFixture(`${fixture}.${mode}.txt`);
+                    const html = readSnapshotFixture(`${fixture}.html`);
+                    const expected = readSnapshotFixture(`${fixture}.${mode}.txt`);
                     const actual = htmlToPlaintext[mode](html);
-                    assert.strictEqual(actual, expected);
+                    assert.equal(actual, expected);
                 });
             }
         }

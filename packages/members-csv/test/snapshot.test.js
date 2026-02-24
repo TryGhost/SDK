@@ -24,7 +24,7 @@ describe('snapshot', function () {
                 fs.readFileSync(path.join(snapshotDir, 'comprehensive-members-expected.json'), 'utf8')
             );
 
-            assert.deepStrictEqual(result, expected);
+            assert.deepEqual(result, expected);
         });
 
         it('matches expected output for each individual row', async function () {
@@ -45,7 +45,7 @@ describe('snapshot', function () {
 
             assert.equal(result.length, expected.length);
             for (let i = 0; i < expected.length; i++) {
-                assert.deepStrictEqual(result[i], expected[i], `Row ${i} (${expected[i].email}) mismatch`);
+                assert.deepEqual(result[i], expected[i], `Row ${i} (${expected[i].email}) mismatch`);
             }
         });
     });
@@ -87,7 +87,7 @@ describe('snapshot', function () {
                 fs.readFileSync(path.join(snapshotDir, 'roundtrip-expected.json'), 'utf8')
             );
 
-            assert.deepStrictEqual(result, expected);
+            assert.deepEqual(result, expected);
         });
 
         it('unparse -> re-parse matches for each individual row', async function () {
@@ -120,7 +120,7 @@ describe('snapshot', function () {
 
             assert.equal(result.length, expected.length);
             for (let i = 0; i < expected.length; i++) {
-                assert.deepStrictEqual(result[i], expected[i], `Row ${i} (${expected[i].email}) mismatch`);
+                assert.deepEqual(result[i], expected[i], `Row ${i} (${expected[i].email}) mismatch`);
             }
         });
 
