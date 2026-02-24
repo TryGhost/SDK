@@ -10,7 +10,7 @@ export default defineConfig({
       include: ['index.ts', 'lib/**/*.ts'],
       exclude: ['**/node_modules/**', '**/test/**', '**/*.d.ts'],
       thresholds: {
-        lines: 90
+        lines: 100
       }
     }
   }
