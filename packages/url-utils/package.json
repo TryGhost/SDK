@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "pretest": "yarn build",
-    "test": "NODE_ENV=testing c8 --src lib --all --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
+    "test": "NODE_ENV=testing c8 --src lib --all --check-coverage --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src test --ext .js,.ts --cache",
     "prepare": "NODE_ENV=production yarn build",
