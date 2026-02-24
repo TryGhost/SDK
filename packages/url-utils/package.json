@@ -41,7 +41,7 @@
     "cheerio": "0.22.0",
     "lodash": "4.17.23",
     "moment": "2.30.1",
-    "moment-timezone": "0.5.48",
+    "moment-timezone": "0.6.0",
     "remark": "11.0.2",
     "remark-footnotes": "1.0.0",
     "unist-util-visit": "2.0.3"
