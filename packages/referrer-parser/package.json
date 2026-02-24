@@ -22,9 +22,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "prepublishOnly": "npm run build",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
     "type-check": "tsc --noEmit",
     "lint": "eslint *.ts lib/ test/ --ext .ts",
     "lint:fix": "eslint *.ts lib/ test/ --ext .ts --fix"
