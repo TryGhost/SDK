@@ -94,6 +94,35 @@ const props = {
     linkClasses: ''
 };
 
+/**
+ * Helper to extract testable properties from React elements.
+ * This avoids JSON.stringify issues with circular references in gatsby-link v4.19.0+
+ * which introduced ESM/CJS dual exports with circular module references.
+ */
+function extractElementInfo(element) {
+    if (!element || typeof element !== 'object') {
+        return element;
+    }
+    if (Array.isArray(element)) {
+        return element.map(extractElementInfo);
+    }
+    const info = {
+        type: typeof element.type === 'string' ? element.type : (element.type?.displayName || element.type?.name || 'Component'),
+        key: element.key,
+        props: {}
+    };
+    if (element.props) {
+        for (const [key, value] of Object.entries(element.props)) {
+            if (key === 'children') {
+                info.props.children = extractElementInfo(value);
+            } else {
+                info.props[key] = value;
+            }
+        }
+    }
+    return info;
+}
+
 describe('Tags', function () {
     describe('Options', function () {
         beforeEach(function () {
@@ -106,69 +135,106 @@ describe('Tags', function () {
         });
 
         it('should use the default separator if no separator is specified', function () {
-            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
             
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(3);
+            extracted[0].type.should.eql('span');
+            extracted[0].key.should.eql('bike');
+            extracted[0].props.children.props.to.should.eql('/tag/bike');
+            extracted[0].props.children.props.children.should.eql('bike');
+            extracted[1].key.should.eql('separator_2');
+            extracted[2].type.should.eql('span');
+            extracted[2].key.should.eql('xc');
+            extracted[2].props.children.props.to.should.eql('/tag/xc');
         });
 
         it('should use the default separator if no separator is specified and separatorClasses are specified', function () {
             props.separatorClasses = 'd-none';
-            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{"className":"d-none"},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
             
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(3);
+            extracted[1].props.className.should.eql('d-none');
         });
 
         it('should use the default separator if no separator is specified without autolink', function () {
             props.autolink = false;
-            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":"bike"},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":"xc"},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
             
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(3);
+            extracted[0].type.should.eql('span');
+            extracted[0].props.children.should.eql('bike');
+            extracted[2].type.should.eql('span');
+            extracted[2].props.children.should.eql('xc');
         });
 
         it('should use the default separator if no separator is specified without a permalink', function () {
             props.permalink = '';
-            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/bike/","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/xc/","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
             
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(3);
+            extracted[0].props.children.props.to.should.eql('/bike/');
+            extracted[2].props.children.props.to.should.eql('/xc/');
         });
 
         it('should use the default separator and a prefix and suffix', function () {
             props.prefix = 'pre';
             props.suffix = 'post';
     
-            const result = '[{"type":"span","key":"prefix","ref":null,"props":{"className":"","children":"pre"},"_owner":null,"_store":{}},{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"suffix","ref":null,"props":{"className":"","children":"post"},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
 
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(5);
+            extracted[0].key.should.eql('prefix');
+            extracted[0].props.children.should.eql('pre');
+            extracted[4].key.should.eql('suffix');
+            extracted[4].props.children.should.eql('post');
         });
 
         it('should use the default separator and a prefix react element and suffix React element', function () {
             props.prefix = React.createElement('p', {className: 'paragraph'}, 'Hello from React.');
             props.suffix = React.createElement('p', {className: 'paragraph'}, 'Hello from React.');
     
-            const result = '[{"type":"p","key":null,"ref":null,"props":{"className":"paragraph","children":"Hello from React."},"_owner":null,"_store":{}},{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"p","key":null,"ref":null,"props":{"className":"paragraph","children":"Hello from React."},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
 
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(5);
+            extracted[0].type.should.eql('p');
+            extracted[0].props.className.should.eql('paragraph');
+            extracted[0].props.children.should.eql('Hello from React.');
+            extracted[4].type.should.eql('p');
         });
 
         it('should not generate any separator if an empty string is specified', function () {
             props.separator = '';
-            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
             
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(2);
+            extracted[0].key.should.eql('bike');
+            extracted[1].key.should.eql('xc');
         });
 
         it('should use the specified separator', function () {
             props.separator = '🤘';
-            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"separator_2","ref":null,"props":{"children":"🤘"},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
             
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(3);
+            extracted[1].props.children.should.eql('🤘');
         });
 
         it('should use the specified react element', function () {
             props.separator = React.createElement('p', {className: 'paragraph'}, 'Hello from React.');
-            const result = '[{"type":"span","key":"bike","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/bike","className":"","children":"bike"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"key":"separator_2","ref":null,"props":{"children":{"type":"p","key":null,"ref":null,"props":{"className":"paragraph","children":"Hello from React."},"_owner":null,"_store":{}}},"_owner":null,"_store":{}},{"type":"span","key":"xc","ref":null,"props":{"className":"","children":{"type":{},"key":null,"ref":null,"props":{"to":"/tag/xc","className":"","children":"xc"},"_owner":null,"_store":{}}},"_owner":null,"_store":{}}]';
+            const result = Tags(props);
+            const extracted = extractElementInfo(result);
 
-            JSON.stringify(Tags(props)).should.eql(result);
+            extracted.should.have.length(3);
+            extracted[1].props.children.type.should.eql('p');
+            extracted[1].props.children.props.className.should.eql('paragraph');
         });
     });
 });
