@@ -14,8 +14,7 @@
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "presetup": "yarn",
-    "setup": "lerna bootstrap",
+    "setup": "yarn install",
     "test": "lerna run test",
     "lint": "lerna run lint",
     "preship": "yarn test",
