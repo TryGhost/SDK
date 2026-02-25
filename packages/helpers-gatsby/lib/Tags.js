@@ -4,17 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
-
 var _react = _interopRequireDefault(require("react"));
-
 var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var _gatsbyLink = _interopRequireDefault(require("gatsby-link"));
-
+var _gatsbyLink = require("gatsby-link");
 var _helpers = require("@tryghost/helpers");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { "default": e }; }
 /**
  * Tags helper
  *
@@ -48,50 +42,44 @@ var Tags = function Tags(props) {
     visibility: props.visibility
   };
   var keyIndex = 0;
-
   var generateKey = function generateKey(pre) {
     keyIndex = keyIndex + 1;
     return "".concat(pre, "_").concat(keyIndex);
   };
-
   Object.defineProperty(opts, 'separator', {
     get: function get() {
       if (props.separator === '') {
         return null;
-      } else if ( /*#__PURE__*/_react["default"].isValidElement(props.separator)) {
+      } else if (/*#__PURE__*/_react["default"].isValidElement(props.separator)) {
         return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, {
           key: generateKey('separator')
         }, props.separator);
       }
-
       return /*#__PURE__*/_react["default"].createElement("span", {
         className: props.separatorClasses,
         key: generateKey('separator')
       }, props.separator);
     }
   });
-
   if (props.prefix) {
     opts.prefix = /*#__PURE__*/_react["default"].isValidElement(props.prefix) ? props.prefix : /*#__PURE__*/_react["default"].createElement("span", {
       className: props.prefixClasses,
       key: "prefix"
     }, props.prefix);
   }
-
   if (props.suffix) {
     opts.suffix = /*#__PURE__*/_react["default"].isValidElement(props.suffix) ? props.suffix : /*#__PURE__*/_react["default"].createElement("span", {
       className: props.suffixClasses,
       key: "suffix"
     }, props.suffix);
   }
-
   opts.fn = function process(tag) {
     var tagLink = props.permalink;
     tagLink = tagLink.replace(/:slug/, tag.slug) || "/".concat(tag.slug, "/");
     return props.autolink ? /*#__PURE__*/_react["default"].createElement("span", {
       className: props.classes,
       key: tag.slug
-    }, /*#__PURE__*/_react["default"].createElement(_gatsbyLink["default"], {
+    }, /*#__PURE__*/_react["default"].createElement(_gatsbyLink.Link, {
       to: tagLink,
       className: props.linkClasses
     }, tag.name)) : /*#__PURE__*/_react["default"].createElement("span", {
@@ -99,10 +87,8 @@ var Tags = function Tags(props) {
       key: tag.slug
     }, tag.name);
   };
-
   return (0, _helpers.tags)(props.post, opts);
 };
-
 Tags.defaultProps = {
   separator: ", ",
   from: 1,
@@ -134,5 +120,4 @@ Tags.propTypes = {
   suffixClasses: _propTypes["default"].string,
   linkClasses: _propTypes["default"].string
 };
-var _default = Tags;
-exports["default"] = _default;
+var _default = exports["default"] = Tags;
