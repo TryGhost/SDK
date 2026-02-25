@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@tryghost/config-url-helpers": "^1.0.20",
-    "@types/cheerio": "1.0.0",
+    "@types/cheerio": "0.22.35",
     "@types/lodash": "4.17.23",
     "@types/node": "24.10.13",
     "c8": "10.1.3",
