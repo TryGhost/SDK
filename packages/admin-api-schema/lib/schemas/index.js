@@ -1,5 +1,5 @@
 module.exports = [
-    'comment_bans-add',
+    'member_commenting-disable',
     'images-upload',
     'media-upload',
     'labels-add',
