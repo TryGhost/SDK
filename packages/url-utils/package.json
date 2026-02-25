@@ -29,7 +29,7 @@
     "@tryghost/config-url-helpers": "^1.0.20",
     "@types/lodash": "4.17.23",
     "@types/node": "24.10.13",
-    "c8": "10.1.3",
+    "c8": "11.0.0",
     "mocha": "11.7.5",
     "rewire": "9.0.1",
     "should": "13.2.3",
