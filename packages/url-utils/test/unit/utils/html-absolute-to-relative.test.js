@@ -3,8 +3,12 @@
 require('../../utils');
 
 const sinon = require('sinon');
+const rewire = require('rewire');
 
 const cheerio = require('cheerio');
+const htmlTransformModule = rewire('../../../lib/utils/html-transform');
+const htmlAbsToRelModule = rewire('../../../lib/utils/html-absolute-to-relative');
+htmlAbsToRelModule.__set__('html_transform_1', htmlTransformModule);
 const htmlAbsoluteToRelative = require('../../../lib/utils/html-absolute-to-relative').default;
 
 describe('utils: htmlAbsoluteToRelative()', function () {
@@ -189,38 +193,45 @@ describe('utils: htmlAbsoluteToRelative()', function () {
     });
 
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy;
+        let cheerioLoadSpy, cheerioRestore, rewiredFn;
+
+        before(function () {
+            rewiredFn = htmlAbsToRelModule.default;
+        });
 
         beforeEach(function () {
-            cheerioLoadSpy = sinon.spy(cheerio, 'load');
+            const cheerioProxy = {load: (...args) => cheerio.load(...args)};
+            cheerioLoadSpy = sinon.spy(cheerioProxy, 'load');
+            cheerioRestore = htmlTransformModule.__set__('cheerio', cheerioProxy);
         });
 
         afterEach(function () {
             cheerioLoadSpy.restore();
+            cheerioRestore();
         });
 
         it('when html has no absolute URLs matching siteUrl', function () {
             const url = 'http://my-ghost-blog.com/';
 
-            htmlAbsoluteToRelative('', url, options);
+            rewiredFn('', url, options);
             cheerioLoadSpy.called.should.be.false('blank html triggered parse');
 
-            htmlAbsoluteToRelative('<a href="#test">test</a>', url, options);
+            rewiredFn('<a href="#test">test</a>', url, options);
             cheerioLoadSpy.called.should.be.false('hash url triggered parse');
 
-            htmlAbsoluteToRelative('<a href="https://example.com">test</a>)', url, options);
+            rewiredFn('<a href="https://example.com">test</a>)', url, options);
             cheerioLoadSpy.called.should.be.false('external url triggered parse');
 
-            htmlAbsoluteToRelative('<a href="http://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="http://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledOnce.should.be.true('site url didn\'t trigger parse');
 
             // ignores protocol when ignoreProtocol: true
-            htmlAbsoluteToRelative('<a href="https://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol didn\'t trigger parse');
 
             // respects protocol when ignoreProtocol: false
             options.ignoreProtocol = false;
-            htmlAbsoluteToRelative('<a href="https://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol triggered parse when ignoreProtocol is false');
         });
     });

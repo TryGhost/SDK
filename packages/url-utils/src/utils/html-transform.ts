@@ -1,3 +1,4 @@
+import type {AnyNode} from 'domhandler';
 import type {HtmlTransformOptions, HtmlTransformOptionsInput, UrlTransformFunction} from './types';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const cheerio = require('cheerio');
@@ -85,7 +86,7 @@ function htmlTransform(
     }
 
     transformAttributes.forEach((attributeName: string) => {
-        htmlContent('[' + attributeName + ']').each((ix: number, el: cheerio.Element) => {
+        htmlContent('[' + attributeName + ']').each((ix: number, el: AnyNode) => {
             // ignore <stream> elems and html inside of <code> elements
             const elementName = 'name' in el ? el.name : null;
             if (elementName === 'stream' || htmlContent(el).closest('code').length) {

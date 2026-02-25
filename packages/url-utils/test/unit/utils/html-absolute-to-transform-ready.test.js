@@ -6,7 +6,9 @@ const rewire = require('rewire');
 const sinon = require('sinon');
 
 const cheerio = require('cheerio');
-const htmlTransform = rewire('../../../lib/utils/html-transform');
+const htmlTransformModule = rewire('../../../lib/utils/html-transform');
+const htmlAbsToTRModule = rewire('../../../lib/utils/html-absolute-to-transform-ready');
+htmlAbsToTRModule.__set__('html_transform_1', htmlTransformModule);
 const htmlAbsoluteToTransformReady = require('../../../lib/utils/html-absolute-to-transform-ready').default;
 
 describe('utils: htmlAbsoluteToTransformReady()', function () {
@@ -346,40 +348,45 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
     });
 
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy, rewireRestore;
+        let cheerioLoadSpy, cheerioRestore, rewiredFn;
+
+        before(function () {
+            rewiredFn = htmlAbsToTRModule.default;
+        });
 
         beforeEach(function () {
-            cheerioLoadSpy = sinon.spy(cheerio, 'load');
-            rewireRestore = htmlTransform.__set__('cheerio', cheerio);
+            const cheerioProxy = {load: (...args) => cheerio.load(...args)};
+            cheerioLoadSpy = sinon.spy(cheerioProxy, 'load');
+            cheerioRestore = htmlTransformModule.__set__('cheerio', cheerioProxy);
         });
 
         afterEach(function () {
             cheerioLoadSpy.restore();
-            rewireRestore();
+            cheerioRestore();
         });
 
         it('when html has no absolute URLs matching siteUrl', function () {
             const url = 'http://my-ghost-blog.com/';
 
-            htmlAbsoluteToTransformReady('', url, options);
+            rewiredFn('', url, options);
             cheerioLoadSpy.called.should.be.false('blank html triggered parse');
 
-            htmlAbsoluteToTransformReady('<a href="#test">test</a>', url, options);
+            rewiredFn('<a href="#test">test</a>', url, options);
             cheerioLoadSpy.called.should.be.false('hash url triggered parse');
 
-            htmlAbsoluteToTransformReady('<a href="https://example.com">test</a>)', url, options);
+            rewiredFn('<a href="https://example.com">test</a>)', url, options);
             cheerioLoadSpy.called.should.be.false('external url triggered parse');
 
-            htmlAbsoluteToTransformReady('<a href="http://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="http://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledOnce.should.be.true('site url didn\'t trigger parse');
 
             // ignores protocol when ignoreProtocol: true
-            htmlAbsoluteToTransformReady('<a href="https://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol didn\'t trigger parse');
 
             // respects protocol when ignoreProtocol: false
             options.ignoreProtocol = false;
-            htmlAbsoluteToTransformReady('<a href="https://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol triggered parse when ignoreProtocol is false');
         });
 
@@ -392,7 +399,7 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
             cheerioLoadSpy.resetHistory();
 
             // HTML with ONLY image CDN URL should trigger parsing
-            htmlAbsoluteToTransformReady(`<img src="${imagesCdn}/content/images/photo.jpg">`, url, {
+            rewiredFn(`<img src="${imagesCdn}/content/images/photo.jpg">`, url, {
                 ...options,
                 imageBaseUrl: imagesCdn
             });
@@ -401,7 +408,7 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
             cheerioLoadSpy.resetHistory();
 
             // HTML with ONLY media CDN URL should trigger parsing
-            htmlAbsoluteToTransformReady(`<video src="${mediaCdn}/content/media/video.mp4">`, url, {
+            rewiredFn(`<video src="${mediaCdn}/content/media/video.mp4">`, url, {
                 ...options,
                 staticMediaUrlPrefix: 'content/media',
                 mediaBaseUrl: mediaCdn
@@ -411,7 +418,7 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
             cheerioLoadSpy.resetHistory();
 
             // HTML with ONLY files CDN URL should trigger parsing
-            htmlAbsoluteToTransformReady(`<a href="${filesCdn}/content/files/doc.pdf">Download</a>`, url, {
+            rewiredFn(`<a href="${filesCdn}/content/files/doc.pdf">Download</a>`, url, {
                 ...options,
                 staticFilesUrlPrefix: 'content/files',
                 filesBaseUrl: filesCdn
@@ -421,7 +428,7 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
             cheerioLoadSpy.resetHistory();
 
             // HTML with multiple CDN URLs but no site URL should trigger parsing
-            htmlAbsoluteToTransformReady(`
+            rewiredFn(`
                 <img src="${imagesCdn}/content/images/photo.jpg">
                 <video src="${mediaCdn}/content/media/video.mp4">
             `, url, {
@@ -440,7 +447,7 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
             cheerioLoadSpy.resetHistory();
 
             // External URL with CDN configured should not trigger parsing
-            htmlAbsoluteToTransformReady('<a href="https://example.com">test</a>', url, {
+            rewiredFn('<a href="https://example.com">test</a>', url, {
                 ...options,
                 imageBaseUrl: imagesCdn
             });
