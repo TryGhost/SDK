@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const relativeToAbsolute = require('../../../lib/utils/relative-to-absolute');
+const relativeToAbsolute = require('../../../lib/utils/relative-to-absolute').default;
 
 describe('utils: relativeToAbsolute()', function () {
     it('ignores absolute URLs', function () {
@@ -21,6 +21,11 @@ describe('utils: relativeToAbsolute()', function () {
 
         root = 'https://example.com/subdir/';
         relativeToAbsolute(url, root).should.eql('//mysite.com/my/file.png', 'with /subdir/ root');
+
+        // Test protocol-relative URL that would parse successfully
+        url = '//example.com/path';
+        root = 'https://example.com';
+        relativeToAbsolute(url, root).should.eql('//example.com/path', 'protocol-relative with matching domain');
     });
 
     it('ignores non-root-relative URLs', function () {

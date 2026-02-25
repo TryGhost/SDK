@@ -1,13 +1,11 @@
 {
-  "extends": [
-    "@tryghost:quietJS",
-    "@tryghost:automergeDevDependencies"
-  ],
+  "extends": ["github>tryghost/renovate-config"],
   "ignorePaths": ["packages/members"],
+  "platformAutomerge": true,
   "packageRules": [
     {
       "groupName": "rollup + plugins",
       "packagePatterns": ["^rollup"]
     }
-   ]
+  ]
 }

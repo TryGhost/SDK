@@ -1,0 +1,74 @@
+The Complete Guide to Modern Web Development
+
+
+Welcome to our comprehensive guide on modern web development. This article covers everything you need to know about building websites in 2024.
+
+
+For more details, visit our documentation or contact us at hello@example.com.
+
+
+
+Getting Started
+
+
+Before diving in, make sure you have the following tools installed:
+
+
+ * Node.js (v18 or higher) — the JavaScript runtime
+ * npm or yarn — package managers
+ * A code editor like VS Code
+
+
+Pro tip: Always use a version manager like nvm to handle multiple Node.js versions on your machine.
+
+
+
+Project Structure
+
+
+Here's what a typical project looks like:
+
+
+project/
+├── src/
+│   ├── index.js
+│   ├── components/
+│   └── utils/
+├── test/
+├── package.json
+└── README.md
+
+
+
+Working with APIs
+
+
+Modern apps rely heavily on APIs. Here's a simple fetch example:
+
+
+const response = await fetch('https://api.example.com/data');
+const data = await response.json();
+console.log(data);
+
+
+The response will contain fields like id, name, and created_at.
+
+
+
+
+Deployment & Hosting
+
+
+There are several options for deploying your application:
+
+
+ 1. Traditional hosting with Apache or Nginx
+ 2. Platform-as-a-Service like Heroku or Render
+ 3. Serverless with AWS Lambda
+
+
+
+That's all for now! Stay tuned for part 2 where we'll cover testing, CI/CD, and monitoring.
+
+
+Special characters test: <script>alert("xss")</script> & more © 2024

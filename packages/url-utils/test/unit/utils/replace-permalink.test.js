@@ -3,7 +3,7 @@
 require('../../utils');
 
 const moment = require('moment-timezone');
-const replacePermalink = require('../../../lib/utils/replace-permalink');
+const replacePermalink = require('../../../lib/utils/replace-permalink').default;
 
 describe('utils: replacePermalink()', function () {
     it('permalink is /:slug/, timezone is default', function () {
@@ -111,5 +111,26 @@ describe('utils: replacePermalink()', function () {
         postLink = postLink.replace('DD', nowMoment.format('DD'));
 
         replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal(postLink);
+    });
+
+    it('permalink is /:primary_author/:slug/ and there is NO primary_author', function () {
+        const testData = {
+            slug: 'short-and-sweet'
+        };
+        const timezone = 'Europe/Berlin';
+        const postLink = '/all/short-and-sweet/';
+
+        replacePermalink('/:primary_author/:slug/', testData, timezone).should.equal(postLink);
+    });
+
+    it('permalink is /:primary_author/:slug/ and primary_author is null', function () {
+        const testData = {
+            slug: 'short-and-sweet',
+            primary_author: null
+        };
+        const timezone = 'Europe/Berlin';
+        const postLink = '/all/short-and-sweet/';
+
+        replacePermalink('/:primary_author/:slug/', testData, timezone).should.equal(postLink);
     });
 });

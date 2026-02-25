@@ -1,0 +1,52 @@
+Preview text that should be hidden in email mode
+
+
+Weekly Newsletter — Issue #42
+
+Hi there! Here's your weekly roundup of the best content from our community.
+
+
+Subscribe to our newsletter
+
+Get the latest updates delivered to your inbox.
+Sign up now [https://example.com/subscribe]
+
+
+Top Stories
+
+This week's most popular articles:
+ 1. Understanding Async/Await in JavaScript [https://example.com/story-1] by Jane Doe
+ 2. CSS Grid vs Flexbox: When to Use Which [https://example.com/story-2] by John Smith
+ 3. The Rise of Edge Computing [https://example.com/story-3] by Alice Johnson
+
+> “The best way to predict the future is to invent it.” — Alan Kay
+
+
+Code Snippet of the Week
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+async function getUser(id: number): Promise<User> {
+  const res = await fetch(`/api/users/${id}`);
+  return res.json();
+}
+
+Check out more snippets [https://example.com/snippets] on our site.
+
+
+Community Highlights
+
+Shout out to our top contributors this week:
+
+ContributorPostsLikes Alice [https://example.com/user/alice]12340 Bob [https://example.com/user/bob]8215 Charlie [https://example.com/user/charlie]5189
+
+
+That's all for this week. See you next time!
+1 All statistics are from the past 7 days.
+ 1. Data collected between Mon–Sun. ↩
+
+https://example.com | Unsubscribe [https://example.com/unsubscribe]

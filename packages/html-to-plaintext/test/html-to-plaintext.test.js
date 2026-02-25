@@ -1,5 +1,15 @@
 const assert = require('assert/strict');
+const fs = require('fs');
+const path = require('path');
 const htmlToPlaintext = require('../');
+
+const snapshotFixturesDir = path.join(__dirname, 'fixtures');
+const snapshotFixtures = ['complex-article', 'tables-and-lists', 'email-specific'];
+const snapshotModes = ['email', 'excerpt', 'comment'];
+
+function readSnapshotFixture(name) {
+    return fs.readFileSync(path.join(snapshotFixturesDir, name), 'utf8');
+}
 
 describe('Html to Plaintext', function () {
     function getEmailandExcert(input) {
@@ -86,6 +96,27 @@ describe('Html to Plaintext', function () {
             const {excerpt} = getEmailandExcert(html);
             assert.equal(excerpt, expected);
         });
+    });
+
+    describe('comment converter', function () {
+        it('converts HTML to plaintext for comments', function () {
+            const input = '<p>First paragraph.</p><p>Second paragraph.</p>';
+            const output = htmlToPlaintext.comment(input);
+            assert.equal(output, 'First paragraph.\nSecond paragraph.');
+        });
+    });
+
+    describe('snapshot/golden-file tests', function () {
+        for (const fixture of snapshotFixtures) {
+            for (const mode of snapshotModes) {
+                it(`${fixture} — ${mode}()`, function () {
+                    const html = readSnapshotFixture(`${fixture}.html`);
+                    const expected = readSnapshotFixture(`${fixture}.${mode}.txt`);
+                    const actual = htmlToPlaintext[mode](html);
+                    assert.equal(actual, expected);
+                });
+            }
+        }
     });
 
     describe('commentSnippet converter', function () {

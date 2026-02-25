@@ -8,8 +8,9 @@ const rewire = require('rewire');
 const sinon = require('sinon');
 
 const remark = require('remark');
-const markdownTransform = rewire('../../../lib/utils/markdown-transform');
-const markdownAbsoluteToRelative = rewire('../../../lib/utils/markdown-absolute-to-relative');
+const markdownTransformRewired = rewire('../../../lib/utils/markdown-transform');
+const markdownAbsoluteToRelativeRewired = rewire('../../../lib/utils/markdown-absolute-to-relative');
+const markdownAbsoluteToRelative = markdownAbsoluteToRelativeRewired.default;
 
 describe('utils: markdownAbsoluteToRelative()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
@@ -117,14 +118,22 @@ Testing <a href="/link">Inline</a> with **markdown**
         result.should.equal('[![Test](/content/images/2014/01/test.jpg)](/content/images/2014/01/test.jpg)');
     });
 
+    describe('markdownTransform replaceLast when find is not present', function () {
+        it('returns original string when find string is not found', function () {
+            const replaceLast = markdownTransformRewired.__get__('replaceLast');
+            const result = replaceLast('not-found', 'replacement', 'the original string');
+            result.should.equal('the original string');
+        });
+    });
+
     describe('AST parsing is skipped', function () {
         let remarkSpy, sandbox;
 
         beforeEach(function () {
             sandbox = sinon.createSandbox();
             remarkSpy = sinon.spy(remark);
-            markdownTransform.__set__('remark', remarkSpy);
-            markdownAbsoluteToRelative.__set__('markdownTransform', markdownTransform);
+            markdownTransformRewired.__set__('remark', remarkSpy);
+            markdownAbsoluteToRelativeRewired.__set__('markdown_transform_1', markdownTransformRewired);
         });
 
         afterEach(function () {

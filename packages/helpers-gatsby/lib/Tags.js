@@ -9,7 +9,7 @@ var _react = _interopRequireDefault(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _gatsbyLink = _interopRequireDefault(require("gatsby-link"));
+var _gatsbyLink = require("gatsby-link");
 
 var _helpers = require("@tryghost/helpers");
 
@@ -91,7 +91,7 @@ var Tags = function Tags(props) {
     return props.autolink ? /*#__PURE__*/_react["default"].createElement("span", {
       className: props.classes,
       key: tag.slug
-    }, /*#__PURE__*/_react["default"].createElement(_gatsbyLink["default"], {
+    }, /*#__PURE__*/_react["default"].createElement(_gatsbyLink.Link, {
       to: tagLink,
       className: props.linkClasses
     }, tag.name)) : /*#__PURE__*/_react["default"].createElement("span", {

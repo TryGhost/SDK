@@ -1,0 +1,12 @@
+{
+    "@context": "https://schema.org",
+    "@type": "Series",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://example.com"
+    },
+    "name": "Test-Tag",
+    "url": "https://test.example.com",
+    "image": "https://example.com/content/images/cover.jpg",
+    "description": "Saying hello to the world"
+}

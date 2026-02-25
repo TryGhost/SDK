@@ -6,8 +6,10 @@ const rewire = require('rewire');
 const sinon = require('sinon');
 
 const cheerio = require('cheerio');
-const htmlTransform = rewire('../../../lib/utils/html-transform');
-const htmlAbsoluteToTransformReady = require('../../../lib/utils/html-absolute-to-transform-ready');
+const htmlTransformModule = rewire('../../../lib/utils/html-transform');
+const htmlAbsToTRModule = rewire('../../../lib/utils/html-absolute-to-transform-ready');
+htmlAbsToTRModule.__set__('html_transform_1', htmlTransformModule);
+const htmlAbsoluteToTransformReady = require('../../../lib/utils/html-absolute-to-transform-ready').default;
 
 describe('utils: htmlAbsoluteToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
@@ -45,6 +47,13 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
         const result = htmlAbsoluteToTransformReady(html, siteUrl, options);
 
         result.should.containEql('<a href="__GHOST_URL__/content/images">');
+    });
+
+    it('converts allowlisted data-kg-* URLs', function () {
+        const html = '<figure data-kg-thumbnail="https://my-ghost-blog.com/content/images/test.jpg" data-kg-custom-thumbnail="//my-ghost-blog.com/content/images/custom.jpg" data-kg-background-image="https://my-ghost-blog.com/content/images/bg.jpg"></figure>';
+        const result = htmlAbsoluteToTransformReady(html, siteUrl, options);
+
+        result.should.eql('<figure data-kg-thumbnail="__GHOST_URL__/content/images/test.jpg" data-kg-custom-thumbnail="__GHOST_URL__/content/images/custom.jpg" data-kg-background-image="__GHOST_URL__/content/images/bg.jpg"></figure>');
     });
 
     it('does not convert an an absolute URL on external domain', function () {
@@ -234,42 +243,215 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
         });
     });
 
+    describe('cdn asset bases', function () {
+        const mediaCdn = 'https://cdn.ghost.io/media';
+        const filesCdn = 'https://cdn.ghost.io/files';
+        const imagesCdn = 'https://cdn.ghost.io/images';
+
+        it('converts image CDN URLs to transform-ready format', function () {
+            const html = `<img src="${imagesCdn}/content/images/2025/01/photo.jpg">`;
+            const result = htmlAbsoluteToTransformReady(html, siteUrl, {
+                ...options,
+                imageBaseUrl: imagesCdn
+            });
+
+            result.should.containEql('<img src="__GHOST_URL__/content/images/2025/01/photo.jpg">');
+        });
+
+        it('converts media CDN URLs to transform-ready format', function () {
+            const html = `<video src="${mediaCdn}/content/media/2025/01/video.mp4">`;
+            const result = htmlAbsoluteToTransformReady(html, siteUrl, {
+                ...options,
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn
+            });
+
+            result.should.containEql('<video src="__GHOST_URL__/content/media/2025/01/video.mp4">');
+        });
+
+        it('converts files CDN URLs to transform-ready format', function () {
+            const html = `<a href="${filesCdn}/content/files/2025/01/document.pdf">Download</a>`;
+            const result = htmlAbsoluteToTransformReady(html, siteUrl, {
+                ...options,
+                staticFilesUrlPrefix: 'content/files',
+                filesBaseUrl: filesCdn
+            });
+
+            result.should.containEql('<a href="__GHOST_URL__/content/files/2025/01/document.pdf">Download</a>');
+        });
+
+        it('converts all three CDN types in same HTML', function () {
+            const html = `
+                <img src="${imagesCdn}/content/images/2025/01/photo.jpg">
+                <video src="${mediaCdn}/content/media/2025/01/video.mp4">
+                <a href="${filesCdn}/content/files/2025/01/document.pdf">Download</a>
+            `;
+            const result = htmlAbsoluteToTransformReady(html, siteUrl, {
+                staticImageUrlPrefix: 'content/images',
+                staticMediaUrlPrefix: 'content/media',
+                staticFilesUrlPrefix: 'content/files',
+                imageBaseUrl: imagesCdn,
+                mediaBaseUrl: mediaCdn,
+                filesBaseUrl: filesCdn
+            });
+
+            result.should.containEql('<img src="__GHOST_URL__/content/images/2025/01/photo.jpg">');
+            result.should.containEql('<video src="__GHOST_URL__/content/media/2025/01/video.mp4">');
+            result.should.containEql('<a href="__GHOST_URL__/content/files/2025/01/document.pdf">Download</a>');
+        });
+
+        it('converts CDN URLs in srcset', function () {
+            const html = `
+                <img srcset="${imagesCdn}/content/images/photo-320w.jpg 320w,
+                             ${imagesCdn}/content/images/photo-480w.jpg 480w"
+                    src="${imagesCdn}/content/images/photo-800w.jpg">
+            `;
+            const result = htmlAbsoluteToTransformReady(html, siteUrl, {
+                ...options,
+                imageBaseUrl: imagesCdn
+            });
+
+            result.should.containEql('srcset="__GHOST_URL__/content/images/photo-320w.jpg 320w');
+            result.should.containEql('__GHOST_URL__/content/images/photo-480w.jpg 480w"');
+            result.should.containEql('src="__GHOST_URL__/content/images/photo-800w.jpg"');
+        });
+
+        it('converts CDN URLs in CSS background-image', function () {
+            const html = `<div style="background-image: url('${imagesCdn}/content/images/bg.jpg')"></div>`;
+            const result = htmlAbsoluteToTransformReady(html, siteUrl, {
+                ...options,
+                imageBaseUrl: imagesCdn
+            });
+
+            result.should.containEql('background-image: url(\'__GHOST_URL__/content/images/bg.jpg\')');
+        });
+
+        it('still converts site-hosted images when CDN is configured', function () {
+            const html = `<img src="${siteUrl}/content/images/2025/01/photo.jpg">`;
+            const result = htmlAbsoluteToTransformReady(html, siteUrl, {
+                ...options,
+                imageBaseUrl: imagesCdn
+            });
+
+            result.should.containEql('<img src="__GHOST_URL__/content/images/2025/01/photo.jpg">');
+        });
+
+        it('does not convert URLs from different CDN domains', function () {
+            const html = `<img src="https://other-cdn.com/content/images/photo.jpg">`;
+            const result = htmlAbsoluteToTransformReady(html, siteUrl, {
+                ...options,
+                imageBaseUrl: imagesCdn
+            });
+
+            result.should.containEql('<img src="https://other-cdn.com/content/images/photo.jpg">');
+        });
+    });
+
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy, rewireRestore;
+        let cheerioLoadSpy, cheerioRestore, rewiredFn;
+
+        before(function () {
+            rewiredFn = htmlAbsToTRModule.default;
+        });
 
         beforeEach(function () {
-            cheerioLoadSpy = sinon.spy(cheerio, 'load');
-            rewireRestore = htmlTransform.__set__('cheerio', cheerio);
+            const cheerioProxy = {load: (...args) => cheerio.load(...args)};
+            cheerioLoadSpy = sinon.spy(cheerioProxy, 'load');
+            cheerioRestore = htmlTransformModule.__set__('cheerio', cheerioProxy);
         });
 
         afterEach(function () {
             cheerioLoadSpy.restore();
-            rewireRestore();
+            cheerioRestore();
         });
 
         it('when html has no absolute URLs matching siteUrl', function () {
             const url = 'http://my-ghost-blog.com/';
 
-            htmlAbsoluteToTransformReady('', url, options);
+            rewiredFn('', url, options);
             cheerioLoadSpy.called.should.be.false('blank html triggered parse');
 
-            htmlAbsoluteToTransformReady('<a href="#test">test</a>', url, options);
+            rewiredFn('<a href="#test">test</a>', url, options);
             cheerioLoadSpy.called.should.be.false('hash url triggered parse');
 
-            htmlAbsoluteToTransformReady('<a href="https://example.com">test</a>)', url, options);
+            rewiredFn('<a href="https://example.com">test</a>)', url, options);
             cheerioLoadSpy.called.should.be.false('external url triggered parse');
 
-            htmlAbsoluteToTransformReady('<a href="http://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="http://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledOnce.should.be.true('site url didn\'t trigger parse');
 
             // ignores protocol when ignoreProtocol: true
-            htmlAbsoluteToTransformReady('<a href="https://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol didn\'t trigger parse');
 
             // respects protocol when ignoreProtocol: false
             options.ignoreProtocol = false;
-            htmlAbsoluteToTransformReady('<a href="https://my-ghost-blog.com">test</a>)', url, options);
+            rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
             cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol triggered parse when ignoreProtocol is false');
+        });
+
+        it('when html contains CDN URLs, parsing is NOT skipped', function () {
+            const url = 'http://my-ghost-blog.com/';
+            const imagesCdn = 'https://cdn.ghost.io/images';
+            const mediaCdn = 'https://cdn.ghost.io/media';
+            const filesCdn = 'https://cdn.ghost.io/files';
+
+            cheerioLoadSpy.resetHistory();
+
+            // HTML with ONLY image CDN URL should trigger parsing
+            rewiredFn(`<img src="${imagesCdn}/content/images/photo.jpg">`, url, {
+                ...options,
+                imageBaseUrl: imagesCdn
+            });
+            cheerioLoadSpy.calledOnce.should.be.true('image CDN URL didn\'t trigger parse');
+
+            cheerioLoadSpy.resetHistory();
+
+            // HTML with ONLY media CDN URL should trigger parsing
+            rewiredFn(`<video src="${mediaCdn}/content/media/video.mp4">`, url, {
+                ...options,
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn
+            });
+            cheerioLoadSpy.calledOnce.should.be.true('media CDN URL didn\'t trigger parse');
+
+            cheerioLoadSpy.resetHistory();
+
+            // HTML with ONLY files CDN URL should trigger parsing
+            rewiredFn(`<a href="${filesCdn}/content/files/doc.pdf">Download</a>`, url, {
+                ...options,
+                staticFilesUrlPrefix: 'content/files',
+                filesBaseUrl: filesCdn
+            });
+            cheerioLoadSpy.calledOnce.should.be.true('files CDN URL didn\'t trigger parse');
+
+            cheerioLoadSpy.resetHistory();
+
+            // HTML with multiple CDN URLs but no site URL should trigger parsing
+            rewiredFn(`
+                <img src="${imagesCdn}/content/images/photo.jpg">
+                <video src="${mediaCdn}/content/media/video.mp4">
+            `, url, {
+                staticImageUrlPrefix: 'content/images',
+                staticMediaUrlPrefix: 'content/media',
+                imageBaseUrl: imagesCdn,
+                mediaBaseUrl: mediaCdn
+            });
+            cheerioLoadSpy.calledOnce.should.be.true('multiple CDN URLs didn\'t trigger parse');
+        });
+
+        it('when html has no matching URLs (no site or CDN), parsing is skipped', function () {
+            const url = 'http://my-ghost-blog.com/';
+            const imagesCdn = 'https://cdn.ghost.io/images';
+
+            cheerioLoadSpy.resetHistory();
+
+            // External URL with CDN configured should not trigger parsing
+            rewiredFn('<a href="https://example.com">test</a>', url, {
+                ...options,
+                imageBaseUrl: imagesCdn
+            });
+            cheerioLoadSpy.called.should.be.false('external url triggered parse even with CDN configured');
         });
     });
 });

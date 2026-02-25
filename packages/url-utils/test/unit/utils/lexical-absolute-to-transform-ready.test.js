@@ -2,8 +2,8 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const UrlUtils = require('../../../lib/UrlUtils');
-const lexicalAbsoluteToTransformReady = require('../../../lib/utils/lexical-absolute-to-transform-ready');
+const UrlUtils = require('../../../lib/UrlUtils').default;
+const lexicalAbsoluteToTransformReady = require('../../../lib/utils/lexical-absolute-to-transform-ready').default;
 
 describe('utils: lexicalAbsoluteToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
@@ -21,6 +21,17 @@ describe('utils: lexicalAbsoluteToTransformReady()', function () {
 
     it('handles null lexical', function () {
         should.equal(lexicalAbsoluteToTransformReady(null, siteUrl, options), null);
+    });
+
+    it('returns serialized lexical as-is when root has no children', function () {
+        const noChildren = JSON.stringify({});
+        lexicalAbsoluteToTransformReady(noChildren, siteUrl, options).should.equal(noChildren);
+
+        const rootNoChildren = JSON.stringify({root: {}});
+        lexicalAbsoluteToTransformReady(rootNoChildren, siteUrl, options).should.equal(rootNoChildren);
+
+        const rootEmptyObj = JSON.stringify({root: {children: null}});
+        lexicalAbsoluteToTransformReady(rootEmptyObj, siteUrl, options).should.equal(rootEmptyObj);
     });
 
     it('converts absolute URLs in markup links', function () {

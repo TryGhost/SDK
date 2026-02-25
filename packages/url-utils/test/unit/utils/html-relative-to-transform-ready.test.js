@@ -3,9 +3,13 @@
 require('../../utils');
 
 const sinon = require('sinon');
+const rewire = require('rewire');
 
 const cheerio = require('cheerio');
-const htmlRelativeToTransformReady = require('../../../lib/utils/html-relative-to-transform-ready');
+const htmlTransformModule = rewire('../../../lib/utils/html-transform');
+const htmlRelToTRModule = rewire('../../../lib/utils/html-relative-to-transform-ready');
+htmlRelToTRModule.__set__('html_transform_1', htmlTransformModule);
+const htmlRelativeToTransformReady = require('../../../lib/utils/html-relative-to-transform-ready').default;
 
 describe('utils: htmlRelativeToTransformReady()', function () {
     const siteUrl = 'http://my-ghost-blog.com';
@@ -79,6 +83,20 @@ describe('utils: htmlRelativeToTransformReady()', function () {
         const result = htmlRelativeToTransformReady(html, siteUrl, itemPath, options);
 
         result.should.containEql('<img src="__GHOST_URL__/my-awesome-post/my-image.png">');
+    });
+
+    it('converts allowlisted data-kg-* URLs', function () {
+        const html = '<figure data-kg-thumbnail="/content/images/test.jpg" data-kg-custom-thumbnail="custom.jpg" data-kg-background-image="/content/images/bg.jpg"></figure>';
+        const result = htmlRelativeToTransformReady(html, siteUrl, itemPath, options);
+
+        result.should.eql('<figure data-kg-thumbnail="__GHOST_URL__/content/images/test.jpg" data-kg-custom-thumbnail="__GHOST_URL__/my-awesome-post/custom.jpg" data-kg-background-image="__GHOST_URL__/content/images/bg.jpg"></figure>');
+    });
+
+    it('ignores allowlisted data-kg-* attributes inside <code> blocks', function () {
+        const html = '<p><figure data-kg-thumbnail="/content/images/test.jpg"></figure><code><figure data-kg-thumbnail="/content/images/test.jpg"></figure></code></p>';
+        const result = htmlRelativeToTransformReady(html, siteUrl, itemPath, options);
+
+        result.should.eql('<p><figure data-kg-thumbnail="__GHOST_URL__/content/images/test.jpg"></figure><code><figure data-kg-thumbnail="/content/images/test.jpg"></figure></code></p>');
     });
 
     it('converts asset urls only with assetsOnly=true option', function () {
@@ -236,36 +254,43 @@ describe('utils: htmlRelativeToTransformReady()', function () {
     });
 
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy;
+        let cheerioLoadSpy, cheerioRestore, rewiredFn;
+
+        before(function () {
+            rewiredFn = htmlRelToTRModule.default;
+        });
 
         beforeEach(function () {
-            cheerioLoadSpy = sinon.spy(cheerio, 'load');
+            const cheerioProxy = {load: (...args) => cheerio.load(...args)};
+            cheerioLoadSpy = sinon.spy(cheerioProxy, 'load');
+            cheerioRestore = htmlTransformModule.__set__('cheerio', cheerioProxy);
         });
 
         afterEach(function () {
             cheerioLoadSpy.restore();
+            cheerioRestore();
         });
 
         it('when html has no attributes that would be transformed', function () {
             const url = 'http://my-ghost-blog.com/';
 
-            htmlRelativeToTransformReady('', url, itemPath, options);
+            rewiredFn('', url, itemPath, options);
             cheerioLoadSpy.called.should.be.false('blank html triggered parse');
 
-            htmlRelativeToTransformReady('<p>HTML without links</p>', url, itemPath, options);
+            rewiredFn('<p>HTML without links</p>', url, itemPath, options);
             cheerioLoadSpy.called.should.be.false('html with no links triggered parse');
 
-            htmlRelativeToTransformReady('<a href="#test">test</a>', url, itemPath, options);
+            rewiredFn('<a href="#test">test</a>', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(1, 'href didn\'t trigger parse');
 
-            htmlRelativeToTransformReady('<img src="/image.png">', url, itemPath, options);
+            rewiredFn('<img src="/image.png">', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(2, 'src didn\'t trigger parse');
 
-            htmlRelativeToTransformReady('<img srcset="/image-4x.png 4x, /image-2x.png 2x">)', url, itemPath, options);
+            rewiredFn('<img srcset="/image-4x.png 4x, /image-2x.png 2x">)', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(3, 'srcset didn\'t trigger parse');
 
             options.assetsOnly = true;
-            htmlRelativeToTransformReady('<a href="/my-post/">post</a>', url, itemPath, options);
+            rewiredFn('<a href="/my-post/">post</a>', url, itemPath, options);
             cheerioLoadSpy.callCount.should.equal(3, 'href triggered parse when no url matches asset path');
         });
     });

@@ -1,0 +1,26 @@
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Hello World",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://example.com/content/images/logo.png",
+            "width": 250,
+            "height": 150
+        }
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://example.com"
+    },
+    "url": "https://test.example.com",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://example.com/content/images/cover.jpg",
+        "width": 300,
+        "height": 400
+    },
+    "description": "Saying hello to the world"
+}

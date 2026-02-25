@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/schema-org",
-  "version": "0.1.45",
+  "version": "0.1.48",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
@@ -11,7 +11,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha './test/**/*.test.js'",
+    "test": "NODE_ENV=testing c8 --reporter text --reporter cobertura mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
     "posttest": "yarn lint",
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
@@ -28,13 +28,13 @@
   "devDependencies": {
     "c8": "10.1.3",
     "istanbul": "0.4.5",
-    "mocha": "11.7.2",
+    "mocha": "11.7.5",
     "should": "13.2.3",
-    "sinon": "21.0.0"
+    "sinon": "21.0.1"
   },
   "dependencies": {
-    "glob": "^9.0.0",
-    "handlebars": "^4.7.7",
-    "lodash": "^4.17.11"
+    "glob": "13.0.6",
+    "handlebars": "4.7.8",
+    "lodash": "4.17.23"
   }
 }

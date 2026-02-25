@@ -1,0 +1,100 @@
+require('../../utils');
+
+const htmlToTransformReady = require('../../../lib/utils/html-to-transform-ready').default;
+
+describe('utils: htmlToTransformReady()', function () {
+    const siteUrl = 'http://my-ghost-blog.com';
+    const imagesCdn = 'https://images-cdn.ghost.io/site-uuid';
+    const mediaCdn = 'https://media-cdn.ghost.io/site-uuid';
+    const filesCdn = 'https://files-cdn.ghost.io/site-uuid';
+    const itemPath = '/my-awesome-post';
+    let options;
+
+    beforeEach(function () {
+        options = {
+            staticImageUrlPrefix: 'content/images',
+            staticFilesUrlPrefix: 'content/files',
+            staticMediaUrlPrefix: 'content/media',
+            imageBaseUrl: imagesCdn,
+            mediaBaseUrl: mediaCdn,
+            filesBaseUrl: filesCdn
+        };
+    });
+
+    it('converts relative HTML to transform-ready', function () {
+        const html = '<a href="/about">Link</a><img src="/content/images/test.jpg">';
+        const result = htmlToTransformReady(html, siteUrl, itemPath, options);
+
+        result.should.containEql('<a href="__GHOST_URL__/about">Link</a>');
+        result.should.containEql('<img src="__GHOST_URL__/content/images/test.jpg">');
+    });
+
+    it('converts allowlisted data-kg-* URLs to transform-ready', function () {
+        const html = '<figure data-kg-thumbnail="/content/images/test.jpg" data-kg-custom-thumbnail="custom.jpg" data-kg-background-image="/content/images/bg.jpg"></figure>';
+        const result = htmlToTransformReady(html, siteUrl, itemPath, options);
+
+        result.should.containEql('data-kg-thumbnail="__GHOST_URL__/content/images/test.jpg"');
+        result.should.containEql('data-kg-custom-thumbnail="__GHOST_URL__/my-awesome-post/custom.jpg"');
+        result.should.containEql('data-kg-background-image="__GHOST_URL__/content/images/bg.jpg"');
+    });
+
+    it('converts relative HTML with page-relative URLs', function () {
+        const html = '<a href="about">Link</a>';
+        const result = htmlToTransformReady(html, siteUrl, itemPath, options);
+
+        result.should.containEql('<a href="__GHOST_URL__/my-awesome-post/about">Link</a>');
+    });
+
+    it('handles options when itemPath is an object', function () {
+        const html = '<a href="/about">Link</a>';
+        const optionsAsItemPath = {
+            staticImageUrlPrefix: 'content/images',
+            assetsOnly: true
+        };
+        const result = htmlToTransformReady(html, siteUrl, optionsAsItemPath);
+
+        result.should.containEql('<a href="/about">Link</a>');
+    });
+
+    it('handles options when itemPath is an object and options is null', function () {
+        const html = '<a href="/about">Link</a>';
+        const optionsAsItemPath = {
+            staticImageUrlPrefix: 'content/images'
+        };
+        const result = htmlToTransformReady(html, siteUrl, optionsAsItemPath, null);
+
+        result.should.containEql('<a href="__GHOST_URL__/about">Link</a>');
+    });
+
+    it('works with subdirectories', function () {
+        const url = 'http://my-ghost-blog.com/blog';
+        const html = '<a href="/blog/about">Link</a>';
+        const result = htmlToTransformReady(html, url, 'blog/my-post', options);
+
+        result.should.containEql('<a href="__GHOST_URL__/about">Link</a>');
+    });
+
+    it('converts media CDN URLs to transform-ready format', function () {
+        const html = `<div class="kg-card kg-media-card"><video src="${mediaCdn}/content/media/2025/10/video.mp4"></video></div>`;
+
+        const result = htmlToTransformReady(html, siteUrl, options);
+
+        result.should.equal('<div class="kg-card kg-media-card"><video src="__GHOST_URL__/content/media/2025/10/video.mp4"></video></div>');
+    });
+
+    it('converts files CDN URLs to transform-ready format', function () {
+        const html = `<div class="kg-card kg-file-card"><a href="${filesCdn}/content/files/2025/10/martin-1.jpg">Download</a></div>`;
+
+        const result = htmlToTransformReady(html, siteUrl, options);
+
+        result.should.equal('<div class="kg-card kg-file-card"><a href="__GHOST_URL__/content/files/2025/10/martin-1.jpg">Download</a></div>');
+    });
+
+    it('converts image CDN URLs to transform-ready format', function () {
+        const html = `<div class="kg-card kg-image-card"><img src="${imagesCdn}/content/images/2025/10/photo.jpg"></div>`;
+
+        const result = htmlToTransformReady(html, siteUrl, options);
+
+        result.should.equal('<div class="kg-card kg-image-card"><img src="__GHOST_URL__/content/images/2025/10/photo.jpg"></div>');
+    });
+});

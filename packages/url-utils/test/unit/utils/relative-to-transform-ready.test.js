@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const relativeToTransformReady = require('../../../lib/utils/relative-to-transform-ready');
+const relativeToTransformReady = require('../../../lib/utils/relative-to-transform-ready').default;
 
 describe('utils: relativeToTransformReady()', function () {
     it('ignores absolute URLs', function () {

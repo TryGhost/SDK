@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/referrer-parser",
-  "version": "0.1.8",
+  "version": "0.1.12",
   "description": "Simple library for parsing referrer URLs",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -22,9 +22,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "prepublishOnly": "npm run build",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
     "type-check": "tsc --noEmit",
     "lint": "eslint *.ts lib/ test/ --ext .ts",
     "lint:fix": "eslint *.ts lib/ test/ --ext .ts --fix"
@@ -48,19 +47,19 @@
   },
   "homepage": "https://ghost.org",
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "@types/should": "^13.0.0",
-    "@types/sinon": "^17.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
-    "@vitest/coverage-v8": "^3.0.0",
-    "eslint": "^8.52.0",
+    "@types/node": "24.10.13",
+    "@types/should": "13.0.0",
+    "@types/sinon": "21.0.0",
+    "@typescript-eslint/eslint-plugin": "8.56.0",
+    "@typescript-eslint/parser": "8.56.0",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "10.0.1",
     "should": "13.2.3",
-    "sinon": "21.0.0",
-    "typescript": "5.9.2",
-    "vite": "^7.0.0",
-    "vite-plugin-dts": "^4.0.0",
-    "vitest": "^3.0.0"
+    "sinon": "21.0.1",
+    "typescript": "5.9.3",
+    "vite": "7.3.1",
+    "vite-plugin-dts": "4.5.4",
+    "vitest": "4.0.18"
   },
   "engines": {
     "node": ">=16.0.0"

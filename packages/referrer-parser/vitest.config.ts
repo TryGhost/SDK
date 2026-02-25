@@ -8,7 +8,10 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'json', 'html'],
       include: ['index.ts', 'lib/**/*.ts'],
-      exclude: ['**/node_modules/**', '**/test/**', '**/*.d.ts']
+      exclude: ['**/node_modules/**', '**/test/**', '**/*.d.ts'],
+      thresholds: {
+        lines: 100
+      }
     }
   }
 }); 

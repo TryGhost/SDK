@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const stripSubdirectoryFromPath = require('../../../lib/utils/strip-subdirectory-from-path');
+const stripSubdirectoryFromPath = require('../../../lib/utils/strip-subdirectory-from-path').default;
 
 describe('utils: stripSubdomainFromPath()', function () {
     it('ignores rootUrl with no subdirectory', function () {
@@ -33,5 +33,25 @@ describe('utils: stripSubdomainFromPath()', function () {
 
         stripSubdirectoryFromPath(path, 'https://example.com/my/subdir/')
             .should.eql('/my/path.png', 'without root trailing-slash');
+    });
+
+    it('returns path as-is when path does not start with subdirectory', function () {
+        let path = '/other/path.png';
+
+        stripSubdirectoryFromPath(path, 'https://example.com/subdir')
+            .should.eql('/other/path.png', 'path does not match subdirectory');
+
+        stripSubdirectoryFromPath(path, 'https://example.com/subdir/')
+            .should.eql('/other/path.png', 'path does not match subdirectory');
+    });
+
+    it('handles invalid rootUrl gracefully', function () {
+        let path = '/my/path.png';
+
+        stripSubdirectoryFromPath(path, 'not a valid url')
+            .should.eql('/my/path.png', 'invalid rootUrl returns path as-is');
+
+        stripSubdirectoryFromPath(path, '')
+            .should.eql('/my/path.png', 'empty rootUrl returns path as-is');
     });
 });

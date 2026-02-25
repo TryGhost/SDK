@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const absoluteToTransformReady = require('../../../lib/utils/absolute-to-transform-ready');
+const absoluteToTransformReady = require('../../../lib/utils/absolute-to-transform-ready').default;
 
 describe('utils: absoluteToTransformReady()', function () {
     it('ignores relative URLs', function () {
@@ -33,6 +33,16 @@ describe('utils: absoluteToTransformReady()', function () {
         let url = 'http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong';
         let root = 'https://example.com';
         absoluteToTransformReady(url, root).should.eql('http://i%20don’t%20believe%20that%20our%20platform%20should%20take%20that%20down%20because%20i%20think%20there%20are%20things%20that%20different%20people%20get%20wrong');
+    });
+
+    it('handles unparseable URLs that throw errors', function () {
+        // Test URLs that cause URL constructor to throw
+        let url = 'http://[invalid';
+        let root = 'https://example.com';
+        absoluteToTransformReady(url, root).should.eql('http://[invalid');
+
+        url = 'not a valid url at all!!!';
+        absoluteToTransformReady(url, root).should.eql('not a valid url at all!!!');
     });
 
     describe('with matching root', function () {
@@ -102,6 +112,63 @@ describe('utils: absoluteToTransformReady()', function () {
 
             root = 'https://example.com/subdir/';
             absoluteToTransformReady(url, root).should.eql('__GHOST_URL__/my/', 'with root trailing-slash');
+        });
+    });
+
+    describe('cdn asset bases', function () {
+        const siteUrl = 'https://my-blog.com';
+        const mediaCdn = 'https://storage.ghost.io/c/site-uuid';
+        const filesCdn = 'https://storage.ghost.io/c/site-uuid';
+        const imagesCdn = 'https://storage.ghost.io/c/site-uuid';
+
+        it('converts media CDN URLs to transform-ready format', function () {
+            const url = 'https://storage.ghost.io/c/site-uuid/content/media/2025/01/video.mp4';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn
+            });
+
+            result.should.equal('__GHOST_URL__/content/media/2025/01/video.mp4');
+        });
+
+        it('converts files CDN URLs to transform-ready format', function () {
+            const url = 'https://storage.ghost.io/c/site-uuid/content/files/2025/01/document.pdf';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticFilesUrlPrefix: 'content/files',
+                filesBaseUrl: filesCdn
+            });
+
+            result.should.equal('__GHOST_URL__/content/files/2025/01/document.pdf');
+        });
+
+        it('converts image CDN URLs to transform-ready format', function () {
+            const url = 'https://storage.ghost.io/c/site-uuid/content/images/2025/01/photo.jpg';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticImageUrlPrefix: 'content/images',
+                imageBaseUrl: imagesCdn
+            });
+
+            result.should.equal('__GHOST_URL__/content/images/2025/01/photo.jpg');
+        });
+
+        it('still converts site-hosted media when CDN base configured', function () {
+            const url = 'https://my-blog.com/content/media/2025/01/video.mp4';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn
+            });
+
+            result.should.equal('__GHOST_URL__/content/media/2025/01/video.mp4');
+        });
+
+        it('returns original URL when base does not match', function () {
+            const url = 'https://other-storage.ghost.io/c/site-uuid/content/media/2025/01/video.mp4';
+            const result = absoluteToTransformReady(url, siteUrl, {
+                staticMediaUrlPrefix: 'content/media',
+                mediaBaseUrl: mediaCdn
+            });
+
+            result.should.equal('https://other-storage.ghost.io/c/site-uuid/content/media/2025/01/video.mp4');
         });
     });
 
