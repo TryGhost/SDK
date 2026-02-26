@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/config-url-helpers",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
