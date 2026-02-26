@@ -22,8 +22,8 @@ jobs:
       group: publish-npm-${{ github.ref }}
       cancel-in-progress: false
 
-    # Run for lerna version commits or manual dispatch
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'Published new versions')
+    # Only run on the upstream repo (not forks) and for lerna version commits or manual dispatch
+    if: github.repository == 'TryGhost/SDK' && (github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'Published new versions'))
 
     permissions:
       id-token: write
@@ -44,7 +44,7 @@ jobs:
           cache: yarn
 
       - name: Install dependencies
-        run: yarn --prefer-offline
+        run: yarn --prefer-offline --ignore-scripts --frozen-lockfile
 
       - name: Build all packages
         run: lerna run build
