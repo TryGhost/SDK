@@ -3,9 +3,12 @@
     "npmClient": "yarn",
     "packages": ["packages/*"],
     "command": {
-        "publish": {
+        "version": {
             "allowBranch": ["main"],
             "message": "Published new versions"
+        },
+        "publish": {
+            "allowBranch": ["main"]
         }
     },
     "local": {

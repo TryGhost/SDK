@@ -27,9 +27,10 @@ To add a new package to the repo:
 
 ## Publish
 
-- `yarn ship` is an alias for `lerna publish`
-    - Publishes all packages which have changed
-    - Also updates any packages which depend on changed packages
+Ghost core team only.
+
+1. Run `yarn ship` in the top-level SDK directory — this runs tests, prompts for version bumps, and pushes the version commit to `main`
+2. CI automatically publishes the updated packages to npm via the `publish.yml` workflow
 
 NOTE: use `yarn ship --git-remote upstream` to correctly update tags and version commits, when your remote `origin` is set up to a fork of TryGhost/SDK and original repository is set to `upstream`.
 
