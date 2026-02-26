@@ -18,7 +18,8 @@
     "test": "lerna run test",
     "lint": "lerna run lint",
     "preship": "yarn test",
-    "ship": "lerna publish --git-remote ${GHOST_UPSTREAM:-origin}"
+    "ship": "lerna version --git-remote ${GHOST_UPSTREAM:-origin}",
+    "ship:ci": "lerna publish from-package --yes --no-private"
   },
   "devDependencies": {
     "eslint": "8.57.1",

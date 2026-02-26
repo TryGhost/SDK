@@ -33,10 +33,10 @@ The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript pac
   - TypeScript packages: Check for `tsconfig.json` and build scripts
 
 ### Publishing
-- **Publish packages**: `yarn ship` (alias for `lerna publish`)
-  - Publishes all packages which have changed
-  - Updates any packages which depend on changed packages
+- **Version packages**: `yarn ship` (runs `lerna version`) — runs tests, prompts for version bumps, and pushes the version commit to `main`
+  - CI automatically publishes the updated packages to npm via the `publish.yml` workflow
   - Use `yarn ship --git-remote upstream` when `origin` points to a fork and `upstream` points to the original TryGhost/SDK repo
+- **CI publish** (used by CI only): `yarn ship:ci` (runs `lerna publish from-package`)
 
 ## Package Structure
 
@@ -120,7 +120,7 @@ Different packages use different build systems:
 ## Important Notes
 
 - This is a Yarn workspaces monorepo - always use `yarn`, not `npm`
-- The main branch is `master` (not `main`) for pull requests
+- The main branch is `main` for pull requests
 - All packages are published under the `@tryghost` scope
 - Packages have independent versioning
 - ESLint configuration uses `eslint-plugin-ghost`
