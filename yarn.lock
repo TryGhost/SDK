@@ -3788,7 +3788,7 @@
     "@stdlib/string-format" "^0.2.3"
     "@stdlib/string-replace" "^0.2.2"
 
-"@stdlib/utils-copy@^0.2.0":
+"@stdlib/utils-copy@0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@stdlib/utils-copy/-/utils-copy-0.2.3.tgz#20f13603610e77ab5948d6f25cb12943a61a2fe7"
   integrity sha512-Fc91OpBuHZAZpWO/8ZZQTGaCvaMX3KZe2cVD5eMZjYQ88/PGVl/y/zY5KsKbc7A46/IbDw2GD757ii0Bv+zNlg==
@@ -3964,13 +3964,13 @@
   resolved "https://registry.yarnpkg.com/@tokenizer/token/-/token-0.3.0.tgz#fe98a93fe789247e998c75e74e9c7c63217aa276"
   integrity sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==
 
-"@tryghost/errors@2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-2.2.1.tgz#e6b98aa35d077c240d4cf00eb0a788f3775258c0"
-  integrity sha512-7zR5Wu9UMalFZbWZs3nN3MzJg6mKek11W51AP8UGz5sN4fQofoeLwXHLI/AuT7nDuWiJZHsJcI1EGJg0iQHV3g==
+"@tryghost/errors@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@tryghost/errors/-/errors-3.0.0.tgz#3b3f9c0dbb1b1950aea410225caa03b014cc314d"
+  integrity sha512-1Uc5Ed81B/EFzytSuB8vqKtmPcWX4yCSKvi9NW0B83y4tUfwgVprOMxwBNGNVSZf0vpy+caaRQnVRjPI6VkAOw==
   dependencies:
-    "@stdlib/utils-copy" "^0.2.0"
-    uuid "^13.0.0"
+    "@stdlib/utils-copy" "0.2.3"
+    uuid "13.0.0"
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.12"
@@ -11989,15 +11989,15 @@ util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
+uuid@13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-13.0.0.tgz#263dc341b19b4d755eb8fe36b78d95a6b65707e8"
+  integrity sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==
+
 uuid@^11.1.0:
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-11.1.0.tgz#9549028be1753bb934fc96e2bca09bb4105ae912"
   integrity sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==
-
-uuid@^13.0.0:
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-13.0.0.tgz#263dc341b19b4d755eb8fe36b78d95a6b65707e8"
-  integrity sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==
 
 v8-compile-cache-lib@^3.0.1:
   version "3.0.1"
