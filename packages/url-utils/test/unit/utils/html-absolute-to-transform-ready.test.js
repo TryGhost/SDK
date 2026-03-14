@@ -5,7 +5,7 @@ require('../../utils');
 const rewire = require('rewire');
 const sinon = require('sinon');
 
-const cheerio = require('cheerio');
+const htmlparser2 = require('htmlparser2');
 const htmlTransformModule = rewire('../../../lib/utils/html-transform');
 const htmlAbsToTRModule = rewire('../../../lib/utils/html-absolute-to-transform-ready');
 htmlAbsToTRModule.__set__('html_transform_1', htmlTransformModule);
@@ -348,46 +348,46 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
     });
 
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy, cheerioRestore, rewiredFn;
+        let parseDocumentSpy, parseDocumentRestore, rewiredFn;
 
         before(function () {
             rewiredFn = htmlAbsToTRModule.default;
         });
 
         beforeEach(function () {
-            const cheerioProxy = {load: (...args) => cheerio.load(...args)};
-            cheerioLoadSpy = sinon.spy(cheerioProxy, 'load');
-            cheerioRestore = htmlTransformModule.__set__('cheerio', cheerioProxy);
+            const htmlparser2Proxy = {parseDocument: (...args) => htmlparser2.parseDocument(...args)};
+            parseDocumentSpy = sinon.spy(htmlparser2Proxy, 'parseDocument');
+            parseDocumentRestore = htmlTransformModule.__set__('htmlparser2_1', htmlparser2Proxy);
         });
 
         afterEach(function () {
-            cheerioLoadSpy.restore();
-            cheerioRestore();
+            parseDocumentSpy.restore();
+            parseDocumentRestore();
         });
 
         it('when html has no absolute URLs matching siteUrl', function () {
             const url = 'http://my-ghost-blog.com/';
 
             rewiredFn('', url, options);
-            cheerioLoadSpy.called.should.be.false('blank html triggered parse');
+            parseDocumentSpy.called.should.be.false('blank html triggered parse');
 
             rewiredFn('<a href="#test">test</a>', url, options);
-            cheerioLoadSpy.called.should.be.false('hash url triggered parse');
+            parseDocumentSpy.called.should.be.false('hash url triggered parse');
 
             rewiredFn('<a href="https://example.com">test</a>)', url, options);
-            cheerioLoadSpy.called.should.be.false('external url triggered parse');
+            parseDocumentSpy.called.should.be.false('external url triggered parse');
 
             rewiredFn('<a href="http://my-ghost-blog.com">test</a>)', url, options);
-            cheerioLoadSpy.calledOnce.should.be.true('site url didn\'t trigger parse');
+            parseDocumentSpy.calledOnce.should.be.true('site url didn\'t trigger parse');
 
             // ignores protocol when ignoreProtocol: true
             rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
-            cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol didn\'t trigger parse');
+            parseDocumentSpy.calledTwice.should.be.true('site url with different protocol didn\'t trigger parse');
 
             // respects protocol when ignoreProtocol: false
             options.ignoreProtocol = false;
             rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
-            cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol triggered parse when ignoreProtocol is false');
+            parseDocumentSpy.calledTwice.should.be.true('site url with different protocol triggered parse when ignoreProtocol is false');
         });
 
         it('when html contains CDN URLs, parsing is NOT skipped', function () {
@@ -396,16 +396,16 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
             const mediaCdn = 'https://cdn.ghost.io/media';
             const filesCdn = 'https://cdn.ghost.io/files';
 
-            cheerioLoadSpy.resetHistory();
+            parseDocumentSpy.resetHistory();
 
             // HTML with ONLY image CDN URL should trigger parsing
             rewiredFn(`<img src="${imagesCdn}/content/images/photo.jpg">`, url, {
                 ...options,
                 imageBaseUrl: imagesCdn
             });
-            cheerioLoadSpy.calledOnce.should.be.true('image CDN URL didn\'t trigger parse');
+            parseDocumentSpy.calledOnce.should.be.true('image CDN URL didn\'t trigger parse');
 
-            cheerioLoadSpy.resetHistory();
+            parseDocumentSpy.resetHistory();
 
             // HTML with ONLY media CDN URL should trigger parsing
             rewiredFn(`<video src="${mediaCdn}/content/media/video.mp4">`, url, {
@@ -413,9 +413,9 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
                 staticMediaUrlPrefix: 'content/media',
                 mediaBaseUrl: mediaCdn
             });
-            cheerioLoadSpy.calledOnce.should.be.true('media CDN URL didn\'t trigger parse');
+            parseDocumentSpy.calledOnce.should.be.true('media CDN URL didn\'t trigger parse');
 
-            cheerioLoadSpy.resetHistory();
+            parseDocumentSpy.resetHistory();
 
             // HTML with ONLY files CDN URL should trigger parsing
             rewiredFn(`<a href="${filesCdn}/content/files/doc.pdf">Download</a>`, url, {
@@ -423,9 +423,9 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
                 staticFilesUrlPrefix: 'content/files',
                 filesBaseUrl: filesCdn
             });
-            cheerioLoadSpy.calledOnce.should.be.true('files CDN URL didn\'t trigger parse');
+            parseDocumentSpy.calledOnce.should.be.true('files CDN URL didn\'t trigger parse');
 
-            cheerioLoadSpy.resetHistory();
+            parseDocumentSpy.resetHistory();
 
             // HTML with multiple CDN URLs but no site URL should trigger parsing
             rewiredFn(`
@@ -437,21 +437,21 @@ describe('utils: htmlAbsoluteToTransformReady()', function () {
                 imageBaseUrl: imagesCdn,
                 mediaBaseUrl: mediaCdn
             });
-            cheerioLoadSpy.calledOnce.should.be.true('multiple CDN URLs didn\'t trigger parse');
+            parseDocumentSpy.calledOnce.should.be.true('multiple CDN URLs didn\'t trigger parse');
         });
 
         it('when html has no matching URLs (no site or CDN), parsing is skipped', function () {
             const url = 'http://my-ghost-blog.com/';
             const imagesCdn = 'https://cdn.ghost.io/images';
 
-            cheerioLoadSpy.resetHistory();
+            parseDocumentSpy.resetHistory();
 
             // External URL with CDN configured should not trigger parsing
             rewiredFn('<a href="https://example.com">test</a>', url, {
                 ...options,
                 imageBaseUrl: imagesCdn
             });
-            cheerioLoadSpy.called.should.be.false('external url triggered parse even with CDN configured');
+            parseDocumentSpy.called.should.be.false('external url triggered parse even with CDN configured');
         });
     });
 });
