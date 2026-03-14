@@ -5,7 +5,7 @@ require('../../utils');
 const sinon = require('sinon');
 const rewire = require('rewire');
 
-const cheerio = require('cheerio');
+const htmlparser2 = require('htmlparser2');
 const htmlTransformModule = rewire('../../../lib/utils/html-transform');
 const htmlAbsToRelModule = rewire('../../../lib/utils/html-absolute-to-relative');
 htmlAbsToRelModule.__set__('html_transform_1', htmlTransformModule);
@@ -193,46 +193,46 @@ describe('utils: htmlAbsoluteToRelative()', function () {
     });
 
     describe('DOM parsing is skipped', function () {
-        let cheerioLoadSpy, cheerioRestore, rewiredFn;
+        let parseDocumentSpy, parseDocumentRestore, rewiredFn;
 
         before(function () {
             rewiredFn = htmlAbsToRelModule.default;
         });
 
         beforeEach(function () {
-            const cheerioProxy = {load: (...args) => cheerio.load(...args)};
-            cheerioLoadSpy = sinon.spy(cheerioProxy, 'load');
-            cheerioRestore = htmlTransformModule.__set__('cheerio', cheerioProxy);
+            const htmlparser2Proxy = {parseDocument: (...args) => htmlparser2.parseDocument(...args)};
+            parseDocumentSpy = sinon.spy(htmlparser2Proxy, 'parseDocument');
+            parseDocumentRestore = htmlTransformModule.__set__('htmlparser2_1', htmlparser2Proxy);
         });
 
         afterEach(function () {
-            cheerioLoadSpy.restore();
-            cheerioRestore();
+            parseDocumentSpy.restore();
+            parseDocumentRestore();
         });
 
         it('when html has no absolute URLs matching siteUrl', function () {
             const url = 'http://my-ghost-blog.com/';
 
             rewiredFn('', url, options);
-            cheerioLoadSpy.called.should.be.false('blank html triggered parse');
+            parseDocumentSpy.called.should.be.false('blank html triggered parse');
 
             rewiredFn('<a href="#test">test</a>', url, options);
-            cheerioLoadSpy.called.should.be.false('hash url triggered parse');
+            parseDocumentSpy.called.should.be.false('hash url triggered parse');
 
             rewiredFn('<a href="https://example.com">test</a>)', url, options);
-            cheerioLoadSpy.called.should.be.false('external url triggered parse');
+            parseDocumentSpy.called.should.be.false('external url triggered parse');
 
             rewiredFn('<a href="http://my-ghost-blog.com">test</a>)', url, options);
-            cheerioLoadSpy.calledOnce.should.be.true('site url didn\'t trigger parse');
+            parseDocumentSpy.calledOnce.should.be.true('site url didn\'t trigger parse');
 
             // ignores protocol when ignoreProtocol: true
             rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
-            cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol didn\'t trigger parse');
+            parseDocumentSpy.calledTwice.should.be.true('site url with different protocol didn\'t trigger parse');
 
             // respects protocol when ignoreProtocol: false
             options.ignoreProtocol = false;
             rewiredFn('<a href="https://my-ghost-blog.com">test</a>)', url, options);
-            cheerioLoadSpy.calledTwice.should.be.true('site url with different protocol triggered parse when ignoreProtocol is false');
+            parseDocumentSpy.calledTwice.should.be.true('site url with different protocol triggered parse when ignoreProtocol is false');
         });
     });
 });

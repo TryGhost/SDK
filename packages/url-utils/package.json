@@ -37,7 +37,9 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "cheerio": "1.2.0",
+    "domhandler": "5.0.3",
+    "domutils": "3.2.2",
+    "htmlparser2": "10.1.0",
     "lodash": "4.17.23",
     "moment": "2.30.1",
     "moment-timezone": "0.6.0",

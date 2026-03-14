@@ -1,7 +1,7 @@
-import type {AnyNode} from 'domhandler';
+import type {Element, AnyNode} from 'domhandler';
+import {parseDocument} from 'htmlparser2';
+import {findAll, getAttributeValue, hasAttrib} from 'domutils';
 import type {HtmlTransformOptions, HtmlTransformOptionsInput, UrlTransformFunction} from './types';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const cheerio = require('cheerio');
 
 export const transformAttributes = [
     'href',
@@ -55,7 +55,7 @@ function htmlTransform(
         return html;
     }
 
-    const htmlContent = cheerio.load(html, {decodeEntities: false});
+    const dom = parseDocument(html, {decodeEntities: false});
 
     // replacements is keyed with the attr name + original relative value so
     // that we can implement skips for untouchable urls
@@ -85,21 +85,38 @@ function htmlTransform(
         replacements[key].push(replacement);
     }
 
-    transformAttributes.forEach((attributeName: string) => {
-        htmlContent('[' + attributeName + ']').each((ix: number, el: AnyNode) => {
-            // ignore <stream> elems and html inside of <code> elements
-            const elementName = 'name' in el ? el.name : null;
-            if (elementName === 'stream' || htmlContent(el).closest('code').length) {
-                addReplacement({
-                    name: attributeName,
-                    originalValue: htmlContent(el).attr(attributeName),
-                    skip: true
-                });
-                return;
+    function isInsideCode(el: AnyNode): boolean {
+        let node: AnyNode | null = el.parent as AnyNode | null;
+        while (node) {
+            if ('name' in node && node.name === 'code') {
+                return true;
+            }
+            node = node.parent as AnyNode | null;
+        }
+        return false;
+    }
+
+    const elements = findAll((el: Element) => {
+        return transformAttributes.some(attr => hasAttrib(el, attr));
+    }, dom.childNodes);
+
+    for (const el of elements) {
+        for (const attributeName of transformAttributes) {
+            if (!hasAttrib(el, attributeName)) {
+                continue;
             }
 
-            const elWrapper = htmlContent(el);
-            const originalValue = elWrapper.attr(attributeName);
+            const originalValue = getAttributeValue(el, attributeName) || '';
+
+            // ignore <stream> elems and html inside of <code> elements
+            if (el.name === 'stream' || isInsideCode(el)) {
+                addReplacement({
+                    name: attributeName,
+                    originalValue,
+                    skip: true
+                });
+                continue;
+            }
 
             if (attributeName === 'srcset' || attributeName === 'style') {
                 let urls: string[];
@@ -137,8 +154,8 @@ function htmlTransform(
                     });
                 }
             }
-        });
-    });
+        }
+    }
 
     // Loop over all replacements and use a regex to replace urls in the original html string.
     // Allows indentation and formatting to be kept compared to using DOM manipulation and render
