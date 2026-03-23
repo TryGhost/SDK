@@ -22,7 +22,7 @@
     "ship:ci": "lerna publish from-package --yes --no-private"
   },
   "devDependencies": {
-    "eslint": "8.57.1",
+    "eslint": "10.1.0",
     "eslint-plugin-ghost": "3.5.0",
     "eslint-plugin-react": "7.37.5",
     "lerna": "9.0.7",
