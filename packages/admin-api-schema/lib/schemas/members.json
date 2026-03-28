@@ -51,19 +51,8 @@
         "can_comment": {
           "type": "boolean"
         },
-        "comment_ban": {
-          "oneOf": [
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "reason": { "type": "string", "minLength": 1, "maxLength": 2000 },
-                "expires_at": { "type": ["string", "null"], "format": "date-time" }
-              },
-              "required": ["reason"]
-            },
-            { "type": "null" }
-          ]
+        "commenting": {
+          "$ref": "#/definitions/member-commenting"
         }
       }
     },
@@ -163,6 +152,22 @@
           }
         ]
       }
+    },
+    "member-commenting": {
+      "description": "Commenting status of the member",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "disabled": { "type": "boolean" },
+            "disabled_reason": { "type": "string", "minLength": 1, "maxLength": 2000 },
+            "disabled_until": { "type": ["string", "null"], "format": "date-time" }
+          },
+          "required": ["disabled"]
+        },
+        { "type": "null" }
+      ]
     }
   }
 }
