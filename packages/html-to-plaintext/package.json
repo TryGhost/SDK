@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "html-to-text": "8.2.1",
-    "lodash": "4.17.23"
+    "lodash": "4.18.1"
   }
 }
