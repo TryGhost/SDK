@@ -5,7 +5,9 @@
   "packageRules": [
     {
       "groupName": "rollup + plugins",
-      "packagePatterns": ["^rollup"]
+      "matchPackageNames": [
+        "/^rollup/"
+      ]
     }
   ]
 }
