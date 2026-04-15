@@ -30,7 +30,7 @@
     "istanbul": "0.4.5",
     "mocha": "11.7.5",
     "should": "13.2.3",
-    "sinon": "21.1.1"
+    "sinon": "21.1.2"
   },
   "dependencies": {
     "glob": "13.0.6",
