@@ -34,7 +34,7 @@
     "rewire": "9.0.1",
     "should": "13.2.3",
     "sinon": "21.1.2",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   },
   "dependencies": {
     "cheerio": "1.2.0",
