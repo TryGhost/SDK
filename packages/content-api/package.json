@@ -53,6 +53,6 @@
     "sinon": "21.1.2"
   },
   "dependencies": {
-    "axios": "1.15.0"
+    "axios": "1.15.1"
   }
 }
