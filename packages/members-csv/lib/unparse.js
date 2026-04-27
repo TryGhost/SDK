@@ -11,7 +11,8 @@ const DEFAULT_COLUMNS = [
     'created_at',
     'deleted_at',
     'labels',
-    'tiers'
+    'tiers',
+    'gift_id'
 ];
 
 const unparse = (rows, columns = DEFAULT_COLUMNS.slice()) => {
@@ -56,6 +57,7 @@ const unparse = (rows, columns = DEFAULT_COLUMNS.slice()) => {
             labels: labels,
             tiers: tiers,
             import_tier: row.import_tier || null,
+            gift_id: row.gift_id || null,
             error: row.error || null
         };
     });
