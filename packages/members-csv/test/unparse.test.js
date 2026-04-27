@@ -13,7 +13,7 @@ describe('unparse', function () {
 
         assert.ok(result);
 
-        const expected = `id,email,name,note,subscribed_to_emails,complimentary_plan,stripe_customer_id,created_at,deleted_at,labels,tiers\r\n,email@example.com,Sam Memberino,Early supporter,,,,,,,`;
+        const expected = `id,email,name,note,subscribed_to_emails,complimentary_plan,stripe_customer_id,created_at,deleted_at,labels,tiers,gift_id\r\n,email@example.com,Sam Memberino,Early supporter,,,,,,,,`;
         assert.equal(result, expected);
     });
 
@@ -114,7 +114,7 @@ third-member-email@email.com,"banana, avocado"`;
         const result = unparse(json);
         assert.ok(result);
 
-        const expected = `id,email,name,note,subscribed_to_emails,complimentary_plan,stripe_customer_id,created_at,deleted_at,labels,tiers\r\n,email@example.com,"'=1+2",Early supporter,,,,,,,`;
+        const expected = `id,email,name,note,subscribed_to_emails,complimentary_plan,stripe_customer_id,created_at,deleted_at,labels,tiers,gift_id\r\n,email@example.com,"'=1+2",Early supporter,,,,,,,,`;
         assert.equal(result, expected);
     });
 
@@ -128,7 +128,51 @@ third-member-email@email.com,"banana, avocado"`;
         const result = unparse(json);
         assert.ok(result);
 
-        const expected = `id,email,name,note,subscribed_to_emails,complimentary_plan,stripe_customer_id,created_at,deleted_at,labels,tiers\r\n,email@example.com,"'=1+2'"" ",Early supporter,,,,,,,`;
+        const expected = `id,email,name,note,subscribed_to_emails,complimentary_plan,stripe_customer_id,created_at,deleted_at,labels,tiers,gift_id\r\n,email@example.com,"'=1+2'"" ",Early supporter,,,,,,,,`;
+        assert.equal(result, expected);
+    });
+
+    it('includes gift_id in default output when set on a row', function () {
+        const json = [{
+            email: 'gift@example.com',
+            gift_id: 'gift123'
+        }];
+
+        const result = unparse(json);
+        const expected = `id,email,name,note,subscribed_to_emails,complimentary_plan,stripe_customer_id,created_at,deleted_at,labels,tiers,gift_id\r\n,gift@example.com,,,,,,,,,,gift123`;
+        assert.equal(result, expected);
+    });
+
+    it('includes gift_id column in default output even when no row has a value', function () {
+        const json = [{
+            email: 'no-gift@example.com'
+        }];
+
+        const result = unparse(json);
+        const header = result.split('\r\n')[0];
+        assert.ok(header.split(',').includes('gift_id'));
+    });
+
+    it('omits gift_id when an explicit columns array does not include it', function () {
+        const json = [{
+            email: 'gift@example.com',
+            gift_id: 'gift123'
+        }];
+        const columns = ['email'];
+
+        const result = unparse(json, columns);
+        const expected = `email\r\ngift@example.com`;
+        assert.equal(result, expected);
+    });
+
+    it('serializes gift_id as empty when row has no gift_id', function () {
+        const json = [{
+            email: 'no-gift@example.com'
+        }];
+        const columns = ['email', 'gift_id'];
+
+        const result = unparse(json, columns);
+        const expected = `email,gift_id\r\nno-gift@example.com,`;
         assert.equal(result, expected);
     });
 });
