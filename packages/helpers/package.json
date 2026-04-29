@@ -43,7 +43,7 @@
     "c8": "11.0.0",
     "istanbul": "0.4.5",
     "mocha": "11.7.5",
-    "rollup": "2.80.0",
+    "rollup": "4.60.2",
     "rollup-plugin-commonjs": "10.1.0",
     "should": "13.2.3",
     "sinon": "21.1.2"
