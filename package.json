@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "setup": "yarn install",
-    "test": "lerna run test",
+    "test": "lerna run lint && lerna run test",
     "lint": "lerna run lint",
     "preship": "yarn test",
     "ship": "lerna version --git-remote ${GHOST_UPSTREAM:-origin}",

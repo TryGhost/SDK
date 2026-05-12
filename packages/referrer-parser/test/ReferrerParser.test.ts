@@ -1,12 +1,12 @@
 import should from 'should';
 import sinon from 'sinon';
-import { describe, it, beforeEach, afterEach } from 'vitest';
-import { ReferrerParser, ReferrerData, ParserOptions } from '../lib/ReferrerParser';
+import {describe, it, beforeEach, afterEach} from 'vitest';
+import {ReferrerParser} from '../lib/ReferrerParser';
 
 // Helper function to safely assert on properties that might be null
 function assertPropertyEquals(obj: any, property: string, expectedValue: any) {
     should.exist(obj);
-    
+
     if (expectedValue === null) {
         should.equal(obj[property], null);
     } else {
@@ -94,7 +94,7 @@ describe('ReferrerParser', () => {
                 pathname: '/test',
                 search: '?utm_source=ghost-explore'
             } as URL);
-            
+
             // Stub isGhostExploreRef to return true
             sandbox.stub(parser, 'isGhostExploreRef').returns(true);
 
@@ -108,7 +108,7 @@ describe('ReferrerParser', () => {
         it('detects Ghost Explore from admin URL', () => {
             // Create a controlled test environment
             sandbox.stub(parser, 'isGhostExploreRef').returns(true);
-            
+
             const result = parser.parse('https://admin.example.com/ghost/#/dashboard');
             should.exist(result);
             assertPropertyEquals(result, 'referrerSource', 'Ghost Explore');
@@ -119,7 +119,7 @@ describe('ReferrerParser', () => {
         it('detects Ghost Explore from ghost.org/explore', () => {
             // Create a controlled test environment
             sandbox.stub(parser, 'isGhostExploreRef').returns(true);
-            
+
             const result = parser.parse('https://ghost.org/explore/test');
             should.exist(result);
             assertPropertyEquals(result, 'referrerSource', 'Ghost Explore');
@@ -131,7 +131,7 @@ describe('ReferrerParser', () => {
             // Create a controlled test environment
             sandbox.stub(parser, 'isGhostOrgUrl').returns(true);
             sandbox.stub(parser, 'isGhostExploreRef').returns(false);
-            
+
             const result = parser.parse('https://ghost.org/pricing/');
             should.exist(result);
             assertPropertyEquals(result, 'referrerSource', 'Ghost.org');
@@ -147,7 +147,7 @@ describe('ReferrerParser', () => {
             sandbox.stub(parser, 'isGhostOrgUrl').returns(false);
             sandbox.stub(parser, 'isGhostExploreRef').returns(false);
             sandbox.stub(parser, 'isGhostNewsletter').returns(true);
-            
+
             const result = parser.parse('https://test.com/test?utm_source=test-newsletter');
             should.exist(result);
             // Now only the -newsletter suffix is replaced with a space
@@ -161,11 +161,11 @@ describe('ReferrerParser', () => {
             sandbox.stub(parser, 'isGhostOrgUrl').returns(false);
             sandbox.stub(parser, 'isGhostExploreRef').returns(false);
             sandbox.stub(parser, 'isGhostNewsletter').returns(false);
-            
+
             // Mock the URL and URLSearchParams
             const url = new URL('https://test.com/test?utm_source=twitter&utm_medium=social');
             sandbox.stub(parser, 'getUrlFromStr').returns(url);
-            
+
             const result = parser.parse('https://test.com/test?utm_source=twitter&utm_medium=social', 'twitter');
             should.exist(result);
             assertPropertyEquals(result, 'referrerSource', 'Twitter');
@@ -179,13 +179,13 @@ describe('ReferrerParser', () => {
             sandbox.stub(parser, 'isGhostExploreRef').returns(false);
             sandbox.stub(parser, 'isGhostNewsletter').returns(false);
             sandbox.stub(parser, 'isSiteDomain').returns(false);
-            
+
             // Mock the getDataFromUrl to return known referrer data
             sandbox.stub(parser, 'getDataFromUrl').returns({
                 source: 'Google',
                 medium: 'search'
             });
-            
+
             const result = parser.parse('https://www.google.com/search?q=ghost+cms');
             should.exist(result);
             assertPropertyEquals(result, 'referrerSource', 'Google');
@@ -199,14 +199,14 @@ describe('ReferrerParser', () => {
             sandbox.stub(parser, 'isGhostExploreRef').returns(false);
             sandbox.stub(parser, 'isGhostNewsletter').returns(false);
             sandbox.stub(parser, 'isSiteDomain').returns(false);
-            
+
             // Mock the getDataFromUrl to return null for unknown referrer
             sandbox.stub(parser, 'getDataFromUrl').returns(null);
-            
+
             // Mock URL object
             const url = new URL('https://unknown-referrer.com/path');
             sandbox.stub(parser, 'getUrlFromStr').returns(url);
-            
+
             const result = parser.parse('https://unknown-referrer.com/path');
             should.exist(result);
             assertPropertyEquals(result, 'referrerSource', 'unknown-referrer.com');
@@ -220,7 +220,7 @@ describe('ReferrerParser', () => {
             sandbox.stub(parser, 'isGhostExploreRef').returns(false);
             sandbox.stub(parser, 'isGhostNewsletter').returns(false);
             sandbox.stub(parser, 'isSiteDomain').returns(true);
-            
+
             const result = parser.parse('https://example.com/blog');
             should.exist(result);
             assertPropertyEquals(result, 'referrerSource', null);
@@ -234,7 +234,7 @@ describe('ReferrerParser', () => {
             const leverParser = new ReferrerParser({
                 siteUrl: 'https://www.levernews.com'
             });
-            
+
             const result = leverParser.parse('https://levernews.com/article');
             should.exist(result);
             assertPropertyEquals(result, 'referrerSource', null);
@@ -406,19 +406,19 @@ describe('ReferrerParser', () => {
     describe('isGhostNewsletter', () => {
         it('returns false for null source', () => {
             const parser = new ReferrerParser();
-            const result = parser.isGhostNewsletter({ referrerSource: null });
+            const result = parser.isGhostNewsletter({referrerSource: null});
             should.equal(result, false);
         });
 
         it('returns true for sources ending with -newsletter', () => {
             const parser = new ReferrerParser();
-            const result = parser.isGhostNewsletter({ referrerSource: 'test-newsletter' });
+            const result = parser.isGhostNewsletter({referrerSource: 'test-newsletter'});
             should.equal(result, true);
         });
 
         it('returns false for other sources', () => {
             const parser = new ReferrerParser();
-            const result = parser.isGhostNewsletter({ referrerSource: 'test' });
+            const result = parser.isGhostNewsletter({referrerSource: 'test'});
             should.equal(result, false);
         });
     });
@@ -492,4 +492,4 @@ describe('ReferrerParser', () => {
             should.equal(result, true);
         });
     });
-}); 
+});
