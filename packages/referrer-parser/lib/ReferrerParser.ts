@@ -40,7 +40,7 @@ export class ReferrerParser {
 
     /**
      * Creates a new referrer parser instance
-     * 
+     *
      * @param options - Configuration options
      */
     constructor(options: ParserOptions = {}) {
@@ -50,7 +50,7 @@ export class ReferrerParser {
 
     /**
      * Parse a referrer URL to get source, medium and hostname
-     * 
+     *
      * @param referrerUrlStr - URL of the referrer
      * @param referrerSource - Source of the referrer
      * @param referrerMedium - Medium of the referrer
@@ -89,9 +89,9 @@ export class ReferrerParser {
         // If referrer source is available from parameters
         if (referrerSource) {
             const urlData = this.getDataFromUrl(referrerUrl);
-            const knownSource = Object.values(knownReferrers as Record<string, ReferrerSourceData>).find(referrer => 
+            const knownSource = Object.values(knownReferrers as Record<string, ReferrerSourceData>).find(referrer =>
                 referrer.source.toLowerCase() === referrerSource.toLowerCase());
-            
+
             return {
                 referrerSource: knownSource?.source || referrerSource,
                 referrerMedium: knownSource?.medium || referrerMedium || urlData?.medium || null,
@@ -111,7 +111,7 @@ export class ReferrerParser {
                     referrerUrl: referrerUrl?.hostname ?? null
                 };
             }
-            
+
             // Use the hostname as a source
             return {
                 referrerSource: referrerUrl?.hostname ?? null,
@@ -129,7 +129,7 @@ export class ReferrerParser {
 
     /**
      * Fetches referrer data from known external URLs
-     * 
+     *
      * @param url - The URL to match against known referrers
      * @returns Matched referrer data or null if not found
      */
@@ -153,7 +153,7 @@ export class ReferrerParser {
 
     /**
      * Return URL object for provided URL string
-     * 
+     *
      * @param url - URL string to parse
      * @returns Parsed URL object or null if invalid
      */
@@ -161,17 +161,17 @@ export class ReferrerParser {
         if (!url) {
             return null;
         }
-        
+
         try {
             return new URL(url);
-        } catch (e) {
+        } catch {
             return null;
         }
     }
 
     /**
      * Determine whether the provided URL is a link to the site
-     * 
+     *
      * @param url - URL to check
      * @returns True if the URL belongs to the configured site
      */
@@ -189,7 +189,7 @@ export class ReferrerParser {
             // Handle subdomain variations (www.example.com vs example.com)
             const siteHostname = this.siteUrl.hostname;
             const urlHostname = url.hostname;
-            
+
             // Check for exact match first
             if (siteHostname === urlHostname) {
                 if (url.pathname.startsWith(this.siteUrl.pathname)) {
@@ -197,27 +197,27 @@ export class ReferrerParser {
                 }
                 return false;
             }
-            
+
             // Check for www subdomain variations
             const siteWithoutWww = siteHostname.replace(/^www\./, '');
             const urlWithoutWww = urlHostname.replace(/^www\./, '');
-            
+
             if (siteWithoutWww === urlWithoutWww) {
                 if (url.pathname.startsWith(this.siteUrl.pathname)) {
                     return true;
                 }
                 return false;
             }
-            
+
             return false;
-        } catch (e) {
+        } catch {
             return false;
         }
     }
 
     /**
      * Determine whether referrer is a Ghost newsletter
-     * 
+     *
      * @param deps - Input parameters
      * @returns True if the referrer is a Ghost newsletter
      */
@@ -231,7 +231,7 @@ export class ReferrerParser {
 
     /**
      * Determine whether referrer is a Ghost.org URL
-     * 
+     *
      * @param referrerUrl - The referrer URL to check
      * @returns True if the referrer is from Ghost.org
      */
@@ -244,7 +244,7 @@ export class ReferrerParser {
 
     /**
      * Determine whether referrer is Ghost Explore
-     * 
+     *
      * @param deps - Input parameters
      * @returns True if the referrer is from Ghost Explore
      */
@@ -270,4 +270,4 @@ export class ReferrerParser {
 
         return false;
     }
-} 
+}

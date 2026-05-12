@@ -1,11 +1,11 @@
 import should from 'should';
-import { expect, describe, it } from 'vitest';
-import { parse, ReferrerParser, ReferrerData } from '../index';
+import {describe, it} from 'vitest';
+import {parse, ReferrerParser, ReferrerData} from '../index';
 
 // Helper function to safely assert on properties that might be null
 function assertPropertyEquals(obj: any, property: string, expectedValue: any) {
     should.exist(obj);
-    
+
     if (expectedValue === null) {
         should.equal(obj[property], null);
     } else {
@@ -79,4 +79,4 @@ describe('referrer-parser', () => {
             assertPropertyEquals(result, 'referrerUrl', 'example.com');
         });
     });
-}); 
+});
