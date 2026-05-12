@@ -65,7 +65,8 @@ const loadConverters = () => {
             // equiv hideLinkHrefIfSameAsText: true
             {selector: 'a', options: {hideLinkHrefIfSameAsText: true}},
             // Don't include html .preheader in email
-            {selector: '.preheader', format: 'skip'}
+            {selector: '.preheader', format: 'skip'},
+            {selector: '.preheader-spacing', format: 'skip'}
         ]
     });
 
