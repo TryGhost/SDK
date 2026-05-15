@@ -19,7 +19,7 @@
     "lint": "lerna run lint",
     "preship": "yarn test",
     "ship": "lerna version --git-remote ${GHOST_UPSTREAM:-origin}",
-    "ship:scoped": "lerna run lint --scope $SCOPE && lerna run test --scope $SCOPE && lerna version --git-remote ${GHOST_UPSTREAM:-origin}",
+    "ship:scoped": "lerna run lint --scope $SCOPE && lerna run test --scope $SCOPE && ./scripts/ship-scoped.sh",
     "ship:ci": "lerna publish from-package --yes --no-private"
   },
   "devDependencies": {
