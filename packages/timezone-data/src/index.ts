@@ -22,7 +22,7 @@ const timezoneData: {name: string; label: string}[] = [
     {
         name: 'America/Mazatlan',
         label: '(GMT -7:00) La Paz, Mazatlan'
-    }, 
+    },
     {
         name: 'America/Phoenix',
         label: '(GMT -7:00) Arizona'
@@ -207,7 +207,6 @@ const timezoneData: {name: string; label: string}[] = [
         name: 'Asia/Kathmandu',
         label: '(GMT +5:45) Kathmandu'
     },
-    
     {
         name: 'Asia/Dhaka',
         label: '(GMT +6:00) Dhaka'
@@ -222,7 +221,7 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'Asia/Krasnoyarsk',
-        label: '(GMT +7:00) Krasnoyarsk,Novosibirsk'
+        label: '(GMT +7:00) Krasnoyarsk, Novosibirsk'
     },
     {
         name: 'Asia/Hong_Kong',
