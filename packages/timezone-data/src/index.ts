@@ -13,11 +13,15 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'America/Tijuana',
-        label: '(GMT -8:00) Chihuahua, La Paz, Mazatlan'
+        label: '(GMT -8:00) Tijuana'
     },
     {
         name: 'America/Los_Angeles',
-        label: '(GMT -8:00) Pacific Time (US & Canada); Tijuana'
+        label: '(GMT -8:00) Pacific Time (US & Canada)'
+    },
+    {
+        name: 'America/Mazatlan',
+        label: '(GMT -7:00) La Paz, Mazatlan'
     },
     {
         name: 'America/Phoenix',
@@ -26,6 +30,10 @@ const timezoneData: {name: string; label: string}[] = [
     {
         name: 'America/Denver',
         label: '(GMT -7:00) Mountain Time (US & Canada)'
+    },
+    {
+        name: 'America/Chihuahua',
+        label: '(GMT -6:00) Chihuahua'
     },
     {
         name: 'America/Costa_Rica',
@@ -57,7 +65,7 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'America/Caracas',
-        label: '(GMT -4:00) Caracas, La Paz'
+        label: '(GMT -4:00) Caracas, La Paz, Georgetown'
     },
     {
         name: 'America/Halifax',
@@ -73,7 +81,7 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'America/Argentina/Buenos_Aires',
-        label: '(GMT -3:00) Buenos Aires, Brasilia, Georgetown'
+        label: '(GMT -3:00) Buenos Aires, Brasilia'
     },
     {
         name: 'America/Noronha',
@@ -176,6 +184,10 @@ const timezoneData: {name: string; label: string}[] = [
         label: '(GMT +4:30) Kabul'
     },
     {
+        name: 'Asia/Almaty',
+        label: '(GMT +5:00) Almaty, Astana'
+    },
+    {
         name: 'Asia/Karachi',
         label: '(GMT +5:00) Islamabad, Karachi, Tashkent'
     },
@@ -185,23 +197,23 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'Asia/Kolkata',
-        label: '(GMT +5:30) Chennai, Calcutta, Mumbai, New Delhi'
+        label: '(GMT +5:30) Chennai, Kolkata, Mumbai, New Delhi'
+    },
+    {
+        name: 'Asia/Colombo',
+        label: '(GMT +5:30) Colombo, Sri Jayawardenepura'
     },
     {
         name: 'Asia/Kathmandu',
-        label: '(GMT +5:45) Katmandu'
-    },
-    {
-        name: 'Asia/Almaty',
-        label: '(GMT +6:00) Almaty, Novosibirsk'
+        label: '(GMT +5:45) Kathmandu'
     },
     {
         name: 'Asia/Dhaka',
-        label: '(GMT +6:00) Astana, Dhaka, Sri Jayawardenepura'
+        label: '(GMT +6:00) Dhaka'
     },
     {
         name: 'Asia/Rangoon',
-        label: '(GMT +6:30) Rangoon'
+        label: '(GMT +6:30) Yangon (Rangoon)'
     },
     {
         name: 'Asia/Bangkok',
@@ -209,7 +221,7 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'Asia/Krasnoyarsk',
-        label: '(GMT +7:00) Krasnoyarsk'
+        label: '(GMT +7:00) Krasnoyarsk, Novosibirsk'
     },
     {
         name: 'Asia/Hong_Kong',
@@ -217,7 +229,7 @@ const timezoneData: {name: string; label: string}[] = [
     },
     {
         name: 'Asia/Irkutsk',
-        label: '(GMT +8:00) Irkutsk, Ulaan Bataar'
+        label: '(GMT +8:00) Irkutsk, Ulaanbaatar'
     },
     {
         name: 'Asia/Singapore',
