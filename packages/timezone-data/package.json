@@ -8,6 +8,9 @@
   },
   "author": "Ghost Foundation",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "main": "cjs/timezone-data.js",
   "umd:main": "umd/timezone-data.min.js",
   "unpkg": "umd/timezone-data.min.js",
