@@ -121,6 +121,23 @@ describe('timezone-data', function () {
             }
         });
 
+        it('should fall back to the raw timeZoneName when it is not a parseable offset', function () {
+            // Defensive path: formatToParts returns a timeZoneName that doesn't
+            // match the expected "GMT±HH:MM" shape (some Intl/ICU builds emit a
+            // bare "GMT" for a zero offset). We surface it verbatim with a zero offset.
+            const stub = sinon.stub(Intl.DateTimeFormat.prototype, 'formatToParts').returns([
+                {type: 'timeZoneName', value: 'GMT'}
+            ]);
+
+            try {
+                const result = getGMTOffset('Etc/UTC');
+                result.offsetString.should.equal('GMT');
+                result.offsetMinutes.should.equal(0);
+            } finally {
+                stub.restore();
+            }
+        });
+
         it('should provide consistent results for non-DST timezone', function () {
             clock = sinon.useFakeTimers(new Date('2024-07-01T12:00:00Z'));
             const summerResult = getGMTOffset('America/Phoenix');

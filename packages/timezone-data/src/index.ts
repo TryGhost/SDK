@@ -318,7 +318,11 @@ export const getGMTOffset = (timeZone: string): GMTOffsetData => {
         const hour = parseInt(hourStr, 10);
         const minute = parseInt(minuteStr, 10);
         const totalMinutes = sign === '+' ? (hour * 60 + minute) : -(hour * 60 + minute);
-        const offsetString = `GMT ${sign}${hour}:${minute.toString().padStart(2, '0')}`;
+        // Normalise a zero offset to a bare "GMT". Depending on the runtime's
+        // Intl/ICU version, UTC can be formatted as either "GMT" or "GMT+00:00";
+        // collapsing both to "GMT" keeps the label consistent (e.g. "(GMT) UTC")
+        // regardless of environment.
+        const offsetString = totalMinutes === 0 ? 'GMT' : `GMT ${sign}${hour}:${minute.toString().padStart(2, '0')}`;
 
         return {offsetString, offsetMinutes: totalMinutes};
     } catch {
