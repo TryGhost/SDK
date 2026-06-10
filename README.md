@@ -12,8 +12,7 @@ This is a mono repository, managed with [lerna](https://lerna.js.org/).
    - links all internal dependencies
 
 To add a new package to the repo:
-   - install [slimer](https://github.com/TryGhost/slimer)
-   - run `slimer new <package name>`
+- run `npx lerna create <package name>`
 
 ## Run
 
