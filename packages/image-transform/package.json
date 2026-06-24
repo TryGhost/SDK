@@ -29,7 +29,7 @@
     "sinon": "22.0.0"
   },
   "dependencies": {
-    "@tryghost/errors": "2.2.1",
+    "@tryghost/errors": "3.3.1",
     "fs-extra": "11.3.5"
   },
   "optionalDependencies": {
