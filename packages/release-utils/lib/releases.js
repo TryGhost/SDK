@@ -1,9 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const _ = require('lodash');
-const Promise = require('bluebird');
-const requestPromise = require('request-promise');
-const request = require('request');
+const axios = require('axios');
 
 const localUtils = require('./utils');
 
@@ -57,33 +55,28 @@ module.exports.create = (options = {}) => {
 
     const auth = 'token ' + options.github.token;
 
-    const reqOptions = {
-        uri: options.uri,
+    return axios({
+        url: options.uri,
+        method: 'POST',
         headers: {
             'User-Agent': options.userAgent,
             Authorization: auth
         },
-        method: 'POST',
-        body: {
+        data: {
             tag_name: options.tagName,
             target_commitish: options.targetRef || 'main',
             name: options.releaseName,
             body: body.join(os.EOL),
             draft: draft,
             prerelease: prerelease
-        },
-        json: true,
-        resolveWithFullResponse: true
-    };
-
-    return requestPromise(reqOptions)
-        .then((response) => {
-            return {
-                id: response.body.id,
-                releaseUrl: response.body.html_url,
-                uploadUrl: response.body.upload_url
-            };
-        });
+        }
+    }).then((response) => {
+        return {
+            id: response.data.id,
+            releaseUrl: response.data.html_url,
+            uploadUrl: response.data.upload_url
+        };
+    });
 };
 
 module.exports.uploadZip = (options = {}) => {
@@ -98,31 +91,22 @@ module.exports.uploadZip = (options = {}) => {
     const auth = 'token ' + options.github.token;
     const stats = fs.statSync(options.zipPath);
 
-    const reqOptions = {
-        uri: options.uri,
+    return axios({
+        url: options.uri,
+        method: 'POST',
         headers: {
             'User-Agent': options.userAgent,
             Authorization: auth,
             'Content-Type': 'application/zip',
             'Content-Length': stats.size
         },
-        method: 'POST',
-        json: true,
-        resolveWithFullResponse: true
-    };
-
-    return new Promise((resolve, reject) => {
-        fs.createReadStream(options.zipPath)
-            .on('error', reject)
-            .pipe(request.post(reqOptions, (err, res) => {
-                if (err) {
-                    return reject(err);
-                }
-
-                resolve({
-                    downloadUrl: res.body.browser_download_url
-                });
-            }));
+        data: fs.createReadStream(options.zipPath),
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity
+    }).then((response) => {
+        return {
+            downloadUrl: response.data.browser_download_url
+        };
     });
 };
 
@@ -132,17 +116,13 @@ module.exports.get = (options = {}) => {
         'uri'
     );
 
-    const reqOptions = {
-        uri: options.uri,
+    return axios({
+        url: options.uri,
+        method: 'GET',
         headers: {
             'User-Agent': options.userAgent
-        },
-        method: 'GET',
-        json: true
-    };
-
-    return requestPromise(reqOptions)
-        .then((response) => {
-            return response;
-        });
+        }
+    }).then((response) => {
+        return response.data;
+    });
 };
