@@ -1,0 +1,43 @@
+{
+  "name": "@tryghost/release-utils",
+  "version": "0.8.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryGhost/SDK.git",
+    "directory": "packages/release-utils"
+  },
+  "bugs": {
+    "url": "https://github.com/TryGhost/SDK/issues"
+  },
+  "homepage": "https://ghost.org",
+  "author": "Ghost Foundation",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "scripts": {
+    "dev": "echo \"Implement me!\"",
+    "test": "NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha './test/**/*.test.js'",
+    "lint": "eslint . --ext .js --cache",
+    "posttest": "yarn lint"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "c8": "8.0.1",
+    "mocha": "10.8.2",
+    "should": "13.2.3",
+    "sinon": "15.2.0"
+  },
+  "dependencies": {
+    "@tryghost/errors": "^1.2.1",
+    "bluebird": "^3.7.2",
+    "emoji-regex": "^10.0.0",
+    "execa": "^4.1.0",
+    "lodash": "^4.17.21",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  }
+}
