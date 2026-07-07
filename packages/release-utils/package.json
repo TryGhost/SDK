@@ -35,8 +35,8 @@
   "dependencies": {
     "@tryghost/errors": "^1.2.1",
     "axios": "1.18.1",
-    "emoji-regex": "^10.0.0",
-    "execa": "^4.1.0",
-    "lodash": "^4.17.21"
+    "emoji-regex": "10.6.0",
+    "execa": "4.1.0",
+    "lodash": "4.18.1"
   }
 }
