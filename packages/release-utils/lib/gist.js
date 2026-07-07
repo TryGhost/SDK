@@ -1,5 +1,5 @@
 const fs = require('fs');
-const requestPromise = require('request-promise');
+const axios = require('axios');
 
 const localUtils = require('./utils');
 
@@ -28,26 +28,21 @@ module.exports.create = (options = {}) => {
 
     const auth = 'token ' + options.github.token;
 
-    const reqOptions = {
-        uri: 'https://api.github.com/gists',
+    return axios({
+        url: 'https://api.github.com/gists',
+        method: 'POST',
         headers: {
             'User-Agent': options.userAgent,
             Authorization: auth
         },
-        method: 'POST',
-        body: {
+        data: {
             description: options.gistDescription,
             public: isPublic,
             files: files
-        },
-        json: true,
-        resolveWithFullResponse: true
-    };
-
-    return requestPromise(reqOptions)
-        .then((response) => {
-            return {
-                gistUrl: response.body.html_url
-            };
-        });
+        }
+    }).then((response) => {
+        return {
+            gistUrl: response.data.html_url
+        };
+    });
 };

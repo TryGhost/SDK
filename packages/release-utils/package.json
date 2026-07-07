@@ -34,11 +34,9 @@
   },
   "dependencies": {
     "@tryghost/errors": "^1.2.1",
-    "bluebird": "^3.7.2",
+    "axios": "1.18.1",
     "emoji-regex": "^10.0.0",
     "execa": "^4.1.0",
-    "lodash": "^4.17.21",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "lodash": "^4.17.21"
   }
 }
