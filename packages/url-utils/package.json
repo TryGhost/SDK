@@ -28,7 +28,7 @@
   "devDependencies": {
     "@tryghost/config-url-helpers": "^1.0.26",
     "@types/lodash": "4.17.24",
-    "@types/node": "24.13.2",
+    "@types/node": "24.13.3",
     "c8": "11.0.0",
     "mocha": "11.7.6",
     "rewire": "9.0.1",
