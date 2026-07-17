@@ -7,6 +7,6 @@ on:
       - 'renovate/*'
 jobs:
   test:
-    uses: tryghost/actions/.github/workflows/test.yml@3ab34d3d69687764be21eba3768f51f4ecc40ddd # main
+    uses: tryghost/actions/.github/workflows/test.yml@7554859686da2dfcda2eb99213bc12d75a8ba016 # main
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
