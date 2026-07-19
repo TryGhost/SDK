@@ -30,6 +30,6 @@
     "sinon": "22.0.0"
   },
   "dependencies": {
-    "unidecode": "1.1.0"
+    "any-ascii": "^0.3.3"
   }
 }
