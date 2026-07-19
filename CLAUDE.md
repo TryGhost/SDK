@@ -45,7 +45,6 @@ All packages are located in the `/packages` directory:
 ### API Packages
 - **@tryghost/admin-api**: Admin API client for Ghost
 - **@tryghost/content-api**: Content API client for Ghost
-- **@tryghost/admin-api-schema**: JSON schemas for Admin API
 
 ### Utility Packages
 - **@tryghost/helpers**: Template helpers (reading time, tags, etc.)
