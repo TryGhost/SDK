@@ -65,7 +65,6 @@ All packages are located in the `/packages` directory:
 ### Infrastructure
 - **@tryghost/limit-service**: Centralized limit enforcement
 - **@tryghost/adapter-base-cache**: Base cache adapter
-- **@tryghost/members-csv**: CSV parsing for members import/export
 - **@tryghost/referrer-parser**: Referrer parsing utilities
 
 ### Frontend Packages
