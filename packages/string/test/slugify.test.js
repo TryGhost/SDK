@@ -15,7 +15,7 @@ describe('Slugify', function () {
         result.should.equal('');
     });
 
-    it('should remove non ascii characters', function () {
+    it('should remove non-letter characters', function () {
         var result = slugify('howtowin✓', options);
         result.should.equal('howtowin');
     });
@@ -33,13 +33,13 @@ describe('Slugify', function () {
     it('should replace all of the html4 compat symbols in ascii except hyphen and underscore', function () {
         // note: This is missing the soft-hyphen char that isn't much-liked by linters/browsers/etc,
         // it passed the test before it was removed
-        var result = slugify('!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿');
-        result.should.equal('_-c-y-ss-c-a-r-deg-23up-1o-1-41-23-4');
+        var result = slugify('!"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²_³´µ¶·¸¹º»¼½¾¿');
+        result.should.equal('a-2_3-u-1o-1-41-23-4');
     });
 
     it('should replace all of the foreign chars in ascii', function () {
         var result = slugify('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ');
-        result.should.equal('aaaaaaaeceeeeiiiidnoooooxouuuuythssaaaaaaaeceeeeiiiidnooooo-ouuuuythy');
+        result.should.equal('aaaaaaae-ceeeeiiiidnooooo-ouuuuythssaaaaaaaeceeeeiiiidnooooo-ouuuuythy');
     });
 
     it('should remove control characters', function () {
@@ -83,8 +83,25 @@ describe('Slugify', function () {
     });
 
     it('should properly handle unicode punctuation conversion', function () {
+        // note: the previous unidecode transformation handled this differently than anyascii, so this is
+        // a compromise that's "good enough" and gives the most optimal results for most languages
+        // result using unidecode was: nijian-wei-iganaika-zai-du-que-ren-sitekudasai-zai-du-miip-misitekudasai
         var result = slugify('に間違いがないか、再度確認してください。再読み込みしてください。', options);
-        result.should.equal('nijian-wei-iganaika-zai-du-que-ren-sitekudasai-zai-du-miip-misitekudasai');
+        result.should.equal('ni-jian-weiiganaika-zai-du-que-renshitekudasai-zai-dumi-yumishitekudasai');
+    });
+
+    it('should not transliterate the slugs if the noTransliteration flag is passed', function () {
+        var result;
+        options = {noTransliteration: true};
+        result = slugify('Ett smörgåsbord från Sydkorea: 스뫼르고스보르드', options);
+        result.should.equal('ett-smörgåsbord-från-sydkorea-스뫼르고스보르드');
+    });
+
+    it('should not replace existing dashes and underscores when the separator is set to spaces', function () {
+        var result;
+        options = {separator: ' '};
+        result = slugify('Herr./Klaus-Jürgen_44', options);
+        result.should.equal('herr klaus-jurgen_44');
     });
 
     it('should not lose or convert dashes if options are passed with truthy importing flag', function () {
@@ -98,6 +115,6 @@ describe('Slugify', function () {
         var result;
         options = {requiredChangesOnly: true};
         result = slugify('-slug-&with-✓-invalid-characters-に\'', options);
-        result.should.equal('-slug--with--invalid-characters-ni');
+        result.should.equal('-slug--with---invalid-characters-ni');
     });
 });
