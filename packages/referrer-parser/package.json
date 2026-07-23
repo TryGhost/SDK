@@ -54,7 +54,7 @@
     "@typescript-eslint/parser": "8.65.0",
     "@vitest/coverage-v8": "4.1.10",
     "should": "13.2.3",
-    "sinon": "22.0.0",
+    "sinon": "22.1.0",
     "typescript": "5.9.3",
     "vite": "8.1.5",
     "vite-plugin-dts": "5.0.3",
