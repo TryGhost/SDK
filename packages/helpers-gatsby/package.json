@@ -28,10 +28,10 @@
     "access": "public"
   },
   "devDependencies": {
-    "@babel/cli": "7.29.7",
-    "@babel/core": "7.29.7",
-    "@babel/preset-env": "7.29.7",
-    "@babel/preset-react": "7.29.7",
+    "@babel/cli": "8.0.4",
+    "@babel/core": "8.0.1",
+    "@babel/preset-env": "8.0.2",
+    "@babel/preset-react": "8.0.1",
     "c8": "12.0.0",
     "mocha": "11.7.6",
     "react": "19.2.7",
