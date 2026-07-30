@@ -97,6 +97,20 @@ describe('Slugify', function () {
         result.should.equal('ett-smörgåsbord-från-sydkorea-스뫼르고스보르드');
     });
 
+    it('should normalize characters with combining marks before creating the slugs', function () {
+        var result;
+        options = {unicodeSlugs: true};
+        result = slugify('café'.normalize('NFD'), options);
+        result.should.equal('café'.normalize('NFC'));
+    });
+
+    it('should replace an invalid separator with -', function () {
+        var result;
+        options = {slugSeparator: '%'};
+        result = slugify('Another day, another post', options);
+        result.should.equal('another-day-another-post');
+    });
+    
     it('should not replace existing dashes and underscores when the separator is set to spaces', function () {
         var result;
         options = {slugSeparator: ' '};

@@ -14,8 +14,8 @@ const stripInvisibleChars = require('./strip-invisible-chars');
  * @returns {String} slugified string
  */
 module.exports = function (string, options = {}) {
-    // If the separator isn't set, default to `-`
-    const separator = options.slugSeparator || '-';
+    // If the separator is invalid or unset, replace it with the default `-`
+    const separator = ['-', '_', ' '].includes(options.slugSeparator) ? options.slugSeparator : '-';
 
     // Ensure we have a string
     string = string || '';
