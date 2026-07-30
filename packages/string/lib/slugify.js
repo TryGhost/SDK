@@ -30,7 +30,9 @@ module.exports = function (string, options = {}) {
         .replace(/[^\p{L}\p{N}\p{Mn}\p{Mc}\s_-]/gu, separator)
         // Remove potential misuse of combining marks, like Zalgo text, by limiting the number of marks,
         // a limit of 3 marks should allow pretty much any natural language usage, so in case there's 4
-        // marks or more, we remove all marks.
+        // marks or more, we remove all marks. Combining marks in the beginning of a text shouldn't
+        // exist at all in natural language, so these are just removed.
+        .replace(/^[\p{Mn}\p{Mc}]+/gu, '')
         .replace(/([^\p{Mn}\p{Mc}])[\p{Mn}\p{Mc}]{4,}/gu, '$1');
 
     // Perform the transliteration if requested
