@@ -26,9 +26,12 @@ module.exports = function (string, options = {}) {
         .normalize('NFC')
         // Remove the most common forms of apostrophes, to turn contractions like "what’s" into "whats"
         .replace(/['‘’´]/g, '')
-        
         // Remove anything that's not a letter, number or a separator
-        .replace(/[^\p{L}\p{N}\s_-]/gu, separator);
+        .replace(/[^\p{L}\p{N}\p{Mn}\p{Mc}\s_-]/gu, separator)
+        // Remove potential misuse of combining marks, like Zalgo text, by limiting the number of marks,
+        // a limit of 3 marks should allow pretty much any natural language usage, so in case there's 4
+        // marks or more, we remove all marks.
+        .replace(/([^\p{Mn}\p{Mc}])[\p{Mn}\p{Mc}]{4,}/gu, '$1');
 
     // Perform the transliteration if requested
     if (!options.unicodeSlugs) {

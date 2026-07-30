@@ -104,6 +104,21 @@ describe('Slugify', function () {
         result.should.equal('café'.normalize('NFC'));
     });
 
+    it('should permit words in languages that rely on combining marks without a normalized form', function () {
+        var result;
+        options = {unicodeSlugs: true};
+        result = slugify('น้ำ (water)', options);
+        result.should.equal('น้ำ-water');
+    });
+
+    it('should remove potential misuse of combining marks, like Zalgo text', function () {
+        // note that this might break some text editors, so it might need to be removed
+        var result;
+        options = {unicodeSlugs: true};
+        result = slugify('G̸̛̦̼̜̱̹̦̲̩̰̀̓̆̇̔̎̒̎h̸͕̹̤̿͌́͊͋̈̂͗̕o̶̠͑̍s̷̝̭̰̳̖̣͉̈́̌̐́̈́̒͂̚t̴̩̦̫̟̲̘̆̔̑̅͘̕͠͝͠ ̶̜̺͚̆̈ͅb̸̰͕͔͈̤̾̉͒̂̎ͅl̵̳͚̘̯̀̎o̵̯͝ǵ̴̨̛͍̞͙̲̦̗̖͍̂̈́͆͝', options);
+        result.should.equal('ghost-blo̵̯͝ǵ');
+    });
+
     it('should replace an invalid separator with -', function () {
         var result;
         options = {slugSeparator: '%'};
