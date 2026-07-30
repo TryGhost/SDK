@@ -9,26 +9,29 @@ const stripInvisibleChars = require('./strip-invisible-chars');
  * @param {String} string - the string we want to slugify
  * @param {object} options - filter options
  * @param {bool} [options.requiredChangesOnly] - don't perform optional cleanup, e.g. removing extra dashes
- * @param {bool} [options.noTransliteration] - don't perform optional transliteration, e.g. keep smörgåsbord as it is instead of turning it into smorgasbord
- * @param {string} [options.separator] - separator to be used for the slugs, can be ` `, `_` or `-`, defaults to `-`
+ * @param {bool} [options.unicodeSlugs] - don't perform optional transliteration, e.g. keep smörgåsbord as it is instead of turning it into smorgasbord
+ * @param {string} [options.slugSeparator] - separator to be used for the slugs, can be ` `, `_` or `-`, defaults to `-`
  * @returns {String} slugified string
  */
 module.exports = function (string, options = {}) {
     // If the separator isn't set, default to `-`
-    const separator = options.separator || '-';
+    const separator = options.slugSeparator || '-';
 
     // Ensure we have a string
     string = string || '';
 
     // Strip all characters that cannot be printed
     string = stripInvisibleChars(string)
-    // Remove apostrophes
-        .replace(/'/g, '')
+    // Normalize the input to make sure accent marks, etc. are part of the characters before continuing
+        .normalize('NFC')
+        // Remove the most common forms of apostrophes, to turn contractions like "what’s" into "whats"
+        .replace(/['‘’´]/g, '')
+        
         // Remove anything that's not a letter, number or a separator
         .replace(/[^\p{L}\p{N}\s_-]/gu, separator);
 
     // Perform the transliteration if requested
-    if (!options.noTransliteration) {
+    if (!options.unicodeSlugs) {
         string = anyAscii(string);
     }
 
@@ -36,7 +39,7 @@ module.exports = function (string, options = {}) {
     // Should only be needed in case the transliteration added something, but it's safer to always run in case the regex filter missed something.
     string = string.replace(/(\s|\.|@|:|\/|\?|#|\[|\]|!|\$|&|\(|\)|\*|\+|,|;|=|\\|%|<|>|\||\^|~|£|"|\{|\}|`|–|—)/g, separator)
     // Remove apostrophes (again, in case the transliteration added some)
-        .replace(/'/g, '')
+        .replace(/['‘’´]/g, '')
         // camelCase looking text after initial cleanup and transliteration are most likely separate words, so we add separators between the parts
         .replace(/([a-z])([A-Z])/g, `$1${separator}$2`)
         // Make the whole thing lowercase

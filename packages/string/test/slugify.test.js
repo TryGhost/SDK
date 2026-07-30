@@ -34,7 +34,7 @@ describe('Slugify', function () {
         // note: This is missing the soft-hyphen char that isn't much-liked by linters/browsers/etc,
         // it passed the test before it was removed
         var result = slugify('!"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²_³´µ¶·¸¹º»¼½¾¿');
-        result.should.equal('a-2_3-u-1o-1-41-23-4');
+        result.should.equal('a-2_3u-1o-1-41-23-4');
     });
 
     it('should replace all of the foreign chars in ascii', function () {
@@ -90,16 +90,16 @@ describe('Slugify', function () {
         result.should.equal('ni-jian-weiiganaika-zai-du-que-renshitekudasai-zai-dumi-yumishitekudasai');
     });
 
-    it('should not transliterate the slugs if the noTransliteration flag is passed', function () {
+    it('should not transliterate the slugs if the unicodeSlugs flag is passed', function () {
         var result;
-        options = {noTransliteration: true};
+        options = {unicodeSlugs: true};
         result = slugify('Ett smörgåsbord från Sydkorea: 스뫼르고스보르드', options);
         result.should.equal('ett-smörgåsbord-från-sydkorea-스뫼르고스보르드');
     });
 
     it('should not replace existing dashes and underscores when the separator is set to spaces', function () {
         var result;
-        options = {separator: ' '};
+        options = {slugSeparator: ' '};
         result = slugify('Herr./Klaus-Jürgen_44', options);
         result.should.equal('herr klaus-jurgen_44');
     });
