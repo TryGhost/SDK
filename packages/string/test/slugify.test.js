@@ -126,6 +126,13 @@ describe('Slugify', function () {
         result.should.equal('ผีในวัฒนธรรมไทย');
     });
 
+    it('should remove any loose combining marks in the beginning of a word', function () {
+        var result;
+        options = {unicodeSlugs: true};
+        result = slugify('ghost-\u0301\u0302blog', options);
+        result.should.equal('ghost-blog');
+    });
+
     it('should replace an invalid separator with -', function () {
         var result;
         options = {slugSeparator: '%'};
