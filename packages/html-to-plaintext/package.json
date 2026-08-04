@@ -7,7 +7,6 @@
     "directory": "packages/html-to-plaintext"
   },
   "author": "Ghost Foundation",
-  "private": false,
   "main": "index.js",
   "files": [
     "index.js",
