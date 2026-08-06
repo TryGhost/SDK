@@ -1,5 +1,6 @@
 {
   "private": true,
+  "packageManager": "pnpm@10.34.5+sha512.a4ee05f2f73658255bd6a89859c065a45c28a57daefae2c893a168ee2b73168c37b91e83e57ea67654ad03f03031746430e8bce38e362e042605fb8abc80192e",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git"
@@ -14,12 +15,21 @@
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "setup": "yarn install",
+    "setup": "pnpm install",
+    "build": "lerna run build",
     "test": "lerna run lint && lerna run test",
     "lint": "lerna run lint",
-    "preship": "yarn test",
+    "preship": "pnpm test",
     "ship": "lerna version --git-remote ${GHOST_UPSTREAM:-origin}",
     "ship:ci": "lerna publish from-package --yes --no-private"
+  },
+  "pnpm": {
+    "allowBuilds": {
+      "core-js": false,
+      "lmdb": false,
+      "msgpackr-extract": false,
+      "nx": false
+    }
   },
   "devDependencies": {
     "eslint": "8.57.1",

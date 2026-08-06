@@ -1,0 +1,9 @@
+packages:
+  - 'packages/*'
+
+# Match Yarn Classic's workspace-linking behavior for matching local ranges.
+linkWorkspacePackages: true
+
+strictDepBuilds: true
+minimumReleaseAge: 4320
+blockExoticSubdeps: true

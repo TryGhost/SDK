@@ -12,12 +12,12 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "pretest": "yarn build",
+    "pretest": "pnpm build",
     "test": "NODE_ENV=testing c8 --src lib --lines 95 --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src test --ext .js,.ts --cache",
-    "prepare": "NODE_ENV=production yarn build",
-    "posttest": "yarn lint"
+    "prepare": "NODE_ENV=production pnpm build",
+    "posttest": "pnpm lint"
   },
   "files": [
     "lib/"
@@ -30,6 +30,7 @@
     "@types/lodash": "4.17.25",
     "@types/node": "24.13.3",
     "c8": "12.0.0",
+    "domhandler": "5.0.3",
     "mocha": "11.8.0",
     "rewire": "9.0.1",
     "should": "13.2.3",

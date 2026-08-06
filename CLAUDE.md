@@ -4,39 +4,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript packages for interacting with Ghost's APIs. It uses Lerna for monorepo management and Yarn workspaces.
+The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript packages for interacting with Ghost's APIs. It uses Lerna for monorepo management and pnpm workspaces.
 
 ## Common Development Commands
 
 ### Setup & Installation
-- **Initial setup**: `yarn setup` (mapped to `lerna bootstrap`)
+- **Initial setup**: `corepack enable && pnpm setup`
   - Installs all external dependencies
   - Links all internal dependencies
-- **Install dependencies**: `yarn`
+- **Install dependencies**: `pnpm install`
 
 ### Testing
-- **Run all tests**: `yarn test` (runs `lerna run test`)
+- **Run all tests**: `pnpm test` (runs `lerna run test`)
   - This runs tests in all packages
-- **Run tests in specific package**: `cd packages/<package-name> && yarn test`
+- **Run tests in specific package**: `pnpm --dir packages/<package-name> test`
 - **Run tests with coverage**: Most packages use `NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha './test/**/*.test.js'`
 - **Run specific test file**: `NODE_ENV=testing mocha './test/specific.test.js'`
 - **Run tests matching pattern**: `NODE_ENV=testing mocha './test/**/*.test.js' --grep "pattern"`
 
 ### Linting
-- **Run all linters**: `yarn lint` (runs `lerna run lint`)
-- **Run linter in specific package**: `cd packages/<package-name> && yarn lint`
-- **Fix linting issues**: `yarn lint -- --fix`
+- **Run all linters**: `pnpm lint` (runs `lerna run lint`)
+- **Run linter in specific package**: `pnpm --dir packages/<package-name> lint`
+- **Fix linting issues**: `pnpm lint -- --fix`
 
 ### Building
 - **Build packages with build scripts**: Individual packages have their own build commands
-  - For packages with Rollup: `yarn build`
+  - For packages with Rollup: `pnpm build`
   - TypeScript packages: Check for `tsconfig.json` and build scripts
 
 ### Publishing
-- **Version packages**: `yarn ship` (runs `lerna version`) — runs tests, prompts for version bumps, and pushes the version commit to `main`
+- **Version packages**: `pnpm ship` (runs `lerna version`) — runs tests, prompts for version bumps, and pushes the version commit to `main`
   - CI automatically publishes the updated packages to npm via the `publish.yml` workflow
-  - Use `yarn ship --git-remote upstream` when `origin` points to a fork and `upstream` points to the original TryGhost/SDK repo
-- **CI publish** (used by CI only): `yarn ship:ci` (runs `lerna publish from-package`)
+  - Use `GHOST_UPSTREAM=upstream pnpm ship` when `origin` points to a fork and `upstream` points to the original TryGhost/SDK repo
+- **CI publish** (used by CI only): `pnpm ship:ci` (runs `lerna publish from-package`)
 
 ## Package Structure
 
@@ -101,7 +101,7 @@ Different packages use different build systems:
 
 ### Rollup-based packages
 - **content-api**, **timezone-data**, **helpers**, **color-utils**
-- Build command: `yarn build`
+- Build command: `pnpm build`
 - Configuration: `rollup.config.js`
 - Outputs: `cjs/`, `es/`, `umd/` directories
 
@@ -116,7 +116,8 @@ Different packages use different build systems:
 
 ## Important Notes
 
-- This is a Yarn workspaces monorepo - always use `yarn`, not `npm`
+- This is a pnpm workspaces monorepo. Use the exact pnpm version declared in `packageManager` via Corepack.
+- Dependency install scripts are denied unless reviewed in the root `pnpm.allowBuilds` map. Any `true` approval must be security-reviewed and scoped to the exact package version.
 - The main branch is `main` for pull requests
 - All packages are published under the `@tryghost` scope
 - Packages have independent versioning
@@ -150,7 +151,7 @@ Different packages use different build systems:
 ## Development Tips
 
 1. Run tests before committing
-2. Use `yarn lint` to check code style
+2. Use `pnpm lint` to check code style
 3. Follow existing patterns in the codebase
 4. Add tests for new functionality
 5. Update README.md in package directory for significant changes

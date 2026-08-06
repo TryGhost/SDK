@@ -1,12 +1,50 @@
 name: Test
+
 on:
   pull_request:
   push:
     branches:
       - main
       - 'renovate/*'
+
+permissions:
+  contents: read
+
 jobs:
-  test:
-    uses: tryghost/actions/.github/workflows/test.yml@22030a4f6255c29d15cb420287e68454a010e926 # main
-    secrets:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  build:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'renovate/'))
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    env:
+      FORCE_COLOR: 1
+    name: Node ${{ matrix.node }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        env:
+          FORCE_COLOR: 0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile --prefer-offline
+      - run: pnpm test
+
+      - uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - uses: tryghost/actions/actions/slack-build@22030a4f6255c29d15cb420287e68454a010e926 # main
+        if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          status: ${{ job.status }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

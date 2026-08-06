@@ -37,16 +37,20 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: yarn --prefer-offline --ignore-scripts --frozen-lockfile
+        run: pnpm install --prefer-offline --ignore-scripts --frozen-lockfile
 
       - name: Build all packages
-        run: lerna run build
+        run: pnpm build
 
       - name: Commit build artifacts
         run: |
@@ -55,13 +59,13 @@ jobs:
 
       - name: Publish to npm (dry run)
         if: github.event.inputs['dry-run'] == 'true'
-        run: yarn ship:ci
+        run: pnpm ship:ci
         env:
           NPM_CONFIG_DRY_RUN: true
 
       - name: Publish to npm
         if: github.event.inputs['dry-run'] != 'true'
-        run: yarn ship:ci
+        run: pnpm ship:ci
 
       - uses: tryghost/actions/actions/slack-build@0204421bd3b15725e5b8c606d5d671e9674707ea
         if: failure()
