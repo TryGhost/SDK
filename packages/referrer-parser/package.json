@@ -53,6 +53,7 @@
     "@typescript-eslint/eslint-plugin": "8.65.0",
     "@typescript-eslint/parser": "8.65.0",
     "@vitest/coverage-v8": "4.1.10",
+    "eslint": "8.57.1",
     "should": "13.2.3",
     "sinon": "22.1.0",
     "typescript": "5.9.3",

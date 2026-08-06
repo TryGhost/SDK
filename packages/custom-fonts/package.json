@@ -22,17 +22,17 @@
   },
   "scripts": {
     "dev": "tsc --watch --preserveWatchOutput --sourceMap",
-    "build": "yarn build:cjs && yarn build:esm && yarn build:types",
+    "build": "pnpm build:cjs && pnpm build:esm && pnpm build:types",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly --declaration --declarationDir ./build/types",
     "build:cjs": "tsc -p tsconfig.json --outDir ./build/cjs --module CommonJS",
     "build:esm": "tsc -p tsconfig.esm.json --outDir ./build/esm --module ES2020",
-    "build:ts": "yarn build",
-    "prepare": "yarn build",
+    "build:ts": "pnpm build",
+    "prepare": "pnpm build",
     "test:unit": "NODE_ENV=testing c8 --src src --100 --reporter text --reporter cobertura mocha -r ts-node/register './test/**/*.test.ts'",
-    "test": "yarn test:ts && yarn test:unit",
+    "test": "pnpm test:ts && pnpm test:unit",
     "test:ts": "tsc --noEmit",
     "lint:code": "eslint src/ --ext .ts --cache",
-    "lint": "yarn lint:code && yarn lint:test",
+    "lint": "pnpm lint:code && pnpm lint:test",
     "lint:test": "eslint -c test/.eslintrc.js test/ --ext .ts --cache"
   },
   "files": [
@@ -40,6 +40,7 @@
   ],
   "devDependencies": {
     "@types/mocha": "10.0.10",
+    "@types/node": "24.13.3",
     "c8": "12.0.0",
     "mocha": "11.8.0",
     "sinon": "22.1.0",
