@@ -50,7 +50,7 @@ export function textColorForBackgroundColor(background: string | Color): Color {
     const yiq = (
         backgroundColor.red() * 0.299 +
         backgroundColor.green() * 0.587 +
-        backgroundColor.b() * 0.114
+        backgroundColor.blue() * 0.114
     );
 
     return (yiq >= 186) ? black : white;

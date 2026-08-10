@@ -60,10 +60,9 @@ describe('color-utils', function () {
             assert.equal(result.hex(), '#FFFFFF');
         });
 
-        it('returns white for a yellowish background where b-channel shifts yiq', function () {
-            // .b() returns the Lab b-channel, not RGB blue
+        it('uses the RGB blue channel when calculating contrast', function () {
             const result = textColorForBackgroundColor('#cccccc');
-            assert.equal(result.hex(), '#FFFFFF');
+            assert.equal(result.hex(), '#000000');
         });
 
         it('returns white for a mid-dark background', function () {
