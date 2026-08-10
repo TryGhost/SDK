@@ -60,6 +60,11 @@ describe('color-utils', function () {
             assert.equal(result.hex(), '#FFFFFF');
         });
 
+        it('uses the RGB blue channel when calculating contrast', function () {
+            const result = textColorForBackgroundColor('#cccccc');
+            assert.equal(result.hex(), '#000000');
+        });
+
         it('returns white for a mid-dark background', function () {
             const result = textColorForBackgroundColor('#333333');
             assert.equal(result.hex(), '#FFFFFF');
