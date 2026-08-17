@@ -45,7 +45,7 @@
     "core-js": "3.50.0",
     "eslint-plugin-ghost": "3.5.0",
     "mocha": "11.8.0",
-    "rollup": "2.80.0",
+    "rollup": "4.62.4",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-polyfill-node": "0.13.0",
     "rollup-plugin-replace": "2.2.0",
