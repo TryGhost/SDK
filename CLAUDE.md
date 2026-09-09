@@ -63,7 +63,6 @@ All packages are located in the `/packages` directory:
 - **@tryghost/image-transform**: Image transformation utilities
 
 ### Infrastructure
-- **@tryghost/limit-service**: Centralized limit enforcement
 - **@tryghost/referrer-parser**: Referrer parsing utilities
 
 ### Frontend Packages
