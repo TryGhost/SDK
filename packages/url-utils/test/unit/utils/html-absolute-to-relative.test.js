@@ -5,7 +5,7 @@ require('../../utils');
 const sinon = require('sinon');
 const rewire = require('rewire');
 
-const cheerio = require('cheerio');
+const cheerio = require('cheerio/slim');
 const htmlTransformModule = rewire('../../../lib/utils/html-transform');
 const htmlAbsToRelModule = rewire('../../../lib/utils/html-absolute-to-relative');
 htmlAbsToRelModule.__set__('html_transform_1', htmlTransformModule);
@@ -105,6 +105,14 @@ describe('utils: htmlAbsoluteToRelative()', function () {
         result = htmlAbsoluteToRelative(html, siteUrl, options);
 
         result.should.eql(`<a href="/test" data-options='{"strings": ["item1", "item2"]}'>Testing</a>`);
+    });
+
+    it('converts URLs containing HTML entities', function () {
+        // entities must stay encoded, otherwise the url won't match the source html
+        const html = '<a href="http://my-ghost-blog.com/test?a=1&amp;b=2">Test</a>';
+        const result = htmlAbsoluteToRelative(html, siteUrl, options);
+
+        result.should.eql('<a href="/test?a=1&amp;b=2">Test</a>');
     });
 
     it('ignores html inside <code> blocks', function () {

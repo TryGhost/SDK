@@ -1,7 +1,12 @@
 import type {AnyNode} from 'domhandler';
 import type {HtmlTransformOptions, HtmlTransformOptionsInput, UrlTransformFunction} from './types';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const cheerio = require('cheerio');
+
+// Loaded lazily on first transform. The `slim` export drops cheerio's
+// `fromURL()` deps (undici, parse5) and parses with htmlparser2, which is what
+// makes `decodeEntities: false` below take effect. Untyped because cheerio's
+// types don't resolve subpath exports under `moduleResolution: node`.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let cheerio: any;
 
 export const transformAttributes = [
     'href',
@@ -55,6 +60,13 @@ function htmlTransform(
         return html;
     }
 
+    if (!cheerio) {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        cheerio = require('cheerio/slim');
+    }
+
+    // `decodeEntities: false` keeps attribute values matching the source html,
+    // which the regex replacements below rely on
     const htmlContent = cheerio.load(html, {decodeEntities: false});
 
     // replacements is keyed with the attr name + original relative value so

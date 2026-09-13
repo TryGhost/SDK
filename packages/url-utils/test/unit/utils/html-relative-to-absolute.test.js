@@ -5,7 +5,7 @@ require('../../utils');
 const sinon = require('sinon');
 const rewire = require('rewire');
 
-const cheerio = require('cheerio');
+const cheerio = require('cheerio/slim');
 const htmlTransformModule = rewire('../../../lib/utils/html-transform');
 const htmlRelToAbsModule = rewire('../../../lib/utils/html-relative-to-absolute');
 htmlRelToAbsModule.__set__('html_transform_1', htmlTransformModule);
@@ -127,6 +127,19 @@ describe('utils: htmlRelativeToAbsolute()', function () {
         result = htmlRelativeToAbsolute(html, siteUrl, itemPath, options);
 
         result.should.eql(`<a href="http://my-ghost-blog.com/test" data-options='{"strings": ["item1", "item2"]}'>Testing</a>`);
+    });
+
+    it('converts URLs containing HTML entities', function () {
+        // entities must stay encoded, otherwise the url won't match the source html
+        let html = '<a href="/test?a=1&amp;b=2">Test</a>';
+        let result = htmlRelativeToAbsolute(html, siteUrl, itemPath, options);
+
+        result.should.eql('<a href="http://my-ghost-blog.com/test?a=1&amp;b=2">Test</a>');
+
+        html = '<img src="/content/images/pic.jpg?w=100&amp;h=200">';
+        result = htmlRelativeToAbsolute(html, siteUrl, itemPath, options);
+
+        result.should.eql('<img src="http://my-ghost-blog.com/content/images/pic.jpg?w=100&amp;h=200">');
     });
 
     it('ignores html inside <code> blocks', function () {
