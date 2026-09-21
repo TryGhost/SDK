@@ -149,6 +149,8 @@ describe('GhostAdminAPI general', function () {
             await api.config.read();
 
             makeRequestStub.calledOnce.should.be.true();
+            should.equal(makeRequestStub.args[0][0].method, 'GET');
+            should.equal(makeRequestStub.args[0][0].data, undefined);
             should.equal(makeRequestStub.args[0][0].headers['Accept-Version'], 'v5.0');
             should.equal(makeRequestStub.args[0][0].headers['User-Agent'], `GhostAdminSDK/${packageVersion}`);
             should.equal(generateTokenSpy.calledOnce, true);
@@ -488,6 +490,7 @@ describe('GhostAdminAPI general', function () {
 
             assert.equal(makeRequestStub.calledOnce, true);
             assert.match(makeRequestStub.args[0][0].url, /\/site\/$/);
+            should.equal(makeRequestStub.args[0][0].data, undefined);
             assert.deepEqual(result, {title: 'Test Site'});
         });
     });
