@@ -60,7 +60,6 @@ All packages are located in the `/packages` directory:
 ### Content Processing
 - **@tryghost/html-to-plaintext**: HTML to plaintext conversion
 - **@tryghost/html-to-mobiledoc**: HTML to Mobiledoc conversion
-- **@tryghost/image-transform**: Image transformation utilities
 
 ### Infrastructure
 - **@tryghost/referrer-parser**: Referrer parsing utilities
