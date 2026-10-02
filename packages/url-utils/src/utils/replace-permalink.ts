@@ -122,45 +122,115 @@ function getDateParts(date: unknown, timezone: string): DateParts {
     };
 }
 
+const TOKEN_YEAR = 0;
+const TOKEN_MONTH = 1;
+const TOKEN_DAY = 2;
+const TOKEN_AUTHOR = 3;
+const TOKEN_PRIMARY_AUTHOR = 4;
+const TOKEN_PRIMARY_TAG = 5;
+const TOKEN_SLUG = 6;
+const TOKEN_ID = 7;
+
+const TOKENS = new Map<string, number>([
+    [':year', TOKEN_YEAR],
+    [':month', TOKEN_MONTH],
+    [':day', TOKEN_DAY],
+    [':author', TOKEN_AUTHOR],
+    [':primary_author', TOKEN_PRIMARY_AUTHOR],
+    [':primary_tag', TOKEN_PRIMARY_TAG],
+    [':slug', TOKEN_SLUG],
+    [':id', TOKEN_ID]
+]);
+
+// literal strings are output as-is, numbers are TOKEN_* values
+type PermalinkPart = string | number;
+
+// Permalink patterns are a tiny set (one per collection/route), so parse each
+// once rather than running the token regex on every call. Bounded so arbitrary
+// input can't grow the cache unchecked.
+const MAX_PERMALINK_ENTRIES = 100;
+const permalinkCache = new Map<string, PermalinkPart[]>();
+
+function compilePermalink(permalink: string): PermalinkPart[] {
+    let parts = permalinkCache.get(permalink);
+
+    if (parts) {
+        return parts;
+    }
+
+    parts = [];
+    let lastIndex = 0;
+
+    for (const match of permalink.matchAll(/:[a-z_]+/g)) {
+        if (match.index > lastIndex) {
+            parts.push(permalink.slice(lastIndex, match.index));
+        }
+        // unknown route segments are output as the string 'undefined'
+        parts.push(TOKENS.get(match[0]) ?? 'undefined');
+        lastIndex = match.index + match[0].length;
+    }
+
+    if (lastIndex < permalink.length) {
+        parts.push(permalink.slice(lastIndex));
+    }
+
+    if (permalinkCache.size >= MAX_PERMALINK_ENTRIES) {
+        permalinkCache.clear();
+    }
+    permalinkCache.set(permalink, parts);
+
+    return parts;
+}
+
 /**
  * creates the url path for a post based on blog timezone and permalink pattern
  */
 function replacePermalink(permalink: string, resource: PermalinkResource, timezone: string = 'UTC'): string {
     const primaryTagFallback = 'all';
-    let dateParts: DateParts | undefined;
-
+    const parts = compilePermalink(permalink);
     // date parts are only computed if the permalink contains a date token
-    const getPublishedDateParts = function (): DateParts {
-        if (!dateParts) {
+    let dateParts: DateParts | undefined;
+    let result = '';
+
+    for (const part of parts) {
+        if (typeof part === 'string') {
+            result += part;
+            continue;
+        }
+
+        if (part <= TOKEN_DAY && !dateParts) {
             dateParts = getDateParts(resource.published_at || Date.now(), timezone);
         }
-        return dateParts;
-    };
 
-    // replace tags like :slug or :year with actual values
-    return permalink.replace(/(:[a-z_]+)/g, function (match: string): string {
-        switch (match) {
-        case ':year':
-            return getPublishedDateParts().year;
-        case ':month':
-            return getPublishedDateParts().month;
-        case ':day':
-            return getPublishedDateParts().day;
-        case ':author':
-            return resource.primary_author?.slug ?? 'undefined';
-        case ':primary_author':
-            return resource.primary_author ? resource.primary_author.slug : primaryTagFallback;
-        case ':primary_tag':
-            return resource.primary_tag ? resource.primary_tag.slug : primaryTagFallback;
-        case ':slug':
-            return resource.slug;
-        case ':id':
-            return resource.id;
-        default:
-            // Unknown route segment - return 'undefined' string
-            return 'undefined';
+        switch (part) {
+        case TOKEN_YEAR:
+            result += dateParts!.year;
+            break;
+        case TOKEN_MONTH:
+            result += dateParts!.month;
+            break;
+        case TOKEN_DAY:
+            result += dateParts!.day;
+            break;
+        case TOKEN_AUTHOR:
+            result += resource.primary_author?.slug ?? 'undefined';
+            break;
+        case TOKEN_PRIMARY_AUTHOR:
+            result += resource.primary_author ? resource.primary_author.slug : primaryTagFallback;
+            break;
+        case TOKEN_PRIMARY_TAG:
+            result += resource.primary_tag ? resource.primary_tag.slug : primaryTagFallback;
+            break;
+        case TOKEN_SLUG:
+            result += resource.slug;
+            break;
+        case TOKEN_ID:
+            result += resource.id;
+            break;
         }
-    });
+    }
+
+    return result;
 }
 
 export default replacePermalink;

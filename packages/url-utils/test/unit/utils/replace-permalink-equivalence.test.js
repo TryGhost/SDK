@@ -139,6 +139,14 @@ describe('utils: replacePermalink() equivalence with 5.3.0', function () {
         }
     });
 
+    it('keeps working after the permalink cache is cleared', function () {
+        const resource = resourceFor(new Date('2016-05-17T23:30:00.000Z'));
+
+        for (let i = 0; i < 101; i++) {
+            replacePermalink(`/${i}/:year/:slug/`, resource).should.equal(`/${i}/2016/short-and-sweet/`);
+        }
+    });
+
     it('keeps working after the formatter cache is cleared', function () {
         const resource = resourceFor(new Date('2016-05-17T23:30:00.000Z'));
 
