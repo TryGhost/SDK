@@ -1,4 +1,6 @@
-import {URL} from 'url';
+import parseRootUrl from './parse-root-url';
+
+const subdirRegexCache = new Map<string, {subdir: string; regex: RegExp}>();
 
 /**
  * Remove duplicated directories from the start of a path or url's path
@@ -13,19 +15,28 @@ const deduplicateSubdirectory = function deduplicateSubdirectory(url: string, ro
         rootUrl = `${rootUrl}/`;
     }
 
-    const parsedRoot = new URL(rootUrl);
+    const {pathname} = parseRootUrl(rootUrl);
 
     // do nothing if rootUrl does not have a subdirectory
-    if (parsedRoot.pathname === '/') {
+    if (pathname === '/') {
         return url;
     }
 
-    const subdir = parsedRoot.pathname.replace(/(^\/|\/$)+/g, '');
-    // we can have subdirs that match TLDs so we need to restrict matches to
-    // duplicates that start with a / or the beginning of the url
-    const subdirRegex = new RegExp(`(^|/)${subdir}/${subdir}(/|$)`);
+    let cached = subdirRegexCache.get(pathname);
 
-    return url.replace(subdirRegex, `$1${subdir}/`);
+    if (!cached) {
+        const subdir = pathname.replace(/(^\/|\/$)+/g, '');
+        // we can have subdirs that match TLDs so we need to restrict matches to
+        // duplicates that start with a / or the beginning of the url
+        cached = {subdir, regex: new RegExp(`(^|/)${subdir}/${subdir}(/|$)`)};
+
+        if (subdirRegexCache.size >= 100) {
+            subdirRegexCache.clear();
+        }
+        subdirRegexCache.set(pathname, cached);
+    }
+
+    return url.replace(cached.regex, `$1${cached.subdir}/`);
 };
 
 export default deduplicateSubdirectory;

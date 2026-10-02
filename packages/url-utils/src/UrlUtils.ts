@@ -60,6 +60,13 @@ interface UrlUtilsOptions {
         media?: string | null;
     };
     cardTransformers?: MobiledocCardTransformer[];
+    frozen?: boolean;
+}
+
+interface UrlGetters {
+    getSubdir: () => string;
+    getSiteUrl: () => string;
+    getAdminUrl: () => string;
 }
 
 // similar to Object.assign but will not override defaults if a source value is undefined
@@ -78,6 +85,7 @@ export default class UrlUtils {
     public getSubdir: () => string;
     public getSiteUrl: () => string;
     public getAdminUrl: () => string;
+    private _unfrozenGetters: UrlGetters | null = null;
 
     /**
      * Initialization method to pass in URL configurations
@@ -96,6 +104,7 @@ export default class UrlUtils {
      * @param {string} [options.assetBaseUrls.image] image asset CDN base URL
      * @param {string} [options.assetBaseUrls.files] files asset CDN base URL
      * @param {string} [options.assetBaseUrls.media] media asset CDN base URL
+     * @param {boolean} [options.frozen=false] freeze url getters on creation, see `freeze()`
      */
     constructor(options: UrlUtilsOptions = {}) {
         const defaultOptions: UrlUtilsConfig = {
@@ -120,6 +129,62 @@ export default class UrlUtils {
         this.getSubdir = options.getSubdir || (() => '');
         this.getSiteUrl = options.getSiteUrl || (() => '');
         this.getAdminUrl = options.getAdminUrl || (() => '');
+
+        if (options.frozen) {
+            this.freeze();
+        }
+    }
+
+    /**
+     * Mark the site, subdirectory and admin URLs as frozen: they won't change for
+     * the lifetime of this instance (or until `unfreeze()` is called).
+     *
+     * While frozen, `getSubdir`, `getSiteUrl` and `getAdminUrl` return a snapshot
+     * taken at freeze time rather than calling the configured getters.
+     *
+     * Only freeze when the underlying config is static, e.g. in production. If the
+     * URLs can change at runtime (tests that swap config) leave unfrozen, or call
+     * `unfreeze()`/`freeze()` again after changing config.
+     */
+    freeze(): this {
+        if (this._unfrozenGetters) {
+            this.unfreeze();
+        }
+
+        const getters: UrlGetters = {
+            getSubdir: this.getSubdir,
+            getSiteUrl: this.getSiteUrl,
+            getAdminUrl: this.getAdminUrl
+        };
+
+        const subdir = getters.getSubdir();
+        const siteUrl = getters.getSiteUrl();
+        const adminUrl = getters.getAdminUrl();
+
+        this._unfrozenGetters = getters;
+        this.getSubdir = () => subdir;
+        this.getSiteUrl = () => siteUrl;
+        this.getAdminUrl = () => adminUrl;
+
+        return this;
+    }
+
+    /**
+     * Restore the original URL getters.
+     */
+    unfreeze(): this {
+        if (this._unfrozenGetters) {
+            this.getSubdir = this._unfrozenGetters.getSubdir;
+            this.getSiteUrl = this._unfrozenGetters.getSiteUrl;
+            this.getAdminUrl = this._unfrozenGetters.getAdminUrl;
+            this._unfrozenGetters = null;
+        }
+
+        return this;
+    }
+
+    get isFrozen(): boolean {
+        return this._unfrozenGetters !== null;
     }
 
     private _assetOptionDefaults(): BaseUrlOptionsInput & {

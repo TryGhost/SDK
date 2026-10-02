@@ -472,6 +472,75 @@ describe('UrlUtils', function () {
         });
     });
 
+    describe('freeze', function () {
+        it('is not frozen by default', function () {
+            assert.equal(utils.isFrozen, false);
+        });
+
+        it('can be frozen via constructor option', function () {
+            const frozenUtils = new UrlUtils({getSiteUrl: () => 'http://my-ghost-blog.com/', frozen: true});
+            assert.equal(frozenUtils.isFrozen, true);
+        });
+
+        it('snapshots url getters when frozen', function () {
+            fakeConfig.url = 'http://my-ghost-blog.com/blog/';
+            fakeConfig.adminUrl = 'http://admin.ghost-blog.com';
+            assert.equal(utils.freeze(), utils);
+
+            nconf.get.resetHistory();
+            fakeConfig.url = 'http://changed.com/';
+            fakeConfig.adminUrl = 'http://admin.changed.com';
+
+            assert.equal(utils.getSiteUrl(), 'http://my-ghost-blog.com/blog/');
+            assert.equal(utils.getSubdir(), '/blog');
+            assert.equal(utils.getAdminUrl(), 'http://admin.ghost-blog.com/blog/');
+            assert.equal(utils.urlFor('home', true), 'http://my-ghost-blog.com/blog/');
+            assert.equal(utils.urlFor({relativeUrl: '/post/'}), '/blog/post/');
+            assert.equal(utils.urlFor('admin', true), 'http://admin.ghost-blog.com/blog/ghost/');
+            assert.equal(nconf.get.callCount, 0);
+        });
+
+        it('createUrl reflects config changes when not frozen', function () {
+            assert.equal(utils.createUrl('/tag/', true), 'http://my-ghost-blog.com/tag/');
+            fakeConfig.url = 'http://changed.com/';
+            assert.equal(utils.createUrl('/tag/', true), 'http://changed.com/tag/');
+        });
+
+        it('restores getters on unfreeze', function () {
+            utils.freeze();
+            assert.equal(utils.createUrl('/tag/', true), 'http://my-ghost-blog.com/tag/');
+
+            fakeConfig.url = 'http://changed.com/';
+            assert.equal(utils.unfreeze(), utils);
+
+            assert.equal(utils.isFrozen, false);
+            assert.equal(utils.getSiteUrl(), 'http://changed.com/');
+            assert.equal(utils.createUrl('/tag/', true), 'http://changed.com/tag/');
+        });
+
+        it('re-snapshots when frozen again', function () {
+            utils.freeze();
+            assert.equal(utils.createUrl('/tag/', true), 'http://my-ghost-blog.com/tag/');
+
+            fakeConfig.url = 'http://changed.com/';
+            utils.freeze();
+
+            assert.equal(utils.isFrozen, true);
+            assert.equal(utils.getSiteUrl(), 'http://changed.com/');
+            assert.equal(utils.createUrl('/tag/', true), 'http://changed.com/tag/');
+
+            utils.unfreeze();
+            fakeConfig.url = 'http://changed-again.com/';
+            assert.equal(utils.getSiteUrl(), 'http://changed-again.com/');
+        });
+
+        it('unfreeze is a no-op when not frozen', function () {
+            const getSiteUrl = utils.getSiteUrl;
+            utils.unfreeze();
+            assert.equal(utils.getSiteUrl, getSiteUrl);
+        });
+    });
+
     describe('urlFor home with trailingSlash:false', function () {
         it('returns home url without trailing slash', function () {
             const result = utils.urlFor('home', {trailingSlash: false}, true);
