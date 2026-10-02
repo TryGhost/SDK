@@ -3,6 +3,7 @@
 require('../../utils');
 
 const sinon = require('sinon');
+const moment = require('moment-timezone');
 const replacePermalink = require('../../../lib/utils/replace-permalink').default;
 const legacy = require('../../utils/legacy/replace-permalink');
 
@@ -34,6 +35,9 @@ const timezones = [
     'Australia/Lord_Howe',
     'Etc/GMT+12',
     'US/Pacific',
+    // Intl accepts offsets but moment doesn't know them and falls back to UTC
+    '+01:00',
+    '-05:30',
     'europe/berlin'
 ];
 
@@ -61,6 +65,9 @@ const publishedAts = [
     new Date('1899-12-31T23:30:00.000Z'),
     new Date('1066-10-14T12:00:00.000Z'),
     new Date('9999-12-31T12:00:00.000Z'),
+    new Date('+010000-01-01T12:00:00.000Z'),
+    new Date('-000001-06-15T12:00:00.000Z'),
+    new Date('0999-06-15T12:00:00.000Z'),
     new Date('invalid'),
     1463553000000,
     1463553000000.7,
@@ -95,12 +102,15 @@ describe('utils: replacePermalink() equivalence with 5.3.0', function () {
     let clock;
 
     beforeEach(function () {
-        // moment logs a deprecation warning for non-ISO date strings
+        // moment logs a deprecation warning for non-ISO date strings, and an
+        // error for timezones it doesn't know
         sinon.stub(console, 'warn');
+        sinon.stub(console, 'error');
         clock = sinon.useFakeTimers(new Date('2016-05-17T23:30:00.000Z'));
     });
 
     afterEach(function () {
+        moment.locale('en');
         clock.restore();
         sinon.restore();
     });
@@ -119,6 +129,25 @@ describe('utils: replacePermalink() equivalence with 5.3.0', function () {
         }
     });
 
+    it('produces identical output for moment locales that rewrite digits', function () {
+        for (const locale of ['ar', 'hi', 'fa', 'en-gb']) {
+            moment.locale(locale);
+            moment.locale().should.equal(locale);
+
+            for (const timezone of ['UTC', 'Pacific/Kiritimati']) {
+                for (const publishedAt of [new Date('2016-05-17T23:30:00.000Z'), 1463553000000, '2016-05-17T23:30:00.000Z']) {
+                    const resource = resourceFor(publishedAt);
+                    replacePermalink('/:year/:month/:day/:slug/', resource, timezone)
+                        .should.equal(legacy.replacePermalink('/:year/:month/:day/:slug/', resource, timezone), `locale: ${locale}`);
+                }
+            }
+        }
+
+        moment.locale('ar');
+        replacePermalink('/:year/:slug/', resourceFor(new Date('2016-05-17T23:30:00.000Z')))
+            .should.equal('/٢٠١٦/short-and-sweet/');
+    });
+
     it('produces identical output for missing primary tag and author', function () {
         const resource = {id: '1', slug: 'slug', published_at: new Date('2016-05-17T23:30:00.000Z')};
 
@@ -129,8 +158,6 @@ describe('utils: replacePermalink() equivalence with 5.3.0', function () {
     });
 
     it('produces identical output for timezones Intl does not support', function () {
-        // moment-timezone logs an error for unknown timezones
-        sinon.stub(console, 'error');
         const resource = resourceFor(new Date('2016-05-17T23:30:00.000Z'));
 
         for (const timezone of ['Not/A_Zone', null]) {
