@@ -14,7 +14,12 @@ import type {RelativeToAbsoluteOptionsInput} from './utils/relative-to-absolute'
 import type {AbsoluteToTransformReadyOptionsInput as AbsoluteToTransformReadyOptionsInputType} from './utils/absolute-to-transform-ready';
 import type {RelativeToTransformReadyOptionsInput as RelativeToTransformReadyOptionsInputType} from './utils/relative-to-transform-ready';
 import type {ToTransformReadyOptions} from './utils/to-transform-ready';
-import type {TransformReadyToAbsoluteOptionsInput} from './utils/transform-ready-to-absolute';
+import {
+    DEFAULT_OPTIONS as TRANSFORM_READY_TO_ABSOLUTE_DEFAULTS,
+    replaceTransformReadyPlaceholders,
+    type TransformReadyToAbsoluteOptions,
+    type TransformReadyToAbsoluteOptionsInput
+} from './utils/transform-ready-to-absolute';
 import type {TransformReadyReplacementOptionsInput as TransformReadyToRelativeOptionsInput} from './utils/types';
 
 interface ExpressResponse {
@@ -63,6 +68,12 @@ interface UrlUtilsOptions {
     frozen?: boolean;
 }
 
+type AssetOptionDefaults = BaseUrlOptionsInput & {
+    staticImageUrlPrefix: string;
+    staticFilesUrlPrefix: string;
+    staticMediaUrlPrefix: string;
+};
+
 interface UrlGetters {
     getSubdir: () => string;
     getSiteUrl: () => string;
@@ -86,6 +97,9 @@ export default class UrlUtils {
     public getSiteUrl: () => string;
     public getAdminUrl: () => string;
     private _unfrozenGetters: UrlGetters | null = null;
+    // asset options are fixed at construction so are only built once
+    private readonly _assetOptionDefaults: Readonly<AssetOptionDefaults>;
+    private readonly _transformReadyToAbsoluteDefaults: Readonly<TransformReadyToAbsoluteOptions>;
 
     /**
      * Initialization method to pass in URL configurations
@@ -125,6 +139,18 @@ export default class UrlUtils {
             files: assetBaseUrls.files || null,
             media: assetBaseUrls.media || null
         };
+
+        this._assetOptionDefaults = Object.freeze({
+            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
+            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
+            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
+            imageBaseUrl: this._assetBaseUrls.image,
+            filesBaseUrl: this._assetBaseUrls.files,
+            mediaBaseUrl: this._assetBaseUrls.media
+        });
+        this._transformReadyToAbsoluteDefaults = Object.freeze(
+            Object.assign({}, TRANSFORM_READY_TO_ABSOLUTE_DEFAULTS, this._assetOptionDefaults)
+        );
 
         this.getSubdir = options.getSubdir || (() => '');
         this.getSiteUrl = options.getSiteUrl || (() => '');
@@ -187,23 +213,8 @@ export default class UrlUtils {
         return this._unfrozenGetters !== null;
     }
 
-    private _assetOptionDefaults(): BaseUrlOptionsInput & {
-        staticImageUrlPrefix: string;
-        staticFilesUrlPrefix: string;
-        staticMediaUrlPrefix: string;
-        } {
-        return {
-            staticImageUrlPrefix: this._config.staticImageUrlPrefix,
-            staticFilesUrlPrefix: this._config.staticFilesUrlPrefix,
-            staticMediaUrlPrefix: this._config.staticMediaUrlPrefix,
-            imageBaseUrl: this._assetBaseUrls.image || null,
-            filesBaseUrl: this._assetBaseUrls.files || null,
-            mediaBaseUrl: this._assetBaseUrls.media || null
-        };
-    }
-
     private _buildAssetOptions(additionalDefaults: Record<string, unknown> = {}, options?: Record<string, unknown>): Record<string, unknown> {
-        return assignOptions({}, this._assetOptionDefaults(), additionalDefaults, options || {});
+        return assignOptions({}, this._assetOptionDefaults, additionalDefaults, options || {});
     }
 
     getProtectedSlugs(): string[] {
@@ -427,8 +438,23 @@ export default class UrlUtils {
     }
 
     transformReadyToAbsolute(url: string, options?: TransformReadyToAbsoluteOptionsInput): string {
-        const _options = this._buildAssetOptions({}, options) as TransformReadyToAbsoluteOptionsInput;
-        return utils.transformReadyToAbsolute(url, this.getSiteUrl(), _options);
+        if (options) {
+            const _options = this._buildAssetOptions({}, options) as TransformReadyToAbsoluteOptionsInput;
+            return utils.transformReadyToAbsolute(url, this.getSiteUrl(), _options);
+        }
+
+        // hot path (called for every post url and image when rendering e.g. sitemaps),
+        // skip option merging and the site url lookup when there's nothing to replace
+        if (!url) {
+            // matches the util, which defaults a missing url to ''
+            return url === undefined ? '' : url;
+        }
+
+        if (!url.includes(TRANSFORM_READY_TO_ABSOLUTE_DEFAULTS.replacementStr)) {
+            return url;
+        }
+
+        return replaceTransformReadyPlaceholders(url, this.getSiteUrl(), this._transformReadyToAbsoluteDefaults);
     }
 
     transformReadyToRelative(url: string, options?: TransformReadyToRelativeOptionsInput): string {
