@@ -36,9 +36,10 @@ const getFormatter = memoize(function getFormatter(timezone: string): Intl.DateT
     });
 });
 
-// unknown, empty or missing timezones fall back to UTC
+// unknown, empty or missing timezones fall back to UTC. So do offsets like '+01:00',
+// which only some Node versions' Intl accepts
 function resolveTimezone(timezone: unknown): string {
-    return typeof timezone === 'string' && IANAZone.isValidZone(timezone) ? timezone : 'UTC';
+    return typeof timezone === 'string' && !/^[+-]/.test(timezone) && IANAZone.isValidZone(timezone) ? timezone : 'UTC';
 }
 
 function toDateTime(date: string | number | Date, timezone: string): DateTime {

@@ -35,7 +35,10 @@ const timezones = [
     'Australia/Lord_Howe',
     'Etc/GMT+12',
     'US/Pacific',
-    'europe/berlin'
+    'europe/berlin',
+    // offsets fall back to UTC, whether or not Intl accepts them
+    '+01:00',
+    '-05:30'
 ];
 
 const publishedAts = [
@@ -214,9 +217,6 @@ describe('utils: replacePermalink() intentional differences from 5.3.0', functio
     }
 
     it('uses timezones Intl knows but moment did not', function () {
-        // offsets
-        check(new Date('2016-05-17T23:30:00.000Z'), '+01:00', '/2016/05/18/', '/2016/05/17/');
-        check(new Date('2016-05-17T20:00:00.000Z'), '+05:00', '/2016/05/18/', '/2016/05/17/');
         // legacy abbreviations and SystemV zones
         check(new Date('2016-05-17T20:00:00.000Z'), 'IST', '/2016/05/18/', '/2016/05/17/');
         check(new Date('2016-05-18T03:00:00.000Z'), 'PST', '/2016/05/17/', '/2016/05/18/');
