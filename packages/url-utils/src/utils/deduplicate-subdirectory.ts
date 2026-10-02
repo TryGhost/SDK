@@ -1,4 +1,12 @@
-import {URL} from 'url';
+import memoize from './memoize';
+import parseRootUrl from './parse-root-url';
+
+const buildSubdirRegex = memoize(function buildSubdirRegex(pathname: string): {subdir: string; regex: RegExp} {
+    const subdir = pathname.replace(/(^\/|\/$)+/g, '');
+    // we can have subdirs that match TLDs so we need to restrict matches to
+    // duplicates that start with a / or the beginning of the url
+    return {subdir, regex: new RegExp(`(^|/)${subdir}/${subdir}(/|$)`)};
+});
 
 /**
  * Remove duplicated directories from the start of a path or url's path
@@ -13,19 +21,16 @@ const deduplicateSubdirectory = function deduplicateSubdirectory(url: string, ro
         rootUrl = `${rootUrl}/`;
     }
 
-    const parsedRoot = new URL(rootUrl);
+    const {pathname} = parseRootUrl(rootUrl);
 
     // do nothing if rootUrl does not have a subdirectory
-    if (parsedRoot.pathname === '/') {
+    if (pathname === '/') {
         return url;
     }
 
-    const subdir = parsedRoot.pathname.replace(/(^\/|\/$)+/g, '');
-    // we can have subdirs that match TLDs so we need to restrict matches to
-    // duplicates that start with a / or the beginning of the url
-    const subdirRegex = new RegExp(`(^|/)${subdir}/${subdir}(/|$)`);
+    const {subdir, regex} = buildSubdirRegex(pathname);
 
-    return url.replace(subdirRegex, `$1${subdir}/`);
+    return url.replace(regex, `$1${subdir}/`);
 };
 
 export default deduplicateSubdirectory;

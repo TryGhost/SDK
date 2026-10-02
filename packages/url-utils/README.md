@@ -11,6 +11,22 @@ or
 
 ## Usage
 
+### Freezing URLs
+
+When the site, subdirectory and admin URLs never change at runtime (e.g. in production), mark them as frozen so url-utils can skip calling the URL getters:
+
+```js
+const urlUtils = new UrlUtils({getSiteUrl, getSubdir, getAdminUrl, frozen: true});
+
+// or at any time after creation
+urlUtils.freeze();
+
+// restore the original getters (e.g. after changing config in tests)
+urlUtils.unfreeze();
+```
+
+While frozen, `getSiteUrl()`, `getSubdir()` and `getAdminUrl()` return the values captured at freeze time. Calling `freeze()` again re-captures the current values.
+
 
 ## Develop
 

@@ -23,6 +23,7 @@ import mobiledocRelativeToAbsolute from './mobiledoc-relative-to-absolute';
 import mobiledocAbsoluteToTransformReady from './mobiledoc-absolute-to-transform-ready';
 import mobiledocRelativeToTransformReady from './mobiledoc-relative-to-transform-ready';
 import mobiledocToTransformReady from './mobiledoc-to-transform-ready';
+import parseRootUrl from './parse-root-url';
 import plaintextAbsoluteToTransformReady from './plaintext-absolute-to-transform-ready';
 import plaintextRelativeToTransformReady from './plaintext-relative-to-transform-ready';
 import plaintextToTransformReady from './plaintext-to-transform-ready';
@@ -61,6 +62,7 @@ export {
     mobiledocAbsoluteToTransformReady,
     mobiledocRelativeToTransformReady,
     mobiledocToTransformReady,
+    parseRootUrl,
     plaintextAbsoluteToTransformReady,
     plaintextRelativeToTransformReady,
     plaintextToTransformReady,
@@ -100,6 +102,7 @@ const utils = {
     mobiledocRelativeToAbsolute,
     mobiledocRelativeToTransformReady,
     mobiledocToTransformReady,
+    parseRootUrl,
     plaintextAbsoluteToTransformReady,
     plaintextRelativeToTransformReady,
     plaintextToTransformReady,
