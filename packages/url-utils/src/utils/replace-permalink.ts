@@ -1,4 +1,4 @@
-import * as moment from 'moment-timezone';
+import {DateTime, IANAZone} from 'luxon';
 import memoize from './memoize';
 
 interface PermalinkResource {
@@ -19,22 +19,15 @@ interface DateParts {
     day: string;
 }
 
-// Intl uses the Julian calendar before 1582 and moment pads/formats years outside
-// 4 digits differently, only use Intl for timestamps comfortably inside 1900-9999
+// Intl formats years outside 4 digits with eras or without padding, only use it
+// directly for timestamps comfortably inside 1900-9999
 const MIN_TIMESTAMP = Date.UTC(1900, 0, 2);
 const MAX_TIMESTAMP = Date.UTC(9999, 11, 30);
 
-// moment's default postformat, which leaves formatted digits as-is. Locales like
-// 'ar' override it to output non-Latin digits
-const DEFAULT_POSTFORMAT = moment.localeData('en').postformat;
+const INVALID_DATE = 'Invalid date';
 
-// en-CA formats as YYYY-MM-DD. Throws for timezones moment doesn't know (it falls
-// back to UTC for those, while Intl accepts some, e.g. '+01:00') or Intl doesn't support
+// en-CA formats as YYYY-MM-DD
 const getFormatter = memoize(function getFormatter(timezone: string): Intl.DateTimeFormat {
-    if (!moment.tz.zone(timezone)) {
-        throw new RangeError(`Unknown timezone: ${timezone}`);
-    }
-
     return new Intl.DateTimeFormat('en-CA', {
         timeZone: timezone,
         year: 'numeric',
@@ -43,30 +36,43 @@ const getFormatter = memoize(function getFormatter(timezone: string): Intl.DateT
     });
 });
 
-function getDateParts(date: unknown, timezone: string): DateParts {
-    const timestamp = date instanceof Date ? date.getTime() : date;
-    const isIntlTimestamp = typeof timestamp === 'number' && timestamp >= MIN_TIMESTAMP && timestamp <= MAX_TIMESTAMP;
-    // the active moment locale is global, so check it on every call
-    const isDefaultLocale = moment.localeData().postformat === DEFAULT_POSTFORMAT;
+// unknown, empty or missing timezones fall back to UTC
+function resolveTimezone(timezone: unknown): string {
+    return typeof timezone === 'string' && IANAZone.isValidZone(timezone) ? timezone : 'UTC';
+}
 
-    if (isIntlTimestamp && isDefaultLocale) {
-        try {
-            const formatted = getFormatter(timezone).format(timestamp);
-            return {year: formatted.slice(0, 4), month: formatted.slice(5, 7), day: formatted.slice(8, 10)};
-        } catch {
-            // unknown or unsupported timezone, use moment below
-        }
+function toDateTime(date: string | number | Date, timezone: string): DateTime {
+    if (typeof date !== 'string') {
+        return DateTime.fromJSDate(new Date(date), {zone: timezone});
     }
 
-    // moment handles everything Intl can't match exactly: strings (parsed in the
-    // site timezone), invalid dates, years outside 1900-9999, unknown timezones and
-    // locales that rewrite digits
-    const publishedAt = moment.tz(date as moment.MomentInput, timezone);
+    // ISO strings without an offset are wall time in the site timezone, other
+    // formats are parsed by Date
+    const dateTime = DateTime.fromISO(date.replace(' ', 'T'), {zone: timezone});
+    return dateTime.invalidReason === 'unparsable' ? DateTime.fromJSDate(new Date(date), {zone: timezone}) : dateTime;
+}
+
+function getDateParts(date: string | number | Date, timezone: unknown): DateParts {
+    const zone = resolveTimezone(timezone);
+    const timestamp = date instanceof Date ? date.getTime() : date;
+
+    if (typeof timestamp === 'number' && timestamp >= MIN_TIMESTAMP && timestamp <= MAX_TIMESTAMP) {
+        const formatted = getFormatter(zone).format(timestamp);
+        return {year: formatted.slice(0, 4), month: formatted.slice(5, 7), day: formatted.slice(8, 10)};
+    }
+
+    // luxon handles everything Intl can't format directly: strings (parsed in the
+    // site timezone), invalid dates and years outside 1900-9999
+    const dateTime = toDateTime(date, zone);
+
+    if (!dateTime.isValid) {
+        return {year: INVALID_DATE, month: INVALID_DATE, day: INVALID_DATE};
+    }
 
     return {
-        year: publishedAt.format('YYYY'),
-        month: publishedAt.format('MM'),
-        day: publishedAt.format('DD')
+        year: dateTime.toFormat('yyyy'),
+        month: dateTime.toFormat('MM'),
+        day: dateTime.toFormat('dd')
     };
 }
 

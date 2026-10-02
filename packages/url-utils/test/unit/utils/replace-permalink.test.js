@@ -2,7 +2,7 @@
 // const testUtils = require('./utils');
 require('../../utils');
 
-const moment = require('moment-timezone');
+const sinon = require('sinon');
 const replacePermalink = require('../../../lib/utils/replace-permalink').default;
 
 describe('utils: replacePermalink()', function () {
@@ -102,15 +102,14 @@ describe('utils: replacePermalink()', function () {
         };
         const timezone = 'Europe/London';
 
-        const nowMoment = moment().tz('Europe/London');
+        // 23:30 UTC is already the next day in London (BST)
+        const clock = sinon.useFakeTimers(new Date('2016-05-17T23:30:00.000Z'));
 
-        let postLink = '/YYYY/MM/DD/short-and-sweet/';
-
-        postLink = postLink.replace('YYYY', nowMoment.format('YYYY'));
-        postLink = postLink.replace('MM', nowMoment.format('MM'));
-        postLink = postLink.replace('DD', nowMoment.format('DD'));
-
-        replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal(postLink);
+        try {
+            replacePermalink('/:year/:month/:day/:slug/', testData, timezone).should.equal('/2016/05/18/short-and-sweet/');
+        } finally {
+            clock.restore();
+        }
     });
 
     it('permalink is /:primary_author/:slug/ and there is NO primary_author', function () {

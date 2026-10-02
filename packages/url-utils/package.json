@@ -28,9 +28,11 @@
   "devDependencies": {
     "@tryghost/config-url-helpers": "^1.0.29",
     "@types/lodash": "4.17.25",
+    "@types/luxon": "3.7.6",
     "@types/node": "24.19.0",
     "c8": "12.0.0",
     "mocha": "12.0.2",
+    "moment-timezone": "0.6.4",
     "rewire": "9.0.1",
     "should": "13.2.3",
     "sinon": "22.1.0",
@@ -40,8 +42,7 @@
     "cheerio": "1.2.0",
     "lodash": "4.18.1",
     "lru-cache": "^11.0.0",
-    "moment": "2.31.0",
-    "moment-timezone": "0.6.4",
+    "luxon": "3.7.2",
     "remark": "11.0.2",
     "remark-footnotes": "1.0.0",
     "unist-util-visit": "2.0.3"
