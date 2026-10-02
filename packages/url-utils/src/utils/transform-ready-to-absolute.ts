@@ -1,4 +1,5 @@
 import type {TransformReadyReplacementOptions, BaseUrlOptions} from './types';
+import memoize from './memoize';
 
 export interface TransformReadyToAbsoluteOptions extends TransformReadyReplacementOptions, BaseUrlOptions {
     staticImageUrlPrefix: string;
@@ -19,25 +20,10 @@ export const DEFAULT_OPTIONS: Readonly<TransformReadyToAbsoluteOptions> = Object
 });
 
 // Root and CDN base URLs are a tiny, near-static set of strings, memoize their
-// trailing-slash-stripped form so we don't allocate a new string per replacement.
-// Bounded so arbitrary input can't grow the cache unchecked.
-const MAX_STRIPPED_URL_ENTRIES = 100;
-const strippedUrlCache = new Map<string, string>();
-
-function stripTrailingSlash(url: string): string {
-    let stripped = strippedUrlCache.get(url);
-
-    if (stripped === undefined) {
-        stripped = url.replace(/\/$/, '');
-
-        if (strippedUrlCache.size >= MAX_STRIPPED_URL_ENTRIES) {
-            strippedUrlCache.clear();
-        }
-        strippedUrlCache.set(url, stripped);
-    }
-
-    return stripped;
-}
+// trailing-slash-stripped form so we don't allocate a new string per replacement
+const stripTrailingSlash = memoize(function stripTrailingSlash(url: string): string {
+    return url.replace(/\/$/, '');
+});
 
 // true if `str` has `/${prefix}` at `pos`, without slicing or building strings.
 // String() because a configured prefix can be null, which 5.3.0 matched as "/null"

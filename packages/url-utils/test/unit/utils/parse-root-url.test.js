@@ -6,7 +6,7 @@ const parseRootUrl = require('../../../lib/utils/parse-root-url').default;
 
 describe('utils: parseRootUrl()', function () {
     beforeEach(function () {
-        parseRootUrl.clearCache();
+        parseRootUrl.clear();
     });
 
     it('returns the parsed parts of a url', function () {
@@ -38,7 +38,7 @@ describe('utils: parseRootUrl()', function () {
         (() => parseRootUrl('not a url')).should.throw(TypeError);
     });
 
-    it('clears the cache once it reaches its size limit', function () {
+    it('evicts the least recently used entry once full', function () {
         const first = parseRootUrl('https://example.com/');
 
         for (let i = 0; i < 100; i++) {
