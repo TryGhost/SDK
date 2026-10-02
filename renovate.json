@@ -1,5 +1,6 @@
 {
   "extends": ["github>tryghost/renovate-config"],
+  "ignorePresets": [":pinDependencies"],
   "ignorePaths": ["packages/members"],
   "platformAutomerge": true,
   "packageRules": [
