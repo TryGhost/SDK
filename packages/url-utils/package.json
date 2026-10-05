@@ -41,7 +41,7 @@
     "lodash": "4.18.1",
     "lru-cache": "^11.0.0",
     "moment": "2.31.0",
-    "moment-timezone": "0.6.4",
+    "moment-timezone": "0.6.5",
     "remark": "11.0.2",
     "remark-footnotes": "1.0.0",
     "unist-util-visit": "2.0.3"
