@@ -11197,10 +11197,10 @@ universalify@^2.0.0:
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.1.tgz#168efc2180964e6386d061e094df61afe239b18d"
   integrity sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==
 
-unplugin-dts@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/unplugin-dts/-/unplugin-dts-1.1.1.tgz#5f10435718f245bd4eec846dc445078ec8b5ce05"
-  integrity sha512-Z2VcabC0hjYuzF62oWmZXVoxagkM8bUWgqUy+dotoJTPnooR5mNaxbpv63JCmcaxdGCW2Bb75omK6FOryOYCRg==
+unplugin-dts@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/unplugin-dts/-/unplugin-dts-1.1.2.tgz#e76fab9ad1259c5a35f5d9b018773cf5221ef160"
+  integrity sha512-RDqy90XUmFj6rz4U5YoTMdYdaCJe2ZnQZaWIjkWS4952Gv0zBTQyqWtlGgVMPYHa982dURvyoc+sUOFIcDFv+w==
   dependencies:
     "@rollup/pluginutils" "^5.1.4"
     "@volar/typescript" "^2.4.26"
@@ -11307,12 +11307,12 @@ vfile@^4.0.0:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
-vite-plugin-dts@5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-5.1.1.tgz#ae96f327fe477f9d91dbee012333e424c1c89c1c"
-  integrity sha512-U5dyX3DPFvHB+gaJIULn90kKGsXNYllyJ3vn491Y+LGu2nL5Fb8z7YgurN/Pi6ZFlnGljh2wSM0ZbFogSh4yAg==
+vite-plugin-dts@5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-5.1.2.tgz#c204bbee1fd01036aab7721a0d0815e2b7b7f001"
+  integrity sha512-1bXUz836sWq6ewEMQre3ZtNFVfZk/92DppgCCKP8tWx/NWwV2wHuXlRHb2TztHjbikPxvyAGLGu7hVh94Plwww==
   dependencies:
-    unplugin-dts "1.1.1"
+    unplugin-dts "1.1.2"
 
 vite@8.3.2, "vite@^6.0.0 || ^7.0.0 || ^8.0.0":
   version "8.3.2"
