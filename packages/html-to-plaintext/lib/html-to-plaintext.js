@@ -82,8 +82,9 @@ const loadConverters = () => {
 
     const commentSnippetSettings = mergeSettings({
         preserveNewlines: false,
-        ignoreHref: true,
         selectors: [
+            // The top-level ignoreHref option leaks into html-to-text's shared defaults
+            {selector: 'a', options: {ignoreHref: true}},
             {selector: 'blockquote', format: 'skip'}
         ]
     });
