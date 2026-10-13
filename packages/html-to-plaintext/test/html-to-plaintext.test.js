@@ -141,5 +141,12 @@ describe('Html to Plaintext', function () {
             input: '<p>First paragraph.</p><p>Second paragraph.</p>',
             expected: 'First paragraph. Second paragraph.'
         }));
+
+        it('does not change html-to-text defaults', function () {
+            htmlToPlaintext.commentSnippet('<p>Load the converters</p>');
+
+            const {convert} = require('html-to-text');
+            assert.equal(convert('<a href="https://mysite.com">Link</a>'), 'Link [https://mysite.com]');
+        });
     });
 });
