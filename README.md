@@ -43,6 +43,8 @@ and tags; publishing happens in CI. Existing npm names, independent versions and
 
 - `pnpm ship:patch`, `pnpm ship:minor`, `pnpm ship:major` apply the chosen bump to
   all packages. These commands also update dependent workspace ranges.
+  Bump names retain their Lerna meaning for 0.x packages: `minor` advances the
+  minor number and `major` graduates the package to 1.0.0.
 - To select packages, use npm package names, for example
   `pnpm ship:minor --projects=@tryghost/content-api`.
 - Preview versions with `pnpm exec nx release version patch --dry-run` (add

@@ -68,7 +68,8 @@
         "commit": true,
         "tag": true,
         "commitMessage": "Published new versions"
-      }
+      },
+      "adjustSemverBumpsForZeroMajorVersion": false
     },
     "changelog": {
       "workspaceChangelog": false
