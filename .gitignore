@@ -67,3 +67,6 @@ typings/
 # Ghost SDK Custom
 build
 tsconfig.tsbuildinfo
+
+# Nx task cache and workspace data
+.nx/
