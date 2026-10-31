@@ -101,7 +101,7 @@ MIT
 Run the tests with:
 
 ```bash
-yarn test
+pnpm test
 ```
 
 This will run the test suite using Mocha and report on test coverage. 

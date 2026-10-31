@@ -12,12 +12,12 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "pretest": "yarn build",
+    "pretest": "pnpm build",
     "test": "NODE_ENV=testing c8 --src lib --lines 95 --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src test --ext .js,.ts --cache",
-    "prepare": "NODE_ENV=production yarn build",
-    "posttest": "yarn lint"
+    "prepare": "NODE_ENV=production pnpm build",
+    "posttest": "pnpm lint"
   },
   "files": [
     "lib/"
@@ -34,7 +34,8 @@
     "rewire": "9.0.1",
     "should": "13.2.3",
     "sinon": "22.1.0",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "domhandler": "5.0.3"
   },
   "dependencies": {
     "cheerio": "1.2.0",

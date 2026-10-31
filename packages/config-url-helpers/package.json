@@ -15,7 +15,7 @@
     "test": "NODE_ENV=testing c8 --reporter text --reporter cobertura mocha './test/**/*.test.js'",
     "coverage": "c8 report -r html",
     "lint": "eslint . --ext .js --cache",
-    "posttest": "yarn lint"
+    "posttest": "pnpm lint"
   },
   "files": [
     "index.js",

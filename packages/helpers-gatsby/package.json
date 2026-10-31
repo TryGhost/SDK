@@ -13,10 +13,10 @@
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing c8 --src lib --reporter text --reporter cobertura mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
-    "posttest": "yarn lint",
+    "posttest": "pnpm lint",
     "clean": "rimraf lib",
-    "build": "yarn clean && babel src --out-dir lib --presets=@babel/preset-env,@babel/preset-react",
-    "prepack": "yarn build"
+    "build": "pnpm clean && babel src --out-dir lib --presets=@babel/preset-env,@babel/preset-react",
+    "prepack": "pnpm build"
   },
   "files": [
     "/lib"

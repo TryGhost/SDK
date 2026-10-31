@@ -23,12 +23,12 @@
   ],
   "scripts": {
     "dev": "echo \"Implement me!\"",
-    "pretest": "yarn build",
+    "pretest": "pnpm build",
     "test": "NODE_ENV=testing c8 --src cjs --reporter text --reporter cobertura mocha './test/**/*.test.js'",
     "build": "rollup -c",
     "lint": "eslint . --ext .js --cache",
-    "prepare": "NODE_ENV=production yarn build",
-    "posttest": "yarn lint"
+    "prepare": "NODE_ENV=production pnpm build",
+    "posttest": "pnpm lint"
   },
   "publishConfig": {
     "access": "public"
@@ -50,7 +50,8 @@
     "rollup-plugin-polyfill-node": "0.13.0",
     "rollup-plugin-replace": "2.2.0",
     "should": "13.2.3",
-    "sinon": "22.1.0"
+    "sinon": "22.1.0",
+    "eslint": "8.57.1"
   },
   "dependencies": {
     "axios": "1.20.0"

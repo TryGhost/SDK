@@ -16,11 +16,11 @@
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "build": "rollup -c",
-    "prepare": "yarn build",
-    "pretest": "yarn build",
+    "prepare": "pnpm build",
+    "pretest": "pnpm build",
     "test": "NODE_ENV=testing c8 --lines 70 --reporter text --reporter cobertura mocha './test/**/*.test.js'",
     "lint": "eslint . --ext .js --cache",
-    "posttest": "yarn lint",
+    "posttest": "pnpm lint",
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
   },
   "files": [
