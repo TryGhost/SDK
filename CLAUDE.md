@@ -9,7 +9,7 @@ The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript pac
 ## Common Development Commands
 
 ### Setup & Installation
-- **Initial setup**: `corepack enable && pnpm setup`
+- **Initial setup**: `pnpm install`
   - Installs all external dependencies
   - Links all internal dependencies
 - **Install dependencies**: `pnpm install`

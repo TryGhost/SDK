@@ -7,8 +7,8 @@ A collection of tools for interacting with Ghost's APIs.
 This is a monorepo managed with [Lerna](https://lerna.js.org/) and pnpm workspaces.
 
 1. `git clone` this repo & `cd` into it as usual
-2. Enable Corepack with `corepack enable`
-3. Run `pnpm setup`
+2. Install the pnpm version declared in `packageManager` using the [pnpm installation guide](https://pnpm.io/installation)
+3. Run `pnpm install`
    - installs all external dependencies
    - links all internal dependencies
 

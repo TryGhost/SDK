@@ -37,7 +37,60 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Install verified pnpm without lifecycle scripts
+        # packageManager pins the wrapper tarball; the toolchain lock pins the
+        # native tarball. Verify both before executing the native binary.
+        run: |
+          python3 - <<'PYTHON'
+          import base64
+          import hashlib
+          import io
+          import json
+          import os
+          from pathlib import Path
+          import platform
+          import re
+          import sys
+          import tarfile
+          from urllib.request import urlopen
+
+          if sys.platform != 'linux' or platform.machine() != 'x86_64':
+              raise SystemExit('This publish job requires a Linux x64 runner')
+          manager = json.loads(Path('package.json').read_text())['packageManager']
+          match = re.fullmatch(r'pnpm@(\d+\.\d+\.\d+)\+sha512\.([a-f0-9]{128})', manager)
+          if match is None:
+              raise SystemExit('Expected an exact SHA-512-pinned pnpm version')
+          version, wrapper_hash = match.groups()
+
+          def download(url):
+              with urlopen(url, timeout=60) as response:
+                  return response.read()
+
+          wrapper = download(f'https://registry.npmjs.org/pnpm/-/pnpm-{version}.tgz')
+          if hashlib.sha512(wrapper).hexdigest() != wrapper_hash:
+              raise SystemExit('pnpm wrapper integrity mismatch')
+          toolchain_lock = Path('pnpm-lock.yaml').read_text().split('\n---\n', 1)[0]
+          entry = re.search(
+              rf"^  '@pnpm/exe\.linux-x64@{re.escape(version)}':\n"
+              r'    resolution: \{integrity: sha512-([A-Za-z0-9+/=]+)\}$',
+              toolchain_lock, re.MULTILINE,
+          )
+          if entry is None:
+              raise SystemExit('Missing native pnpm integrity in the toolchain lock')
+          native = download(f'https://registry.npmjs.org/@pnpm/exe.linux-x64/-/exe.linux-x64-{version}.tgz')
+          if hashlib.sha512(native).digest() != base64.b64decode(entry.group(1), validate=True):
+              raise SystemExit('pnpm native integrity mismatch')
+          target = Path(os.environ['RUNNER_TEMP']) / 'verified-pnpm'
+          target.mkdir(exist_ok=True)
+          with tarfile.open(fileobj=io.BytesIO(native), mode='r:gz') as archive:
+              member = archive.getmember('package/pnpm')
+              if not member.isfile():
+                  raise SystemExit('Expected a regular native pnpm executable')
+              (target / 'pnpm').write_bytes(archive.extractfile(member).read())
+          (target / 'pnpm').chmod(0o755)
+          with open(os.environ['GITHUB_PATH'], 'a') as github_path:
+              github_path.write(f'{target}\n')
+          PYTHON
 
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:

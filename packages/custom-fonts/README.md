@@ -19,5 +19,5 @@ Follow the instructions for the top-level repo.
 ## Test
 
 - `pnpm lint` run just eslint
-- `pnpm test` run lint and tests
+- `pnpm test` runs type checks and unit tests
 
