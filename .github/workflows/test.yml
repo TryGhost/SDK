@@ -20,7 +20,8 @@ jobs:
         node: [20, 22]
     env:
       FORCE_COLOR: 1
-    name: Node ${{ matrix.node }}
+    # Preserve the required check names from the previous reusable workflow.
+    name: test / Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
