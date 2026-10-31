@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/html-to-plaintext",
-  "version": "1.0.11",
+  "version": "1.0.16",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
@@ -26,10 +26,11 @@
   },
   "devDependencies": {
     "c8": "12.0.0",
-    "mocha": "11.8.0"
+    "mocha": "12.0.3"
   },
   "dependencies": {
-    "html-to-text": "8.2.1",
+    "entities": "8.1.0",
+    "html-to-text": "10.0.1",
     "lodash": "4.18.1"
   }
 }

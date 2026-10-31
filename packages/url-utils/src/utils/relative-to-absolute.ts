@@ -1,6 +1,7 @@
 import type {SecureOptions, SecureOptionsInput} from './types';
 import {URL} from 'url';
 import urlJoin from './url-join';
+import parseRootUrl from './parse-root-url';
 
 export type RelativeToAbsoluteOptions = SecureOptions;
 export type RelativeToAbsoluteOptionsInput = SecureOptionsInput;
@@ -92,7 +93,7 @@ const relativeToAbsolute = function relativeToAbsolute(
         rootUrl = `${rootUrl}/`;
     }
 
-    const parsedRootUrl: URL = new URL(rootUrl);
+    const parsedRootUrl = parseRootUrl(rootUrl);
     const basePath = path.startsWith('/') ? '' : (finalItemPath || '');
     const fullPath = urlJoin([parsedRootUrl.pathname, basePath, path], {rootUrl});
     const absoluteUrl = new URL(fullPath, rootUrl);

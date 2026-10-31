@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/helpers",
-  "version": "1.1.106",
+  "version": "1.1.109",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
@@ -39,10 +39,10 @@
     "@babel/polyfill": "7.12.1",
     "@rollup/plugin-babel": "7.1.0",
     "@rollup/plugin-node-resolve": "16.0.3",
-    "@rollup/plugin-terser": "1.0.0",
+    "@rollup/plugin-terser": "1.0.2",
     "c8": "12.0.0",
     "istanbul": "0.4.5",
-    "mocha": "11.8.0",
+    "mocha": "12.0.3",
     "rollup": "2.80.0",
     "rollup-plugin-commonjs": "10.1.0",
     "should": "13.2.3",

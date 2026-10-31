@@ -1,4 +1,5 @@
 import {URL} from 'url';
+import parseRootUrl, {type ParsedRootUrl} from './parse-root-url';
 import stripSubdirectoryFromPath from './strip-subdirectory-from-path';
 
 export interface AbsoluteToRelativeOptions {
@@ -37,11 +38,11 @@ const absoluteToRelative = function absoluteToRelative(url: string, rootUrl?: st
     }
 
     let parsedUrl: URL;
-    let parsedRoot: URL | undefined;
+    let parsedRoot: ParsedRootUrl | undefined;
 
     try {
         parsedUrl = new URL(url, 'http://relative');
-        parsedRoot = parsedUrl.origin === 'null' ? undefined : new URL(rootUrl || parsedUrl.origin);
+        parsedRoot = parsedUrl.origin === 'null' ? undefined : parseRootUrl(rootUrl || parsedUrl.origin);
 
         // return the url as-is if it was relative or non-http
         if (parsedUrl.origin === 'null' || parsedUrl.origin === 'http://relative') {

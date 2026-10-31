@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/referrer-parser",
-  "version": "0.1.21",
+  "version": "0.1.25",
   "description": "Simple library for parsing referrer URLs",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -47,19 +47,19 @@
   },
   "homepage": "https://ghost.org",
   "devDependencies": {
-    "@types/node": "24.13.3",
+    "@types/node": "26.6.5",
     "@types/should": "13.0.0",
-    "@types/sinon": "22.0.0",
-    "@typescript-eslint/eslint-plugin": "8.65.0",
-    "@typescript-eslint/parser": "8.65.0",
-    "@vitest/coverage-v8": "4.1.10",
-    "eslint": "8.57.1",
+    "@types/sinon": "22.0.2",
+    "@typescript-eslint/eslint-plugin": "8.72.1",
+    "@typescript-eslint/parser": "8.72.1",
+    "@vitest/coverage-v8": "4.1.12",
     "should": "13.2.3",
     "sinon": "22.1.0",
     "typescript": "5.9.3",
-    "vite": "8.2.0",
-    "vite-plugin-dts": "5.0.3",
-    "vitest": "4.1.10"
+    "vite": "8.3.5",
+    "vite-plugin-dts": "5.1.2",
+    "vitest": "4.1.12",
+    "eslint": "8.57.1"
   },
   "engines": {
     "node": ">=16.0.0"

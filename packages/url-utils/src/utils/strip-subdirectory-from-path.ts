@@ -1,4 +1,4 @@
-import {URL} from 'url';
+import parseRootUrl, {type ParsedRootUrl} from './parse-root-url';
 
 /**
  * Removes the directory in the root url from the relative path
@@ -13,10 +13,10 @@ const stripSubdirectoryFromPath = function stripSubdirectoryFromPath(path: strin
         rootUrl = `${rootUrl}/`;
     }
 
-    let parsedRoot: URL;
+    let parsedRoot: ParsedRootUrl;
 
     try {
-        parsedRoot = new URL(rootUrl);
+        parsedRoot = parseRootUrl(rootUrl);
     } catch {
         return path;
     }

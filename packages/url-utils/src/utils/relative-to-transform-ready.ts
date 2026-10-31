@@ -3,6 +3,7 @@ import type {
 } from './types';
 import relativeToAbsolute from './relative-to-absolute';
 import {URL} from 'url';
+import parseRootUrl from './parse-root-url';
 
 export interface RelativeToTransformReadyOptions extends TransformReadyReplacementOptions {
     staticImageUrlPrefix: string;
@@ -44,7 +45,7 @@ const relativeToTransformReady = function (
         return url;
     }
 
-    const rootUrl: URL = new URL(root);
+    const rootUrl = parseRootUrl(root);
     const rootPathname = rootUrl.pathname.replace(/\/$/, '');
 
     // only convert to transform-ready if root url has no subdirectory or the subdirectory matches

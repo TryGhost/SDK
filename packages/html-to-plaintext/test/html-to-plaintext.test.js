@@ -90,6 +90,15 @@ describe('Html to Plaintext', function () {
             assert.equal(excerpt, expected);
         });
 
+        it('decodes entities in textarea and xmp', function () {
+            const html = '<p>a &amp; b</p><textarea>x &lt;y&gt; &amp; z</textarea><xmp>&lt;p&gt;</xmp>';
+            const {excerpt, email} = getEmailandExcert(html);
+            assert.equal(excerpt, 'a & b\n\nx <y> & z<p>');
+            assert.equal(email, 'a & b\n\nx <y> & z<p>');
+            assert.equal(htmlToPlaintext.comment(html), 'a & b\nx <y> & z<p>');
+            assert.equal(htmlToPlaintext.commentSnippet(html), 'a & b x <y> & z<p>');
+        });
+
         it('HRs', function () {
             const html = '<p>See you later alligator...</p><hr><p>...in a while crocodile</p>';
             const expected = 'See you later alligator...\n\n...in a while crocodile';
@@ -141,5 +150,12 @@ describe('Html to Plaintext', function () {
             input: '<p>First paragraph.</p><p>Second paragraph.</p>',
             expected: 'First paragraph. Second paragraph.'
         }));
+
+        it('does not change html-to-text defaults', function () {
+            htmlToPlaintext.commentSnippet('<p>Load the converters</p>');
+
+            const {convert} = require('html-to-text');
+            assert.equal(convert('<a href="https://mysite.com">Link</a>'), 'Link [https://mysite.com]');
+        });
     });
 });

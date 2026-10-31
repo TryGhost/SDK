@@ -1,5 +1,5 @@
 import type {TransformReadyReplacementOptions, TransformReadyReplacementOptionsInput} from './types';
-import {URL} from 'url';
+import parseRootUrl from './parse-root-url';
 
 function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -21,7 +21,7 @@ const transformReadyToRelative = function (
         return str;
     }
 
-    const rootURL = new URL(root);
+    const rootURL = parseRootUrl(root);
     // subdir with no trailing slash because we'll always have a trailing slash after the magic string
     const subdir = rootURL.pathname.replace(/\/$/, '');
 

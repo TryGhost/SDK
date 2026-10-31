@@ -8,12 +8,25 @@ const mergeSettings = (extraSettings) => {
     });
 };
 
+// html-to-text 10's parser treats textarea and xmp as raw text, leaving entities encoded
+const decodedRawText = (elem, walk, builder) => {
+    const {decodeHTML} = require('entities');
+
+    for (const child of elem.children) {
+        if (child.type === 'text') {
+            child.data = decodeHTML(child.data);
+        }
+    }
+    walk(elem.children, builder);
+};
+
 const baseSettings = {
     wordwrap: false,
     preserveNewlines: true,
 
     // equiv returnDomByDefault: true,
     baseElements: {returnDomByDefault: true},
+    formatters: {decodedRawText},
     selectors: [
         // Ignore images, equiv ignoreImage: true
         {selector: 'img', format: 'skip'},
@@ -28,7 +41,11 @@ const baseSettings = {
         {selector: 'table', options: {uppercaseHeaderCells: false}},
 
         // Backwards compatibility with html-to-text 5.1.1
-        {selector: 'div', format: 'inline'}
+        {selector: 'div', format: 'inline'},
+
+        // Backwards compatibility with html-to-text 8
+        {selector: 'textarea', format: 'decodedRawText'},
+        {selector: 'xmp', format: 'decodedRawText'}
     ]
 };
 
@@ -82,8 +99,9 @@ const loadConverters = () => {
 
     const commentSnippetSettings = mergeSettings({
         preserveNewlines: false,
-        ignoreHref: true,
         selectors: [
+            // The top-level ignoreHref option leaks into html-to-text's shared defaults
+            {selector: 'a', options: {ignoreHref: true}},
             {selector: 'blockquote', format: 'skip'}
         ]
     });

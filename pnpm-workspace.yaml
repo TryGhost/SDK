@@ -7,3 +7,9 @@ linkWorkspacePackages: true
 strictDepBuilds: true
 minimumReleaseAge: 4320
 blockExoticSubdeps: true
+
+allowBuilds:
+  core-js: false
+  lmdb: false
+  msgpackr-extract: false
+  nx: false

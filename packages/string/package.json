@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/string",
-  "version": "0.3.5",
+  "version": "0.3.8",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "c8": "12.0.0",
     "jsdom": "29.1.1",
-    "mocha": "11.8.0",
+    "mocha": "12.0.3",
     "should": "13.2.3",
     "sinon": "22.1.0"
   },

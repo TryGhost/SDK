@@ -5,7 +5,7 @@ require('../../utils');
 const sinon = require('sinon');
 const rewire = require('rewire');
 
-const cheerio = require('cheerio');
+const cheerio = require('cheerio/slim');
 const htmlTransformModule = rewire('../../../lib/utils/html-transform');
 const htmlRelToTRModule = rewire('../../../lib/utils/html-relative-to-transform-ready');
 htmlRelToTRModule.__set__('html_transform_1', htmlTransformModule);

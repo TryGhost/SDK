@@ -60,15 +60,29 @@ describe('color-utils', function () {
             assert.equal(result.hex(), '#FFFFFF');
         });
 
-        it('returns white for a yellowish background where b-channel shifts yiq', function () {
-            // .b() returns the Lab b-channel, not RGB blue
+        it('uses the RGB blue channel when calculating contrast', function () {
             const result = textColorForBackgroundColor('#cccccc');
-            assert.equal(result.hex(), '#FFFFFF');
+            assert.equal(result.hex(), '#000000');
         });
 
         it('returns white for a mid-dark background', function () {
             const result = textColorForBackgroundColor('#333333');
             assert.equal(result.hex(), '#FFFFFF');
         });
+
+        const additionalColorCases = [
+            {background: '#dacafe', expected: '#000000', description: 'reported lavender background'},
+            {background: '#ffa5b1', expected: '#000000', description: 'reported pink background'},
+            {background: '#a3e6ff', expected: '#000000', description: 'reported blue background'},
+            {background: '#b9b9b9', expected: '#FFFFFF', description: 'gray below the YIQ threshold'},
+            {background: '#bbbbbb', expected: '#000000', description: 'gray above the YIQ threshold'}
+        ];
+
+        for (const {background, expected, description} of additionalColorCases) {
+            it(`returns ${expected === '#000000' ? 'black' : 'white'} for a ${description}`, function () {
+                const result = textColorForBackgroundColor(background);
+                assert.equal(result.hex(), expected);
+            });
+        }
     });
 });

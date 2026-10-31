@@ -2,7 +2,7 @@ import type {AbsoluteToTransformReadyOptionsInput, BaseUrlOptionsInput} from './
 import absoluteToTransformReady from './absolute-to-transform-ready';
 import buildEarlyExitMatchModule from './build-early-exit-match';
 const {escapeRegExp} = buildEarlyExitMatchModule;
-import {URL} from 'url';
+import parseRootUrl from './parse-root-url';
 
 type PlaintextAbsoluteToTransformReadyOptions = AbsoluteToTransformReadyOptionsInput & BaseUrlOptionsInput;
 type PlaintextAbsoluteToTransformReadyOptionsInput = Partial<PlaintextAbsoluteToTransformReadyOptions>;
@@ -13,7 +13,7 @@ function buildLinkRegex(rootUrl: string, options: PlaintextAbsoluteToTransformRe
         .filter((value): value is string => Boolean(value));
 
     const patterns = baseUrls.map((baseUrl: string) => {
-        const parsed = new URL(baseUrl);
+        const parsed = parseRootUrl(baseUrl);
         const escapedUrl = escapeRegExp(`${parsed.hostname}${parsed.pathname.replace(/\/$/, '')}`);
         return escapedUrl;
     });

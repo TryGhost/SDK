@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@10.34.5+sha512.a4ee05f2f73658255bd6a89859c065a45c28a57daefae2c893a168ee2b73168c37b91e83e57ea67654ad03f03031746430e8bce38e362e042605fb8abc80192e",
+  "packageManager": "pnpm@12.16.1+sha512.091d1dee7927575661b25dab3c2ae31cafc1c54d6b71ed6a6600cf0c1cb10434a447eae14015f1b23e2e6bedeed79df94a932e2164d2832280dce3fb32f656d1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git"
@@ -23,20 +23,12 @@
     "ship": "lerna version --git-remote ${GHOST_UPSTREAM:-origin}",
     "ship:ci": "lerna publish from-package --yes --no-private"
   },
-  "pnpm": {
-    "allowBuilds": {
-      "core-js": false,
-      "lmdb": false,
-      "msgpackr-extract": false,
-      "nx": false
-    }
-  },
   "devDependencies": {
     "eslint": "8.57.1",
-    "eslint-plugin-ghost": "3.5.0",
+    "eslint-plugin-ghost": "4.0.1",
     "eslint-plugin-react": "7.37.5",
     "lerna": "9.0.7",
-    "mocha": "11.8.0",
+    "mocha": "12.0.3",
     "should": "13.2.3",
     "sinon": "22.1.0"
   }

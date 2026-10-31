@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/admin-api",
-  "version": "1.14.11",
+  "version": "1.14.14",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
@@ -27,12 +27,12 @@
   },
   "devDependencies": {
     "c8": "12.0.0",
-    "mocha": "11.8.0",
+    "mocha": "12.0.3",
     "should": "13.2.3",
     "sinon": "22.1.0"
   },
   "dependencies": {
-    "axios": "1.19.0",
+    "axios": "1.20.0",
     "form-data": "4.0.6",
     "jsonwebtoken": "9.0.3"
   }

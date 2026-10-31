@@ -60,10 +60,8 @@ All packages are located in the `/packages` directory:
 ### Content Processing
 - **@tryghost/html-to-plaintext**: HTML to plaintext conversion
 - **@tryghost/html-to-mobiledoc**: HTML to Mobiledoc conversion
-- **@tryghost/image-transform**: Image transformation utilities
 
 ### Infrastructure
-- **@tryghost/limit-service**: Centralized limit enforcement
 - **@tryghost/referrer-parser**: Referrer parsing utilities
 
 ### Frontend Packages
@@ -117,7 +115,7 @@ Different packages use different build systems:
 ## Important Notes
 
 - This is a pnpm workspaces monorepo. Use the exact pnpm version declared in `packageManager` via Corepack.
-- Dependency install scripts are denied unless reviewed in the root `pnpm.allowBuilds` map. Any `true` approval must be security-reviewed and scoped to the exact package version.
+- Dependency install scripts are denied unless reviewed in the root `pnpm-workspace.yaml` `allowBuilds` map. Any `true` approval must be security-reviewed and scoped to the exact package version.
 - The main branch is `main` for pull requests
 - All packages are published under the `@tryghost` scope
 - Packages have independent versioning

@@ -13,7 +13,7 @@ This is a monorepo managed with [Lerna](https://lerna.js.org/) and pnpm workspac
    - links all internal dependencies
 
 To add a new package to the repo:
-- run `npx lerna create <package name>`
+- run `pnpm exec lerna create <package name>`
 
 ## Run
 

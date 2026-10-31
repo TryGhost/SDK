@@ -421,6 +421,10 @@ module.exports = function GhostAdminAPI(options) {
     }
 
     function makeApiRequest({endpoint, method, body, queryParams = {}, headers = {}}) {
+        if (method === 'GET') {
+            body = undefined;
+        }
+
         const {url: apiUrl, key, version, makeRequest} = config;
         const url = `${apiUrl}${endpoint}`;
 
