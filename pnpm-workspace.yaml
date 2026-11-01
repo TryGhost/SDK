@@ -13,3 +13,6 @@ allowBuilds:
   lmdb: false
   msgpackr-extract: false
   nx: false
+minimumReleaseAgeExclude:
+  # Renovate security update: glob@14.0.2
+  - glob@14.0.2
