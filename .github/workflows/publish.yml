@@ -22,7 +22,7 @@ jobs:
       group: publish-npm-${{ github.ref }}
       cancel-in-progress: false
 
-    # Only run on the upstream repo (not forks) and for lerna version commits or manual dispatch
+    # Only run on the upstream repo (not forks) and for Nx version commits or manual dispatch
     if: github.repository == 'TryGhost/SDK' && (github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'Published new versions'))
 
     permissions:
@@ -33,6 +33,7 @@ jobs:
       FORCE_COLOR: 1
       CI: true
       NPM_CONFIG_PROVENANCE: true
+      PNPM_CONFIG_PROVENANCE: true
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -110,15 +111,52 @@ jobs:
           git add -A
           git diff --staged --quiet || git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Build artifacts [skip ci]"
 
+      - name: Determine packages to publish
+        id: pubs
+        # Match framework's unpublished-version selection. A registry outage or
+        # authentication failure must fail the job, not queue every package.
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+          from urllib.error import HTTPError
+          from urllib.parse import quote
+          from urllib.request import urlopen
+
+          projects = []
+          for manifest in sorted(Path('packages').glob('*/package.json')):
+              package = json.loads(manifest.read_text())
+              if package.get('private'):
+                  continue
+              name, version = package['name'], package['version']
+              url = f'https://registry.npmjs.org/{quote(name, safe="@/")}/{quote(version, safe="")}'
+              try:
+                  with urlopen(url, timeout=60) as response:
+                      published = json.load(response)
+                  if published.get('name') != name or published.get('version') != version:
+                      raise SystemExit(f'Unexpected registry response for {name}@{version}')
+                  print(f'skip {name}@{version} (already published)')
+              except HTTPError as error:
+                  if error.code != 404:
+                      raise
+                  print(f'queue {name}@{version}')
+                  projects.append(name)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'projects={",".join(projects)}\n')
+          PYTHON
+
       - name: Publish to npm (dry run)
-        if: github.event.inputs['dry-run'] == 'true'
-        run: pnpm ship:ci
+        if: steps.pubs.outputs.projects != '' && github.event.inputs['dry-run'] == 'true'
+        run: pnpm exec nx release publish --projects="$PUBLISH_PROJECTS" --dry-run
         env:
-          NPM_CONFIG_DRY_RUN: true
+          PUBLISH_PROJECTS: ${{ steps.pubs.outputs.projects }}
 
       - name: Publish to npm
-        if: github.event.inputs['dry-run'] != 'true'
-        run: pnpm ship:ci
+        if: steps.pubs.outputs.projects != '' && github.event.inputs['dry-run'] != 'true'
+        run: pnpm exec nx release publish --projects="$PUBLISH_PROJECTS"
+        env:
+          PUBLISH_PROJECTS: ${{ steps.pubs.outputs.projects }}
 
       - uses: tryghost/actions/actions/slack-build@0204421bd3b15725e5b8c606d5d671e9674707ea
         if: failure()

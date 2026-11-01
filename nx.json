@@ -1,0 +1,82 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
+    "sharedGlobals": [
+      "{workspaceRoot}/package.json",
+      "{workspaceRoot}/pnpm-lock.yaml",
+      "{workspaceRoot}/pnpm-workspace.yaml",
+      "{workspaceRoot}/nx.json",
+      "{workspaceRoot}/.eslintrc*"
+    ]
+  },
+  "parallel": 4,
+  "useDaemonProcess": false,
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "{projectRoot}/build",
+        "{projectRoot}/cjs",
+        "{projectRoot}/es",
+        "{projectRoot}/types",
+        "{projectRoot}/umd"
+      ],
+      "inputs": [
+        "default",
+        "^default"
+      ],
+      "cache": true
+    },
+    "lint": {
+      "cache": true
+    },
+    "test": {
+      "dependsOn": [
+        "build",
+        "^build"
+      ],
+      "inputs": [
+        "default",
+        "^default",
+        {
+          "runtime": "node -v"
+        }
+      ],
+      "cache": true,
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
+    }
+  },
+  "release": {
+    "projects": [
+      "packages/*"
+    ],
+    "projectsRelationship": "independent",
+    "releaseTag": {
+      "pattern": "{projectName}@{version}"
+    },
+    "version": {
+      "preserveMatchingDependencyRanges": false,
+      "git": {
+        "commit": true,
+        "tag": true,
+        "commitMessage": "Published new versions"
+      },
+      "adjustSemverBumpsForZeroMajorVersion": false
+    },
+    "changelog": {
+      "workspaceChangelog": false
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org"
+    }
+  },
+  "analytics": false
+}

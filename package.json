@@ -16,19 +16,23 @@
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "setup": "pnpm install",
-    "build": "lerna run build",
-    "test": "lerna run lint && lerna run test",
-    "lint": "lerna run lint",
-    "preship": "pnpm test",
-    "ship": "lerna version --git-remote ${GHOST_UPSTREAM:-origin}",
-    "ship:ci": "lerna publish from-package --yes --no-private"
+    "build": "nx run-many -t build",
+    "test": "pnpm lint && pnpm nx run-many -t test",
+    "lint": "nx run-many -t lint",
+    "preship": "test \"$(git branch --show-current)\" = main && test -z \"$(git status --porcelain)\" || (echo \"Error: ship from a clean main branch\" && exit 1) && pnpm test",
+    "ship": "nx release version --git-push --git-remote ${GHOST_UPSTREAM:-origin}",
+    "test:ci": "pnpm lint && pnpm nx run-many -t test --outputStyle=static",
+    "ship:patch": "pnpm ship patch",
+    "ship:minor": "pnpm ship minor",
+    "ship:major": "pnpm ship major"
   },
   "devDependencies": {
+    "@nx/js": "23.3.1",
     "eslint": "8.57.1",
     "eslint-plugin-ghost": "4.0.1",
     "eslint-plugin-react": "7.37.5",
-    "lerna": "9.0.7",
     "mocha": "12.0.3",
+    "nx": "23.3.1",
     "should": "13.2.3",
     "sinon": "22.1.0"
   }

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript packages for interacting with Ghost's APIs. It uses Lerna for monorepo management and pnpm workspaces.
+The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript packages for interacting with Ghost's APIs. It uses Nx for task orchestration and releases and pnpm workspaces.
 
 ## Common Development Commands
 
@@ -15,7 +15,7 @@ The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript pac
 - **Install dependencies**: `pnpm install`
 
 ### Testing
-- **Run all tests**: `pnpm test` (runs `lerna run test`)
+- **Run all tests**: `pnpm test` (runs `pnpm lint` and `nx run-many -t test`)
   - This runs tests in all packages
 - **Run tests in specific package**: `pnpm --dir packages/<package-name> test`
 - **Run tests with coverage**: Most packages use `NODE_ENV=testing c8 --all --reporter text --reporter cobertura mocha './test/**/*.test.js'`
@@ -23,7 +23,7 @@ The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript pac
 - **Run tests matching pattern**: `NODE_ENV=testing mocha './test/**/*.test.js' --grep "pattern"`
 
 ### Linting
-- **Run all linters**: `pnpm lint` (runs `lerna run lint`)
+- **Run all linters**: `pnpm lint` (runs `nx run-many -t lint`)
 - **Run linter in specific package**: `pnpm --dir packages/<package-name> lint`
 - **Fix linting issues**: `pnpm lint -- --fix`
 
@@ -33,10 +33,12 @@ The Ghost SDK is a monorepo containing a collection of JavaScript/TypeScript pac
   - TypeScript packages: Check for `tsconfig.json` and build scripts
 
 ### Publishing
-- **Version packages**: `pnpm ship` (runs `lerna version`) — runs tests, prompts for version bumps, and pushes the version commit to `main`
+- **Version packages**: `pnpm ship` (runs `nx release version`) — runs tests, prompts for version bumps, and pushes the version commit to `main`
   - CI automatically publishes the updated packages to npm via the `publish.yml` workflow
   - Use `GHOST_UPSTREAM=upstream pnpm ship` when `origin` points to a fork and `upstream` points to the original TryGhost/SDK repo
-- **CI publish** (used by CI only): `pnpm ship:ci` (runs `lerna publish from-package`)
+- **Preview versions**: `pnpm exec nx release version patch --dry-run` (never pushes or publishes)
+- **Preview publishing**: `pnpm build && pnpm exec nx release publish --dry-run`
+- **CI publish**: `.github/workflows/publish.yml` selects only versions missing from npm, then runs `pnpm exec nx release publish --projects=<names>`. Never run an unfiltered non-dry-run publish: it can move dist-tags for existing versions.
 
 ## Package Structure
 
