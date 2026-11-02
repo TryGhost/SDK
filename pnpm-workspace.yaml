@@ -16,3 +16,6 @@ allowBuilds:
 minimumReleaseAgeExclude:
   # Renovate security update: glob@14.0.2
   - glob@14.0.2
+
+# Disable implicit executable config discovery; shared policy stays declarative.
+pnpmfile: []

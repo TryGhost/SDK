@@ -37,6 +37,8 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile --prefer-offline
+      - name: Check shared pnpm supply-chain policy
+        uses: TryGhost/renovate-config/.github/actions/pnpm-policy@60ad7e20e540cb0510cbe2a6a927ce81cf22bedb
       - run: pnpm test:ci
 
       - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
