@@ -1,5 +1,5 @@
 {
-  "extends": ["github>tryghost/renovate-config"],
+  "extends": ["local>TryGhost/renovate-config:pnpm.json5"],
   "ignorePresets": [":pinDependencies"],
   "ignorePaths": ["packages/members"],
   "platformAutomerge": true,
