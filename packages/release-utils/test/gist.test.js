@@ -1,7 +1,7 @@
 require('./utils');
 
 const path = require('path');
-const nock = require('nock');
+const nock = require('nock').default;
 const lib = require('../lib');
 
 const CHANGELOG = path.join(__dirname, 'fixtures', 'changelog.md');
