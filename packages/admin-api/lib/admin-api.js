@@ -64,7 +64,11 @@ module.exports = function GhostAdminAPI(options) {
                 data,
                 headers,
                 maxContentLength: Infinity,
-                maxBodyLength: Infinity,
+                // maxBodyLength is left at axios' default (-1, unlimited): axios
+                // already passes Infinity to follow-redirects for it. Setting it
+                // explicitly makes axios >= 1.21 pipe upload streams through a
+                // byte-counting pipeline that never finishes for an empty
+                // form-data body, hanging the request.
                 paramsSerializer(parameters) {
                     return Object.keys(parameters).reduce((parts, key) => {
                         const val = encodeURIComponent([].concat(parameters[key]).join(','));
