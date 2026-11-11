@@ -51,3 +51,29 @@ jobs:
           status: ${{ job.status }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Single stable check for branch protection, so the ruleset doesn't need
+  # updating whenever the Node matrix changes.
+  required:
+    needs: [build]
+    if: always()
+    runs-on: ubuntu-latest
+    # Renovate PRs skip `build` on pull_request and test on the push to
+    # renovate/* instead. Report under a different name there, so the
+    # pull_request run can't satisfy the required check before the push run
+    # has finished testing the same commit.
+    name: ${{ (github.event_name == 'pull_request' && startsWith(github.head_ref, 'renovate/')) && 'Required CI checks (tested on push)' || 'Required CI checks pass' }}
+    steps:
+      - name: Check build result
+        env:
+          RESULT: ${{ needs.build.result }}
+          RENOVATE_PR: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'renovate/') }}
+        run: |
+          echo "build: $RESULT"
+          if [ "$RENOVATE_PR" = "true" ] && [ "$RESULT" = "skipped" ]; then
+            exit 0
+          fi
+          if [ "$RESULT" != "success" ]; then
+            echo "Required jobs did not succeed. You may need to re-run them."
+            exit 1
+          fi
