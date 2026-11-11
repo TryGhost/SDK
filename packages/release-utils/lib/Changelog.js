@@ -1,4 +1,4 @@
-const execa = require('execa');
+const {execaSync} = require('execa');
 const _ = require('lodash');
 
 const localUtils = require('./utils');
@@ -31,20 +31,20 @@ class Changelog {
         ];
 
         _.each(commands, (command) => {
-            execa.sync(command, {cwd: options.folder || this.folder, shell: true});
+            execaSync(command, {cwd: options.folder || this.folder, shell: true});
         });
 
         return this;
     }
 
     sort() {
-        execa.sync(`sort -r ${this.changelogPath} -o ${this.changelogPath}`, {cwd: this.folder, shell: true});
+        execaSync(`sort -r ${this.changelogPath} -o ${this.changelogPath}`, {cwd: this.folder, shell: true});
 
         return this;
     }
 
     clean() {
-        execa.sync(`sed -i.bk -E 's/^[0-9]{10} //g' ${this.changelogPath}`, {cwd: this.folder, shell: true});
+        execaSync(`sed -i.bk -E 's/^[0-9]{10} //g' ${this.changelogPath}`, {cwd: this.folder, shell: true});
 
         return this;
     }
