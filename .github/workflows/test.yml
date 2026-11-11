@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [20, 22]
+        node: [22]
     env:
       FORCE_COLOR: 1
     # Preserve the required check names from the previous reusable workflow.
