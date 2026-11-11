@@ -35,7 +35,7 @@
     "should": "13.2.3",
     "sinon": "22.1.0",
     "typescript": "5.9.3",
-    "domhandler": "5.0.3"
+    "domhandler": "6.0.1"
   },
   "dependencies": {
     "cheerio": "1.2.0",
