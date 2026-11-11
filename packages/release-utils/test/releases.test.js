@@ -2,8 +2,11 @@
 // const testUtils = require('./utils');
 require('./utils');
 
+const fs = require('fs');
 const path = require('path');
-const nock = require('nock');
+const {Readable} = require('stream');
+const sinon = require('sinon');
+const nock = require('nock').default;
 const lib = require('../lib');
 
 const CHANGELOG = path.join(__dirname, 'fixtures', 'changelog.md');
@@ -100,6 +103,18 @@ describe('Releases', function () {
     });
 
     describe('uploadZip', function () {
+        // nock 15 (@mswjs/interceptors 0.45) passes a request through to the
+        // real network when no request bytes arrive within one setImmediate.
+        // A file read stream delivers the body too late, so feed the same
+        // bytes from an in-memory stream instead.
+        beforeEach(function () {
+            sinon.stub(fs, 'createReadStream').callsFake(filePath => Readable.from([fs.readFileSync(filePath)]));
+        });
+
+        afterEach(function () {
+            sinon.restore();
+        });
+
         it('no options', function (done) {
             try {
                 lib.releases.uploadZip();
