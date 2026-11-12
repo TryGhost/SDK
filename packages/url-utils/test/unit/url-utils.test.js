@@ -465,6 +465,26 @@ describe('UrlUtils', function () {
         });
     });
 
+    describe('getAdminOrigin', function () {
+        it('falls back to site url origin when no admin url is set', function () {
+            fakeConfig.url = 'http://my-ghost-blog.com/blog/';
+            assert.equal(utils.getAdminOrigin(), 'http://my-ghost-blog.com');
+        });
+
+        it('returns admin url origin when admin url is set', function () {
+            fakeConfig.url = 'http://my-ghost-blog.com/blog/';
+            fakeConfig.adminUrl = 'https://admin.ghost-blog.com:2368/';
+            assert.equal(utils.getAdminOrigin(), 'https://admin.ghost-blog.com:2368');
+        });
+
+        it('uses frozen values when frozen', function () {
+            fakeConfig.adminUrl = 'https://admin.ghost-blog.com';
+            utils.freeze();
+            fakeConfig.adminUrl = 'https://admin.changed.com';
+            assert.equal(utils.getAdminOrigin(), 'https://admin.ghost-blog.com');
+        });
+    });
+
     describe('createUrl', function () {
         it('adds trailing slash when trailingSlash is true and path lacks one', function () {
             const result = utils.createUrl('/my-path', true, true);
