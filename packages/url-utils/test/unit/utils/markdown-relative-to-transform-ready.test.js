@@ -7,7 +7,8 @@ const path = require('path');
 const sinon = require('sinon');
 const rewire = require('rewire');
 
-const remark = require('remark');
+const {remark} = require('remark');
+const remarkGfm = require('remark-gfm').default;
 const markdownTransformRewired = rewire('../../../lib/utils/markdown-transform');
 const markdownRelativeToTransformReadyRewired = rewire('../../../lib/utils/markdown-relative-to-transform-ready');
 const markdownRelativeToTransformReady = markdownRelativeToTransformReadyRewired.default;
@@ -171,8 +172,8 @@ Just testing
 
         beforeEach(function () {
             sandbox = sinon.createSandbox();
-            remarkSpy = sinon.spy(remark);
-            markdownTransformRewired.__set__('remark', remarkSpy);
+            remarkSpy = sinon.spy(() => remark());
+            markdownTransformRewired.__set__('parser', {remark: remarkSpy, remarkGfm});
             markdownRelativeToTransformReadyRewired.__set__('markdown_transform_1', markdownTransformRewired);
         });
 
