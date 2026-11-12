@@ -1,9 +1,29 @@
 import type {MarkdownTransformOptions, MarkdownTransformOptionsInput, MarkdownTransformFunctions} from './types';
 /* eslint-disable @typescript-eslint/no-require-imports */
-let remark: typeof import('remark') | undefined;
-const footnotes = require('remark-footnotes');
 const visit = require('unist-util-visit');
 /* eslint-enable @typescript-eslint/no-require-imports */
+
+interface MarkdownParser {
+    remark: typeof import('remark').remark;
+    remarkGfm: typeof import('remark-gfm').default;
+}
+
+// remark is loaded lazily because it's only needed for markdown content.
+// remark and remark-gfm are ESM-only; require() returns their module namespace.
+let parser: MarkdownParser | undefined;
+
+function getParser(): MarkdownParser {
+    if (!parser) {
+        /* eslint-disable @typescript-eslint/no-require-imports */
+        parser = {
+            remark: require('remark').remark,
+            remarkGfm: require('remark-gfm').default
+        };
+        /* eslint-enable @typescript-eslint/no-require-imports */
+    }
+
+    return parser;
+}
 
 function replaceLast(find: string, replace: string, str: string): string {
     const lastIndex = str.lastIndexOf(find);
@@ -41,18 +61,12 @@ function markdownTransform(
 
     const replacements: Replacement[] = [];
 
-    if (!remark) {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        remark = require('remark');
-    }
+    const {remark, remarkGfm} = getParser();
 
-    if (!remark) {
-        return markdown;
-    }
-
+    // remark >= 13 always parses CommonMark. remark-gfm restores the GFM syntax
+    // remark 11 parsed by default (autolink literals, tables, footnotes).
     const tree = remark()
-        .use({settings: {commonmark: true}})
-        .use(footnotes, {inlineNotes: true})
+        .use(remarkGfm)
         .parse(markdown);
 
     visit(tree, ['link', 'image', 'html'], (node: {type: string; value?: string; url?: string; position?: {start: {offset: number}; end: {offset: number}}}) => {
