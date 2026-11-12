@@ -33,7 +33,7 @@
     "sinon": "22.1.0"
   },
   "dependencies": {
-    "@tryghost/errors": "3.4.5",
+    "@tryghost/errors": "3.4.6",
     "axios": "1.21.0",
     "emoji-regex": "11.0.0",
     "execa": "10.2.1",
