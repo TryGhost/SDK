@@ -178,6 +178,12 @@ importers:
       '@nx/js':
         specifier: 24.0.5
         version: 24.0.5(@babel/traverse@7.29.10(supports-color@8.1.1))(nx@24.0.5)(supports-color@8.1.1)
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.72.1
+        version: 8.72.1(@typescript-eslint/parser@8.72.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.72.1
+        version: 8.72.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       eslint:
         specifier: 9.39.5
         version: 9.39.5(supports-color@8.1.1)
@@ -319,12 +325,6 @@ importers:
       core-js:
         specifier: 3.51.0
         version: 3.51.0
-      eslint:
-        specifier: 9.39.5
-        version: 9.39.5(supports-color@8.1.1)
-      eslint-plugin-ghost:
-        specifier: 4.0.1
-        version: 4.0.1(@typescript-eslint/eslint-plugin@8.72.1(@typescript-eslint/parser@8.72.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(@typescript-eslint/parser@8.72.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@9.39.5(supports-color@8.1.1))(typescript@5.9.3)
       mocha:
         specifier: 12.0.3
         version: 12.0.3
@@ -490,18 +490,9 @@ importers:
       '@types/sinon':
         specifier: 22.0.2
         version: 22.0.2
-      '@typescript-eslint/eslint-plugin':
-        specifier: 8.72.1
-        version: 8.72.1(@typescript-eslint/parser@8.72.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
-      '@typescript-eslint/parser':
-        specifier: 8.72.1
-        version: 8.72.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
       '@vitest/coverage-v8':
         specifier: 5.0.5
         version: 5.0.5(vitest@5.0.5)
-      eslint:
-        specifier: 9.39.5
-        version: 9.39.5(supports-color@8.1.1)
       should:
         specifier: 13.2.3
         version: 13.2.3
