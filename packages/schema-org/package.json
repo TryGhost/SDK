@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "echo \"Implement me!\"",
     "test": "NODE_ENV=testing c8 --reporter text --reporter cobertura mocha './test/**/*.test.js'",
-    "lint": "eslint . --ext .js --cache",
+    "lint": "eslint . --cache",
     "posttest": "pnpm lint",
     "coverage": "NODE_ENV=testing istanbul cover --dir test/coverage _mocha './test/**/*.test.js'"
   },

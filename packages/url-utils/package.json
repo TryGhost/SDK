@@ -15,7 +15,7 @@
     "pretest": "pnpm build",
     "test": "NODE_ENV=testing c8 --src lib --lines 95 --reporter text --reporter cobertura --reporter html mocha './test/**/*.test.js'",
     "build": "tsc -p tsconfig.json",
-    "lint": "eslint src test --ext .js,.ts --cache",
+    "lint": "eslint . --cache",
     "prepare": "NODE_ENV=production pnpm build",
     "posttest": "pnpm lint"
   },

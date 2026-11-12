@@ -136,12 +136,12 @@ describe('utils: deduplicateSubdirectory()', function () {
                 .should.equal('/blog/', 'with root trailing-slash');
         });
     });
-});
 
-describe('utils: deduplicateSubdirectory() cache', function () {
-    it('keeps working after the subdirectory cache is cleared', function () {
-        for (let i = 0; i < 101; i++) {
-            deduplicateSubdirectory(`/sub${i}/sub${i}/`, `https://example.com/sub${i}/`).should.equal(`/sub${i}/`);
-        }
+    describe('cache', function () {
+        it('keeps working after the subdirectory cache is cleared', function () {
+            for (let i = 0; i < 101; i++) {
+                deduplicateSubdirectory(`/sub${i}/sub${i}/`, `https://example.com/sub${i}/`).should.equal(`/sub${i}/`);
+            }
+        });
     });
 });

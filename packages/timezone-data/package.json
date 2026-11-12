@@ -31,7 +31,7 @@
     "pretest": "pnpm build",
     "test": "NODE_ENV=testing c8 --src cjs --reporter text --reporter cobertura mocha './test/**/*.test.js'",
     "build": "rollup -c && tsc --declaration --emitDeclarationOnly --declarationDir ./types",
-    "lint": "eslint . --ext .js --cache",
+    "lint": "eslint . --cache",
     "prepare": "NODE_ENV=production pnpm build",
     "posttest": "pnpm lint"
   },

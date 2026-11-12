@@ -9,6 +9,14 @@
       "matchPackageNames": [
         "/^rollup/"
       ]
+    },
+    {
+      "description": "ESLint 10 needs eslint-plugin-ghost to support it: its bundled rules call context APIs ESLint 10 removed",
+      "matchPackageNames": [
+        "eslint",
+        "@eslint/js"
+      ],
+      "allowedVersions": "<10"
     }
   ]
 }
