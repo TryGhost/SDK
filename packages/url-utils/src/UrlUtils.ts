@@ -240,6 +240,18 @@ export default class UrlUtils {
         return utils.urlJoin(parts, {rootUrl: this.getSiteUrl()});
     }
 
+    /**
+     * Returns the origin (protocol + host + port) of the admin URL, falling back
+     * to the site URL when no separate admin URL is configured.
+     *
+     * getAdminOrigin() -> 'https://admin.example.com'
+     *
+     * @return {string} origin with no trailing slash or path
+     */
+    getAdminOrigin(): string {
+        return new URL(this.getAdminUrl() || this.getSiteUrl()).origin;
+    }
+
     // ## createUrl
     // Simple url creation from a given path
     // Ensures that our urls contain the subdirectory if there is one

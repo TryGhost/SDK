@@ -11,6 +11,14 @@ or
 
 ## Usage
 
+### Admin origin
+
+`getAdminOrigin()` returns the origin (protocol, host and port) of the admin URL, falling back to the site URL when no admin URL is configured:
+
+```js
+urlUtils.getAdminOrigin(); // 'https://admin.example.com'
+```
+
 ### Freezing URLs
 
 When the site, subdirectory and admin URLs never change at runtime (e.g. in production), mark them as frozen so url-utils can skip calling the URL getters:
