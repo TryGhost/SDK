@@ -18,28 +18,28 @@ describe('GhostContentApi', function () {
             try {
                 new GhostContentApi();
                 return should.fail();
-            } catch (err) {
+            } catch {
             //
             }
 
             try {
                 new GhostContentApi({url: config.url, version: config.version});
                 return should.fail();
-            } catch (err) {
+            } catch {
             //
             }
 
             try {
                 new GhostContentApi({version: config.version, key: config.key});
                 return should.fail();
-            } catch (err) {
+            } catch {
             //
             }
 
             try {
                 new GhostContentApi({url: config.url, key: config.key});
                 return should.fail();
-            } catch (err) {
+            } catch {
             //
             }
 

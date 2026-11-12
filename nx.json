@@ -10,8 +10,7 @@
       "{workspaceRoot}/pnpm-lock.yaml",
       "{workspaceRoot}/pnpm-workspace.yaml",
       "{workspaceRoot}/nx.json",
-      "{workspaceRoot}/eslint.config.js",
-      "{workspaceRoot}/eslint.shared.js"
+      "{workspaceRoot}/eslint.config.js"
     ]
   },
   "parallel": 4,

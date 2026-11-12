@@ -1,6 +1,7 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
 require('../../utils');
+const should = require('should');
 
 const sinon = require('sinon');
 const rewire = require('rewire');
@@ -211,7 +212,6 @@ describe('utils: htmlRelativeToAbsolute()', function () {
     });
 
     describe('srcset support', function () {
-        /* eslint-disable no-irregular-whitespace */
         it('converts multiple urls', function () {
             let html = `
                 <img srcset="/content/images/elva-fairy-320w.jpg 320w,
@@ -261,7 +261,6 @@ describe('utils: htmlRelativeToAbsolute()', function () {
                     src="https://my-ghost-blog.com/content/images/elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
             `);
         });
-        /* eslint-enable no-irregular-whitespace */
     });
 
     describe('DOM parsing is skipped', function () {

@@ -1,6 +1,7 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
 require('../utils');
+const sinon = require('sinon');
 const should = require('should');
 const assert = require('assert/strict');
 const fs = require('fs');

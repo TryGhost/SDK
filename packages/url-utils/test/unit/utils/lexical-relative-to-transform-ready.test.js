@@ -1,6 +1,7 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
 require('../../utils');
+const should = require('should');
 
 const UrlUtils = require('../../../lib/UrlUtils').default;
 const lexicalRelativeToTransformReady = require('../../../lib/utils/lexical-relative-to-transform-ready').default;

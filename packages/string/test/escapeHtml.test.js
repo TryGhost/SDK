@@ -1,4 +1,5 @@
 require('./utils');
+const should = require('should');
 
 const escapeHtml = require('../lib').escapeHtml;
 const jsdom = require('jsdom');

@@ -1,288 +1,168 @@
-// ESLint config for every package. ESLint 9 looks for eslint.config.js from
-// the directory it runs in upwards, so each package's `eslint .` finds this
-// file. Keeping it out of the packages also keeps it out of their coverage.
-const {eslintrc, inPackage, nodeEnv} = require('./eslint.shared');
+// ESLint config for every package. ESLint looks for eslint.config.js from the
+// directory it runs in upwards, so each package's `eslint .` finds this file.
+const {fixupConfigRules} = require('@eslint/compat');
+const {FlatCompat} = require('@eslint/eslintrc');
+const js = require('@eslint/js');
+const ghostPlugin = require('eslint-plugin-ghost');
+const globals = require('globals');
+
+// ESLint 9 only runs object-style rules. plugin:ghost/node enables this
+// function-style one, so wrap it (`schema: false` accepts its options).
+const matchExportedClass = 'filenames/match-exported-class';
+if (typeof ghostPlugin.rules[matchExportedClass] === 'function') {
+    ghostPlugin.rules[matchExportedClass] = {create: ghostPlugin.rules[matchExportedClass], meta: {schema: false}};
+}
+
+const compat = new FlatCompat({
+    baseDirectory: __dirname,
+    recommendedConfig: js.configs.recommended
+});
+
+/**
+ * Loads an eslintrc-style config (eslint-plugin-ghost only ships those) and
+ * applies it to `files` (minus `ignores`). fixupConfigRules shims context methods that rules
+ * bundled in eslint-plugin-ghost (e.g. eslint-plugin-mocha 7) still call.
+ */
+function preset(config, files, {ignores} = {}) {
+    return fixupConfigRules(compat.config(config)).map(flat => ({
+        ...flat,
+        // Overrides inside the preset must match their own globs as well.
+        files: flat.files ? files.flatMap(file => flat.files.map(glob => [file, glob])) : files,
+        ...(ignores && {ignores})
+    }));
+}
+
+// Source presets skip tests, which get the test preset instead.
+const notTests = {ignores: ['packages/*/test/**']};
+
+const ghost = name => ({plugins: ['ghost'], extends: [`plugin:ghost/${name}`]});
+const pkgs = (names, glob) => `packages/{${names.join(',')}}/${glob}`;
+
+const nodePackages = ['admin-api', 'config-url-helpers', 'html-to-plaintext', 'release-utils', 'schema-org', 'social-urls', 'string'];
+const esPackages = ['content-api', 'helpers'];
+const tsPresetPackages = ['color-utils', 'timezone-data'];
 
 module.exports = [
-    ...inPackage('admin-api', [
-        {
-            ignores: ['coverage/**']
+    {
+        ignores: [
+            '**/coverage/',
+            '**/cjs/',
+            '**/es/',
+            '**/umd/',
+            '**/dist/',
+            'packages/custom-fonts/build/',
+            'packages/helpers-gatsby/lib/',
+            'packages/url-utils/lib/',
+            'packages/referrer-parser/**/*.config.ts'
+        ]
+    },
+
+    // Plain CommonJS packages
+    ...preset(ghost('node'), [pkgs(nodePackages, '**/*.js')], notTests),
+    {
+        files: [pkgs(nodePackages, '**/*.js')],
+        ...notTests,
+        languageOptions: {sourceType: 'commonjs'}
+    },
+    {
+        files: ['packages/admin-api/**/*.js'],
+        rules: {'ghost/ghost-custom/no-native-error': 'off'}
+    },
+
+    // Packages built with Rollup from ES module sources
+    ...preset(ghost('es'), [pkgs(esPackages, '**/*.js')], notTests),
+    ...preset(ghost('ts'), [pkgs(tsPresetPackages, '**/*.js')], notTests),
+    {
+        files: ['packages/*/rollup.config.js'],
+        languageOptions: {globals: globals.node}
+    },
+
+    ...preset({
+        parser: '@typescript-eslint/parser',
+        ...ghost('node')
+    }, ['packages/custom-fonts/src/**/*.ts']),
+
+    ...preset({
+        plugins: ['ghost', 'react'],
+        extends: ['plugin:ghost/browser', 'plugin:react/recommended'],
+        parserOptions: {
+            sourceType: 'module',
+            ecmaFeatures: {jsx: true}
         },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/node'],
-            rules: {
-                'ghost/ghost-custom/no-native-error': 'off'
+        settings: {
+            react: {
+                createClass: 'createReactClass',
+                pragma: 'React',
+                version: '16.0',
+                flowVersion: '0.53'
             }
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('color-utils', [
-        {
-            ignores: ['coverage/**', 'cjs/**', 'umd/**', 'es/**']
         },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/ts']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']}),
-        ...nodeEnv(['rollup.config.js'])
-    ]),
-    ...inPackage('config-url-helpers', [
-        {
-            ignores: ['coverage/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/node']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('content-api', [
-        {
-            ignores: ['coverage/**', 'cjs/**', 'umd/**', 'es/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/es']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']}),
-        ...nodeEnv(['rollup.config.js'])
-    ]),
-    ...inPackage('custom-fonts', [
-        {
-            ignores: ['coverage/**', 'build/**']
-        },
-        ...eslintrc({
-            parser: '@typescript-eslint/parser',
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/node']
-        }, {files: ['src/**/*.ts'], ignores: ['test/**']}),
-        ...eslintrc({
-            parser: '@typescript-eslint/parser',
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.ts']})
-    ]),
-    ...inPackage('helpers-gatsby', [
-        {
-            ignores: ['lib/**', 'coverage/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost', 'react'],
-            extends: [
-                'plugin:ghost/browser',
-                'plugin:react/recommended'
-            ],
-            parserOptions: {
-                sourceType: 'module',
-                ecmaFeatures: {
-                    jsx: true
-                }
-            },
-            settings: {
-                react: {
-                    createClass: 'createReactClass',
-                    pragma: 'React',
-                    version: '16.0',
-                    flowVersion: '0.53'
-                }
-            },
+        rules: {
+            semi: ['error', 'never'],
+            'object-curly-spacing': ['error', 'always'],
+            'comma-dangle': ['error', {
+                arrays: 'always-multiline',
+                objects: 'always-multiline',
+                imports: 'always-multiline',
+                exports: 'always-multiline',
+                functions: 'ignore'
+            }],
+            'react/prop-types': 'off'
+        }
+    }, ['packages/helpers-gatsby/src/**/*.js']),
+
+    ...preset({
+        ...ghost('ts'),
+        overrides: [{
+            files: ['**/*.ts'],
             rules: {
-                semi: ['error', 'never'],
-                'object-curly-spacing': ['error', 'always'],
-                'comma-dangle': [
-                    'error',
-                    {
-                        arrays: 'always-multiline',
-                        objects: 'always-multiline',
-                        imports: 'always-multiline',
-                        exports: 'always-multiline',
-                        functions: 'ignore'
-                    }
-                ],
-                'react/prop-types': ['off']
+                '@typescript-eslint/ban-ts-comment': ['error', {'ts-nocheck': false}],
+                '@typescript-eslint/no-var-requires': 'off',
+                'prefer-const': 'off'
             }
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('helpers', [
-        {
-            ignores: ['coverage/**', 'cjs/**', 'umd/**', 'es/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/es']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('html-to-plaintext', [
-        {
-            ignores: ['coverage/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/node']
-        }, {files: ['*.js', 'lib/**/*.js']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('referrer-parser', [
-        {
-            // Only TypeScript sources are linted (previously `eslint *.ts lib/ test/ --ext .ts`).
-            ignores: ['**/dist/', '**/*.config.ts', 'coverage/**']
-        },
-        ...eslintrc({
-            extends: [
-                'eslint:recommended',
-                'plugin:@typescript-eslint/recommended'
-            ],
-            parser: '@typescript-eslint/parser',
-            plugins: ['@typescript-eslint'],
-            parserOptions: {
-                ecmaVersion: 2022,
-                sourceType: 'module'
-            },
-            env: {
-                node: true,
-                es2022: true
-            },
-            rules: {
-                'no-console': 'warn',
-                '@typescript-eslint/explicit-function-return-type': 'off',
-                '@typescript-eslint/no-explicit-any': 'warn',
-                '@typescript-eslint/no-unused-vars': ['error', {
-                    argsIgnorePattern: '^_',
-                    varsIgnorePattern: '^_'
-                }]
-            }
-        }, {files: ['*.ts', 'lib/**/*.ts'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost', '@typescript-eslint'],
-            extends: [
-                'plugin:ghost/test',
-                'plugin:@typescript-eslint/recommended'
-            ],
-            parser: '@typescript-eslint/parser',
-            parserOptions: {
-                ecmaVersion: 2020,
-                sourceType: 'module'
-            },
-            rules: {
-                '@typescript-eslint/no-explicit-any': 'off', // Allow any in tests
-                '@typescript-eslint/no-non-null-assertion': 'off' // Allow non-null assertions in tests
-            }
-        }, {files: ['test/**/*.ts']})
-    ]),
-    ...inPackage('release-utils', [
-        {
-            ignores: ['coverage/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/node']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('schema-org', [
-        {
-            ignores: ['coverage/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/node']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('social-urls', [
-        {
-            ignores: ['coverage/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/node']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('string', [
-        {
-            ignores: ['coverage/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/node']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']})
-    ]),
-    ...inPackage('timezone-data', [
-        {
-            ignores: ['coverage/**', 'cjs/**', 'umd/**', 'es/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/ts']
-        }, {files: ['**/*.js'], ignores: ['test/**']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js']}),
-        ...nodeEnv(['rollup.config.js'])
-    ]),
-    ...inPackage('url-utils', [
-        {
-            ignores: ['coverage/**', 'lib/**']
-        },
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/ts'],
-            overrides: [
-                {
-                    files: ['**/*.ts'],
-                    rules: {
-                        '@typescript-eslint/ban-ts-comment': ['error', {
-                            'ts-nocheck': false
-                        }],
-                        '@typescript-eslint/no-var-requires': 'off',
-                        'prefer-const': 'off'
-                    }
-                }
-            ]
-        }, {files: ['src/**/*.js', 'src/**/*.ts']}),
-        ...eslintrc({
-            plugins: ['ghost'],
-            extends: ['plugin:ghost/test']
-        }, {files: ['test/**/*.js', 'test/**/*.ts']})
-    ])
+        }]
+    }, ['packages/url-utils/src/**/*.{js,ts}']),
+
+    ...preset({
+        extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+        parser: '@typescript-eslint/parser',
+        plugins: ['@typescript-eslint'],
+        parserOptions: {ecmaVersion: 2022, sourceType: 'module'},
+        env: {node: true, es2022: true},
+        rules: {
+            'no-console': 'warn',
+            '@typescript-eslint/explicit-function-return-type': 'off',
+            '@typescript-eslint/no-explicit-any': 'warn',
+            '@typescript-eslint/no-unused-vars': ['error', {argsIgnorePattern: '^_', varsIgnorePattern: '^_'}]
+        }
+    }, ['packages/referrer-parser/*.ts', 'packages/referrer-parser/lib/**/*.ts']),
+
+    // Tests
+    ...preset(ghost('test'), ['packages/*/test/**/*.js']),
+    ...preset({
+        parser: '@typescript-eslint/parser',
+        ...ghost('test')
+    }, ['packages/custom-fonts/test/**/*.ts']),
+    ...preset({
+        plugins: ['ghost', '@typescript-eslint'],
+        extends: ['plugin:ghost/test', 'plugin:@typescript-eslint/recommended'],
+        parser: '@typescript-eslint/parser',
+        parserOptions: {ecmaVersion: 2020, sourceType: 'module'},
+        rules: {
+            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-non-null-assertion': 'off'
+        }
+    }, ['packages/referrer-parser/test/**/*.ts']),
+    {
+        files: ['packages/*/test/**/*.{js,ts}'],
+        languageOptions: {
+            // plugin:ghost/test declares these as globals, but the tests
+            // require() them, which no-redeclare reports.
+            globals: {should: 'off', sinon: 'off'}
+        }
+    },
+    {
+        files: ['packages/*/test/**/*.js'],
+        languageOptions: {sourceType: 'commonjs'}
+    }
 ];
