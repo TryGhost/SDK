@@ -17,6 +17,13 @@
         "@eslint/js"
       ],
       "allowedVersions": "<10"
+    },
+    {
+      "description": "Keep Node types at the oldest Node version we test on, so code can't type-check against newer APIs",
+      "matchPackageNames": [
+        "@types/node"
+      ],
+      "allowedVersions": "<23"
     }
   ]
 }
