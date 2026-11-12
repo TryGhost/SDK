@@ -1,6 +1,7 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
 require('../../utils');
+const should = require('should');
 
 const fs = require('fs');
 const path = require('path');
@@ -238,7 +239,6 @@ describe('utils: transformReadyToAbsolute()', function () {
 `);
         });
 
-        /* eslint-disable no-irregular-whitespace */
         it('converts multiple urls', function () {
             let html = `
             <img srcset="__GHOST_URL__/content/images/elva-fairy-320w.jpg 320w,
@@ -262,7 +262,6 @@ describe('utils: transformReadyToAbsolute()', function () {
                 src="http://my-ghost-blog.com/content/images/elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
         `);
         });
-    /* eslint-enable no-irregular-whitespace */
     });
 
     describe('markdown', function () {

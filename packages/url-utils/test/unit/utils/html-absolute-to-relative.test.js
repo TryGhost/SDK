@@ -173,7 +173,6 @@ describe('utils: htmlAbsoluteToRelative()', function () {
     });
 
     describe('srcset support', function () {
-        /* eslint-disable no-irregular-whitespace */
         it('converts multiple urls', function () {
             let html = `
                 <img srcset="http://my-ghost-blog.com/content/images/elva-fairy-320w.jpg 320w,
@@ -197,7 +196,6 @@ describe('utils: htmlAbsoluteToRelative()', function () {
                     src="/content/images/elva-fairy-800w.jpg" alt="Elva dressed as a fairy">
             `);
         });
-        /* eslint-enable no-irregular-whitespace */
     });
 
     describe('DOM parsing is skipped', function () {

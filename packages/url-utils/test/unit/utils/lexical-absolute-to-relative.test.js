@@ -1,6 +1,7 @@
 // Switch these lines once there are useful utils
 // const testUtils = require('./utils');
 require('../../utils');
+const should = require('should');
 
 const UrlUtils = require('../../../lib/UrlUtils').default;
 const lexicalAbsoluteToRelative = require('../../../lib/utils/lexical-absolute-to-relative').default;

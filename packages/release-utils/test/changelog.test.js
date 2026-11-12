@@ -1,4 +1,5 @@
 require('./utils');
+const should = require('should');
 
 const fs = require('fs');
 const path = require('path');
@@ -7,7 +8,6 @@ const {Changelog} = require('../lib');
 describe('Changelog', function () {
     it('throws when required constructor options are missing', function () {
         try {
-            /* eslint-disable no-new */
             new Changelog();
             throw new Error('should have thrown');
         } catch (err) {

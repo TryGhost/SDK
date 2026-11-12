@@ -172,7 +172,6 @@ function htmlTransform(
             // this regex avoids matching unrelated plain text by checking that the attribute/value pair
             // is surrounded by <> - that should be sufficient because if the plain text had that wrapper
             // it would be parsed as a tag
-            // eslint-disable-next-line no-useless-escape
             const regex = new RegExp(`<[a-zA-Z][^>]*?(${name}=['"](${escapeRegExp(originalValue)})['"]).*?>`, 'gs');
 
             let matchCount = 0;

@@ -20,9 +20,7 @@
     "dev": "echo \"Implement me!\"",
     "test:unit": "NODE_ENV=testing c8 --reporter text --reporter cobertura -- mocha --reporter dot './test/**/*.test.js'",
     "test": "pnpm test:unit",
-    "lint:code": "eslint *.js lib/ --ext .js --cache",
-    "lint": "pnpm lint:code && pnpm lint:test",
-    "lint:test": "eslint -c test/.eslintrc.js test/ --ext .js --cache"
+    "lint": "eslint . --cache"
   },
   "devDependencies": {
     "c8": "12.0.0",

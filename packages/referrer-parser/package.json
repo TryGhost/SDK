@@ -25,8 +25,8 @@
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
-    "lint": "eslint *.ts lib/ test/ --ext .ts",
-    "lint:fix": "eslint *.ts lib/ test/ --ext .ts --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [
     "ghost",
@@ -50,16 +50,13 @@
     "@types/node": "26.6.6",
     "@types/should": "13.0.0",
     "@types/sinon": "22.0.2",
-    "@typescript-eslint/eslint-plugin": "8.72.1",
-    "@typescript-eslint/parser": "8.72.1",
     "@vitest/coverage-v8": "5.0.5",
     "should": "13.2.3",
     "sinon": "22.1.0",
     "typescript": "5.9.3",
     "vite": "8.3.7",
     "vite-plugin-dts": "5.1.2",
-    "vitest": "5.0.5",
-    "eslint": "8.57.1"
+    "vitest": "5.0.5"
   },
   "engines": {
     "node": ">=16.0.0"
