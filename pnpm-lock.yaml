@@ -420,7 +420,7 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(react-dom@18.3.1(react@19.3.1))(react@19.3.1)
       '@tryghost/helpers':
-        specifier: ^1.1.109
+        specifier: ^1.1.110
         version: link:../helpers
       gatsby-link:
         specifier: 5.16.0
@@ -672,7 +672,7 @@ importers:
         version: 2.0.3
     devDependencies:
       '@tryghost/config-url-helpers':
-        specifier: ^1.0.30
+        specifier: ^1.0.31
         version: link:../config-url-helpers
       '@types/lodash':
         specifier: 4.17.27
