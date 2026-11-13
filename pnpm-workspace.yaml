@@ -17,5 +17,11 @@ minimumReleaseAgeExclude:
   # Renovate security update: glob@14.0.2
   - glob@14.0.2
 
+overrides:
+  # Security: GHSA-g3hv-75wg-m249 has no fix in minimatch 10.x, which nx and @nx/devkit
+  # (exact pins), glob 13, mocha, test-exclude and typescript-eslint still depend on.
+  # Remove once they depend on minimatch >=11.0.1.
+  'minimatch@>=7.0.0 <11.0.1': 11.0.5
+
 # Disable implicit executable config discovery; shared policy stays declarative.
 pnpmfile: []
