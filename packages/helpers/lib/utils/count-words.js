@@ -1,3 +1,5 @@
+import findTags from './find-tags';
+
 /**
  * Word count Utility
  * @param {string} text
@@ -15,7 +17,7 @@ export default function countWords(text) {
         text = text.string;
     }
 
-    text = text.replace(/<("[^"]*"|'[^']*'|[^'">])+\/?>/g, ' '); // strip any HTML tags
+    text = stripTags(text);
 
     const pattern = /[a-zA-ZÀ-ÿ0-9_\u0392-\u03c9\u0410-\u04F9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
 
@@ -38,4 +40,17 @@ export default function countWords(text) {
     }
 
     return count;
+}
+
+// replaces every HTML tag with a space
+function stripTags(text) {
+    let stripped = '';
+    let position = 0;
+
+    findTags(text, '<').forEach(function (tag) {
+        stripped += text.slice(position, tag.start) + ' ';
+        position = tag.end;
+    });
+
+    return stripped + text.slice(position);
 }
