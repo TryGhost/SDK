@@ -1,6 +1,6 @@
 {
   "name": "@tryghost/helpers-gatsby",
-  "version": "2.1.9",
+  "version": "2.1.10",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TryGhost/SDK.git",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@gatsbyjs/reach-router": "2.0.1",
-    "@tryghost/helpers": "^1.1.110",
+    "@tryghost/helpers": "^1.1.111",
     "gatsby-link": "5.16.0",
     "prop-types": "15.8.1"
   },
