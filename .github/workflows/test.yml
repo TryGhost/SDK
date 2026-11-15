@@ -42,7 +42,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - uses: tryghost/actions/actions/slack-build@ba80e856a5aaaf689992562dc7c28f7c60efbd21 # main
+      - uses: tryghost/actions/actions/slack-build@effade3b0d63f664a12c0a60a102a37b66821bd2 # main
         if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           status: ${{ job.status }}
